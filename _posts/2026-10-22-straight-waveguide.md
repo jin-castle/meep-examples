@@ -256,8 +256,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 
 <details>
 <summary>straight_waveguide.py (클릭해서 펼치기)</summary>
-
-```python
+{% highlight python %}
 """Meep Example 01 - Straight Waveguide.
 
 2D silicon strip waveguide in SiO2. Inject the fundamental TE mode at one end,
@@ -380,8 +379,7 @@ if mp.am_master():
                    "wavelengths_um": (1 / freqs).tolist(), "T_spectrum": T.tolist(),
                    "R_spectrum": R.tolist(), "wall_s": wall, "meep": mp.__version__},
                   f, indent=2)
-```
-
+{% endhighlight %}
 </details>
 
 §4의 발췌 코드와 달리 전체 코드에는 그림 저장·result.json 기록이 들어 있다. 그림 helper `blogfig.py`(`annotated_layout`, `field_figure`)는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).

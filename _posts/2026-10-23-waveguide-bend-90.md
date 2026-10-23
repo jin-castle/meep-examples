@@ -285,8 +285,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 
 <details>
 <summary>bend90.py (클릭해서 펼치기)</summary>
-
-```python
+{% highlight python %}
 """Meep Example 02 - 90 degree Waveguide Bend (two-run flux normalization).
 
 A dielectric waveguide (eps = 12, width 1) turns a sharp 90 degree corner.
@@ -443,8 +442,7 @@ if mp.am_master():
                    "R_spectrum": R.tolist(), "P_in_spectrum": P_in.tolist(),
                    "wall_s": wall, "run1_s": t_run1, "meep": mp.__version__},
                   f, indent=2)
-```
-
+{% endhighlight %}
 </details>
 
 §4의 발췌 코드와 달리 전체 코드에는 그림 저장·result.json 기록이 들어 있다. 그림 helper `blogfig.py`(`annotated_layout`, `field_figure`, `spectrum_figure`)는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
