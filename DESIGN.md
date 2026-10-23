@@ -1,7 +1,7 @@
 # Meep Examples design contract
 
 ## 1. Brief and reference
-An approachable Korean Meep encyclopedia: see the path light takes, then open a real, reproducible example. Translate the approved `meep-homepage-concept-v1.png` and `meep-adjoint-scroll-storyboard-v3.png` references into HTML, CSS and SVG. The only requested visual correction is a spatially meaningful, pixelated signed gradient instead of a decorative blurred color field.
+An approachable Korean Meep encyclopedia: see the path light takes, then open a real, reproducible example. Preserve the approved paper/cyan/amber identity while upgrading the inverse-design story with centered ports, forward/adjoint DFT capture, complex-field overlap, gradient and a verified geometry update.
 
 Primary users: a first-time FDTD learner choosing an example; an experienced reader searching for PML or adjoint; a reader using keyboard, magnification or reduced motion. Existing article URLs and their scientific content remain the source material.
 
@@ -9,40 +9,52 @@ Primary users: a first-time FDTD learner choosing an example; an experienced rea
 - Paper #ffffff, soft paper #f5f8fa, ink #0d1b2a, secondary ink #526579, rule #dce5eb.
 - Cyan brand #0087ad, bright cyan field #42dfff, cyan pale #e7f7fb; amber adjoint #ffb648.
 - Physics canvas #071b2b, grid #173447, muted canvas ink #aec3d2, geometry #718899.
-- Positive/negative gradient: preserve the original RdBu_r colors of the published image; the density map uses 0 white to 1 black.
+- Signed fields and gradient: RdBu, negative red to zero white to positive blue; density uses0 white to1 black.
 - Font: system Korean sans stack (`Pretendard`, `Noto Sans KR`, `Apple SD Gothic Neo`, `Malgun Gothic`, sans-serif); no remote font dependency. Mono labels: ui-monospace.
 - Type scale: 12, 13, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64px; fluid display clamps to 40–64px. Body line height 1.75, headings 1.2.
 - Base space 4px; steps 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96px. Reading copy max 65ch; page max 1480px.
 - Depth: rules and tonal surfaces; small 8px corners for physics panel and cards, 4px for controls. Field glow is confined to the physics canvas.
 
 ## 3. Layout
-Native document scrolling; a stable header; a narrow desktop knowledge rail; airy headline beside the dark simulation diagram; compact question-first example cards. The scrollytelling scene stays in a sticky aside while three explanation chapters pass. On phones the scene sticks below the header and the brief chapters scroll below it. No wheel interception, forced snapping or nested page scroll.
+Native document scrolling; a stable header; a narrow desktop knowledge rail; airy headline beside the dark simulation diagram; compact question-first example cards. The scrollytelling scene stays in a sticky aside while four explanation chapters pass. On phones the scene sticks below the header and the brief chapters scroll below it. No wheel interception, forced snapping or nested page scroll.
 
 Spatial reference: StyleGallery `sticky-aside` and `ram-grid` (https://github.com/changeroa/StyleGallery). Extract layout ideas only; no source copying. Header and catalog retain immediate access while the story is optional.
 
 ## 4. Motion and scientific meaning
-One atmosphere: light traveling through a schematic guide. Native SVG wavefronts with CSS motion, 1.8s propagation cycle, 200ms ease-out state transition. IntersectionObserver selects chapters and pauses scenes offscreen; visibilitychange pauses hidden tabs. Reduced motion and the visible pause control retain a static, fully readable field and all three stages. No motion library, shader or new runtime dependency.
+The current four-stage implementation and scientific source are specified in the dated contract below. The entire input/design/output field, captured RdBu images, gradient and stored density endpoint are actual high-resolution numerical data. Forward and adjoint are separate computations with the same initial geometry, frequency and design region.
 
-Mechanism consultation: beui.dev `tabs` (https://beui.dev/r/tabs/raw) for explicit selected state and reduced-motion treatment; react-bits `ShapeGrid` (https://reactbits.dev/r/ShapeGrid-TS-TW.json) for visibility pause. Physics sequence is a novel educational interaction, implemented independently with IntersectionObserver and SVG rather than copying those components.
-
-Forward: cyan input at left, output above. Adjoint: amber objective-derived source at the output, original input inactive, same geometry. These are two separate computations, not two beams interfering. Stage three: saved fields → sensitivity postprocessing → optimizer → density update within the square only.
-
-Authentic data: the middle panel of `assets/meep/09/04_gradient.png` is the original initial signed adjoint gradient, rendered without smoothing. Show the 11×11 map directly with its symmetric ±13.404 scale, no invented numeric cells. The final density values come from `assets/meep/09/result.json`, using index x*11+y, y increasing upward. A visual transition between uniform 0.5 and the saved final design is explicitly not the intermediate MMA history. Forward/adjoint wavefronts are illustrative, not numerical fields. Do not invent measured efficiencies or turn gray densities into a supposedly fabricated smooth bend.
+The visible scene automatically plays all four stages in a continuous24-second loop. Scrolling does not select or interrupt chapters. IntersectionObserver pauses scenes offscreen; visibilitychange pauses hidden tabs. Native transport supports reversible seeking, replay and speed. Reduced motion retains static stage endpoints and full keyboard navigation. The original input is inactive during the objective-derived adjoint run. The optimizer changes only the design square; connected ports stay fixed.
 
 ## 5. Reusable patterns and states
 - Header links and knowledge rail: normal, hover, keyboard focus. Real anchor destinations.
 - Example card: question, compact schematic, part/title, description, article link. Whole card is one link.
 - Filter buttons: native buttons with aria-pressed; selected uses ink wash, never an accent border. Search is a labeled input, combined with category; live result count, explicit empty state and reset.
-- Story scene: three numbered stage links, three visible explanation chapters, one sticky figure. Stage state is reflected in its label and description as well as color. No live-region announcement on every scroll.
+- Story scene: four numbered stage links, four visible explanation chapters, one sticky figure. Stage state is reflected in its label and description as well as color. No live-region announcement on every scroll.
 - Dictionary: native details/summary, usable without JavaScript.
 - Focus: visible 3px cyan outline, 3px offset; 44px touch target minimum for controls. Links remain underlined in prose.
 
 ## 6. Verification and accepted limits
 Check desktop and narrow viewport, all stages in both scroll directions, search/filter/empty/reset, keyboard links, pause, reduced motion, all article URLs, no horizontal overflow, and existing article rendering. Verify GitHub Pages build and live version after push. Local preview strips front matter; production compilation authority is the Pages build. Static SVG and canvas image have explicit dimensions. JavaScript is deferred and progressive: every current article is discoverable without it.
 
-Mobile refinement: use two large square data maps with 12–13px HTML legends instead of shrinking SVG annotation text. Keep chapter copy immediately below the sticky scene using its measured height, and preserve spaces at responsive line breaks. Density reveal uses a 1s opacity transition between the initial background and stored final values; it does not depict intermediate MMA iterations. Reduced motion and pause show final data immediately.
+Mobile refinement: retain three saved-image tiles with readable HTML labels. Wrap transport controls on narrow screens; disable stickiness on short viewports. Density reveal crossfades the initial and evaluated endpoint without inventing intermediate iterations.
 
-No new dependencies. No fabricated simulation run. The published example is an educational five-evaluation demonstration, not a converged or fabrication-ready design. Lighthouse scores are reported only if measured through an available real-browser audit surface; never inferred from code.
+No fabricated simulation run. The published example is an educational five-evaluation demonstration, not a converged or fabrication-ready design. Lighthouse scores are reported only if measured through an available real-browser audit surface; never inferred from code.
+
+### 2026-10-23: DFT capture and verified high-resolution update
+Vendor GSAP 3.15.0 core locally with its upstream copyright and license notice. This is the user-requested exception to the earlier no-motion-library constraint. No framework, build step, plugin or CDN request is added. A seekable 24-second GSAP playhead drives deterministic SVG transforms and opacity. Four chapters cover forward DFT capture (0–6s), adjoint capture in the same geometry (6–12s), complex-field overlap and sensitivity postprocessing (12–18s), then one evaluated density update (18–24s).
+
+The apparatus uses a light grid surface and black unfilled waveguide outlines. Its input meets the center of the square's left edge; its output meets the center of the top edge. Guide width is half the design square's width. Input, design region and output share one physical coordinate mapping and one full-field RdBu scale per computation. Saved crops use that same scale. The hero also shows the actual updated-forward DFT, with no synthetic wavefront or glow. Existing dark surfaces frame the saved images and transport; blue and red distinguish capture cues. A camera frame, one soft flash per capture (white opacity at most0.28), and a traveling image preserve each snapshot's identity. Captured copies converge on the gradient tile; a gradient copy returns to the region. DFT is accumulated frequency-domain data; the camera is a storage metaphor. After the density update, the evaluated forward field returns across both ports and the region.
+
+Scientific source: new Meep1.33.0 execution at60pixels/µm,61×61 density variables, wavelength1.55µm,1×1µm design square,6×5µm cell and1µm PML. Display Ez monitors were recorded during the same forward/adjoint runs used by the native Meep gradient. Full-cell fields are360×300; the design monitor includes62×62 samples with boundary padding. Physical coordinates crop the exact design square;720px PNG export uses nearest native samples. No low-resolution figure crop or invented field is used. All field and signed-gradient images use RdBu: negative red, zero white, positive blue, with independent symmetric limits recorded in JSON. Density uses white0 to black1.
+
+Two directional finite differences validate the initial adjoint derivative: maximum relative error1.8392736457e-5 (0.001839%). One accepted projected gradient-ascent step has maximum density change0.15. The output mode-power objective changes from2.9157725347 to38.4147296510 in unnormalized source/optimizer units; this is not transmission efficiency or a converged binary geometry. The visible density crossfade compares uniform0.5 with this evaluated endpoint; it does not depict intermediate optimizer history. Flat arrays index x*Ny+y with y increasing upward. The exact gradient uses complex fields, source normalization and the discretized MaterialGrid derivative; two displayed Re(Ez) images alone do not reproduce it.
+
+Assets and metadata: assets/meep/09/highres/. Reproduction code: code/highres_bend/. Original published09 data and code/bend_inverse.py remain byte-identical. Raw complex arrays and execution evidence are packaged separately from the static-site payload.
+
+Native transport includes play/pause, replay, speed, labeled seeking and four stage links. Scrubbing is reversible and triggers no queued capture callbacks. Reduced motion and missing GSAP use four static endpoints; their range control has four integer positions so backward keyboard input works. Hidden/offscreen scenes preserve time and resume automatic playback when visible unless the user paused it. Stage links start playback at the chosen stage and continue through the remaining stages into the next loop. Pause intent survives scrolling. Narrow controls wrap; short viewports use a nonsticky figure.
+
+### DFT propagation during capture
+Forward and adjoint display32 native phase samples of Re(Ez exp(-iφ)), with one fixed symmetric ±max|Ez| range per computation. This is steady-state DFT phase playback. The existing apparatus and saved-map layout stay intact. Each six-second field stage plays four1.5-second phase cycles. At its midpoint (global3/9s), phase0 is photographed: the copy holds for0.28s, then flies to its saved tile while the original phase motion continues through both waveguides and the design region. The saved copy stays at phase0 for gradient presentation. Frames use a deterministic8×4 sprite, driven by the same GSAP playhead as the shutter, so pause, speed, reverse seeking and offscreen suspension also control the field. Reduced motion, unavailable GSAP or failed sprite decoding retain the phase0 field and manual stages. The phase label states normal steady state; no wavefront arrival or turn-on delay is inferred from DFT data.
 
 ## 7. Guided lessons: parts 01 and 09
 Preserve this site's paper, ink and cyan identity. A lesson answers one question through observation, prediction, explanation, execution, interpretation and a final check. Keep the original English summary, detailed numerical evidence, complete code and scientific limits accessible through native disclosures. Never move a necessary validity caveat exclusively into a collapsed panel. Existing routes and simulation scripts are immutable for this presentation change.
