@@ -22,3 +22,6 @@ The PNGs use `RdBu` with symmetric limits centered at zero: red is negative and 
 `site-assets/` contains the compact lossless PNGs and JSON consumed by the website. Raw arrays, source, validation details, and execution log remain outside that folder for reproducibility.
 
 `render_assets.py` rebuilds PNGs from the saved numerical arrays without repeating the simulation. Run it before `package_assets.py` when changing plotting styles.
+## Unified scene and capture colors
+
+After the simulation, run `python render_scene.py /path/to/fields.npz --out /path/to/assets/meep/09/highres`. This renders native full-cell RdBu fields and matching design crops from the saved complex results; it does not rerun Meep. The helper asserts crop orientation, shared normalization and exact interior pixel agreement. The original simulation source and its SHA256 remain unchanged.

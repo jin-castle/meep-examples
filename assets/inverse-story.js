@@ -65,19 +65,17 @@
     const staticFrame = staticMode();
     const captureStart = forward ? 3 : 9;
     const accumulating = (forward || adjoint) && local < 3;
-    opacity("#forward-flow", forward ? .7 : 0);
-    opacity("#adjoint-flow", adjoint ? .7 : 0);
-    $("#forward-flow").style.strokeDashoffset = String(staticFrame ? 0 : -time * 38);
-    $("#adjoint-flow").style.strokeDashoffset = String(staticFrame ? 0 : time * 38);
     const updated = densityReady ? smooth(ramp(time, 21, 2.2)) : 0;
-    opacity("#forward-region", forward ? ramp(time, .3, 2) : 0);
-    opacity("#adjoint-region", adjoint ? ramp(time, 6.3, 2) : 0);
+    opacity("#forward-field", forward ? ramp(time, .3, 2) : stage === 3 ? 1 : updating ? 1 - ramp(time, 18, .6) : 0);
+    opacity("#adjoint-field", adjoint ? ramp(time, 6.3, 2) : 0);
+    const evaluatedField = densityReady ? ramp(time, 23.2, .7) : 0;
+    opacity("#updated-field", evaluatedField);
     opacity("#density-grid", updated);
-    $("#input-beacon").style.stroke = forward ? "var(--cyan)" : "var(--geometry)";
-    $("#output-beacon").style.stroke = adjoint ? "var(--amber)" : "var(--geometry)";
-    text("#input-caption", forward ? "INPUT · ON" : "INPUT · OFF");
+    $("#input-beacon").style.stroke = forward || evaluatedField > 0 ? "var(--field-positive)" : "var(--layout-black)";
+    $("#output-beacon").style.stroke = adjoint ? "var(--field-negative)" : "var(--layout-black)";
+    text("#input-caption", forward || evaluatedField > 0 ? "INPUT · ON" : "INPUT · OFF");
     text("#output-caption", adjoint ? "ADJOINT · ON" : "OUTPUT");
-    const captureColor = adjoint ? "var(--capture-adjoint)" : "var(--brand)";
+    const captureColor = adjoint ? "var(--field-negative)" : "var(--field-positive)";
     $("#capture-frame").style.stroke = captureColor;
     $("#capture-camera").style.stroke = captureColor;
     $("#capture-scan").style.stroke = captureColor;
@@ -88,7 +86,7 @@
     const flash = !staticFrame && (forward || adjoint) ? .28 * Math.max(0, 1 - Math.abs(time - captureStart) / .2) : 0;
     opacity("#capture-flash", flash);
     text("#capture-caption", forward || adjoint ? accumulating ? "DFT 누적" : "저장 완료" : "CAPTURED");
-    text("#geometry-caption", updating ? updated >= .99 ? "gradient ascent · 1회" : "gradient → 밀도 갱신" : "ρ = 0.5 · 같은 구조");
+    text("#geometry-caption", updating ? evaluatedField >= .99 ? "갱신 후 DFT · RES 60" : updated >= .99 ? "gradient ascent · 1회" : "gradient → 밀도 갱신" : "ρ = 0.5 · 같은 구조");
     captured("#forward-snapshot", 3, 48, time);
     captured("#adjoint-snapshot", 9, 260, time);
     const overlap = smooth(ramp(time, 12.5, 2.2));
@@ -109,9 +107,9 @@
     const summary = forward ? accumulating ? "설계 영역의 forward DFT 장을 누적합니다." : "첫 번째 장을 찍어 저장합니다."
       : adjoint ? accumulating ? "같은 구조의 adjoint DFT 장을 누적합니다." : "두 번째 장을 찍어 저장합니다."
       : stage === 3 ? time < 16.2 ? "저장한 두 복소장을 겹쳐 민감도를 구합니다." : "픽셀마다 바꿀 방향이 gradient로 남습니다."
-      : densityReady ? time < 23.2 ? "Gradient를 받아 설계 영역의 밀도를 바꿉니다." : "고정된 포트 사이, 설계 영역만 갱신되었습니다." : "최종 밀도를 불러오지 못했습니다. 계산 결과 링크를 확인하세요.";
+      : densityReady ? time < 23.2 ? "Gradient를 받아 설계 영역의 밀도를 바꿉니다." : "갱신한 구조의 forward DFT를 다시 확인합니다." : "최종 밀도를 불러오지 못했습니다. 계산 결과 링크를 확인하세요.";
     text("#scene-summary", summary);
-    text("#scene-note", updating ? "균일 0.5 → 검증한 1회 갱신 · 최대 밀도 변화 0.15" : "전파는 개념도 · DFT·gradient는 RES 60 실제 계산");
+    text("#scene-note", updating ? "균일 0.5 → 검증한 1회 갱신 · 최대 밀도 변화 0.15" : "입력·설계 영역·출력 모두 RES 60 실제 DFT");
     progress.min = staticFrame ? "1" : "0";
     progress.max = staticFrame ? "4" : String(duration);
     progress.step = staticFrame ? "1" : ".01";

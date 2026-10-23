@@ -11314,5 +11314,77 @@
   "step": 0.15,
   "export_pixels": 720,
   "native_field_sampling": "60 pixels/um; 1um design region; raster export uses nearest samples without smoothing",
-  "raw_arrays": "fields.npz (packaged with reproducibility source, outside static-site assets)"
+  "raw_arrays": "fields.npz (packaged with reproducibility source, outside static-site assets)",
+  "scene_rendering": {
+    "source": "saved complex128 full-cell Ez DFT, fields.npz",
+    "source_sha256": "fad41cb79f2812e8172acabc5fdd074557c501b31614a77c7f5a5af53ace5aed",
+    "quantity": "Re(Ez); original complex phase, no phase rotation",
+    "colormap": "RdBu",
+    "sign": "negative red; zero white; positive blue",
+    "full_extent_um": [
+      -3.0,
+      3.0,
+      -2.5,
+      2.5
+    ],
+    "design_extent_um": [
+      -0.5,
+      0.5,
+      -0.5,
+      0.5
+    ],
+    "scene_pixels": [
+      360,
+      300
+    ],
+    "capture_pixels": [
+      720,
+      720
+    ],
+    "native_design_pixels": [
+      60,
+      60
+    ],
+    "native_spacing_um": 0.016666666666666666,
+    "orientation": "RGBA[row,col] = RdBu(normalize(real(Ez[col,Ny-1-row]))); top is +y",
+    "capture_rendering": "exact full-scene design crop, nearest enlargement, black boundary and centered port markers",
+    "scenes": {
+      "forward": {
+        "scene": "forward-scene.png",
+        "symmetric_limit": 13.863693012097434,
+        "vmin": -13.863693012097434,
+        "vmax": 13.863693012097434,
+        "capture": "forward-capture.png",
+        "capture_limit": 13.863693012097434,
+        "scene_crop_box_pixels": [
+          150,
+          120,
+          210,
+          180
+        ],
+        "capture_matches_scene_interior": true
+      },
+      "adjoint": {
+        "scene": "adjoint-scene.png",
+        "symmetric_limit": 0.0020056100269988534,
+        "vmin": -0.0020056100269988534,
+        "vmax": 0.0020056100269988534,
+        "capture": "adjoint-capture.png",
+        "capture_limit": 0.0020056100269988534,
+        "scene_crop_box_pixels": [
+          150,
+          120,
+          210,
+          180
+        ],
+        "capture_matches_scene_interior": true
+      },
+      "updated-forward": {
+        "scene": "updated-forward-scene.png",
+        "symmetric_limit": 15.072785628244924,
+        "vmin": -15.072785628244924,
+        "vmax": 15.072785628244924
+      }
+    }
+  }
 }

@@ -32,13 +32,13 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
     <pattern id="layout-grid" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#f5f8fa"/><path d="M28 0H0V28" fill="none" stroke="#dce5eb" stroke-width="1"/></pattern>
     <linearGradient id="signed-scale"><stop stop-color="#67001f"/><stop offset=".25" stop-color="#d6604d"/><stop offset=".5" stop-color="#f7f7f7"/><stop offset=".75" stop-color="#4393c3"/><stop offset="1" stop-color="#053061"/></linearGradient>
     <symbol id="bend-guide" viewBox="0 0 660 460">
-      <rect width="660" height="460" fill="url(#scene-grid)"/>
-      <path d="M70 263H410V329H70ZM443 60H509V230H443Z" fill="url(#guide-material)" stroke="#718899" stroke-width="2"/>
-      <rect x="410" y="230" width="132" height="132" fill="#718899" fill-opacity=".38"/>
-      <path d="M70 263H410M70 329H410M443 60V230M509 60V230" fill="none" stroke="#aec3d2" stroke-opacity=".45" stroke-width="1"/>
+      <rect width="660" height="460" fill="#f7f7f7"/>
+      <image href="./assets/meep/09/highres/updated-forward-scene.png" x="80" y="-34" width="792" height="660" style="image-rendering:pixelated"/>
+      <path d="M80 263H410V230H443V0M80 329H410V362H542V230H509V0" fill="none" stroke="black" stroke-width="2"/>
+      <rect x="410" y="230" width="132" height="132" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5 5"/>
     </symbol>
-    <symbol id="dft-forward-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/forward-design.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
-    <symbol id="dft-adjoint-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/adjoint-design.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="dft-forward-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/forward-capture.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="dft-adjoint-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/adjoint-capture.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
     <symbol id="initial-gradient-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/gradient-design.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
     <symbol id="thumb-source" viewBox="0 0 400 180"><rect width="400" height="180" fill="#071b2b"/><g fill="none" stroke="#42dfff" stroke-opacity=".45"><circle cx="200" cy="90" r="24"/><circle cx="200" cy="90" r="48"/><circle cx="200" cy="90" r="72"/><circle cx="200" cy="90" r="96"/><circle cx="200" cy="90" r="120"/><circle cx="200" cy="90" r="144"/><circle cx="200" cy="90" r="168"/></g><circle cx="200" cy="90" r="5" fill="#ffb648"/></symbol>
     <symbol id="thumb-guide" viewBox="0 0 400 180"><rect width="400" height="180" fill="#071b2b"/><path d="M28 64H372V116H28Z" fill="#718899" fill-opacity=".25" stroke="#718899"/><path d="M32 90H370" stroke="#42dfff" stroke-width="34" stroke-dasharray="2 19" opacity=".8"/><path d="M28 64V116" stroke="#ffb648" stroke-width="5"/></symbol>
@@ -57,7 +57,7 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy"><p class="eyebrow">눈으로 이해하는 전자기학</p><h1 id="hero-title">빛이 다니는 길을,<br>직접 설계해 보세요.</h1><p class="hero-description">그림으로 이해하고, 코드로 확인하는<br class="desktop-break"> Meep 예제 백과.</p><div class="hero-actions"><a class="button primary" href="./point-line-source/">첫 예제 따라가기 <span aria-hidden="true">→</span></a><a class="button secondary" href="#examples">전체 예제 보기</a></div><a class="scroll-cue" href="#light-story"><span class="mouse-mark" aria-hidden="true"></span>스크롤하며 빛의 설계를 따라가 보세요 <span aria-hidden="true">↓</span></a></div>
-      <figure class="hero-figure animated-scene"><div class="scene-topline"><span>LIGHT, BY DESIGN</span><span>전파 방향 개념도</span></div><svg class="hero-diagram" viewBox="0 0 660 460" role="img" aria-label="설계 영역 왼쪽 변 중앙의 입력과 위쪽 변 중앙의 출력을 연결한 도파로"><use href="#bend-guide"/><path class="field-glow" d="M70 296H440Q476 296 476 260V60"/><path class="wavefront forward-wave" d="M70 296H440Q476 296 476 260V60"/><path d="M70 263V329" class="source-line"/><path d="M443 60H509" class="output-line"/><rect x="404" y="224" width="144" height="144" class="design-outline"/><g class="diagram-label"><text x="70" y="244">입력 광원</text><text x="443" y="42">목표 출력</text><text x="395" y="400">설계 영역</text><text x="260" y="280">→</text><text x="465" y="160">↑</text></g></svg><figcaption><span><i></i> 빛을 보내고, 반응을 읽고, 구조를 바꾸다.</span><a href="#light-story">SCROLL TO EXPLORE ↓</a></figcaption></figure>
+      <figure class="hero-figure"><div class="scene-topline"><span>LIGHT, BY DESIGN</span><span>Re Ẽz · RdBu · RES 60</span></div><svg class="hero-diagram" viewBox="0 0 660 460" role="img" aria-label="한 번 갱신한 구조의 실제 forward DFT 장. 입력과 출력 도파관까지 RdBu, 구조 윤곽은 검은색"><use href="#bend-guide"/><path d="M278 263V329M443 164H509" class="hero-monitor"/><g class="diagram-label"><text x="220" y="244">입력 광원</text><text x="525" y="164">목표 출력</text><text x="395" y="400">설계 영역</text></g></svg><figcaption><span><i></i> 실제 DFT 장 · 검증한 구조 갱신 1회</span><a href="#light-story">SCROLL TO EXPLORE ↓</a></figcaption></figure>
     </section>
 
     <section id="light-story" class="light-story" aria-labelledby="story-title">
@@ -73,19 +73,16 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
           <div class="scene-topline"><span id="scene-stage">01 / FORWARD DFT</span><button id="motion-toggle" type="button" aria-pressed="false" hidden>동작 멈추기</button></div>
           <div class="experiment-meta"><span>1 × 1 µm · RES 60 px/µm</span><span>λ = 1.55 µm</span></div>
           <svg class="inverse-diagram" viewBox="0 0 720 470" role="img" aria-labelledby="physics-title physics-description"><title id="physics-title">설계 영역에서 촬영한 DFT 장으로 구조를 바꾸는 네 단계</title><desc id="physics-description">왼쪽 변 중앙의 입력과 위쪽 변 중앙의 출력. 같은 설계 영역에서 forward와 adjoint DFT 장을 각각 저장하고, 두 복소장을 후처리한 gradient로 최적화기가 밀도를 갱신합니다.</desc>
-            <defs><marker id="flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
+            <defs><clipPath id="apparatus-clip"><rect x="52" y="25" width="540" height="234"/></clipPath><marker id="flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
             <rect width="720" height="294" fill="url(#layout-grid)"/>
-            <g id="fixed-ports"><path id="input-guide" d="M52 137.5H430V212.5H52Z"/><path id="output-guide" d="M467.5 28H542.5V100H467.5Z"/></g>
             <rect x="430" y="100" width="150" height="150" class="uniform-density"/>
-            <path id="forward-flow" class="sequence-wave" d="M52 175H465Q505 175 505 135V28"/>
-            <path id="adjoint-flow" class="sequence-wave adjoint-wave" d="M52 175H465Q505 175 505 135V28"/>
-            <use id="forward-region" href="#dft-forward-map" x="430" y="100" width="150" height="150"/>
-            <use id="adjoint-region" href="#dft-adjoint-map" x="430" y="100" width="150" height="150"/>
             <g id="density-grid" shape-rendering="crispEdges"></g>
+            <g clip-path="url(#apparatus-clip)" class="apparatus-fields"><image id="forward-field" href="./assets/meep/09/highres/forward-scene.png" x="55" y="-200" width="900" height="750"/><image id="adjoint-field" href="./assets/meep/09/highres/adjoint-scene.png" x="55" y="-200" width="900" height="750"/><image id="updated-field" href="./assets/meep/09/highres/updated-forward-scene.png" x="55" y="-200" width="900" height="750"/></g>
+            <g id="fixed-ports"><path id="input-guide" d="M55 137.5H430V212.5H55Z"/><path id="output-guide" d="M467.5 25H542.5V100H467.5Z"/></g>
             <rect x="430" y="100" width="150" height="150" class="region-outline"/>
-            <path id="input-beacon" d="M52 137.5V212.5" class="source-line"/>
-            <path id="output-beacon" d="M467.5 28H542.5" class="output-line"/>
-            <g class="experiment-label"><text x="52" y="118" id="input-caption">INPUT · ON</text><text x="560" y="38" id="output-caption">OUTPUT</text><text x="430" y="278" id="geometry-caption">ρ = 0.5 · 고정된 구조</text></g>
+            <path id="input-beacon" d="M280 137.5V212.5" class="field-monitor"/>
+            <path id="output-beacon" d="M467.5 25H542.5" class="field-monitor"/>
+            <g class="experiment-label"><text x="230" y="118" id="input-caption">INPUT · ON</text><text x="560" y="38" id="output-caption">OUTPUT</text><text x="430" y="278" id="geometry-caption">ρ = 0.5 · 같은 구조</text></g>
             <path id="capture-frame" d="M422 122V92H452M558 92H588V122M588 228V258H558M452 258H422V228"/>
             <path id="capture-scan" d="M430 100H580"/>
             <rect id="capture-flash" x="430" y="100" width="150" height="150" fill="white" opacity="0"/>
@@ -104,8 +101,8 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
             <g id="gradient-transfer"><use href="#initial-gradient-map" width="112" height="112"/></g>
           </svg>
           <div class="snapshot-captions"><div><strong>Forward DFT</strong><span id="forward-status">촬영 대기</span></div><div><strong>Adjoint DFT</strong><span id="adjoint-status">촬영 대기</span></div><div><strong>Gradient</strong><span id="gradient-status">두 장 기다리는 중</span></div></div>
-          <div class="field-key"><span>DFT: Re Ẽz · 각 장의 ±max 정규화</span><span class="gradient-key" role="img" aria-label="RdBu: 빨강 음수, 파랑 양수">− <i aria-hidden="true"></i> +</span></div>
-          <div class="scene-explanation" id="scene-caption"><strong id="scene-summary">설계 영역의 forward DFT 장을 누적합니다.</strong><span id="scene-note">전파는 개념도 · DFT·gradient는 RES 60 실제 계산</span></div>
+          <div class="field-key"><span>Re Ẽz · 도파관·촬영본은 같은 ±max</span><span class="gradient-key" role="img" aria-label="RdBu: 빨강 음수, 파랑 양수">− <i aria-hidden="true"></i> +</span></div>
+          <div class="scene-explanation" id="scene-caption"><strong id="scene-summary">설계 영역의 forward DFT 장을 누적합니다.</strong><span id="scene-note">입력·설계 영역·출력 모두 RES 60 실제 DFT</span></div>
           <div class="sequence-transport" hidden><div class="transport-buttons"><button type="button" id="sequence-play">전체 흐름 재생</button><button type="button" id="sequence-replay" aria-label="처음부터 다시 보기"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg></button><label class="speed-control"><span class="visually-hidden">재생 속도</span><select id="sequence-speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select></label><output id="sequence-time" for="sequence-progress">00:00 / 00:24</output></div><label class="timeline-control"><span class="visually-hidden">애니메이션 재생 위치</span><input id="sequence-progress" type="range" min="0" max="24" step="0.01" value="0" aria-valuetext="Forward DFT · 0초"></label></div>
           <nav class="stage-nav" aria-label="계산 단계"><a href="#forward" data-stage-link="1" aria-current="step"><span>01</span> Forward</a><a href="#adjoint" data-stage-link="2"><span>02</span> Adjoint</a><a href="#gradient" data-stage-link="3"><span>03</span> Gradient</a><a href="#update" data-stage-link="4"><span>04</span> Update</a></nav>
           <p class="data-credit"><a href="./assets/meep/09/highres/forward-full.png">Forward 원본</a> · <a href="./assets/meep/09/highres/adjoint-full.png">Adjoint 원본</a> · <a href="./assets/meep/09/highres/gradient-design.png">Gradient</a> · <a href="./assets/meep/09/highres/result.json">계산·검증 데이터</a><span id="density-data-status"></span></p>
