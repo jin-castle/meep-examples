@@ -40,6 +40,15 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 
 ## 2. 물리 한 페이지
 
+<!-- concept-illustration:part-04:start -->
+
+![실제 유한 두께 3D 도파로와 z 방향으로 동일하게 이어지는 2D 모델을 비교하고 Si core, SiO₂ cladding, 진행 방향과 모델 폭을 표시한다.]({{ site.baseurl }}/assets/meep/04/00_concept.png)
+
+*왼쪽은 두께가 있는 실제 3D 도파로의 개념이고, 오른쪽은 이 예제처럼 z 방향으로 재료와 장이 변하지 않는 2D 모델입니다. 계산 모델은 폭 0.5 µm Si(n = 3.48) core와 SiO₂(n = 1.44) cladding이며, 모드는 core 바깥에도 약하게 이어집니다. 2D 계산이 유한 두께 소자의 단면을 그대로 계산한 것은 아닙니다. 이 단면은 여러 guided mode를 가두지만 이 예제에서는 기본 모드만 주입하고 측정합니다.*
+
+<!-- concept-illustration:part-04:end -->
+
+
 core(실리콘, n = 3.48)가 cladding(SiO₂, n = 1.44)보다 굴절률이 높으면 빛은 전반사로 core 안에 갇혀 전파한다. 갇힌 빛의 형태를 모드(mode)라 부르고, 가장 단순한 모양이 기본 모드 TE0이다. 균일한 직선에는 반사를 일으킬 불연속이 없으므로 손실 없이 전달된다.
 
 $$

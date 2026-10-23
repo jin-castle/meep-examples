@@ -40,6 +40,15 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 
 ## 2. 물리 한 페이지
 
+<!-- concept-illustration:part-09:start -->
+
+![공기 중 고정된 왼쪽 입력 및 위쪽 출력 도파로와 중앙 정사각형 설계 영역을 보여준다. 정방향과 수반 계산을 분리하고 중앙의 SiO₂–Si 밀도 변수만 갱신한다.]({{ site.baseurl }}/assets/meep/09/00_concept.png)
+
+*왼쪽 입력(+x)과 위쪽 출력(+y)의 폭 0.5 µm Si(n = 3.4) 도파로는 고정하고, 중앙 1 × 1 µm 정사각형의 11 × 11 = 121개 밀도만 바꿉니다. 초기 밀도는 모두 0.5이며 설계 영역 안에서만 0은 SiO₂(n = 1.44), 1은 Si입니다. 구조 밖의 기본 배경은 공기입니다. 수반 계산은 출력에서 역으로 응답을 계산하는 별도 실행입니다. 실제 변수는 11 × 11 = 121개이며, 그림의 격자와 회색 농도는 설명용 예시입니다. 실제 최적화 밀도나 제작 가능한 이진 형상을 나타내지 않습니다. 전력 투과율은 정규화한 별도 검증 결과로 확인합니다.*
+
+<!-- concept-illustration:part-09:end -->
+
+
 목적함수는 출력 포트 monitor에서 잰 mode 1 진폭의 제곱 J = |a_out|²이다. 08편과 수학은 같다. forward field E_f는 입력 도파관의 `EigenModeSource`가 만들고, adjoint field E_a는 출력 포트 monitor 자리에서 거꾸로 쏜 `EigenModeSource`가 만든다. gradient는 둘의 곱이다. 08편에서 adjoint가 위쪽 평면파 monitor에서 내려왔다면, 여기서는 출력 도파관을 타고 설계 영역으로 내려온다. 목적함수가 바뀌면 adjoint source의 위치와 모양이 바뀐다.
 
 $$

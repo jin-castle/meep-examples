@@ -40,6 +40,15 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 
 ## 2. 물리 한 페이지
 
+<!-- concept-illustration:part-08:start -->
+
+![정방향에서 +1차 출력을 측정하고 별도의 수반 계산으로 민감도를 구한 뒤 73개 세로 띠 밀도를 갱신하고 재검증하는 과정을 보여준다.]({{ site.baseurl }}/assets/meep/08/00_concept.png)
+
+*07편과 같은 기판 아래 +y 입사와 오른쪽 위 +1차 목표를 사용합니다. 정방향과 수반 계산은 서로 다른 계산이며, 수반 화살표는 두 번째 실제 입사광이 아닙니다. 폭 1.8 µm × 높이 0.9 µm 설계 영역의 73개 밀도는 x 방향으로만 달라지고 높이 방향은 같습니다. 0은 공기, 1은 Si이며 SiO₂ 기판은 고정됩니다. 회색 띠는 밀도 변수의 개념 예시로 실제 최적화 결과나 제작 형상이 아닙니다. 코드는 x 주기 경계·y PML·z 불변의 2D 모델에서 5회 평가를 수행합니다.*
+
+<!-- concept-illustration:part-08:end -->
+
+
 목적함수 J = |a₊₁|²/P_in은 73개 밀도 ρ의 함수다. 미분 ∂J/∂ρ_i를 하나씩 유한차분으로 구하면 146번의 시뮬레이션이 필요하다. adjoint 방법은 두 번으로 끝낸다. 원래 source로 쏜 forward field E_f와, 목적함수 monitor 자리에서 거꾸로 쏜 adjoint field E_a의 곱이 모든 픽셀의 gradient다. "빛이 실제로 지나는 곳"과 "목적함수가 민감한 곳"이 겹치는 픽셀에서 gradient가 크다.
 
 $$

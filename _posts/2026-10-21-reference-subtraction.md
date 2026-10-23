@@ -39,6 +39,15 @@ excerpt: "run the same cell twice, without and with the object. The difference o
 
 ## 2. 물리 한 페이지
 
+<!-- concept-illustration:part-03:start -->
+
+![물체 없는 입사장, 원기둥이 포함된 전체장, 두 장의 차이인 산란장을 같은 좌표에서 세 패널로 비교한다. 원기둥은 z 방향으로 무한하다.]({{ site.baseurl }}/assets/meep/03/00_concept.png)
+
+*B 실험은 진공에 놓인 굴절률 2, 반지름 0.75 µm의 z 방향 무한 원기둥에 +x 방향 Ez 평면파를 입사시킵니다. 물체 없는 기준 계산과 원기둥을 넣은 계산을 같은 위치에서 비교해 E_scat = E_total − E_inc를 구합니다. 전력을 먼저 빼는 과정이 아닙니다. A 실험에서는 별도로 공기–융합석영 단일 계면의 Fresnel 반사와 같은 방법을 비교합니다.*
+
+<!-- concept-illustration:part-03:end -->
+
+
 입사파 E_inc는 물체 없이도 존재하는 field다. 물체를 넣으면 E_total = E_inc + E_scat이 되고, E_scat은 물체가 새로 만든 field다. 두 run의 source·셀·격자가 같으면 E_inc를 그대로 빼서 E_scat을 얻는다.
 
 power는 field의 제곱이라 빼기가 그대로 옮겨가지 않는다. 어떤 면을 지나는 total field의 flux는 입사 flux + 산란 flux + 둘의 간섭항이다. 입사파와 산란파가 서로 반대 방향으로 지나는 면(왼쪽 면)에서는 간섭항이 거의 사라져 "flux의 차"와 "field 차의 flux"가 같지만, 입사파가 면과 나란히 지나는 면(위·아래)에서는 간섭항이 남는다. 그래서 두 수지를 구분한다.
