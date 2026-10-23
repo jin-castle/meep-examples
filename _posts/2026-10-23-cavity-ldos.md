@@ -32,7 +32,7 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 - z 방향에 PML을 두지 않는 것이 실수가 아니라 거울이라는 물리 조건이라는 것
 - 공진 LDOS ≈ 2Q/(πωV). Harminv의 Q로 필요한 run 시간 2Q/f를 정하고, 짧게 돌리면 어떻게 틀리는지
 
-**전제 지식**: 10편의 image dipole과 PEC, 01편의 점원. **공식 예제**: [Local density of states 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/)의 [planar cavity with lossless metallic walls](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#planar-cavity-with-lossless-metallic-walls)와 [metal cavity with an aperture](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#square-box-with-a-small-opening), 스크립트 [planar_cavity_ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/planar_cavity_ldos.py) · [metal-cavity-ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/metal-cavity-ldos.py). **이전 글**: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · **다음 글**: 12 · 빛을 가두는 고리
+**전제 지식**: 10편의 image dipole과 PEC, 01편의 점원. **공식 예제**: [Local density of states 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/)의 [planar cavity with lossless metallic walls](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#planar-cavity-with-lossless-metallic-walls)와 [metal cavity with an aperture](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#square-box-with-a-small-opening), 스크립트 [planar_cavity_ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/planar_cavity_ldos.py) · [metal-cavity-ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/metal-cavity-ldos.py). **이전 글**: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · **다음 글**: [12 · 빛을 가두는 고리]({{ site.baseurl }}/ring-resonator/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -659,4 +659,4 @@ total 396 s
 - [Local density of states 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/) · [planar_cavity_ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/planar_cavity_ldos.py) · [metal-cavity-ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/metal-cavity-ldos.py)
 - [`dft_ldos` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#ldos-spectra) · [`Harminv`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#harminv) · [cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/)
 - I. Abram et al., "Spontaneous emission control in semiconductor microcavities with metallic or Bragg mirrors," IEEE J. Quantum Electron. 34, 71 (1998)
-- 이전 글: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · 다음 글: 12 · 빛을 가두는 고리
+- 이전 글: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · 다음 글: [12 · 빛을 가두는 고리]({{ site.baseurl }}/ring-resonator/)

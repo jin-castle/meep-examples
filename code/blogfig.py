@@ -74,7 +74,11 @@ def annotated_layout(sim, out_png: str, *, title: str, dpml: float,
     Step 7 (post-processing) draws nothing.
     """
     fig, ax = plt.subplots(figsize=figsize)
-    sim.plot2D(ax=ax)
+    sim.plot2D(ax=ax)                      # collective under MPI: every rank must call it ...
+    import meep as _mp
+    if not _mp.am_master():                # ... but only the master rank has the data and writes the file
+        plt.close(fig)
+        return
     ax.set_title(title, fontsize=10)
     sx, sy = sim.cell_size.x, sim.cell_size.y
 
