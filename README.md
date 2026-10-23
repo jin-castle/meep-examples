@@ -39,7 +39,6 @@ python dipole_pattern_3d.py    # ~4.5 min (240 1D runs + 2D near2far), writes ..
 python cavity_ldos.py          # ~7 min (cyl sweep + 3D + Harminv/dft_ldos), writes ../assets/11/
 mpirun -np 4 python ring_resonator.py   # ~4 min (Harminv x3 res, mode images, solve_cw), writes ../assets/12/
 mpirun -np 4 python cylindrical_dipole.py   # ~8 min (cylindrical m runs, disc), writes ../assets/13/
-python concept_figs.py         # concept illustrations for posts 10-13 (no Meep)
 ```
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).

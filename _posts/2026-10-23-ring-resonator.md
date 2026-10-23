@@ -51,14 +51,6 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 
 ## 2. 물리 한 페이지
 
-<!-- concept-illustration:part-12:start -->
-
-![세 패널: 고리 안의 점원을 광대역 펄스로 두드리기, probe 한 점의 울림 신호를 Harminv로 공진 봉우리와 Q로 분해하기, 둘레에 파장이 m개 들어간 공진 모드.]({{ site.baseurl }}/assets/meep/12/00_concept.png)
-
-*고리 안의 점원을 짧은 펄스로 두드리면 고리에 맞는 주파수만 남아 울린다. 한 점에서 기록한 울림을 Harminv가 감쇠 사인파로 분해하면 봉우리의 위치가 공진 주파수, 폭이 1/Q, 봉우리 사이 간격이 FSR이다. 각 공진은 둘레에 파장이 정수 m개 들어간 모드이고 순간 field에는 부호가 바뀌는 lobe가 2m개 보인다. 봉우리 높이와 Q 표시는 §5의 값을 어림한 설명용이다.*
-
-<!-- concept-illustration:part-12:end -->
-
 고리를 한 바퀴 돈 빛의 위상이 자기 자신과 맞을 때만 보강된다. 둘레 $L=2\pi R_{\mathrm{mid}}$에 파장이 정수 $m$개 들어가는 조건이 공진이고, 이웃한 $m$ 사이의 주파수 간격이 FSR이다. 군굴절률 $n_g$는 분산을 포함한 값이라 재료 굴절률과 다르다. 손실이 굽힘 방사뿐이면 주파수가 높을수록 빛이 고리 안쪽에 더 단단히 갇혀 Q가 커진다.
 
 $$

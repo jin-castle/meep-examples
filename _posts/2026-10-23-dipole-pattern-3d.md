@@ -52,14 +52,6 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 
 ## 2. 물리 한 페이지
 
-<!-- concept-illustration:part-10:start -->
-
-![세 패널: 축 방향으로는 빛이 없는 x 쌍극자의 방사 패턴, k_point가 방향을 고르는 1D 셀, PEC 거울 위 쌍극자와 반대 부호 image가 만드는 여러 lobe.]({{ site.baseurl }}/assets/meep/10/00_concept.png)
-
-*진공의 x 쌍극자는 자기 축 방향으로 빛을 내지 않고 축에 수직한 면에서 가장 밝다. 이 3D 패턴은 3D 셀 없이, 방향마다 `k_point`가 다른 1D run을 돌려 z flux에 cosθ를 곱한 값으로 모은다. 완전도체 거울 위에서는 거울을 지우고 부호가 반대인 image 쌍극자를 두면 같은 field가 되고, 두 쌍극자의 경로차가 lobe를 만든다. 그림의 lobe 모양과 크기는 설명용이며 실제 패턴은 §5의 계산 결과다.*
-
-<!-- concept-illustration:part-10:end -->
-
 점광원의 field는 평면파의 합이다. 횡방향 파수 $\mathbf k_\perp=(k_x,k_y)$를 하나 고정하면 Maxwell 방정식은 z만 남은 1D 문제가 되고, 그 1D 해는 $e^{i\mathbf k_\perp\cdot\mathbf r_\perp}$를 곱한 평면파다. Meep에서 이것이 `k_point`다. 방향 $(\theta,\phi)$로 나가는 평면파는 $\mathbf k_\perp=f\sin\theta\,(\cos\phi,\sin\phi)$를 가지므로, 1D 셀에 쌍극자를 두고 `k_point`를 바꿔 가며 돌리면 run 하나가 방향 하나의 표본이 된다. 1D run이 주는 것은 그 평면파 성분의 z 방향 flux $S_z$다. 입체각당 power로 바꾸려면 $d^2k_\perp=f^2\cos\theta\,d\Omega$의 Jacobian이 들어가 $S_r=S_z\cos\theta$가 된다.
 
 $$

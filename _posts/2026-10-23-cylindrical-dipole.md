@@ -50,14 +50,6 @@ excerpt: "post 12's ring was a 2D cross-section; real discs, rings, lenses and L
 
 ## 2. 물리 한 페이지
 
-<!-- concept-illustration:part-13:start -->
-
-![세 패널: φ 방향으로 돌려도 같은 3D 축 대칭 디스크, 계산하는 (r, z) 단면 하나와 축·PML·ring source, 축에서 떨어진 점광원을 이루는 m별 방사 power 막대.]({{ site.baseurl }}/assets/meep/13/00_concept.png)
-
-*회전 대칭 구조에서는 field를 exp(imφ)로 쓰면 φ 방향을 계산하지 않아도 된다. Meep은 (r, z) 단면 하나를 2D처럼 풀고 m은 정수 인자로 받는다. 축 위의 z 쌍극자는 m = 0 하나, x 쌍극자는 m = ±1 두 개다. 축에서 떨어진 점광원은 여러 m의 합이라 m을 늘려 가며 각 m의 power가 충분히 작아질 때 멈춘다. 막대 높이는 설명용이며 실제 값은 §5에 있다.*
-
-<!-- concept-illustration:part-13:end -->
-
 구조가 φ에 무관하면 Maxwell 방정식의 φ 미분은 field에 $im$을 곱하는 것으로 바뀐다. field를 $\mathbf E(r,\phi,z)=\sum_m \mathbf E_m(r,z)\,e^{im\phi}$로 쓰면 m마다 독립된 (r, z) 문제가 된다. Meep은 m 하나를 받아 그 문제 하나를 푼다.
 
 $$
@@ -644,7 +636,7 @@ say(f"total {time.time() - t_all:.0f} s on {mp.count_processors()} process(es)")
 {% endhighlight %}
 </details>
 
-§4의 발췌 코드와 달리 전체 코드에는 두 layout 그림, m 급수 수렴 그림, 고리의 x–y 복원, 디스크 field, GIF, result.json 기록이 들어 있다. MPI로 돌릴 수 있게 collective 호출(run, get_farfield, get_dft_array)은 모든 rank에서, 그림 저장은 master에서만 한다. 개념 삽화는 `code/concept_figs.py`로 그렸다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
+§4의 발췌 코드와 달리 전체 코드에는 두 layout 그림, m 급수 수렴 그림, 고리의 x–y 복원, 디스크 field, GIF, result.json 기록이 들어 있다. MPI로 돌릴 수 있게 collective 호출(run, get_farfield, get_dft_array)은 모든 rank에서, 그림 저장은 master에서만 한다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
 **실행 결과 (2026-10-23 실행, mpirun -np 4)**:
 ```

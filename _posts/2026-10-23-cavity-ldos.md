@@ -53,14 +53,6 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 
 ## 2. 물리 한 페이지
 
-<!-- concept-illustration:part-11:start -->
-
-![세 패널: 사방 PML 속 쌍극자(bulk 기준), 두 금속 거울 사이 쌍극자와 거울 사이의 모드, 두께에 따라 계단처럼 뛰는 Purcell 인자 곡선.]({{ site.baseurl }}/assets/meep/11/00_concept.png)
-
-*같은 쌍극자를 두 번 돌린다. 한 번은 거울 없는 균일 매질(bulk), 한 번은 간격 L의 두 거울 사이다. 거울 사이에는 반파장마다 모드가 하나씩 들어가고, 새 모드가 열리는 두께(t = 0.5, 1.5, 2.5)에서 방출량이 뛴다. 두 run의 LDOS 비율이 Purcell 인자다. 곡선은 Abram 식의 모양을 옮긴 것이고 측정값은 §5에 있다.*
-
-<!-- concept-illustration:part-11:end -->
-
 주파수 ω에서 위치 $\mathbf x_0$의 쌍극자 $\hat p$가 내는 power는 그 자리의 전기장이 전류에 하는 일 $-\tfrac12\mathrm{Re}[\hat E\cdot\hat J^*]$에 비례한다. Meep의 `dft_ldos`는 이것을 단위 쌍극자로 정규화해 돌려준다.
 
 $$
