@@ -12,6 +12,7 @@ meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/"
 tags: [meep, fdtd, waveguide, eigenmode, mode-decomposition]
 image: /assets/meep/01/02_field.png
+excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the fundamental TE mode injected at one end and measured at the other."
 ---
 ## TL;DR (English)
 

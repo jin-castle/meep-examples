@@ -12,6 +12,7 @@ meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend"
 tags: [meep, fdtd, waveguide, bend, flux, normalization]
 image: /assets/meep/02/02_field.png
+excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. We measure how much power goes around the corner, how much comes back, and how much leaks out."
 ---
 ## TL;DR (English)
 
