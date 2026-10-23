@@ -32,7 +32,7 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 - 방위 차수 m: 고리 둘레에 파장이 몇 개 들어가는지 field에서 세기
 - `solve_cw`: 연속파 source로 정상상태를 직접 푸는 주파수 영역 solver. tolerance와 시간영역 DFT와의 비교
 
-**전제 지식**: 11편의 Q와 선폭, 05편의 bend 손실(굽힘 방사). **공식 예제**: [Basics 튜토리얼의 ring resonator](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator) · [Frequency-domain solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Frequency_Domain_Solver/) · 스크립트 [ring.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring.py) · [solve-cw.py](https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py). **이전 글**: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/) · **다음 글**: 13 · 회전 대칭으로 3D를 계산하기
+**전제 지식**: 11편의 Q와 선폭, 05편의 bend 손실(굽힘 방사). **공식 예제**: [Basics 튜토리얼의 ring resonator](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator) · [Frequency-domain solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Frequency_Domain_Solver/) · 스크립트 [ring.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring.py) · [solve-cw.py](https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py). **이전 글**: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/) · **다음 글**: [13 · 회전 대칭으로 3D를 계산하기]({{ site.baseurl }}/cylindrical-dipole/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -50,6 +50,14 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 | 모든 공진 구조의 측정 절차 | Harminv로 f·Q, 좁은 대역으로 모드 하나, solve_cw로 정상상태 | 26편 photonic crystal cavity |
 
 ## 2. 물리 한 페이지
+
+<!-- concept-illustration:part-12:start -->
+
+![세 패널: 고리 안의 점원을 광대역 펄스로 두드리기, probe 한 점의 울림 신호를 Harminv로 공진 봉우리와 Q로 분해하기, 둘레에 파장이 m개 들어간 공진 모드.]({{ site.baseurl }}/assets/meep/12/00_concept.png)
+
+*고리 안의 점원을 짧은 펄스로 두드리면 고리에 맞는 주파수만 남아 울린다. 한 점에서 기록한 울림을 Harminv가 감쇠 사인파로 분해하면 봉우리의 위치가 공진 주파수, 폭이 1/Q, 봉우리 사이 간격이 FSR이다. 각 공진은 둘레에 파장이 정수 m개 들어간 모드이고 순간 field에는 부호가 바뀌는 lobe가 2m개 보인다. 봉우리 높이와 Q 표시는 §5의 값을 어림한 설명용이다.*
+
+<!-- concept-illustration:part-12:end -->
 
 고리를 한 바퀴 돈 빛의 위상이 자기 자신과 맞을 때만 보강된다. 둘레 $L=2\pi R_{\mathrm{mid}}$에 파장이 정수 $m$개 들어가는 조건이 공진이고, 이웃한 $m$ 사이의 주파수 간격이 FSR이다. 군굴절률 $n_g$는 분산을 포함한 값이라 재료 굴절률과 다르다. 손실이 굽힘 방사뿐이면 주파수가 높을수록 빛이 고리 안쪽에 더 단단히 갇혀 Q가 커진다.
 
@@ -557,4 +565,4 @@ total ~4 min on 4 processes
 
 - [Basics 튜토리얼: modes of a ring resonator](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator) · [Frequency-domain solver](https://meep.readthedocs.io/en/latest/Python_Tutorials/Frequency_Domain_Solver/) · [Harminv 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#harminv) · [solve_cw](https://meep.readthedocs.io/en/latest/Python_User_Interface/#frequency-domain-solver)
 - 스크립트: [ring.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring.py) · [solve-cw.py](https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py) · [ring-mode-overlap.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring-mode-overlap.py)
-- 이전 글: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/) · 05편의 bend 손실: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · 다음 글: 13 · 회전 대칭으로 3D를 계산하기
+- 이전 글: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/) · 05편의 bend 손실: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · 다음 글: [13 · 회전 대칭으로 3D를 계산하기]({{ site.baseurl }}/cylindrical-dipole/)
