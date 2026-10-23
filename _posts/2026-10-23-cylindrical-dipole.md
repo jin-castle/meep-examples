@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /cylindrical-dipole/
+lesson_title: "회전 대칭으로 3D 빛을 어떻게 계산할까?"
+lesson_summary: "방위 차수 m으로 계산을 나누고 쌍극자 field를 합칩니다. 고리의 좌표계 비교와 열린 near2far 면의 한계를 함께 확인합니다."
+lesson_goals:
+  - "source 방향과 위치에 맞는 방위 차수 m을 선택한다."
+  - "field 합산과 m별 power 기준의 역할을 구별한다."
+  - "고리의 차원과 디스크 near–far 차이의 한계를 해석한다."
+lesson_prerequisites: "10편 near2far와 방사 패턴 · 12편 고리의 방위 차수 m"
 date: 2026-10-23
 title: "Meep Example 13 · 회전 대칭으로 3D를 계산하기 — cylindrical 좌표, m 급수, on/off-axis 쌍극자, 디스크 방사"
 title_en: "Meep Example 13 · Computing 3D with rotational symmetry — cylindrical coordinates, the m series, on- and off-axis dipoles, a radiating disc"
@@ -14,16 +22,150 @@ tags: [meep, fdtd, cylindrical, azimuthal-order, near2far, dipole, disc, ring-re
 image: /assets/meep/13/04_off_axis.png
 excerpt: "post 12's ring was a 2D cross-section; real discs, rings, lenses and LED mesas are bodies of revolution. `dimensions=mp.CYLINDRICAL` solves them as one 2D (r, z) run per azimuthal order m, with fields ∝ exp(imφ). Four official examples: on-axis dipoles, an off-axis dipole as an m series, post 12's ring as one radial run per m, and a disc on a ground plane radiating through an open near2far surface."
 ---
-## TL;DR (English)
 
-![hero]({{ site.baseurl }}/assets/meep/13/04_off_axis.png)
+<h2 id="observe">1. 먼저 보기: 축에서 벗어난 점광원은 몇 번 계산해야 할까?</h2>
+
+회전 대칭인 구조를 계산할 때도 source까지 항상 축 대칭인 것은 아닙니다. 축에서 0.5 µm 떨어진 점광원 하나를 표현하려면, 방위 차수 **m을 바꾸어 여러 번 계산한 field를 합쳐야** 합니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/04_off_axis.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/04_off_axis.png" alt="축에서 0.5 마이크로미터 떨어진 쌍극자의 m별 power와 부분합 패턴 오차 및 최종 방사 패턴"></a>
+<figcaption>실제 계산에서 m = 0…8까지 포함했고 마지막 항의 power는 최대의 9.49 × 10⁻⁶입니다. φ = 0 단면의 정규화 패턴은 해석 cos²θ와 상대 L2 오차 0.63%로 맞았습니다.</figcaption>
+</figure>
+
+<p class="lesson-note"><strong>부분합이 매번 좋아지는 것은 아닙니다.</strong> m = 0…2의 패턴 오차는 0.099였지만 m = 3을 더하면 0.141로 잠시 증가했습니다. 모양이 좋아 보이는 중간 결과에서 멈추지 말고, m별 power와 패턴을 함께 확인합니다. 다른 구조나 더 먼 source에서는 power가 한 번 작아진 뒤 다시 커질 수도 있습니다.</p>
+
+<h2 id="predict">2. 먼저 예측하기: 회전 대칭 구조면 m = 0만 있으면 될까?</h2>
+
+<fieldset class="prediction">
+<legend>축 위에서 x 방향으로 진동하는 선편광 쌍극자를 표현하려면?</legend>
+<label><input type="radio" name="cylindrical-prediction" value="zero"> 구조가 회전 대칭이므로 m = 0 한 번이면 된다.</label>
+<label><input type="radio" name="cylindrical-prediction" value="pair"> source의 방향을 표현하는 m = +1과 −1이 필요하다.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측과 source 표현 비교하기</summary>
+
+두 번째입니다. 구조가 회전 대칭이어도 x 방향은 방위각 φ에 따라 원통좌표의 r·φ 성분이 달라집니다. 이 예제는 m = +1과 −1에서 Er와 ±i Ep를 사용하고 두 field를 반씩 더합니다. 축 위의 z 방향 쌍극자는 m = 0 한 번으로 표현합니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기: 방위각을 m으로 나누어 계산하기</h2>
+
+구조가 φ에 무관하면 field를 **E(r, φ, z) = Σ E_m(r, z) exp(imφ)**로 쓸 수 있습니다. m 하나를 고르면 φ 미분은 im을 곱하는 것으로 바뀌고, Meep은 남은 r–z 단면을 계산합니다. 3D 공간의 효과를 버리는 것이 아니라 방위각 의존성을 별도로 표현하는 방법입니다.
+
+<figure class="lesson-figure">
+<svg viewBox="0 0 320 220" role="img" aria-labelledby="cylindrical-concept-title" xmlns="http://www.w3.org/2000/svg">
+<title id="cylindrical-concept-title">설명용 도식: 회전 대칭 구조의 r-z 단면을 방위 차수별로 계산하고 field를 합산한다</title>
+<rect width="320" height="220" fill="#f5f8fa" />
+<path d="M35 142V36M35 142H149M35 36l-5 11M35 36l5 11M149 142l-11-5M149 142l-11 5" stroke="#0d1b2a" fill="none" stroke-width="2" />
+<rect x="36" y="77" width="70" height="45" fill="#e7f7fb" stroke="#0087ad" stroke-width="2" />
+<circle cx="70" cy="98" r="6" fill="#0087ad" />
+<path d="M172 87H290M290 87l-11-5M290 87l-11 5" stroke="#0087ad" fill="none" stroke-width="2" />
+<g font-family="sans-serif" font-size="16" fill="#0d1b2a">
+<text x="20" y="28">z</text><text x="143" y="165">r</text>
+<text x="174" y="55">m마다 한 run</text>
+<text x="171" y="115">exp(imφ) 반영</text>
+<text x="31" y="186">r–z 단면 + 방위각 의존성</text>
+<text x="31" y="209">field 합산 → 방향별 패턴</text>
+</g>
+</svg>
+<figcaption>설명용 도식입니다. 사각형은 회전 대칭 구조의 단면, 점은 source 위치의 예시입니다. 색과 화살표는 실제 수치 field가 아닙니다. 각 m의 계산 결과에 방위각 의존성을 반영해 필요한 field를 구성합니다.</figcaption>
+</figure>
+
+| source 또는 문제 | 필요한 표현 |
+|---|---|
+| 축 위 z 쌍극자 | m = 0, Ez |
+| 축 위 x 쌍극자 | m = +1과 −1, Er와 ±i Ep |
+| 축 밖 점광원 | 여러 m의 Fourier 급수 |
+| 정해진 방위 차수의 고리 모드 | 해당 m 하나로 계산 |
+
+**패턴은 field를 더한 뒤 power를 구합니다.** φ = 0 단면에서 m별 power만 더하면 항 사이의 간섭이 사라집니다. 반면 전체 방위각에 걸쳐 적분한 총 power는 서로 다른 m의 직교성 때문에 항별 power를 더할 수 있습니다. 이 예제는 m 항의 power가 최대값의 10⁻⁴ 아래인지로 급수 중단을 판단합니다.
+
+이 중단 규칙은 여기의 진공 r₀ = 0.5 µm 예제에 대한 기준입니다. 더 먼 source나 구조가 있는 문제에서 **처음으로 작은 항 하나**를 발견했다고 이후의 모든 항이 작다고 보장할 수는 없습니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/07_anim_m3.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/07_anim_m3.gif" data-animation-src="{{ site.baseurl }}/assets/meep/13/07_anim_m3.gif" data-static-src="{{ site.baseurl }}/assets/meep/13/05_ring_cyl.png" alt="계산된 고리의 m=3 반지름 field에 방위각과 시간 위상을 반영해 복원한 회전 모드"></a>
+<button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
+<figcaption>실제로 계산한 Ez(r)에 exp[i(3φ−ωt)]를 적용한 위상 복원 애니메이션입니다. 새로운 시간영역 3D 시뮬레이션이 아닙니다. m = −3 성분을 함께 구성하면 정상파를 만들 수 있습니다.</figcaption>
+</figure>
+
+<p class="lesson-note"><strong>고리 예제의 차원.</strong> 파트 C의 ring-cyl은 셀의 z 크기가 0입니다. 12편의 z로 무한한 2D 고리 문제를 다른 좌표로 푼 것으로, 유한 높이의 실제 3D ring을 검증한 것은 아닙니다. 반면 일반적인 cylindrical r–z 셀은 회전 대칭 3D 구조를 m별로 표현할 수 있습니다.</p>
+
+파트 D의 디스크는 굴절률 2.4, 반지름 1.2 µm이고 아래에 손실 없는 PEC ground plane이 있습니다. m = −1 하나의 ring source를 계산하며, 임의의 off-axis 점광원 전체를 계산한 결과는 아닙니다. ground plane 때문에 near2far 면은 위와 바깥 r만 포함하고 아래는 열려 있습니다.
+
+<h2 id="run">4. 직접 실행하기: m 급수의 중단 기준만 엄격하게 하기</h2>
+
+저장소를 내려받아 <code>code/</code> 폴더에서 실행합니다. <code>cylindrical_dipole.py</code>와 같은 폴더의 <code>blogfig.py</code>가 모두 필요합니다. Meep 1.33.0 MPI 환경과 Python·NumPy·Matplotlib을 사용한 원본 기록은 MPI 4개 프로세스에서 약 7.6분입니다.
+
+~~~bash
+OMP_NUM_THREADS=1 mpirun -np 4 python cylindrical_dipole.py
+~~~
+
+먼저 원본 결과를 별도 폴더에 보관하세요. **POWER_DECAY = 1e-4를 1e-5로만 바꾸고** 같은 명령으로 다시 실행합니다. source 거리, 해상도, 나머지 파트의 설정은 그대로 둡니다.
+
+파트 B 로그의 마지막 m, 마지막 항의 power 비율, 최종 패턴 오차를 비교합니다. 원본 m = 8의 비율은 이미 **9.49e-6**이므로 이 한 단계의 기준 변경만으로 마지막 m이 늘지 않을 수도 있습니다. 이를 미리 실패로 판단하지 말고 실제 종료 기록을 확인하세요. 새 측정값은 원본 0.63%와 구별해 기록합니다.
+
+<h2 id="interpret">5. 결과 해석하기: 무엇이 일치했고 무엇이 남았을까?</h2>
+
+| 원본 비교 | 실제 결과 | 해석 범위 |
+|---|---|---|
+| 축 위 z 쌍극자 vs sin²θ | 상대 L2 0.43% | φ = 0의 정규화 패턴 |
+| 축 위 x 쌍극자 vs cos²θ | 상대 L2 0.46% | m = ±1 field 합산 |
+| 축 밖 r₀ = 0.5 µm | m = 0…8, 상대 L2 0.63% | 이 진공 예제의 급수 |
+| 고리 m = 3, 4, 5 주파수 | 12편과 약 0.02%, 0.07%, 0.10% 차이 | 같은 2D 문제의 좌표계 비교 |
+
+고리 m = 5의 Q는 cylindrical에서 **1627**, 12편 Cartesian 해상도 20에서 **2132**였습니다. 주파수가 가깝다고 Q도 수렴했다고 볼 수 없습니다. 다른 해상도의 Cartesian 값 1675·1610이 cylindrical 쪽에 가깝지만, 이것만으로 차이의 원인을 계단 경계 하나로 확정하지는 않습니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/06_disc.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/06_disc.png" alt="ground plane 위 디스크에서 셀 반지름 6과 8 마이크로미터의 near flux와 far flux 차이 비교" loading="lazy"></a>
+<figcaption>파트 D의 실제 결과입니다. 셀 반지름을 6에서 8 µm로 늘리자 near–far 차이는 7.43%에서 6.41%로 줄었습니다. 아직 차이가 남아 far-field 총 power가 수렴했다고 할 수 없습니다.</figcaption>
+</figure>
+
+| 셀 반지름 | near flux | far flux | 상대 차이 |
+|---|---:|---:|---:|
+| 6 µm | 643.65 | 595.80 | 7.43% |
+| 8 µm | 643.28 | 602.05 | 6.41% |
+
+near flux는 거의 유지되고 far flux가 증가했습니다. 이는 열린 면 바깥의 등가 전류가 잘리는 truncation 해석과 맞지만, 두 셀 크기만으로 참된 far-field 총 power를 확정하지는 못합니다. **7.43%는 광추출 효율이 아니라 두 power 측정의 불일치**입니다.
+
+<h2 id="check">6. 이해 확인하기</h2>
+
+1. 축 위 x 쌍극자에서 m = 0 한 번으로 충분하지 않은 이유와, 방향별 패턴을 합산하는 순서를 설명해 보세요.
+2. 디스크의 near–far 차이가 7.43%에서 6.41%로 줄었다면, far-field 총 power가 수렴했다고 말할 수 있나요?
+
+<details markdown="1">
+<summary>두 질문의 답 확인하기</summary>
+
+1. x 방향의 원통좌표 성분은 φ에 의존하므로 m = +1과 −1이 필요합니다. 필요한 m들의 복소 field를 먼저 더하고 Poynting으로 패턴을 구해야 간섭을 보존합니다.
+2. 아닙니다. 열린 near2far 면의 절단 효과가 줄어드는 해석과 일치할 뿐, 차이가 여전히 남아 있습니다. 더 넓은 면과 추가 수렴 확인 없이 참된 총 power나 광추출 효율로 보고할 수 없습니다.
+
+</details>
+
+<h2 id="reference">7. 참고 자료와 전체 코드</h2>
+
+원본의 상세 물리식, m별 수치, 좌표계별 설정과 전체 실행 기록을 아래에 보관했습니다.
+
+
+<details markdown="1">
+<summary>English summary</summary>
+
+### TL;DR (English)
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/04_off_axis.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/04_off_axis.png" alt="원통좌표 계산의 hero 원본 그림" loading="lazy"></a>
+</figure>
 
 - **What**: post 12's ring was a 2D cross-section; real discs, rings, lenses and LED mesas are bodies of revolution. `dimensions=mp.CYLINDRICAL` solves them as one 2D (r, z) run per azimuthal order m, with fields ∝ exp(imφ). Four official examples: on-axis dipoles, an off-axis dipole as an m series, post 12's ring as one radial run per m, and a disc on a ground plane radiating through an open near2far surface.
 - **Result**: an on-axis z-dipole (m = 0) and x-dipole (m = +1 and −1) reproduce sin²θ and cos²θ to 0.43% and 0.46%. A dipole 0.5 µm off the axis needs m = 0…8 before the last term drops below 10⁻⁴ of the largest; the summed pattern matches cos²θ to 0.63%. The ring's m = 3, 4, 5 modes land within 0.1% of post 12's 2D frequencies. The disc radiates 7.43% less in the far field than through the near monitor, 6.41% with a larger radial cell.
 - **Takeaway**: a linearly polarized in-plane dipole is never m = 0. Every point off the axis is a sum over m, each m a separate run, and power (not field) per m decides when to stop. An open near2far surface on a ground plane loses the currents beyond its edge, and that, not the solver, is the near–far gap.
 - **Code**: full script at the bottom, ~7.6 min (mpirun -np 4).
 
-## 0. 이 글에서 배우는 것
+</details>
+
+<details markdown="1">
+<summary>배경·물리식·파라미터 자세히 보기</summary>
+
+### 원본 §0 · 이 글에서 배우는 것
 
 - `dimensions=mp.CYLINDRICAL`과 `m`: φ 방향을 계산하지 않고 field를 exp(imφ)로 쓰는 법. 셀은 (r, 0, z)
 - 축 위 z 쌍극자는 m = 0, x 쌍극자는 m = +1과 −1의 합. 원편광 둘을 더해 선편광을 만든다
@@ -33,7 +175,8 @@ excerpt: "post 12's ring was a 2D cross-section; real discs, rings, lenses and L
 
 **전제 지식**: 10편의 near2far와 방사 패턴, 12편의 방위 차수 m. **공식 예제**: [Cylindrical coordinates 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/) · [antenna in cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-in-cylindrical-coordinates) · 스크립트 [dipole_in_vacuum_cyl_on_axis.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_on_axis.py) · [dipole_in_vacuum_cyl_off_axis.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_off_axis.py) · [ring-cyl.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring-cyl.py) · [disc_radiation_pattern.py](https://github.com/NanoComp/meep/blob/master/python/examples/disc_radiation_pattern.py). **이전 글**: [12 · 빛을 가두는 고리]({{ site.baseurl }}/ring-resonator/) · **다음 글**: 14 · 박막 속 점광원, 공기로 나오는 몫
 
-## 1. 무엇을 알고 싶은가
+
+### 원본 §1 · 무엇을 알고 싶은가
 
 12편 끝 질문이었다. 고리는 2D 단면이었지만 실제 마이크로디스크, 렌즈, LED 메사는 축을 중심으로 돌려 만든 3D 구조다. 이런 구조를 3D 셀로 풀면 격자가 세제곱으로 늘어난다. 구조가 φ에 무관하면 field의 φ 의존성은 exp(imφ)의 합으로 쓸 수 있고, m이 정해지면 남는 것은 (r, z) 두 좌표뿐이다. 3D 문제가 m마다 2D 문제 하나로 바뀐다. 질문은 세 가지다. 축 위의 쌍극자는 어떤 m인가. 축에서 떨어진 점광원은 m을 몇 개 더해야 하는가. 그 결과는 3D와, 그리고 12편의 2D 고리와 맞는가.
 
@@ -48,7 +191,8 @@ excerpt: "post 12's ring was a 2D cross-section; real discs, rings, lenses and L
 | 축 대칭 렌즈·zone plate·나노안테나 | m = ±1 원편광 입사, 축 대칭 far field | 16편 zone plate |
 | 광섬유 단면, 원형 격자 결합기 | 원통 도파 모드(m), r 방향 PML | — |
 
-## 2. 물리 한 페이지
+
+### 원본 §2 · 물리 한 페이지
 
 구조가 φ에 무관하면 Maxwell 방정식의 φ 미분은 field에 $im$을 곱하는 것으로 바뀐다. field를 $\mathbf E(r,\phi,z)=\sum_m \mathbf E_m(r,z)\,e^{im\phi}$로 쓰면 m마다 독립된 (r, z) 문제가 된다. Meep은 m 하나를 받아 그 문제 하나를 푼다.
 
@@ -86,13 +230,20 @@ $$
 
 **판정 기준**: A가 5% 넘게 어긋나면 x 쌍극자의 $E_\phi$ 위상이나 m 부호를 의심한다. B에서 m을 다 더해도 오차가 1% 아래로 안 내려가면 −m 항(음의 주파수 field의 켤레)을 빠뜨린 것이다. D의 차이가 셀을 키워도 그대로면 truncation이 아니라 다른 원인이다.
 
-## 3. 시뮬레이션 설계도
 
-![layout]({{ site.baseurl }}/assets/meep/13/01_layout.png)
-*파트 D의 cylindrical (r, z) 셀. 왼쪽 끝이 r = 0(축)이다. 회색 블록이 n 2.4 디스크(반지름 1.2 µm), 빨간 점이 r = 0.6 µm의 Er ring source, 파란 선이 flux monitor와 near2far 면(위와 바깥 r). 아래 경계에는 PML이 없어 완전도체 ground plane이다. 녹색 빗금은 r 방향과 위쪽 PML, 파란 빗금은 대표 DFT field 영역이다. `plot2D`는 cylindrical 셀에서도 축 이름을 x, y로 쓰므로 x가 r, y가 z다. 동그라미 숫자는 §4의 단계 번호다.*
+### 원본 §3 · 시뮬레이션 설계도
 
-![layout dipole]({{ site.baseurl }}/assets/meep/13/02_layout_dipole.png)
-*파트 A·B의 (r, z) 셀. 진공, 사방 PML 1 µm(축 쪽 제외). 쌍극자는 축 위(A) 또는 r = 0.5 µm(B). near2far 면은 위, 바깥 r, 아래(weight −1)의 세 조각이다. 축은 경계가 아니라 대칭축이라 면이 필요 없다. 이 그림은 monitor를 붙이기 전의 셀이라 near2far 면은 그려지지 않았다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/01_layout.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/01_layout.png" alt="파트 D의 cylindrical (r, z) 셀. 왼쪽 끝이 r = 0(축)이다. 회색 블록이 n 2.4 디스크(반지름 1.2 µm), 빨간 점이 r = 0.6 µm의 Er ring source, 파란 선이 flux monitor와 " loading="lazy"></a>
+<figcaption markdown="span">파트 D의 cylindrical (r, z) 셀. 왼쪽 끝이 r = 0(축)이다. 회색 블록이 n 2.4 디스크(반지름 1.2 µm), 빨간 점이 r = 0.6 µm의 Er ring source, 파란 선이 flux monitor와 near2far 면(위와 바깥 r). 아래 경계에는 PML이 없어 완전도체 ground plane이다. 녹색 빗금은 r 방향과 위쪽 PML, 파란 빗금은 대표 DFT field 영역이다. `plot2D`는 cylindrical 셀에서도 축 이름을 x, y로 쓰므로 x가 r, y가 z다. 동그라미 숫자는 §4의 단계 번호다.</figcaption>
+</figure>
+
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/02_layout_dipole.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/02_layout_dipole.png" alt="파트 A·B의 (r, z) 셀. 진공, 사방 PML 1 µm(축 쪽 제외). 쌍극자는 축 위(A) 또는 r = 0.5 µm(B). near2far 면은 위, 바깥 r, 아래(weight −1)의 세 조각이다. 축은 경계가 아니라 대칭" loading="lazy"></a>
+<figcaption markdown="span">파트 A·B의 (r, z) 셀. 진공, 사방 PML 1 µm(축 쪽 제외). 쌍극자는 축 위(A) 또는 r = 0.5 µm(B). near2far 면은 위, 바깥 r, 아래(weight −1)의 세 조각이다. 축은 경계가 아니라 대칭축이라 면이 필요 없다. 이 그림은 monitor를 붙이기 전의 셀이라 near2far 면은 그려지지 않았다.</figcaption>
+</figure>
+
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -105,12 +256,20 @@ $$
 | D 디스크 | n 2.4, R 1.2, t = 0.7λ/n, res 100 | 공식 값 | t를 바꾸면 패턴의 lobe가 바뀐다 |
 | D 반지름 셀 | 6 µm(공식), 8 µm | truncation 확인 | 셀이 클수록 열린 면이 덜 잃는다 |
 
-![source]({{ site.baseurl }}/assets/meep/13/00_source.png)
-*source 파형과 스펙트럼(1000 nm, fwidth 0.1 fcen). 모든 파트가 같은 상대 대역폭을 쓴다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/00_source.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/00_source.png" alt="source 파형과 스펙트럼(1000 nm, fwidth 0.1 fcen). 모든 파트가 같은 상대 대역폭을 쓴다." loading="lazy"></a>
+<figcaption markdown="span">source 파형과 스펙트럼(1000 nm, fwidth 0.1 fcen). 모든 파트가 같은 상대 대역폭을 쓴다.</figcaption>
+</figure>
+
 
 **강의 노트북과의 차이**: 강의 범위 밖이다. 10_sources의 노트들은 네 예제를 각각 따로 재현했다. 이 글은 한 스크립트에서 네 예제를 돌리고, B에서는 m 항을 하나 더할 때마다 패턴 오차를 재서 급수가 어떻게 수렴하는지 보이며, C에서는 12편 2D 결과와 같은 표에 올린다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>원본 코드 단계별 설명</summary>
+
+### 원본 §4 · 코드 따라가기
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이번 글의 새 요소는 ④의 `dimensions=mp.CYLINDRICAL, m=`과 ⑦의 m 합산이다.
@@ -211,26 +370,40 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 
 > **함정**: cylindrical 셀의 `get_array`와 `get_dft_array`는 이 Meep 버전에서 (z, r) 순서로 돌려준다(11편). 2D처럼 전치하면 그림이 뒤집힌다. 이 글의 스크립트는 기대 크기와 비교해 방향을 맞추는 `orient_rz`를 쓴다.
 
-## 5. 결과
+</details>
 
-![on axis]({{ site.baseurl }}/assets/meep/13/03_on_axis.png)
-*파트 A. 축 위 쌍극자의 φ = 0 단면 패턴(0°가 +z). 왼쪽: z 쌍극자, m = 0 한 run. 오른쪽: x 쌍극자, m = +1과 −1 두 run을 반씩 더한 것.*
+<details markdown="1">
+<summary>원본 결과·검증 표·오류 진단·추가 탐구</summary>
+
+### 원본 §5 · 결과
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/03_on_axis.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/03_on_axis.png" alt="파트 A. 축 위 쌍극자의 φ = 0 단면 패턴(0°가 +z). 왼쪽: z 쌍극자, m = 0 한 run. 오른쪽: x 쌍극자, m = +1과 −1 두 run을 반씩 더한 것." loading="lazy"></a>
+<figcaption markdown="span">파트 A. 축 위 쌍극자의 φ = 0 단면 패턴(0°가 +z). 왼쪽: z 쌍극자, m = 0 한 run. 오른쪽: x 쌍극자, m = +1과 −1 두 run을 반씩 더한 것.</figcaption>
+</figure>
+
 
 | 쌍극자 | m | 해석 패턴 | 상대 L2 |
 |---|---|---|---|
 | z, 축 위 | 0 | sin²θ | 0.43% |
 | x, 축 위 | +1, −1 | cos²θ | 0.46% |
 
-![off axis]({{ site.baseurl }}/assets/meep/13/04_off_axis.png)
-*파트 B. r₀ = 0.5 µm의 x 쌍극자. 왼쪽: m 항 하나의 방사 power(최대로 나눔). 가운데: m을 하나씩 더할 때마다 잰 패턴 오차. 오른쪽: m = 0…8을 다 더한 패턴과 cos²θ.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/04_off_axis.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/04_off_axis.png" alt="파트 B. r₀ = 0.5 µm의 x 쌍극자. 왼쪽: m 항 하나의 방사 power(최대로 나눔). 가운데: m을 하나씩 더할 때마다 잰 패턴 오차. 오른쪽: m = 0…8을 다 더한 패턴과 cos²θ." loading="lazy"></a>
+<figcaption markdown="span">파트 B. r₀ = 0.5 µm의 x 쌍극자. 왼쪽: m 항 하나의 방사 power(최대로 나눔). 가운데: m을 하나씩 더할 때마다 잰 패턴 오차. 오른쪽: m = 0…8을 다 더한 패턴과 cos²θ.</figcaption>
+</figure>
+
 
 | m | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|---|---|---|---|---|---|---|---|---|
 | $P_m/P_{\max}$ | 1.00 | 0.94 | 1.00 | 0.64 | 0.18 | 2.8e-2 | 2.8e-3 | 1.9e-4 | 9.5e-6 |
 | 0…m 합의 패턴 오차 | 0.589 | 0.409 | 0.099 | 0.141 | 0.030 | 0.0087 | 0.0064 | 0.0064 | 0.0063 |
 
-![ring cyl]({{ site.baseurl }}/assets/meep/13/05_ring_cyl.png)
-*파트 C. 12편의 고리를 m마다 1D 반지름 run으로. 위: Ez(r)과 고리 위치(회색). 아래: Re[Ez(r)e^{imφ}]로 복원한 x–y 그림. 부호 lobe가 2m개다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/05_ring_cyl.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/05_ring_cyl.png" alt="파트 C. 12편의 고리를 m마다 1D 반지름 run으로. 위: Ez(r)과 고리 위치(회색). 아래: Re[Ez(r)e^imφ]로 복원한 x–y 그림. 부호 lobe가 2m개다." loading="lazy"></a>
+<figcaption markdown="span">파트 C. 12편의 고리를 m마다 1D 반지름 run으로. 위: Ez(r)과 고리 위치(회색). 아래: Re[Ez(r)e^{imφ}]로 복원한 x–y 그림. 부호 lobe가 2m개다.</figcaption>
+</figure>
+
 
 | m | f (cylindrical) | Q (cylindrical) | f (12편 2D, res 20) | Q (12편) | Δf/f |
 |---|---|---|---|---|---|
@@ -238,16 +411,17 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 | 4 | 0.14746 | 343 | 0.14736 | 342 | +0.07% |
 | 5 | 0.17582 | 1627 | 0.17564 | 2132 | +0.10% |
 
-![disc]({{ site.baseurl }}/assets/meep/13/06_disc.png)
-*파트 D. 왼쪽: ground plane 위 디스크의 far-field 패턴(두 셀 크기). 가운데: near monitor flux와 far 반구 적분. 오른쪽: log|Er|의 (r, z) 분포. 흰 사각형이 디스크.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/13/06_disc.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/06_disc.png" alt="파트 D. 왼쪽: ground plane 위 디스크의 far-field 패턴(두 셀 크기). 가운데: near monitor flux와 far 반구 적분. 오른쪽: log&#124;Er&#124;의 (r, z) 분포. 흰 사각형이 디스크." loading="lazy"></a>
+<figcaption markdown="span">파트 D. 왼쪽: ground plane 위 디스크의 far-field 패턴(두 셀 크기). 가운데: near monitor flux와 far 반구 적분. 오른쪽: log&#124;Er&#124;의 (r, z) 분포. 흰 사각형이 디스크.</figcaption>
+</figure>
+
 
 | 반지름 셀 | near flux | far flux | 차이 |
 |---|---|---|---|
 | 6 µm (공식) | 643.65 | 595.80 | 7.43% (공식 문서 7.43%) |
 | 8 µm | 643.28 | 602.05 | 6.41% |
 
-![animation]({{ site.baseurl }}/assets/meep/13/07_anim_m3.gif)
-*m = 3 모드를 Re[Ez(r)e^{i(3φ−ωt)}]로 복원해 한 주기 돌린 것. 1D 반지름 run 하나와 e^{imφ}만으로 고리를 도는 파동이 된다. 같은 m의 −3 항을 더하면 12편의 정상파(고정된 lobe)가 된다.*
 
 ### 예측과 비교
 
@@ -277,7 +451,8 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 - 할 수 있는 것: 진공에서 축 위 쌍극자의 패턴은 m = 0(z) 또는 m = ±1(x)로 0.5% 안에서 맞는다. 축에서 0.5 µm 떨어진 x 쌍극자는 m = 0…8의 합으로 0.6% 안에서 맞는다. 12편 고리의 주파수는 cylindrical 좌표와 2D Cartesian이 0.1% 안에서 같다. ground plane 위 디스크의 near–far 차이는 반지름 셀을 키우면 줄어드는 truncation이다.
 - 할 수 없는 것: 축에서 먼 점광원이나 구조가 있는 셀에서 "power가 처음 10⁻⁴ 아래로 내려간 m"이 급수의 끝이라는 것(14편의 반례). 디스크의 진짜 far-field 총 power(열린 면 때문에 모른다). 2D Cartesian의 Q가 해상도마다 다른 이유를 staircase 하나로 확정하는 것(이 글은 일치하는 쪽을 보였을 뿐이다).
 
-## 6. 흔한 실수
+
+### 원본 §6 · 흔한 실수
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -289,7 +464,8 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 | 디스크 near·far가 7% 다름 | 열린 near2far 면 | 셀을 키워 차이가 주는지 확인 |
 | 바닥 거울이 사라짐 | 아래에도 PML | ground plane 쪽은 PML 없이 |
 
-## 7. 직접 해보기
+
+### 원본 §7 · 직접 해보기
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
@@ -299,9 +475,9 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 | D의 반지름 셀 12 µm | 차이가 더 준다 | near·far 차이 |
 | D의 디스크 두께 0.7λ/n → 0.5λ/n | lobe가 바뀐다 | 패턴 |
 
-## 8. 전체 코드
+</details>
 
-<details>
+<details markdown="1">
 <summary>code/cylindrical_dipole.py 전체 (클릭하여 펼치기)</summary>
 {% highlight python %}
 """Meep Example 13 - Computing 3D with rotational symmetry: cylindrical coordinates and the m series.
@@ -635,6 +811,8 @@ if MASTER:
 say(f"total {time.time() - t_all:.0f} s on {mp.count_processors()} process(es)")
 {% endhighlight %}
 </details>
+<details markdown="1">
+<summary>원본 실행 기록과 재현 환경</summary>
 
 §4의 발췌 코드와 달리 전체 코드에는 두 layout 그림, m 급수 수렴 그림, 고리의 x–y 복원, 디스크 field, GIF, result.json 기록이 들어 있다. MPI로 돌릴 수 있게 collective 호출(run, get_farfield, get_dft_array)은 모든 rank에서, 그림 저장은 master에서만 한다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
@@ -661,13 +839,9 @@ total 457 s on 4 process(es)
 
 **재현 환경**: meep 1.33.0 (MPI) · Python 3.11 · `conda install -c conda-forge pymeep=*=mpi_mpich_*` · 실행 `mpirun -np 4 python cylindrical_dipole.py` (약 7.6 min (mpirun -np 4))
 
-## 확인 질문
+</details>
 
-1. x 방향 쌍극자가 m = 0이 아닌 이유를 $\hat x$를 $\hat r,\hat\phi$로 쓴 식으로 설명해 보라. y 쌍극자는 어떤 두 run을 어떻게 더하는가.
-2. r₀ = 0.5 µm의 점광원에 m = 8까지 필요했다. r₀를 세 배로 하면 필요한 m은 대략 몇인가. 그 어림의 근거는 무엇인가.
-3. 파트 D의 디스크는 ground plane 위에서 위쪽으로만 빛을 낸다. 이것을 LED의 발광층으로 보면, 쌍극자가 낸 빛 중 몇 %가 공기로 나오는가는 어떻게 정의하고 재는가. 분자와 분모는 각각 무엇인가. (14편)
-
-## 9. 더 읽기
+### 공식 문서와 다음 글
 
 - [Cylindrical coordinates 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/) · [antenna in cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-in-cylindrical-coordinates) · [disc in cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-a-disc-in-cylindrical-coordinates)
 - 스크립트: [dipole_in_vacuum_cyl_on_axis.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_on_axis.py) · [dipole_in_vacuum_cyl_off_axis.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_off_axis.py) · [ring-cyl.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring-cyl.py) · [disc_radiation_pattern.py](https://github.com/NanoComp/meep/blob/master/python/examples/disc_radiation_pattern.py) · [meep issue 2704 (Er at r = 0)](https://github.com/NanoComp/meep/issues/2704)
