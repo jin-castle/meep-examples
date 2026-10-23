@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /waveguide-bend-90/
+lesson_title: "빛은 직각 모서리를 얼마나 잘 돌아갈까?"
+lesson_summary: "날카로운 코너에서 새는 빛을 보고, 직선 도파로를 기준으로 투과·반사를 나눠 잽니다. 코너를 둥글릴 때 손실과 크기가 어떻게 바뀌는지 확인합니다."
+lesson_goals:
+  - "투과·반사·방사로 나뉜 빛을 필드와 수치로 연결한다."
+  - "직선 기준 run과 입사장 빼기가 필요한 이유를 설명한다."
+  - "굽힘 반지름과 손실을 비교하고 수치 오차의 한계를 읽는다."
+lesson_prerequisites: "04편의 도파로 모드와 03편의 reference run을 알면 좋습니다. 실행에는 Meep와 Python이 필요합니다."
 date: 2026-10-23
 title: "Meep Example 05 · Bent waveguide와 radius trade-off — 2-run flux 정규화, sharp bend 기준값, radius sweep"
 title_en: "Meep Example 05 · Bent waveguide and the radius trade-off — two-run flux normalization, sharp-bend baseline, radius sweep"
@@ -14,50 +22,89 @@ tags: [meep, fdtd, waveguide, bend, flux, normalization]
 image: /assets/meep/05/02_field.png
 excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. We measure how much power goes around the corner, how much comes back, and how much leaks out."
 ---
-## TL;DR (English)
-
-![hero]({{ site.baseurl }}/assets/meep/05/02_field.png)
+<details markdown="1">
+<summary>English summary</summary>
 
 - **What**: a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. We measure how much power goes around the corner, how much comes back, and how much leaks out.
 - **Result**: T = 0.20, R = 0.22, radiated = 0.58 at the center wavelength. Most of the light is lost at the sharp corner. Rounding it recovers the light: T = 0.91 at a bend radius of 0.35 µm and 0.99 at 0.70 µm.
 - **Takeaway**: two-run flux normalization. A straight reference run gives the input power and the incident fields; subtracting them in the bend run leaves only the reflection. A sharp corner is not usable in a photonic circuit.
 - **Code**: full script at the bottom, ~95 s on one core (the sharp bend alone takes 10 s).
 
-## 0. 이 글에서 배우는 것
+</details>
 
-- `add_flux`와 `FluxRegion`으로 단면을 지나는 power(flux) 재기
-- 2-run 정규화: 직선 기준 run의 `get_flux_data` → bend run의 `load_minus_flux_data`로 입사 성분을 빼고 반사만 남기기
-- 뒤로 가는 flux는 음수라는 것, 그리고 에너지 수지 T + R + L = 1로 결과를 검산하는 법
-- 코너에 반지름을 주면서 손실이 사라지는 지점(knee)을 찾는 radius sweep
-- 물리 교훈: 급격한 직각 꺾임은 빛의 절반 이상을 밖으로 버린다. 그래서 광회로는 곡선 굽힘을 쓴다
+<h2 id="observe">1. 관찰 · 빛의 경로를 먼저 보기</h2>
 
-**전제 지식**: 04편의 도파로·모드 개념. **공식 예제**: [Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend). **이전 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: [06 · Binary grating과 diffraction order]({{ site.baseurl }}/binary-grating/)
+같은 폭의 도파로를 직각으로 꺾었습니다. 입력은 왼쪽, 출력은 위쪽입니다. 수평 암에서 코너까지 온 파면이 **수직 암으로만 이어지는지, 주변 공기로도 퍼지는지** 보세요. 필드의 밝기를 바로 투과율로 읽지 말고 뒤의 flux 측정과 연결합니다.
 
-## 1. 무엇을 알고 싶은가
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/02_field.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/02_field.png" alt="날카로운 L자 도파로의 실제 Re(Ez)와 진폭. 코너 밖으로 방사파가 퍼지고 출력 암은 약하다." loading="lazy">
+  </a>
+  <figcaption>1550 nm의 실제 필드입니다. 가는 선은 도파로 경계이며, 코너 바깥의 파면과 입력 암의 정상파가 각각 방사와 반사의 단서입니다.</figcaption>
+</figure>
 
-04편의 직선 도파로는 넣은 빛을 전부 내보냈다. 같은 도파로를 직각으로 꺾으면 얼마가 코너를 돌아 나가고(T), 얼마가 되돌아오고(R), 얼마가 밖으로 새는가(L). 이 예제를 고른 이유는 두 가지다. 답을 미리 알 수 없는 첫 문제이고, 투과율을 잴 때 기준 run을 먼저 돌려 나누는 Meep의 관례가 여기서 처음 나온다.
+<figure class="lesson-figure lesson-animation">
+  <a href="{{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif" alt="날카로운 코너에서 펄스가 반사·방사·투과로 나뉘는 시간 전개" loading="lazy" data-animation-src="{{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif" data-static-src="{{ site.baseurl }}/assets/meep/05/02_field.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>sharp 코너의 시간 전개. 펄스가 코너에 닿는 순간 cladding으로 큰 파면이 퍼져 나가고, 수직 암으로는 일부만 올라간다. 되돌아오는 파가 수평 암에서 입사파와 겹친다.</figcaption>
+</figure>
 
-### 어디에 쓰이는가
+<figure class="lesson-figure lesson-animation">
+  <a href="{{ site.baseurl }}/assets/meep/05/06_anim_round.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/06_anim_round.gif" alt="반지름 3a의 둥근 코너를 따라 펄스가 출력으로 이동하는 시간 전개" loading="lazy" data-animation-src="{{ site.baseurl }}/assets/meep/05/06_anim_round.gif" data-static-src="{{ site.baseurl }}/assets/meep/05/05_field_round.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>반지름 3a 코너의 시간 전개. 같은 펄스가 코너를 돌아 수직 암 위의 투과 단면(파란 선)까지 거의 그대로 간다.</figcaption>
+</figure>
 
-bend 반지름은 칩 면적을 정하는 숫자다. 반지름을 두 배로 하면 고리 하나의 면적은 네 배가 되고, foundry의 설계 규칙에는 최소 반지름이 적혀 있다.
+<h2 id="predict">2. 예측 · 결과를 읽기 전에</h2>
 
-| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
-|---|---|---|
-| PIC 배선과 면적(footprint) | 반지름–손실 곡선과 knee | 09편 역설계 bend |
-| ring resonator·spiral delay line | 작은 반지름의 곡률 손실이 Q와 FSR을 정한다 | 12편 고리 |
-| foundry PDK의 최소 bend radius 규칙 | knee 1.5~2a가 그 규칙의 근거 | — |
-| 입력 대비 출력의 모든 측정 | 2-run 정규화 | 06편 이후 전부 |
+재료가 빛을 흡수하지 않아도, 위쪽 도파로로 나가는 몫 T는 줄어들 수 있을까요?
 
+<fieldset class="prediction">
+  <legend>먼저 하나를 골라보세요.</legend>
+  <label><input type="radio" name="prediction-05" value="0"> 흡수가 없으므로 T는 거의 1이다</label>
+  <label><input type="radio" name="prediction-05" value="1"> 반사와 방사가 있으므로 T는 1보다 작다</label>
+</fieldset>
 
-## 2. 물리 한 페이지
+<details markdown="1">
+<summary>예측의 근거 확인하기</summary>
+
+두 번째입니다. 손실 없는 재료라는 말은 출력 도파로가 모든 power를 받는다는 뜻이 아닙니다. 입력으로 되돌아가는 반사 R과 주변 공기로 새는 방사 L도 함께 세어야 합니다. 이 구조에서는 방사가 가장 큰 몫인지 측정으로 확인합니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기 · 관찰을 설명하는 방법</h2>
 
 <!-- concept-illustration:part-05:start -->
 
-![직선 기준, 날카로운 L자 굽힘, 둥근 굽힘을 비교한다. 입력은 왼쪽, 출력은 위쪽이며 날카로운 코너의 반사와 바깥 방사 경로를 표시한다.]({{ site.baseurl }}/assets/meep/05/00_concept.png)
-
-*공기 속 ε = 12 유전체 도파로에서 직선 기준과 날카로운 직각, 둥근 굽힘을 비교합니다. 유효 입사광은 왼쪽에서 +x 방향으로 들어오고 출력은 위쪽 +y 방향입니다. 코너에서는 투과·반사·바깥 방사가 나뉠 수 있습니다. 그림의 R ≈ 0.70 µm는 둥근 굽힘의 중심선 곡률반경 0.6975 µm를 반올림한 값입니다. 점선은 위치 안내선입니다. 화살표 굵기는 계산된 전력 비율을 나타내지 않습니다. 파장을 1550 nm로 읽는 이 글의 환산에서 폭은 232.5 nm입니다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/00_concept.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/00_concept.png" alt="직선 기준, 날카로운 L자 굽힘, 둥근 굽힘을 비교한다. 입력은 왼쪽, 출력은 위쪽이며 날카로운 코너의 반사와 바깥 방사 경로를 표시한다." loading="lazy">
+  </a>
+  <figcaption>공기 속 ε = 12 유전체 도파로에서 직선 기준과 날카로운 직각, 둥근 굽힘을 비교합니다. 유효 입사광은 왼쪽에서 +x 방향으로 들어오고 출력은 위쪽 +y 방향입니다. 코너에서는 투과·반사·바깥 방사가 나뉠 수 있습니다. 그림의 R ≈ 0.70 µm는 둥근 굽힘의 중심선 곡률반경 0.6975 µm를 반올림한 값입니다. 점선은 위치 안내선입니다. 화살표 굵기는 계산된 전력 비율을 나타내지 않습니다. 파장을 1550 nm로 읽는 이 글의 환산에서 폭은 232.5 nm입니다.</figcaption>
+</figure>
 
 <!-- concept-illustration:part-05:end -->
+
+### 먼저 직선에서 기준을 만든다
+
+기준 run은 같은 재료·폭·source를 가진 직선 도파로입니다. 여기서 실제로 전달된 power를 입력값 P_in으로 저장하고, 반사 단면에서는 입사장의 DFT 데이터를 저장합니다. 굽힘 run에서는 같은 반사 단면에 `load_minus_flux_data`를 적용해 **필드 수준에서 입사 성분을 뺍니다**. power 숫자끼리 빼면 간섭항이 남습니다.
+
+### 출력, 되돌아옴, 바깥으로 샘을 나눈다
+
+$$T=P_{\mathrm{tran}}/P_{\mathrm{in}},\qquad R=-P_{\mathrm{refl}}/P_{\mathrm{in}},\qquad L=1-T-R$$
+
+반사파는 −x로 가므로 flux가 음수이고, R 앞의 마이너스가 이를 양의 비율로 바꿉니다. 투과 monitor는 +y로 가는 빛을 가로지르는 **가로선**이어야 합니다. 코너가 급할수록 모드의 방향과 모양이 갑자기 바뀌어 반사·방사가 생깁니다. 둥근 코너는 그 변화를 완만하게 만듭니다.
+
+<aside class="lesson-note" markdown="1">
+**이 모델의 범위:** 2D Ez, 손실 없는 ε = 12 재료입니다. L은 별도 방사 monitor로 잰 값이 아니라 잔여입니다. 1a = 232.5 nm로 환산해 폭 1a와 파장 6.67a를 각각 232.5 nm와 1550 nm로 읽습니다. 다른 재료나 3D 구조의 최소 반지름으로 그대로 옮길 수 없습니다.
+</aside>
+
+<details markdown="1">
+<summary>기호·설계 가정과 예측표 자세히 보기</summary>
 
 도파로를 따라가던 모드는 코너에서 갑자기 방향이 바뀐 도파로를 만난다. 입력 모드와 수직 암의 모드는 모양이 겹치는 부분이 작아서(mode mismatch), 겹치지 않는 부분만큼 밖으로 방사되거나 되돌아간다. 닫힌 해석해는 없고, 에너지 보존이 결과를 구속한다.
 
@@ -86,12 +133,29 @@ $$
 | 필드 모양 | 코너 주변 cladding으로 퍼지는 방사 lobe, 수직 암은 희미 | mode mismatch |
 | T + R | 1 이하 | 에너지 보존 |
 
-**판정 기준**: T + R > 1이면 정규화나 부호 오류. T > 0.9면 코너가 실제로 꺾이지 않은 것(구조 오류)을 의심.
+**판정 기준**: 이 sharp 구조의 낮은 T와 에너지 수지를 먼저 확인합니다. 작은 T + R 초과는 수치 오차일 수 있으므로 부호·정규화와 수렴성을 함께 점검합니다.
 
-## 3. 시뮬레이션 설계도
+</details>
 
-![layout]({{ site.baseurl }}/assets/meep/05/01_layout.png)
-*검은 L자 = 수평 암 + 수직 암(`geometry`, 양 끝이 PML 관통), 빨간 선 = Ez line source(x = −6.5), 파란 세로선 = 반사 flux 단면(x = −5.5, source 하류), 파란 가로선 = 투과 flux 단면(y = +6.5, 수직 암 위), 녹색 빗금 = PML, 보라 × = bend run의 종료 조건이 감시하는 점(4, 6.5). 좌표는 코드의 a 단위이고 축 눈금은 a = 232.5 nm로 환산한 µm다(cell 16a = 3.72 µm). 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터 박스, ② 구조, ③ source, ④ PML, ⑤ monitor, ⑥ 종료 감시점이고, ⑦ 후처리는 그릴 것이 없다. 기준 run(직선)은 같은 source·반사 단면에 수평 암만 쭉 이어진 구조다.*
+<h2 id="run">4. 직접 실행 · 변수 하나만 바꾸기</h2>
+
+### 한 번만 바꿔보기: 도파로 폭
+
+1. 아래 전체 코드와 공통 `blogfig.py`를 같은 `code/` 폴더에 두고, 그 폴더에서 `python bend90.py`를 실행합니다. 원본의 `w = 1.0` 결과와 `result.json`을 별도 보관합니다.
+2. **`w = 1.0` 한 줄만 `w = 0.8`로 바꿔** 다시 실행합니다. 재료·파장·반지름 목록·해상도는 그대로 둡니다.
+3. 두 실행의 `radius_sweep`에서 같은 반지름의 T·R·L을 비교합니다. T가 0.9를 넘는 첫 반지름과 sharp bend의 T도 적어 보세요.
+
+폭이 바뀌면 모드의 구속과 코너에서의 겹침도 바뀝니다. 어느 반지름에서 차이가 커질지 먼저 예상해 보세요. **폭 0.8의 결과는 이 글에 측정되어 있지 않으며**, 원본 곡선은 폭 1.0의 기준입니다. 실행할 때 출력 파일이 갱신되므로 비교용 기준 결과를 먼저 보관합니다.
+
+<details markdown="1">
+<summary>계산 배치·광원·파라미터 보기</summary>
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/01_layout.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/01_layout.png" alt="L자 도파로의 광원, 반사·투과 flux 단면, PML과 종료 감시점" loading="lazy">
+  </a>
+  <figcaption>검은 L자 = 수평 암 + 수직 암(`geometry`, 양 끝이 PML 관통), 빨간 선 = Ez line source(x = −6.5), 파란 세로선 = 반사 flux 단면(x = −5.5, source 하류), 파란 가로선 = 투과 flux 단면(y = +6.5, 수직 암 위), 녹색 빗금 = PML, 보라 × = bend run의 종료 조건이 감시하는 점(4, 6.5). 좌표는 코드의 a 단위이고 축 눈금은 a = 232.5 nm로 환산한 µm다(cell 16a = 3.72 µm). 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터 박스, ② 구조, ③ source, ④ PML, ⑤ monitor, ⑥ 종료 감시점이고, ⑦ 후처리는 그릴 것이 없다. 기준 run(직선)은 같은 source·반사 단면에 수평 암만 쭉 이어진 구조다.</figcaption>
+</figure>
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -103,12 +167,19 @@ $$
 | `src_x`, `refl_x` | −6.5, −5.5 | source는 PML 밖 0.5, 반사 단면은 source **하류** 1.0 | 반사 단면이 source 상류면 입사 성분 분리 실패 |
 | `span` | w + 2 | core 양쪽 1a씩 evanescent tail 포함 | core 폭만 잡으면 P_in 과소 → T 과대 |
 
-![source]({{ site.baseurl }}/assets/meep/05/00_source.png)
-*source의 시간 파형(왼쪽)과 power 스펙트럼(오른쪽). width = 1/fwidth = 10, 펄스 정점 t0 = 50. monitor 대역(1162–2325 nm) 가장자리의 source power는 중심의 0.005%다. 그래서 §5 스펙트럼의 양 끝 값은 0에 가까운 수를 0에 가까운 수로 나눈 것이고, 경향만 본다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/00_source.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/00_source.png" alt="굽힘 실험 가우시안 광원의 시간 파형과 대역 끝이 약한 스펙트럼" loading="lazy">
+  </a>
+  <figcaption>source의 시간 파형(왼쪽)과 power 스펙트럼(오른쪽). width = 1/fwidth = 10, 펄스 정점 t0 = 50. monitor 대역(1162–2325 nm) 가장자리의 source power는 중심의 0.005%다. 그래서 §5 스펙트럼의 양 끝 값은 0에 가까운 수를 0에 가까운 수로 나눈 것이고, 경향만 본다.</figcaption>
+</figure>
 
 **강의 노트북과의 차이**: 강의 week 6은 n 3.4/1.44, 폭 0.6 µm의 곡선 bend에서 radius 0.6–3.0 µm를 훑는다. 이 글은 공식 sharp bend(ε = 12, w = 1a)를 기준값으로 두고, 같은 구조의 코너만 둥글려 radius를 훑는다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>코드 단계별 설명 보기</summary>
 
 > 읽는 순서는 04편과 같다: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이번에는 run이 두 번이라 ⑤·⑥이 기준 run과 bend run에 한 번씩 나온다.
@@ -247,7 +318,7 @@ tran = sim.add_flux(fcen, df, nfreq,
 
 - **무엇**: bend 구조에 같은 위치의 반사 단면을 만들고, 기준 run의 입사 데이터를 음수로 미리 채운다. 투과 단면은 수직 암 위(y = +6.5)의 가로선이다.
 - **왜**: 반사 단면에는 입사 펄스(오른쪽으로)와 반사 펄스(왼쪽으로)가 모두 지나간다. 입사 성분을 미리 빼 두면 run이 끝났을 때 반사 성분만 남는다.
-- **틀리면**: 이 줄을 빼먹으면 반사 단면이 입사까지 세어 flux가 큰 양수가 되고 T + R이 1을 넘는다.
+- **틀리면**: 이 줄을 빼먹으면 반사 단면에 입사 성분도 남는다. 같은 부호식으로 계산한 R은 과소평가되거나 음수가 될 수 있다.
 
 > **함정**: 투과 단면의 `size`가 `(w + 2, 0)`, 즉 가로선이다. 수직 암에서는 빛이 +y로 가므로 단면은 x 방향으로 펼쳐야 한다. `span`을 그대로 쓰면 세로선이 되어 빛과 평행하게 놓인다.
 
@@ -276,13 +347,46 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 - **왜**: Meep의 flux는 방향이 있다. 반사 단면의 flux는 −x 방향이라 음수로 나오므로 부호를 뒤집어야 반사된 양이 된다. `1 - T - R`은 방사 monitor를 따로 두지 않았을 때의 잔여 추정이다.
 - **틀리면**: 부호를 안 뒤집으면 R이 음수, L이 1을 넘는다.
 
-## 5. 결과
+</details>
 
-![field]({{ site.baseurl }}/assets/meep/05/02_field.png)
-*가는 실선(왼쪽 검정, 오른쪽 흰색)은 유전율 경계, 즉 L자 도파로의 윤곽이다. 왼쪽 Re(Ez)는 수평 암(y = −4)을 따라 또렷한 줄무늬가 오다가 코너(4, −4)a = (0.93, −0.93) µm에서 위쪽·오른쪽 cladding으로 큰 파면이 퍼져 나간다. 오른쪽 \|Ez\|에서 수평 암은 밝고 수직 암(x = 4)은 훨씬 어둡다. 밝기 차이가 T ≈ 0.2이고, 코너 주변의 흐릿한 빛이 방사 58%다. 수평 암의 줄무늬가 균일하지 않고 마디가 보이는 것은 반사파와의 정상파(standing wave) 간섭이다.*
+<h2 id="interpret">5. 해석 · 측정값과 한계를 함께 읽기</h2>
 
-![spectrum]({{ site.baseurl }}/assets/meep/05/03_spectrum.png)
-*중심 파장 1550 nm(점선) 근처에서 방사(초록)가 가장 크고 T(파랑)는 0.2 부근이다. 대역 가장자리(1160 nm, 2325 nm)는 source power가 작아 값이 튀므로 경향만 본다. 파장이 길수록 T가 올라가는 것은 모드가 덜 갇혀(cladding으로 더 퍼져) 코너의 급격함을 덜 느끼기 때문이다.*
+### 투과가 낮아진 이유를 숫자로 확인하기
+
+| 1550 nm의 구조 | T | R | L = 1 − T − R |
+|---|---|---|---|
+| 날카로운 코너 | 0.1997 | 0.2202 | 0.5801 |
+| 반지름 3a = 0.6975 µm | 0.9859 | 0.0003 | 0.0138 |
+
+sharp bend에서는 입력의 약 20%만 위쪽 암에 도달하고 잔여 방사가 약 58%입니다. 반지름을 늘리면 반사는 약 1a에서 먼저 작아지고, 방사는 더 천천히 줄어듭니다. 이 사례의 변화가 완만해지는 구간은 1.5–2a 부근입니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/03_spectrum.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/03_spectrum.png" alt="파장별 sharp bend의 투과율, 반사율과 잔여 방사율" loading="lazy">
+  </a>
+  <figcaption>중심 파장 1550 nm(점선) 근처에서 방사(초록)가 가장 크고 T(파랑)는 0.2 부근이다. 대역 가장자리(1160 nm, 2325 nm)는 source power가 작아 값이 튀므로 경향만 본다. 파장이 길수록 T가 올라가는 것은 모드가 덜 갇혀(cladding으로 더 퍼져) 코너의 급격함을 덜 느끼기 때문이다.</figcaption>
+</figure>
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/04_radius_sweep.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/04_radius_sweep.png" alt="코너 반지름을 늘릴 때 투과율이 높아지고 반사·방사가 줄어드는 측정 곡선" loading="lazy">
+  </a>
+  <figcaption>같은 구조에서 코너 반지름만 바꿨을 때의 T, R, 방사. 반지름 0이 위의 sharp bend다. 축은 a = 232.5 nm로 환산한 µm.</figcaption>
+</figure>
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/05/05_field_round.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/05/05_field_round.png" alt="반지름 3a인 둥근 도파로의 실제 Re(Ez)와 진폭 필드" loading="lazy">
+  </a>
+  <figcaption>반지름 3a = 0.70 µm. 수평 암의 정상파 마디가 사라지고(반사 0.03%), 코너 밖으로 새는 빛이 거의 없다.</figcaption>
+</figure>
+
+<aside class="lesson-note" markdown="1">
+**숫자의 유효 자리도 결과입니다.** sharp bend의 T는 해상도 25→40에서 0.1997→0.1894, PML 두께 1→1.5와 monitor 이동을 함께 바꾸면 0.1703으로 변합니다. 따라서 T ≈ 0.2의 경향을 읽어야 합니다. 반지름 4a의 T = 1.0031은 이득이 아니라 수치 오차입니다. source power가 중심의 0.005%인 대역 끝의 비율은 신뢰도가 낮습니다.
+</aside>
+
+<details markdown="1">
+<summary>전체 측정표·예측 비교·수렴성 기록 보기</summary>
 
 | 물리량 | 값 @ 1550 nm (6.67a) | 비교 대상 |
 |--------|-----------|-----------|
@@ -293,17 +397,13 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 
 ### 코너를 둥글리면: radius sweep
 
-![radius sweep]({{ site.baseurl }}/assets/meep/05/04_radius_sweep.png)
-*같은 구조에서 코너 반지름만 바꿨을 때의 T, R, 방사. 반지름 0이 위의 sharp bend다. 축은 a = 232.5 nm로 환산한 µm.*
 
-![round]({{ site.baseurl }}/assets/meep/05/05_field_round.png)
-*반지름 3a = 0.70 µm. 수평 암의 정상파 마디가 사라지고(반사 0.03%), 코너 밖으로 새는 빛이 거의 없다.*
 
-![sharp animation]({{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif)
-*sharp 코너의 시간 전개. 펄스가 코너에 닿는 순간 cladding으로 큰 파면이 퍼져 나가고, 수직 암으로는 일부만 올라간다. 되돌아오는 파가 수평 암에서 입사파와 겹친다.*
 
-![round animation]({{ site.baseurl }}/assets/meep/05/06_anim_round.gif)
-*반지름 3a 코너의 시간 전개. 같은 펄스가 코너를 돌아 수직 암 위의 투과 단면(파란 선)까지 거의 그대로 간다.*
+
+
+
+
 
 | 반지름 | µm | T | R | 방사 |
 |---|---|---|---|---|
@@ -341,34 +441,52 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 
 방향은 모두 맞았지만 T = 0.20이라는 값은 계산해 봐야 안다. T + R ≤ 1은 예측이 아니라 검산이다. 깨지면 물리가 아니라 코드가 틀린 것이다.
 
-**검증 체크**: T + R = 0.42 ≤ 1 · source(x = −6.5)·반사 단면(−5.5)·투과 단면(y = 6.5) 모두 PML(|x|, |y| > 7) 밖 · 두 run 모두 field decay 기준 종료.
+**검증 체크**: T + R = 0.42 ≤ 1 · source(x = −6.5)·반사 단면(−5.5)·투과 단면(y = 6.5) 모두 PML(\|x\|, \|y\| > 7) 밖 · 두 run 모두 field decay 기준 종료.
 
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: sharp bend는 power의 절반 이상을 방사로 잃는다. 반지름을 도파로 안 파장의 한 배(1.5–2a, 0.35–0.47 µm) 이상 주면 손실이 10% 아래로 떨어지고, 3a 이상에서는 더 얻을 것이 없다.
 - 할 수 없는 것: sharp bend의 T = 0.20의 둘째 자리. 해상도와 monitor 위치에 따라 0.17–0.20으로 움직인다. 3D 도파로나 다른 굴절률 대비에서의 knee 위치. 방사 monitor 없이 잔여로 추정한 방사량의 정확한 값.
 
-## 6. 흔한 실수
+</details>
+
+<details markdown="1">
+<summary>증상별 점검표 보기</summary>
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
-| T + R > 1 | `load_minus_flux_data`를 빼먹음 | bend run에서 반사 monitor를 만든 **직후** 호출 |
+| 반사율 과소평가·음수 | `load_minus_flux_data`를 빼먹음 | bend run에서 반사 monitor를 만든 **직후** 호출 |
 | R이 음수 | 뒤로 가는 flux 부호를 안 뒤집음 | `R = -get_fluxes(refl) / P_in` |
 | `load_minus_flux_data` 배열 크기 오류 | 두 run의 resolution·cell·monitor 위치 불일치 | `make_sim` 같은 함수로 두 run 생성 |
 | 투과 T ≈ 0 | 투과 단면이 세로선(`span`)으로 빛과 평행 | 수직 암에서는 `size=(w+2, 0)` 가로선 |
 | 스펙트럼 가장자리가 튐 | 대역이 넓어 가장자리 source power ≈ 0 | `df`를 줄이거나 중심 ±30%만 해석 |
 | R이 이상하게 큼 | 반사 단면이 source 상류, 또는 PML 얇음 | 반사 단면은 source **하류**, `dpml ≥ λ/6` |
 
-## 7. 직접 해보기
+</details>
 
-| 바꿀 것 | 예상 변화 | 확인할 수치 |
-|---------|----------|------------|
-| `w` 1 → 0.6a (좁은 도파로) | 모드가 덜 갇혀 같은 반지름에서 손실이 커지고 knee가 큰 R로 이동 | sweep 곡선 |
-| `fcen` 0.15 → 0.10 (파장 10a = 2325 nm) | 모드가 덜 갇혀 T ↑, L ↓ | 스펙트럼 그림의 2325 nm 값과 비교 |
-| `resolution` 25 → 10 (공식 값) | 코너가 거칠어져 T·R이 수 % 흔들림 | T 차이 |
-| `eps_wg` 12 → 4 | confinement 약화. 코너에서 더 많이 새지만 모드 자체도 넓어짐 | T, L |
+<h2 id="check">6. 확인 · 두 질문에 답해보기</h2>
 
-## 8. 전체 코드
+### 1. 입사장을 빼는 줄을 지우면 반사율은 어떻게 달라질까요?
+
+<details markdown="1">
+<summary>설명 확인하기</summary>
+
+반사 monitor에 입사와 반사 성분이 함께 남습니다. 이때 같은 마이너스 부호로 R을 계산하면 반사율을 과소평가하거나 음수로 얻을 수 있습니다. 이 줄은 필드를 바꾸는 source가 아니므로 투과장의 전파 자체를 바꾸지는 않습니다.
+
+</details>
+
+### 2. L = 1 − T − R가 0.58이면 방사를 정확히 58% 측정한 것일까요?
+
+<details markdown="1">
+<summary>설명 확인하기</summary>
+
+아닙니다. 여기서는 흡수 없는 모델의 잔여를 방사로 해석했습니다. monitor 위치·PML·격자 오차도 잔여에 영향을 주므로 직접 방사 flux 측정과 수렴성 확인 없이는 그 정밀도를 주장할 수 없습니다.
+
+</details>
+
+<h2 id="reference">7. 참고 · 전체 코드와 원본 기록</h2>
+
+아래 전체 프로그램은 원본 그대로입니다. 실행 환경과 결과 기록을 함께 확인하세요.
 
 <details>
 <summary>bend90.py (클릭해서 펼치기)</summary>
@@ -619,6 +737,9 @@ if mp.am_master():
 {% endhighlight %}
 </details>
 
+<details markdown="1">
+<summary>원본 실행 로그·재현 환경 보기</summary>
+
 §4의 발췌 코드와 달리 전체 코드에는 그림 저장·result.json 기록이 들어 있다. 그림 helper `blogfig.py`(`annotated_layout`, `field_figure`, `spectrum_figure`)는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
 **실행 결과 (2026-10-23 재실행)**:
@@ -640,13 +761,23 @@ convergence res=25 dpml=1.5: T=0.1703 R=0.2173 L=0.6124
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python bend90.py` (약 12 s, 단일 코어)
 
-## 확인 질문
+</details>
 
-1. `load_minus_flux_data` 줄을 지우면 R은 어느 방향으로 틀어지는가? T는 변하는가?
-2. radius sweep에서 반사는 1a에서 사라지는데 방사는 3a까지 남는다. 두 손실의 원인이 어떻게 다른가?
-3. 수렴성 표에서 PML을 두껍게 했을 때 T가 내려간 이유로 생각할 수 있는 것은 무엇인가? 어떻게 확인하겠는가?
+<details markdown="1">
+<summary>응용과 다음 학습 주제 보기</summary>
 
-## 9. 더 읽기
+### 어디에 쓰이는가
+
+bend 반지름은 칩 면적을 정하는 숫자다. 반지름을 두 배로 하면 고리 하나의 면적은 네 배가 되고, foundry의 설계 규칙에는 최소 반지름이 적혀 있다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| PIC 배선과 면적(footprint) | 반지름–손실 곡선과 knee | 09편 역설계 bend |
+| ring resonator·spiral delay line | 작은 반지름의 곡률 손실이 Q와 FSR을 정한다 | 12편 고리 |
+| foundry PDK의 최소 bend radius 규칙 | knee 1.5~2a가 그 규칙의 근거 | — |
+| 입력 대비 출력의 모든 측정 | 2-run 정규화 | 06편 이후 전부 |
+
+</details>
 
 - [공식 튜토리얼: Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend)
 - [`add_flux` / `load_minus_flux_data` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#flux-spectra) · [`Cylinder` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#cylinder)

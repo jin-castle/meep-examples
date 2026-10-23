@@ -1,11 +1,19 @@
 ---
-layout: post
+layout: lesson
 date: 2026-10-23
 title: "Meep Example 12 · 빛을 가두는 고리 — Harminv, Q, FSR, solve_cw 교차검증"
 title_en: "Meep Example 12 · A ring that traps light — Harminv, Q, the free spectral range, and a solve_cw cross-check"
 lang: ko
 series: meep-examples
 part: 12
+permalink: /ring-resonator/
+lesson_title: "고리에 갇힌 빛은 얼마나 오래 남을까?"
+lesson_summary: "펄스가 꺼진 뒤 남는 울림에서 공진 주파수·Q·공진 간격을 읽고, 어느 숫자까지 믿을 수 있는지 확인합니다."
+lesson_goals:
+  - "공진 주파수·Q·FSR이 각각 무엇을 말하는지 구분합니다."
+  - "Harminv 관측 시간을 바꿔 Q의 신뢰 조건을 확인합니다."
+  - "주파수의 수렴과 Q의 수렴이 다른 이유를 설명합니다."
+lesson_prerequisites: "11편의 공진과 선폭, 05편의 굽힘 손실을 알고 있으면 좋습니다."
 level: intermediate
 runtime: "4 min (mpirun -np 4)"
 meep_version: "1.33.0"
@@ -14,27 +22,29 @@ tags: [meep, fdtd, ring-resonator, harminv, q-factor, fsr, solve_cw, frequency-d
 image: /assets/meep/12/03_modes.png
 excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chip the trap is a dielectric ring. This post asks the first questions about any resonator: at which frequencies does it trap light, for how long (Q), how far apart are the resonances (FSR), and what does each trapped mode look like. Official `ring.py` (Harminv on the ringing field), one narrow-band run per mode, and official `solve-cw.py` (the same mode solved in the frequency domain)."
 ---
-## TL;DR (English)
+<h2 id="observe">1. 먼저 관찰하기</h2>
 
-![hero]({{ site.baseurl }}/assets/meep/12/03_modes.png)
+고리에 짧은 펄스를 넣었다가 끄면 빛은 바로 사라질까요? 아래 영상에서 **고리를 도는 울림과 바깥으로 새는 빛**을 찾아보세요. 11편의 두 거울 대신, 이번에는 유전체 도파로를 둥글게 말아 빛을 가둡니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/12/05_anim_ring.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/05_anim_ring.gif" data-animation-src="{{ site.baseurl }}/assets/meep/12/05_anim_ring.gif" data-static-src="{{ site.baseurl }}/assets/meep/12/03_modes.png" alt="광대역 펄스 뒤 고리에서 울리는 전기장과 바깥으로 새는 빛" loading="eager"></a>
+  <figcaption>펄스가 꺼진 뒤에도 세 모드가 함께 울려 맥놀이가 보입니다. 낮은 모드부터 PML 쪽으로 새어 나갑니다.</figcaption>
+  <button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
+</figure>
+
+**이번 질문:** 어떤 주파수의 빛이 남고, 얼마나 오래 남으며, 그 답을 어떻게 검증할까요? 아래 측정은 **2D Ez·손실 없는 고립 고리**의 결과입니다. 도파로와의 결합 손실이나 3D 소자의 Q를 포함하지 않습니다.
+
+<details markdown="1">
+<summary>English summary</summary>
 
 - **What**: post 11 measured how much a dipole emits between two mirrors. On a chip the trap is a dielectric ring. This post asks the first questions about any resonator: at which frequencies does it trap light, for how long (Q), how far apart are the resonances (FSR), and what does each trapped mode look like. Official `ring.py` (Harminv on the ringing field), one narrow-band run per mode, and official `solve-cw.py` (the same mode solved in the frequency domain).
 - **Result**: a broadband pulse in the band 0.10–0.20 excites three Ez modes; at the official resolution 10 Harminv gives f = 0.1181 / 0.1472 / 0.1753 with Q = 81 / 317 / 1675 (tutorial: 0.1181 / 0.1472 / 0.1752, Q 81 / 316 / 1677). The frequencies move by less than 0.3% between resolution 10 and 30; the Q of the sharpest mode goes 1675 → 2132 → 1610, not monotonically. The spacing 0.0292 / 0.0283 matches 1/(n_g L) with n_g = 3.69, and the three modes carry m = 3, 4, 5 wavelengths around the ring. `solve_cw` reproduces the time-domain DFT of the f = 0.118 mode to 0.40% relative L2 (|Ez| correlation 0.99998) after a complex scale factor.
 - **Takeaway**: Harminv turns 300 time units of ringing into frequencies and Q without waiting for the field to decay, but Q converges much more slowly with resolution than the frequency does. One mode at a time needs a source as narrow as the mode. The frequency-domain solver and the time-domain pulse are two routes to the same steady state, and agreeing to a percent is what "the same mode" means.
 - **Code**: full script at the bottom, ~4 min (mpirun -np 4).
+</details>
 
-## 0. 이 글에서 배우는 것
-
-- 공진기의 세 숫자: 공진 주파수, Q(머무는 시간), FSR(공진 간격). 손으로 먼저 어림하는 법 $\mathrm{FSR}\approx 1/(n_g L)$
-- `Harminv`: source가 꺼진 뒤의 울림에서 감쇠 사인파를 분해해 f와 Q를 꺼낸다. 수천 time unit을 기다리지 않는다
-- Harminv의 `error`와 Q의 신뢰 조건. 주파수는 해상도에 빨리 수렴하고 Q는 느리게 수렴한다
-- 모드 하나만 보려면 그 모드만큼 좁은 대역의 source. 대역을 바꾸는 것과 Harminv 중심을 바꾸는 것은 다르다
-- 방위 차수 m: 고리 둘레에 파장이 몇 개 들어가는지 field에서 세기
-- `solve_cw`: 연속파 source로 정상상태를 직접 푸는 주파수 영역 solver. tolerance와 시간영역 DFT와의 비교
-
-**전제 지식**: 11편의 Q와 선폭, 05편의 bend 손실(굽힘 방사). **공식 예제**: [Basics 튜토리얼의 ring resonator](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator) · [Frequency-domain solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Frequency_Domain_Solver/) · 스크립트 [ring.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring.py) · [solve-cw.py](https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py). **이전 글**: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/) · **다음 글**: [13 · 회전 대칭으로 3D를 계산하기]({{ site.baseurl }}/cylindrical-dipole/)
-
-## 1. 무엇을 알고 싶은가
+<details markdown="1">
+<summary>공진기는 어디에 쓰일까요?</summary>
 
 11편의 금속 상자는 구멍 하나로 Q를 조절했다. 칩 위에서는 금속 상자를 쓰지 않는다. 유전체 도파로를 고리로 말면 빛이 전반사로 돌면서 갇히고, 05편에서 본 굽힘 방사가 유일한 손실이 된다. 이 고리에 펄스를 넣으면 어떤 주파수가 남는가, 얼마나 오래 남는가, 남은 주파수들은 얼마나 떨어져 있는가. 그리고 그 답을 어떻게 재는가. 시간영역에서 울림을 분해하는 Harminv와, 주파수 영역에서 정상상태를 직접 푸는 solve_cw 두 가지로 재고 서로 맞는지 본다.
 
@@ -48,8 +58,52 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 | 바이오·가스 센서 | 공진 이동 Δf를 선폭 f/Q로 나눈 것이 검출 한계 | 13편 디스크 공진기 |
 | microring·microdisk 레이저, 주파수 빗(comb) | Q와 모드 부피(threshold), FSR(빗 간격) | 22편 비선형 |
 | 모든 공진 구조의 측정 절차 | Harminv로 f·Q, 좁은 대역으로 모드 하나, solve_cw로 정상상태 | 26편 photonic crystal cavity |
+</details>
 
-## 2. 물리 한 페이지
+<h2 id="predict">2. 결과를 예측해 보기</h2>
+
+해상도를 10 → 20 → 30으로 높이면 **주파수와 Q가 함께 매끄럽게 수렴할까요?** 먼저 골라보세요.
+
+<fieldset class="prediction">
+<legend>해상도를 높였을 때 두 숫자의 수렴을 예상해 보세요.</legend>
+<label><input type="radio" name="ring-prediction" value="together"> 주파수가 안정되면 Q도 비슷한 비율로 안정된다.</label>
+<label><input type="radio" name="ring-prediction" value="different"> 주파수가 안정되어도 Q는 크게 움직일 수 있다.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측 확인하기</summary>
+
+**두 번째입니다.** 세 번째 모드의 주파수는 0.17525 → 0.17564 → 0.17572지만, Q는 1675 → 2132 → 1610입니다. Q는 작은 방사 손실을 재므로 경계를 격자로 표현하는 방식에 더 민감합니다. 뒤에서 이 차이를 실제 표로 확인합니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기</h2>
+
+<figure class="lesson-figure">
+<svg viewBox="0 0 300 245" role="img" aria-labelledby="ring-principle-title ring-principle-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="ring-principle-title">고리 공진의 원리</title>
+  <desc id="ring-principle-desc">고리를 한 바퀴 돈 파동이 같은 위상으로 만나면 보강됩니다. 바깥으로 새는 빛이 울림의 수명을 제한합니다.</desc>
+  <rect width="300" height="245" rx="12" fill="#f1f7f8"/>
+  <circle cx="144" cy="115" r="70" fill="none" stroke="#d5e5e9" stroke-width="34"/>
+  <circle cx="144" cy="115" r="70" fill="none" stroke="#157c8c" stroke-width="3" stroke-dasharray="9 5"/>
+  <path d="M144 45 A70 70 0 0 1 214 115" fill="none" stroke="#157c8c" stroke-width="5"/>
+  <path d="M205 105 L214 121 L222 104" fill="none" stroke="#157c8c" stroke-width="4"/>
+  <circle cx="214" cy="115" r="6" fill="#bb4f39"/>
+  <path d="M213 65 L249 38 M242 39 L250 37 L248 46" fill="none" stroke="#bb4f39" stroke-width="2.5"/>
+  <text x="144" y="108" text-anchor="middle" font-size="17" fill="#183744">한 바퀴 뒤</text>
+  <text x="144" y="131" text-anchor="middle" font-size="17" fill="#183744">위상이 맞으면 보강</text>
+  <text x="210" y="25" font-size="16" fill="#8c3d2e">방사 손실</text>
+  <text x="144" y="222" text-anchor="middle" font-size="16" fill="#183744">둘레 L에 파장이 m개 들어가는 공진</text>
+</svg>
+<figcaption>원리 개념도입니다. 점선은 빛의 왕복 경로를, 화살표는 진행과 누설을 뜻합니다. 실제 전기장 분포나 손실 크기를 그린 그림은 아닙니다.</figcaption>
+</figure>
+
+고리를 한 바퀴 돌아온 파동이 같은 위상으로 만나면 보강됩니다. 그래서 아무 주파수나 남는 것이 아니라, 둘레에 맞는 **공진 주파수**만 남습니다. **Q**는 그 울림이 얼마나 천천히 사라지는지, **FSR**은 이웃한 공진 주파수가 얼마나 떨어져 있는지를 말합니다.
+
+`Harminv`는 **source가 꺼진 뒤 한 점에 남는 신호**에서 주파수와 감쇠율을 함께 찾습니다. Q가 크다고 감쇠가 끝날 때까지 기다릴 필요는 없지만, 추정 오차를 확인해야 합니다. **양의 Q·관측 대역 안의 모드**와 `error < f/(2Q)`가 기본 조건이며, 이 글의 세 모드는 error가 그 기준의 2% 아래입니다.
+
+<details markdown="1">
+<summary>공진 식·기호와 정량 예측 자세히 보기</summary>
 
 고리를 한 바퀴 돈 빛의 위상이 자기 자신과 맞을 때만 보강된다. 둘레 $L=2\pi R_{\mathrm{mid}}$에 파장이 정수 $m$개 들어가는 조건이 공진이고, 이웃한 $m$ 사이의 주파수 간격이 FSR이다. 군굴절률 $n_g$는 분산을 포함한 값이라 재료 굴절률과 다르다. 손실이 굽힘 방사뿐이면 주파수가 높을수록 빛이 고리 안쪽에 더 단단히 갇혀 Q가 커진다.
 
@@ -89,10 +143,29 @@ Harminv는 source가 꺼진 뒤 한 점에서 기록한 field를 감쇠 사인�
 
 **판정 기준**: FSR이 손계산과 30% 넘게 다르면 둘레나 굴절률을 의심한다. Harminv error가 허수부보다 크면 그 Q는 보고하지 않는다. CW와 DFT가 10% 넘게 다르면 source 대칭이나 주파수가 어긋난 것이다.
 
-## 3. 시뮬레이션 설계도
+</details>
 
-![layout]({{ site.baseurl }}/assets/meep/12/01_layout.png)
-*16 × 16 셀(a = 1 µm), PML 2. 검은 고리가 n = 3.4 유전체(안쪽 반지름 1, 폭 1), 빨간 점이 고리 안의 Ez 점원이자 Harminv probe(r + 0.1, 0). flux monitor는 없다. 동그라미 숫자는 §4의 단계 번호다.*
+<h2 id="run">4. 변수 하나 바꿔 실험하기</h2>
+
+이번에는 **Harminv가 울림을 관측하는 시간만** 바꿉니다. 저장소의 `code/` 폴더에서 공통 helper `blogfig.py`와 `ring_resonator.py`를 함께 두고 Meep 환경에서 실행하세요. 전체 코드는 아래 참고 자료에도 있습니다. 단일 CPU 기준 약 10분이며, 원문의 4분은 4개 MPI 프로세스를 사용한 기록입니다.
+
+```bash
+OMP_NUM_THREADS=1 python ring_resonator.py
+```
+
+1. 원본의 `T_HARMINV = 300.0`으로 실행해 각 모드의 f·Q·error를 기록합니다.
+2. 이 값만 `600.0`으로 바꾸고 다시 실행합니다. 구조·해상도·source는 고정합니다.
+3. 같은 주파수의 모드를 짝지어 error와 `f/(2Q)`를 비교합니다. 관측 시간을 늘리는 실험과 공간 해상도를 높이는 실험은 서로 다른 오차를 확인합니다.
+
+**판단 기준:** 관측 시간을 늘린 뒤 주파수와 Q가 얼마나 움직였는지 직접 기록하세요. 시간이 길어졌다는 이유만으로 Q가 정확하다고 결론 내릴 수는 없습니다. 아래 수치는 원본의 **300 time unit** 결과이며, 600의 새 측정값은 아닙니다.
+
+<details markdown="1">
+<summary>시뮬레이션 배치와 파라미터 확인하기</summary>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/12/01_layout.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/01_layout.png" alt="고리와 source·Harminv probe·PML의 배치" loading="lazy"></a>
+<figcaption>16 × 16 셀(a = 1 µm), PML 2. 고리는 n = 3.4, 안쪽 반지름 1, 폭 1입니다. 빨간 점은 Ez 점원이자 Harminv probe(r + 0.1, 0)이며 flux monitor는 없습니다. 원의 번호는 아래 코드의 단계입니다.</figcaption>
+</figure>
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -105,12 +178,17 @@ Harminv는 source가 꺼진 뒤 한 점에서 기록한 field를 감쇠 사인�
 | solve_cw | f 0.118, tol 1e-8/1e-10/1e-12, maxiters 10000, L 10 | 공식 solve-cw.py | L을 기본 2로 두면 수렴이 느리다 |
 | CW source 대칭 | (±(R+0.1), 0)에 진폭 +1/−1, X odd | 0.118 모드의 parity | parity가 틀리면 다른 모드를 푼다 |
 
-![source]({{ site.baseurl }}/assets/meep/12/00_source.png)
-*광대역 펄스의 파형과 스펙트럼(a 단위). 폭 10, 정점 t0 = 50. 300 time unit의 Harminv 창은 source가 꺼진 뒤 시작한다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/12/00_source.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/00_source.png" alt="광대역 Gaussian 펄스의 시간 파형과 스펙트럼" loading="lazy"></a>
+<figcaption>광대역 펄스의 파형과 스펙트럼(a 단위). 폭 10, 정점 t0 = 50. 300 time unit의 Harminv 창은 source가 꺼진 뒤 시작합니다.</figcaption>
+</figure>
 
 **강의 노트북과의 차이**: 강의 범위 밖이다. 10_sources의 0710 노트는 res 25 한 점, 0722 노트는 solve_cw tolerance 5점이었다. 이 글은 해상도 세 점(10/20/30)으로 주파수와 Q의 수렴 속도 차이를 보이고, 모드마다 좁은 대역으로 다시 돌려 방위 차수 m을 센다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>코드를 일곱 단계로 따라가기</summary>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이번 글의 ⑤는 flux monitor가 아니라 `Harminv`(한 점의 시간 신호)와 `solve_cw`다.
@@ -213,10 +291,16 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 
 > **함정**: Harminv가 돌려주는 모드에는 Q가 음수이거나 error가 큰 가짜가 섞인다. Q > 0이고 대역 안에 있는 것만 남기고, error를 허수부 $f/(2Q)$와 비교한다. 이 글의 세 모드는 모두 error가 허수부의 2% 아래다.
 
-## 5. 결과
+</details>
 
-![harminv]({{ site.baseurl }}/assets/meep/12/02_harminv.png)
-*왼쪽: 세 해상도의 Harminv 결과. 주파수는 거의 움직이지 않고 Q는 해상도에 따라 움직인다. 오른쪽: 공진 간격 FSR과 손계산, 각 모드의 방위 차수 m.*
+<h2 id="interpret">5. 결과를 해석하기</h2>
+
+먼저 세 번째 모드의 **주파수와 Q를 나란히** 읽어보세요. 해상도 10 → 30에서 주파수 변화는 0.3% 이하지만 Q는 비단조로 움직입니다. 따라서 **주파수는 안정적이어도 Q의 절대값은 아직 수렴했다고 주장할 수 없습니다.**
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/12/02_harminv.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/02_harminv.png" alt="해상도별 공진 주파수·Q와 FSR 비교" loading="lazy"></a>
+<figcaption>왼쪽의 주파수는 거의 움직이지 않지만 Q는 크게 바뀝니다. 오른쪽은 공진 간격 FSR과 손계산, 각 모드의 방위 차수 m입니다. 그림을 누르면 확대할 수 있습니다.</figcaption>
+</figure>
 
 | res | $f_1$ / $Q_1$ | $f_2$ / $Q_2$ | $f_3$ / $Q_3$ |
 |---|---|---|---|
@@ -228,8 +312,15 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 |---|---|---|
 | 0.0292 / 0.0283 | 3.69 | 3.4 |
 
-![modes]({{ site.baseurl }}/assets/meep/12/03_modes.png)
-*모드 하나씩. 위: 각 공진 주파수의 좁은 대역 run과 DFT. 검은 선이 고리, 초록 점이 source. 아래: 고리 가운데 원(r = 1.5) 위의 Re(Ez). 둘레에 파장이 m개 들어간다.*
+**FSR이 말하는 것:** 간격 0.0292 / 0.0283에서 군굴절률 3.69를 얻습니다. 이는 재료 굴절률 3.4와 같은 양이 아닙니다. 아래 모드는 둘레에 각각 m = 3, 4, 5개의 파장이 들어갑니다.
+
+<details markdown="1">
+<summary>모드 모양과 주파수 영역 교차검증 보기</summary>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/12/03_modes.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/03_modes.png" alt="세 공진 모드의 전기장과 둘레 방향 진동 횟수" loading="lazy"></a>
+<figcaption>위는 각 주파수의 좁은 대역 DFT입니다. 아래는 r = 1.5인 원 위의 Re(Ez)이며, 둘레에 파장이 m개 들어갑니다.</figcaption>
+</figure>
 
 | 모드 | f | λ [a] | Q (res 20) | m | $m/(n L f)$ |
 |---|---|---|---|---|---|
@@ -237,8 +328,10 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 | 2 | 0.1474 | 6.79 | 342 | 4 | 0.85 |
 | 3 | 0.1756 | 5.69 | 2132 | 5 | 0.89 |
 
-![solve cw]({{ site.baseurl }}/assets/meep/12/04_solve_cw.png)
-*왼쪽: solve_cw의 tolerance를 조일수록 가장 조인 해와의 차이가 줄어든다. 가운데: 주파수 영역 해. 오른쪽: 같은 모드의 시간영역 DFT를 복소 상수로 맞춘 것.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/12/04_solve_cw.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/04_solve_cw.png" alt="solve_cw tolerance 비교와 시간영역 DFT의 전기장 비교" loading="lazy"></a>
+<figcaption>왼쪽은 tolerance별 오차입니다. 가운데 주파수 영역 해와 오른쪽 시간영역 DFT는 복소 상수로 정규화와 전체 위상을 맞춘 뒤 비교합니다.</figcaption>
+</figure>
 
 | 항목 | 값 |
 |---|---|
@@ -248,8 +341,12 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 | \|Ez\| 상관 | 0.99998 |
 | 시간영역 run 길이 (감쇠 1e-8) | 2001 time unit |
 
-![animation]({{ site.baseurl }}/assets/meep/12/05_anim_ring.gif)
-*광대역 펄스 뒤의 울림. 세 모드가 함께 울려 맥놀이가 보이고, 낮은 모드부터 PML 쪽으로 새어 나간다.*
+</details>
+
+**두 해법의 확인:** f = 0.118 모드에서 `solve_cw`와 시간영역 DFT는 복소 정렬 후 상대 L2 0.40%, 진폭 상관 0.99998로 일치합니다. 이 확인이 모든 모드의 Q 수렴까지 보장하지는 않습니다.
+
+<details markdown="1">
+<summary>원래의 여덟 예측·수렴성·해석 자세히 보기</summary>
 
 ### 예측과 비교
 
@@ -279,7 +376,10 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 - 할 수 있는 것: 이 고리(2D, n 3.4, R 1, w 1)의 대역 0.10~0.20에는 Ez 모드가 셋 있고 주파수는 해상도 10에서 이미 1% 안이다. 간격은 $n_g$ 3.69의 $1/(n_gL)$과 같다. f = 0.118 모드는 시간영역과 주파수 영역이 0.40% 안에서 같다.
 - 할 수 없는 것: Q의 절대값. 해상도 30에서도 수렴하지 않았고 Harminv 창 300의 값이다. 도파로와 결합한 고리의 Q(결합 손실이 더해진다). 3D 디스크의 값. 통신 파장으로 축소했을 때의 재료 분산.
 
-## 6. 흔한 실수
+</details>
+
+<details markdown="1">
+<summary>결과가 예상과 다를 때 확인할 것</summary>
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -291,19 +391,41 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 | CW와 DFT가 100% 다름 | 정규화·위상 미정렬, 또는 parity 다름 | 복소 상수 α로 정렬, source 부호 확인 |
 | 해상도를 올렸더니 Q가 크게 변함 | 정상. Q는 느리게 수렴 | Q는 해상도 사다리와 함께 보고 |
 
-## 7. 직접 해보기
+</details>
+
+<details markdown="1">
+<summary>추가 실험 아이디어</summary>
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
 | 고리 폭 w 1 → 0.5 | 구속이 약해져 Q 감소, FSR 증가(둘레 ↓) | f, Q, FSR |
-| source를 x축 위 (0, R + 0.1)에 | Y-odd 모드가 사라진다 | 모드 수 |
+| source를 y축 위 (0, R + 0.1)에 | 기존 Y 대칭과 호환되는지 먼저 확인 | 모드 수와 source 대칭 |
 | Harminv 창 300 → 1000 | error 감소, Q 안정 | error, Q |
 | res 40 | Q_3 수렴 여부 | Q_3 |
 | ω–2ω 겹침 (ring-mode-overlap.py) | 0.118과 0.236 모드의 공간 겹침 0.05 | 정규화 overlap |
 
-## 8. 전체 코드
+</details>
 
-<details>
+<h2 id="check">6. 이해했는지 확인하기</h2>
+
+1. 주파수가 0.3% 안에서 안정되었는데 Q가 1675 → 2132 → 1610이라면 무엇을 보고해야 할까요?
+2. Harminv 관측 시간을 늘리는 것과 해상도를 높이는 것은 같은 검증일까요?
+
+<details markdown="1">
+<summary>답과 이유 확인하기</summary>
+
+1. 주파수는 안정적이지만 Q의 절대값은 아직 수렴하지 않았다고 보고합니다. 사용한 해상도·관측 시간·error를 함께 제시합니다.
+2. 다릅니다. 관측 시간은 시간 신호에서 모드를 추정하는 오차를, 해상도는 구조와 장을 공간 격자로 표현하는 오차를 확인합니다. 작은 Harminv error만으로 공간 수렴을 보장할 수 없습니다.
+
+</details>
+
+<h2 id="reference">7. 코드와 참고자료</h2>
+
+**공식 예제**: [Basics 튜토리얼의 ring resonator](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator) · [Frequency-domain solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Frequency_Domain_Solver/) · 스크립트 [ring.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring.py) · [solve-cw.py](https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py).
+
+### 전체 코드
+
+<details markdown="1">
 <summary>code/ring_resonator.py 전체 (클릭하여 펼치기)</summary>
 {% highlight python %}
 """Meep Example 12 - A ring that traps light: Harminv resonances, Q, FSR, and a solve_cw cross-check.
@@ -547,13 +669,16 @@ total ~4 min on 4 processes
 
 **재현 환경**: meep 1.33.0 (MPI) · Python 3.11 · `conda install -c conda-forge pymeep=*=mpi_mpich_*` · 실행 `mpirun -np 4 python ring_resonator.py` (약 4 min (mpirun -np 4))
 
-## 확인 질문
+<details markdown="1">
+<summary>심화 질문: 다음 편과 연결하기</summary>
 
 1. Harminv는 300 time unit의 신호로 수명이 수천인 모드의 Q를 준다. 그것이 가능한 이유와, 그 Q를 믿어도 되는 조건(error)을 말해 보라.
 2. 주파수는 해상도 10에서 1% 안인데 Q는 해상도 30에서도 수렴하지 않았다. 두 양의 수렴 속도가 다른 이유를 굽힘 방사와 격자로 설명해 보라.
 3. 이 고리는 2D 단면이다. 실제 마이크로디스크는 축대칭 3D 구조이고 모드는 방위 차수 m을 가진다. 3D 셀을 돌리지 않고 m 하나당 2D 계산으로 끝내는 좌표계는 무엇이고, 그때 m은 어디에 들어가는가. (13편)
 
-## 9. 더 읽기
+</details>
+
+### 더 읽기
 
 - [Basics 튜토리얼: modes of a ring resonator](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator) · [Frequency-domain solver](https://meep.readthedocs.io/en/latest/Python_Tutorials/Frequency_Domain_Solver/) · [Harminv 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#harminv) · [solve_cw](https://meep.readthedocs.io/en/latest/Python_User_Interface/#frequency-domain-solver)
 - 스크립트: [ring.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring.py) · [solve-cw.py](https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py) · [ring-mode-overlap.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring-mode-overlap.py)
