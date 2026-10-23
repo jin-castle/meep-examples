@@ -14,6 +14,7 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 05 | Bent waveguide와 radius trade-off — 2-run flux 정규화, sharp bend 기준값, radius sweep | `code/bend90.py` | sharp: T = 0.20, R = 0.22, radiated = 0.58; T = 0.91 at R = 0.35 µm, 0.99 at 0.70 µm |
 | 06 | Binary grating과 diffraction order — grating equation, 차수별 효율, duty cycle이 만드는 위상 | `code/binary_grating.py` | m=0 0.759, m=±1 0.088, T+R 0.999; duty-cycle phase span 0.09/0.23 × 2π; finite grating beam 35.2° (eq. 36.6°) |
 | 07 | Metalens의 meta-atom과 phase library — 폭 하나로 위상을 돌리고, 4단계로 빛을 꺾고, 어디서 설계가 틀어지는가 | `code/meta_atom.py` | library span 1.10 × 2π; 4-level supercell +1 order 0.514 = 63 % of the blazed bound; 40-atom array peaks at 58.5° |
+| 08 | Metagrating inverse design — forward, adjoint, gradient, 검증의 4단계 계약 | `code/metagrating_inverse.py` | gradient gate PASS (0.7 / 0.1 / 0.06 %); MMA x5: +1 order 0.496 → 0.623 in a fresh run (61 → 77 % of the bound) |
 
 ## Run a script
 
@@ -26,7 +27,8 @@ python reference_subtraction.py # ~30 s, writes ../assets/03/
 python straight_waveguide.py   # ~3 min (incl. GIF) (baseline + convergence), writes ../assets/04/
 python bend90.py               # ~2 min (incl. GIFs)
 python binary_grating.py       # ~30 s, writes ../assets/06/
-python meta_atom.py            # ~35 s, writes ../assets/07/ (sharp + radius sweep + convergence), writes ../assets/05/
+python meta_atom.py            # ~35 s, writes ../assets/07/
+python metagrating_inverse.py  # ~50 s (meep.adjoint + nlopt), writes ../assets/08/ (sharp + radius sweep + convergence), writes ../assets/05/
 ```
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).
