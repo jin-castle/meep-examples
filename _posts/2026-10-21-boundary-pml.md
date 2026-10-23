@@ -30,7 +30,7 @@ excerpt: "the same point source in the same empty cell, three boundary treatment
 - 경계 반사를 재는 두 가지 지표. 간단한 edge-band RMS와, 경계를 멀리 밀어낸 참조 run을 빼는 깨끗한 지표
 - 참조 빼기(reference subtraction). 03편의 incident·scattered field 분리와 같은 기법이다
 
-**전제 지식**: 01편의 source와 t0. **공식 문서**: [Perfectly Matched Layer](https://meep.readthedocs.io/en/latest/Perfectly_Matched_Layer/), [absorber-1d 예제](https://github.com/NanoComp/meep/blob/master/python/examples/absorber-1d.py). **이전 글**: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · **다음 글**: 03 · Reference run 빼기
+**전제 지식**: 01편의 source와 t0. **공식 문서**: [Perfectly Matched Layer](https://meep.readthedocs.io/en/latest/Perfectly_Matched_Layer/), [absorber-1d 예제](https://github.com/NanoComp/meep/blob/master/python/examples/absorber-1d.py). **이전 글**: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · **다음 글**: [03 · Reference run 빼기]({{ site.baseurl }}/reference-subtraction/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -490,4 +490,4 @@ convergence res=24: no layer=1.04e+00  PML 1 um=5.09e-04  Absorber 1 um=1.85e-02
 - [공식 문서: Perfectly Matched Layer](https://meep.readthedocs.io/en/latest/Perfectly_Matched_Layer/) (PML의 원리와 한계, Absorber를 쓰는 경우)
 - [공식 예제 absorber-1d.py](https://github.com/NanoComp/meep/blob/master/python/examples/absorber-1d.py) (PML과 Absorber를 같은 셀에서 교체)
 - [`PML` / `Absorber` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#pml)
-- 이전 글: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · 다음 글: 03 · Reference run 빼기
+- 이전 글: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · 다음 글: [03 · Reference run 빼기]({{ site.baseurl }}/reference-subtraction/)
