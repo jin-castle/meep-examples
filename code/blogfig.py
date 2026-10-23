@@ -103,7 +103,8 @@ def annotated_layout(sim, out_png: str, *, title: str, dpml: float,
         if lb.step is not None:
             _badge(ax, anchor, lb.step, lb.color)
             ax.text(anchor[0], anchor[1], lb.text, color=lb.color, fontsize=9,
-                    ha="left", va="center", transform=shift, zorder=5)
+                    ha="left", va="center", transform=shift, zorder=5,
+                    bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.8))
         else:
             ax.text(anchor[0], anchor[1], lb.text, color=lb.color, fontsize=9,
                     ha="center", va="center", zorder=5)

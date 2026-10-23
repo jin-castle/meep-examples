@@ -31,7 +31,7 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 - 코너에 반지름을 주면서 손실이 사라지는 지점(knee)을 찾는 radius sweep
 - 물리 교훈: 급격한 직각 꺾임은 빛의 절반 이상을 밖으로 버린다. 그래서 광회로는 곡선 굽힘을 쓴다
 
-**전제 지식**: 04편의 도파로·모드 개념. **공식 예제**: [Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend). **이전 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: 06 · Binary grating과 diffraction order
+**전제 지식**: 04편의 도파로·모드 개념. **공식 예제**: [Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend). **이전 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: [06 · Binary grating과 diffraction order]({{ site.baseurl }}/binary-grating/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -630,4 +630,4 @@ convergence res=25 dpml=1.5: T=0.1703 R=0.2173 L=0.6124
 
 - [공식 튜토리얼: Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend)
 - [`add_flux` / `load_minus_flux_data` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#flux-spectra) · [`Cylinder` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#cylinder)
-- 이전 글: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · 다음 글: 06 · Binary grating과 diffraction order
+- 이전 글: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · 다음 글: [06 · Binary grating과 diffraction order]({{ site.baseurl }}/binary-grating/)

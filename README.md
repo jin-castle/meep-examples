@@ -12,6 +12,7 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 03 | Reference run 빼기 — incident·total·scattered field, R·T·S 수지, 산란 단면적 | `code/reference_subtraction.py` | Fresnel to 1.6e-4; cylinder R+T+S = 0.999, Q_sca 2.515 vs 2D Mie 2.513 |
 | 04 | Straight waveguide와 guided mode — MPB n_eff, EigenModeSource, modal transmission | `code/straight_waveguide.py` | T = 1.0000, R = 8e-6; three guided TE modes (n_eff 3.15 / 2.59 / 1.45) |
 | 05 | Bent waveguide와 radius trade-off — 2-run flux 정규화, sharp bend 기준값, radius sweep | `code/bend90.py` | sharp: T = 0.20, R = 0.22, radiated = 0.58; T = 0.91 at R = 0.35 µm, 0.99 at 0.70 µm |
+| 06 | Binary grating과 diffraction order — grating equation, 차수별 효율, duty cycle이 만드는 위상 | `code/binary_grating.py` | m=0 0.759, m=±1 0.088, T+R 0.999; duty-cycle phase span 0.09/0.23 × 2π; finite grating beam 35.2° (eq. 36.6°) |
 
 ## Run a script
 
@@ -22,7 +23,8 @@ python point_line_source.py    # ~20 s, writes ../assets/01/ (incl. 2 GIFs)
 python boundary_pml.py         # ~10 s, writes ../assets/02/
 python reference_subtraction.py # ~30 s, writes ../assets/03/
 python straight_waveguide.py   # ~3 min (incl. GIF) (baseline + convergence), writes ../assets/04/
-python bend90.py               # ~95 s (sharp + radius sweep + convergence), writes ../assets/05/
+python bend90.py               # ~2 min (incl. GIFs)
+python binary_grating.py       # ~30 s, writes ../assets/06/ (sharp + radius sweep + convergence), writes ../assets/05/
 ```
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).
