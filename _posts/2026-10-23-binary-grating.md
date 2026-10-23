@@ -31,7 +31,7 @@ excerpt: "a glass binary grating under a normally incident plane wave. One perio
 - subwavelength 격자에서 duty cycle이 0차 투과의 진폭과 위상을 어떻게 바꾸는지. 07편 phase library의 원형
 - 유한 격자(ridge 8개)에서 빔이 실제로 갈라지는 모습과, far cut의 공간 FFT로 각도 읽기
 
-**전제 지식**: 03편의 reference run 빼기, 04편의 mode coefficient. **공식 예제**: [binary_grating.py](https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating.py), [Diffraction Spectrum of a Binary Grating 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-a-binary-grating). **이전 글**: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · **다음 글**: 07 · Metalens의 meta-atom과 phase library
+**전제 지식**: 03편의 reference run 빼기, 04편의 mode coefficient. **공식 예제**: [binary_grating.py](https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating.py), [Diffraction Spectrum of a Binary Grating 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-a-binary-grating). **이전 글**: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · **다음 글**: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -553,4 +553,4 @@ C. finite grating (8 ridges): spatial-FFT peak at 0.372 cycles/um -> theta = 35.
 
 - [공식 예제 binary_grating.py](https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating.py) · [튜토리얼: Diffraction Spectrum of a Binary Grating](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-a-binary-grating)
 - [`DiffractedPlanewave` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#diffractedplanewave) · [Bloch 주기 경계와 `k_point`](https://meep.readthedocs.io/en/latest/FAQ/#how-do-i-model-a-periodic-structure)
-- 이전 글: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · 다음 글: 07 · Metalens의 meta-atom과 phase library
+- 이전 글: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · 다음 글: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/)
