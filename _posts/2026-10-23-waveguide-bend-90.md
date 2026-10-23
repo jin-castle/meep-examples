@@ -37,6 +37,18 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 
 04편의 직선 도파로는 넣은 빛을 전부 내보냈다. 같은 도파로를 직각으로 꺾으면 얼마가 코너를 돌아 나가고(T), 얼마가 되돌아오고(R), 얼마가 밖으로 새는가(L). 이 예제를 고른 이유는 두 가지다. 답을 미리 알 수 없는 첫 문제이고, 투과율을 잴 때 기준 run을 먼저 돌려 나누는 Meep의 관례가 여기서 처음 나온다.
 
+### 어디에 쓰이는가
+
+bend 반지름은 칩 면적을 정하는 숫자다. 반지름을 두 배로 하면 고리 하나의 면적은 네 배가 되고, foundry의 설계 규칙에는 최소 반지름이 적혀 있다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| PIC 배선과 면적(footprint) | 반지름–손실 곡선과 knee | 09편 역설계 bend |
+| ring resonator·spiral delay line | 작은 반지름의 곡률 손실이 Q와 FSR을 정한다 | 12편 고리 |
+| foundry PDK의 최소 bend radius 규칙 | knee 1.5~2a가 그 규칙의 근거 | — |
+| 입력 대비 출력의 모든 측정 | 2-run 정규화 | 06편 이후 전부 |
+
+
 ## 2. 물리 한 페이지
 
 <!-- concept-illustration:part-05:start -->

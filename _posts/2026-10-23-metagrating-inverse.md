@@ -38,6 +38,17 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 
 07편의 4단계 설계는 +1차에 51%를 보냈고 상한 0.81의 63%였다. 모자란 이유는 library가 "이웃이 나와 같다"는 가정에서 나온 값이라는 것이었다. 그 가정을 버리고 73개 픽셀의 밀도를 전부 설계 변수로 열면 얼마나 회복되는가. 이것이 이 글의 질문이고, 답보다 중요한 것은 답을 믿어도 되는지 확인하는 절차다. adjoint 최적화는 gradient가 틀려도 에러 없이 조용히 엉뚱한 곳으로 수렴한다.
 
+### 어디에 쓰이는가
+
+metagrating은 LiDAR의 빔 조향과 대각도 회절 소자의 핵심이고, adjoint 역설계는 그 성능을 library 설계 너머로 올리는 표준 방법이다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| LiDAR·빔 조향, 대각도 회절 | +1차 효율 최대화, 이웃을 고려한 비국소 설계 | — |
+| 모든 topology optimization 입문 | adjoint 4단계 계약 | 09편, 32~36편 |
+| 메타표면 제조 전 검증 | fresh-run 검증, 회색조 문제 | 32편 filter·projection |
+
+
 ## 2. 물리 한 페이지
 
 <!-- concept-illustration:part-08:start -->

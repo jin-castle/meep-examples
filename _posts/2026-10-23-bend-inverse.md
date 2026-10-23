@@ -38,6 +38,17 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 
 05편의 bend는 반지름을 키우면 손실이 줄었다. 설계 변수가 하나라 trade-off 곡선 하나로 끝났다. 이번에는 꺾이는 자리의 1 × 1 µm 정사각형을 통째로 열어 두고 121개 픽셀의 밀도를 adjoint 최적화에 맡긴다. 질문은 두 가지다. 균일한 회색(ρ = 0.5)에서 출발해 다섯 번의 평가로 어디까지 가는가. 그리고 08편의 절차가 목적함수를 바꿔도 그대로 쓰이는가.
 
+### 어디에 쓰이는가
+
+역설계 bend는 PIC 부품의 면적을 수십 배 줄이는 방법의 첫 예다. 같은 틀이 splitter, crossing, mode converter에 그대로 쓰인다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| 초소형 PIC 부품(bend, splitter, crossing, mode converter) | 자유 설계 영역 + 출력 모드 목적함수 | 31·33·34편 |
+| foundry 제약 반영(최소 선폭, 이진화) | 회색조·선폭 문제의 발견 | 32편 filter·projection |
+| 설계 변수 1개와 121개의 비교 | 05편 반지름 sweep과 이 글 | — |
+
+
 ## 2. 물리 한 페이지
 
 <!-- concept-illustration:part-09:start -->

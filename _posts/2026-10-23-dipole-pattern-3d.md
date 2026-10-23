@@ -38,6 +38,18 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 
 01편은 2D 점원이 네 면으로 25%씩 나간다는 데서 끝났다. 실제 점광원은 3D이고 축이 있다. x 방향으로 진동하는 쌍극자는 x축 방향으로는 빛을 내지 않고 그에 수직한 면에서는 고르게 낸다. 이것을 Meep으로 확인하려면 3D 셀이 필요할 것 같지만, 공식 예제는 1D run 수백 개로 같은 답을 얻는다. 왜 그것이 가능한지, 그리고 어디서 안 되는지가 첫 질문이다. 두 번째 질문은 시즌 2의 출발점이다. 점광원 옆에 거울 하나를 두면 방사 패턴은 어떻게 바뀌는가.
 
+### 어디에 쓰이는가
+
+거울 위의 쌍극자는 OLED와 LED의 발광층 그 자체다. 반사 전극 위에 놓인 발광 분자의 방사 패턴이 outcoupling의 출발점이고, 1D Bloch run 묶음은 다층 OLED의 광추출 계산에서 실제로 쓰는 방법이다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| OLED·LED: 반사 전극 위의 발광층 | 거울 위 쌍극자의 패턴, 1D Bloch 방법(다층으로 확장 가능) | 14편 광추출 효율 |
+| 패치·모노폴 안테나(ground plane 위) | image 이론, array factor sin²(kh cosθ) | — |
+| 양자점·단일광자원의 방출 방향 | 3D 쌍극자 패턴, 편광 축 | 11편 LDOS |
+| 메타표면·격자의 far field | 닫힌 near2far box의 규칙 | 16편 far field |
+
+
 ## 2. 물리 한 페이지
 
 점광원의 field는 평면파의 합이다. 횡방향 파수 $\mathbf k_\perp=(k_x,k_y)$를 하나 고정하면 Maxwell 방정식은 z만 남은 1D 문제가 되고, 그 1D 해는 $e^{i\mathbf k_\perp\cdot\mathbf r_\perp}$를 곱한 평면파다. Meep에서 이것이 `k_point`다. 방향 $(\theta,\phi)$로 나가는 평면파는 $\mathbf k_\perp=f\sin\theta\,(\cos\phi,\sin\phi)$를 가지므로, 1D 셀에 쌍극자를 두고 `k_point`를 바꿔 가며 돌리면 run 하나가 방향 하나의 표본이 된다. 1D run이 주는 것은 그 평면파 성분의 z 방향 flux $S_z$다. 입체각당 power로 바꾸려면 $d^2k_\perp=f^2\cos\theta\,d\Omega$의 Jacobian이 들어가 $S_r=S_z\cos\theta$가 된다.
