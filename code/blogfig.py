@@ -201,7 +201,8 @@ def spectrum_figure(wavelengths, curves: dict, out_png: str, *, unit: str = "nm"
 
 def line_figure(x, curves: dict, out_png: str, *, xlabel: str,
                 ylabel: str = "fraction of input power", mark: float | None = None,
-                mark_label: str | None = None, ylim=(0, 1.12), figsize=(7, 4), dpi=150) -> None:
+                mark_label: str | None = None, ylim=(0, 1.12), logy: bool = False,
+                hline: float | None = None, hline_label: str | None = None, figsize=(7, 4), dpi=150) -> None:
     """Several curves (name -> y) against one x axis, optional vertical marker."""
     fig, ax = plt.subplots(figsize=figsize)
     for name, y in curves.items():
@@ -211,10 +212,16 @@ def line_figure(x, curves: dict, out_png: str, *, xlabel: str,
         if mark_label:
             ax.text(mark, ylim[1] - 0.05, mark_label, ha="center", va="center", fontsize=8, color="gray",
                     bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none"))
+    if hline is not None:
+        ax.axhline(hline, color="tab:red", ls="--", lw=0.9, label=hline_label)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_ylim(*ylim)
-    ax.grid(alpha=0.3)
+    if logy:
+        ax.set_yscale("log")
+        ax.grid(alpha=0.3, which="both")
+    else:
+        ax.set_ylim(*ylim)
+        ax.grid(alpha=0.3)
     ax.legend()
     fig.tight_layout()
     fig.savefig(out_png, dpi=dpi)
@@ -292,7 +299,7 @@ def source_figure(fcen: float, fwidth: float, out_png: str, *, mon_fcen: float |
 
 def panel_grid(fields, titles, extent, out_png: str, *, ncols: int = 3, unit: str = "um",
                component: str = "Ez", marks=None, circles=None, suptitle: str | None = None,
-               lines=None, figsize=None, dpi=150) -> None:
+               lines=None, rects=None, figsize=None, dpi=150) -> None:
     """Grid of Re(field) snapshots sharing ONE color scale (so amplitude decay stays visible).
 
     ``marks``: list of (x, y) points drawn as black dots on every panel (e.g. the source).
@@ -311,6 +318,8 @@ def panel_grid(fields, titles, extent, out_png: str, *, ncols: int = 3, unit: st
                        vmin=-lim, vmax=lim, aspect="equal")
         for (x, y) in (marks or []):
             ax.plot(x, y, "o", color="k", ms=4, zorder=5)
+        for (rx, ry, rw, rh) in (rects or []):          # e.g. the edge band used for a metric
+            ax.add_patch(plt.Rectangle((rx, ry), rw, rh, fill=False, ls="--", lw=1.0, color="k"))
         if lines and i in lines:
             (x0, y0), (x1, y1) = lines[i]
             ax.plot([x0, x1], [y0, y1], color="k", lw=2.5, zorder=5)
@@ -329,7 +338,8 @@ def panel_grid(fields, titles, extent, out_png: str, *, ncols: int = 3, unit: st
 
 
 def bar_figure(categories, series: dict, out_png: str, *, ylabel: str, reference: float | None = None,
-               reference_label: str | None = None, figsize=(6.5, 3.8), dpi=150) -> None:
+               reference_label: str | None = None, logy: bool = False, fmt: str = "{:.3f}",
+               figsize=(6.5, 3.8), dpi=150) -> None:
     """Grouped bars: one group per category, one bar per series entry."""
     fig, ax = plt.subplots(figsize=figsize)
     k = len(series)
@@ -338,13 +348,19 @@ def bar_figure(categories, series: dict, out_png: str, *, ylabel: str, reference
     for j, (name, vals) in enumerate(series.items()):
         bars = ax.bar(xs + (j - (k - 1) / 2) * width, vals, width, label=name)
         for b, v in zip(bars, vals):
-            ax.text(b.get_x() + b.get_width() / 2, v + 0.01, f"{v:.3f}", ha="center", va="bottom", fontsize=7.5)
+            ax.text(b.get_x() + b.get_width() / 2, v * 1.15 if logy else v + 0.01, fmt.format(v),
+                    ha="center", va="bottom", fontsize=7.5)
     if reference is not None:
         ax.axhline(reference, color="gray", ls="--", lw=0.9, label=reference_label)
     ax.set_xticks(xs)
     ax.set_xticklabels(categories)
     ax.set_ylabel(ylabel)
-    ax.set_ylim(0, max(max(v) for v in series.values()) * 1.25)
+    if logy:
+        ax.set_yscale("log")
+        ax.set_ylim(min(min(v) for v in series.values()) / 3, max(max(v) for v in series.values()) * 4)
+        ax.grid(True, axis="y", alpha=0.3, which="both")
+    else:
+        ax.set_ylim(0, max(max(v) for v in series.values()) * 1.25)
     ax.legend(fontsize=8)
     fig.tight_layout()
     fig.savefig(out_png, dpi=dpi)
@@ -403,5 +419,39 @@ def animate_fields(frames, times, extent, out_gif: str, *, eps: np.ndarray | Non
         return im, ttl
 
     anim = animation.FuncAnimation(fig, update, frames=len(frames), blit=False)
+    anim.save(out_gif, writer=animation.PillowWriter(fps=fps), dpi=dpi)
+    plt.close(fig)
+
+
+def animate_compare(frame_sets, titles, times, extent, out_gif: str, *, points=None, unit: str = "um",
+                    component: str = "Ez", time_unit: str = "um/c", fps: int = 10, figsize=(10, 4.2),
+                    dpi=80, suptitle: str | None = None) -> None:
+    """Side-by-side GIF of several runs that share the same time axis and ONE color scale.
+
+    ``frame_sets``: list of frame lists (one per panel), ``titles``: panel titles,
+    ``points``: [(x, y, color, label)] drawn on every panel (e.g. the source).
+    """
+    from matplotlib import animation
+    n = len(frame_sets)
+    lim = max(float(np.max(np.abs(f))) for fs in frame_sets for f in fs)
+    fig, axes = plt.subplots(1, n, figsize=figsize, squeeze=False)
+    ims = []
+    for ax, fs, ttl in zip(axes[0], frame_sets, titles):
+        ims.append(ax.imshow(fs[0].T, origin="lower", extent=extent, cmap="RdBu", vmin=-lim, vmax=lim, aspect="equal"))
+        for (x, y, color, label) in (points or []):
+            ax.plot(x, y, "o", color=color, ms=5)
+        ax.set_title(ttl, fontsize=9)
+        ax.set_xlabel(f"x [{unit}]")
+    axes[0][0].set_ylabel(f"y [{unit}]")
+    fig.colorbar(ims[-1], ax=list(axes[0]), shrink=0.85, label=f"Re({component})")
+    sup = fig.suptitle("", fontsize=10)
+
+    def update(i):
+        for im, fs in zip(ims, frame_sets):
+            im.set_data(fs[i].T)
+        sup.set_text((suptitle + "   " if suptitle else "") + f"t = {times[i]:.1f} {time_unit}")
+        return ims
+
+    anim = animation.FuncAnimation(fig, update, frames=len(times), blit=False)
     anim.save(out_gif, writer=animation.PillowWriter(fps=fps), dpi=dpi)
     plt.close(fig)

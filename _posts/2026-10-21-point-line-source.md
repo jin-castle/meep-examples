@@ -31,7 +31,7 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 - `add_flux`와 `FluxRegion`으로 source를 둘러싼 네 면의 power를 재고 방향 분포를 숫자로 만들기
 - PML이 없으면 벽이 거울이라는 것. 이것이 02편 PML의 동기다
 
-**전제 지식**: 파동이 파장과 속도를 가진다는 것. **공식 예제**: [Basics 튜토리얼의 첫 예제](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#fields-in-a-waveguide)(도파로 안의 점원), [Antenna radiation pattern](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna)(점원의 등방성). **다음 글**: 02 · 경계 조건과 PML
+**전제 지식**: 파동이 파장과 속도를 가진다는 것. **공식 예제**: [Basics 튜토리얼의 첫 예제](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#fields-in-a-waveguide)(도파로 안의 점원), [Antenna radiation pattern](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna)(점원의 등방성). **다음 글**: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -484,4 +484,4 @@ convergence res=20 dpml=2.0: point max|frac-0.25|=1.94e-16, line x-sides=0.9188
 - [공식 Basics 튜토리얼: Fields in a Waveguide](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#fields-in-a-waveguide) (점원으로 시작하는 첫 예제)
 - [공식 Antenna radiation pattern 예제](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna) (점원 등방성, near2far)
 - [`Source` / `GaussianSource` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#source) · [`FluxRegion` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#fluxregion)
-- 다음 글: 02 · 경계 조건과 PML
+- 다음 글: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/)
