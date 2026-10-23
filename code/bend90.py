@@ -22,7 +22,7 @@ import meep as mp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from blogfig import Label, annotated_layout, field_figure, spectrum_figure   # noqa: E402
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "02")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "05")
 os.makedirs(OUT, exist_ok=True)
 
 # ---------------------------------------------------------------- (1) units & parameters

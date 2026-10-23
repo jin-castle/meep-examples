@@ -1,22 +1,22 @@
 ---
 layout: post
 date: 2026-10-23
-title: "Meep Example 02 · 90° Waveguide Bend — 직각으로 꺾으면 얼마나 새는가?"
-title_en: "Meep Example 02 · 90° Waveguide Bend — How much light leaks at a sharp corner?"
+title: "Meep Example 05 · Bent waveguide와 radiation loss — sharp bend의 2-run flux 정규화"
+title_en: "Meep Example 05 · Bent waveguide and radiation loss — two-run flux normalization on a sharp bend"
 lang: ko
 series: meep-examples
-part: 2
+part: 5
 level: beginner
 runtime: "12 s (two runs, single core)"
 meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend"
 tags: [meep, fdtd, waveguide, bend, flux, normalization]
-image: /assets/meep/02/02_field.png
+image: /assets/meep/05/02_field.png
 excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. We measure how much power goes around the corner, how much comes back, and how much leaks out."
 ---
 ## TL;DR (English)
 
-![hero]({{ site.baseurl }}/assets/meep/02/02_field.png)
+![hero]({{ site.baseurl }}/assets/meep/05/02_field.png)
 
 - **What**: a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. We measure how much power goes around the corner, how much comes back, and how much leaks out.
 - **Result**: T = 0.20, R = 0.22, radiated = 0.58 at the center wavelength. Most of the light is lost at the corner.
@@ -30,11 +30,11 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 - 뒤로 가는 flux는 음수라는 것, 그리고 에너지 수지 T + R + L = 1로 결과를 검산하는 법
 - 물리 교훈: 급격한 직각 꺾임은 빛의 절반 이상을 밖으로 버린다. 그래서 광회로는 곡선 굽힘을 쓴다
 
-**전제 지식**: 01편의 도파로·모드 개념. **이전 글**: [01 · Straight Waveguide]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: 03 · Air–Quartz Fresnel 반사
+**전제 지식**: 04편의 도파로·모드 개념. **이전 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: 06 · Binary grating과 diffraction order
 
 ## 1. 무엇을 알고 싶은가
 
-01편의 직선 도파로는 넣은 빛을 전부 내보냈다. 같은 도파로를 직각으로 꺾으면 얼마가 코너를 돌아 나가고(T), 얼마가 되돌아오고(R), 얼마가 밖으로 새는가(L). 이 예제를 고른 이유는 두 가지다. 답을 미리 알 수 없는 첫 문제이고, 투과율을 잴 때 기준 run을 먼저 돌려 나누는 Meep의 관례가 여기서 처음 나온다.
+04편의 직선 도파로는 넣은 빛을 전부 내보냈다. 같은 도파로를 직각으로 꺾으면 얼마가 코너를 돌아 나가고(T), 얼마가 되돌아오고(R), 얼마가 밖으로 새는가(L). 이 예제를 고른 이유는 두 가지다. 답을 미리 알 수 없는 첫 문제이고, 투과율을 잴 때 기준 run을 먼저 돌려 나누는 Meep의 관례가 여기서 처음 나온다.
 
 ## 2. 물리 한 페이지
 
@@ -69,7 +69,7 @@ $$
 
 ## 3. 시뮬레이션 설계도
 
-![layout]({{ site.baseurl }}/assets/meep/02/01_layout.png)
+![layout]({{ site.baseurl }}/assets/meep/05/01_layout.png)
 *검은 L자 = 수평 암 + 수직 암(`geometry`, 양 끝이 PML 관통), 빨간 선 = Ez line source(x = −6.5), 파란 세로선 = 반사 flux 단면(x = −5.5, source 하류), 파란 가로선 = 투과 flux 단면(y = +6.5, 수직 암 위), 녹색 빗금 = PML, 보라 × = bend run의 종료 조건이 감시하는 점(4, 6.5). 좌표는 코드의 a 단위이고 축 눈금은 a = 232.5 nm로 환산한 µm다(cell 16a = 3.72 µm). 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터 박스, ② 구조, ③ source, ④ PML, ⑤ monitor, ⑥ 종료 감시점이고, ⑦ 후처리는 그릴 것이 없다. 기준 run(직선)은 같은 source·반사 단면에 수평 암만 쭉 이어진 구조다.*
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
@@ -84,7 +84,7 @@ $$
 
 ## 4. 코드 따라가기
 
-> 읽는 순서는 01편과 같다: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
+> 읽는 순서는 04편과 같다: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이번에는 run이 두 번이라 ⑤·⑥이 기준 run과 bend run에 한 번씩 나온다.
 
 ### ① 단위와 파라미터 — 어떤 숫자를 고정하는가
@@ -115,7 +115,7 @@ span = mp.Vector3(0, w + 2)   # source / monitor line: core + 1 unit on each sid
 ```
 
 - **무엇**: 공식 튜토리얼의 무차원 설정(ε = 12, w = 1, f = 0.15)과 코너 위치, source·monitor 좌표를 고정한다.
-- **왜**: 01편은 1 = 1 µm였지만 여기서는 길이 단위 a를 정하지 않는다. Maxwell 방정식은 scale-invariant라서 a = 1 µm로 읽으면 파장 6.67 µm, a = 0.23 µm로 읽으면 1.55 µm 결과가 그대로 된다. 이 글의 그림은 그 둘째 읽기(a = 232.5 nm)로 환산해 파장은 nm, 길이는 µm로 표시한다. 좌표는 모두 PML 경계(±7)를 기준으로 잡는다.
+- **왜**: 04편은 1 = 1 µm였지만 여기서는 길이 단위 a를 정하지 않는다. Maxwell 방정식은 scale-invariant라서 a = 1 µm로 읽으면 파장 6.67 µm, a = 0.23 µm로 읽으면 1.55 µm 결과가 그대로 된다. 이 글의 그림은 그 둘째 읽기(a = 232.5 nm)로 환산해 파장은 nm, 길이는 µm로 표시한다. 좌표는 모두 PML 경계(±7)를 기준으로 잡는다.
 - **틀리면**: `refl_x`를 source보다 왼쪽(상류)에 두면 입사 펄스가 그 단면을 지나지 않아 `load_minus_flux_data`가 뺄 것이 없고 R이 엉뚱해진다.
 
 > **함정**: `df = 0.1`은 대역 5–10a로 넓다. 가장자리 파장에서는 source power가 거의 없어 T·R이 튄다. 중심 근처만 믿는다(§5).
@@ -148,7 +148,7 @@ sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df), component=mp.Ez,
 ```
 
 - **무엇**: 수평 암을 가로지르는 길이 3a의 세로선에서 Ez 성분 가우시안 펄스를 쏜다.
-- **왜**: 01편의 `EigenModeSource`와 달리 모드 모양을 맞추지 않은 단순 선 source다. 모드가 아닌 성분도 섞여 들어가지만, 기준 run이 실제로 도파로를 따라간 power를 재므로 그 몫은 P_in에서 빠진다. 2-run 정규화가 필요한 이유 중 하나다.
+- **왜**: 04편의 `EigenModeSource`와 달리 모드 모양을 맞추지 않은 단순 선 source다. 모드가 아닌 성분도 섞여 들어가지만, 기준 run이 실제로 도파로를 따라간 power를 재므로 그 몫은 P_in에서 빠진다. 2-run 정규화가 필요한 이유 중 하나다.
 - **틀리면**: `component`를 `Ey`로 바꾸면 2D에서 면내 편광이 되어 다른 모드(다른 confinement)를 보게 된다. `size`를 core 폭만큼만 잡아도 돌아가지만 모드 결합이 나빠져 방사 잡음이 늘어난다.
 
 ### ④ Simulation과 경계 — 계산 상자와 PML
@@ -234,10 +234,10 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 
 ## 5. 결과
 
-![field]({{ site.baseurl }}/assets/meep/02/02_field.png)
+![field]({{ site.baseurl }}/assets/meep/05/02_field.png)
 *가는 실선(왼쪽 검정, 오른쪽 흰색)은 유전율 경계, 즉 L자 도파로의 윤곽이다. 왼쪽 Re(Ez)는 수평 암(y = −4)을 따라 또렷한 줄무늬가 오다가 코너(4, −4)a = (0.93, −0.93) µm에서 위쪽·오른쪽 cladding으로 큰 파면이 퍼져 나간다. 오른쪽 \|Ez\|에서 수평 암은 밝고 수직 암(x = 4)은 훨씬 어둡다. 밝기 차이가 T ≈ 0.2이고, 코너 주변의 흐릿한 빛이 방사 58%다. 수평 암의 줄무늬가 균일하지 않고 마디가 보이는 것은 반사파와의 정상파(standing wave) 간섭이다.*
 
-![spectrum]({{ site.baseurl }}/assets/meep/02/03_spectrum.png)
+![spectrum]({{ site.baseurl }}/assets/meep/05/03_spectrum.png)
 *중심 파장 1550 nm(점선) 근처에서 방사(초록)가 가장 크고 T(파랑)는 0.2 부근이다. 대역 가장자리(1160 nm, 2325 nm)는 source power가 작아 값이 튀므로 경향만 본다. 파장이 길수록 T가 올라가는 것은 모드가 덜 갇혀(cladding으로 더 퍼져) 코너의 급격함을 덜 느끼기 때문이다.*
 
 | 물리량 | 값 @ 1550 nm (6.67a) | 비교 대상 |
@@ -310,7 +310,7 @@ import meep as mp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from blogfig import Label, annotated_layout, field_figure, spectrum_figure   # noqa: E402
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "02")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "05")
 os.makedirs(OUT, exist_ok=True)
 
 # ---------------------------------------------------------------- (1) units & parameters
@@ -459,4 +459,4 @@ T over band 5.00-10.00: 0.169 .. 0.512
 
 - 공식 튜토리얼 (Transmittance Spectrum of a Waveguide Bend): https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend
 - `add_flux` / `load_minus_flux_data` 레퍼런스: https://meep.readthedocs.io/en/latest/Python_User_Interface/#flux-spectra
-- 이전 글: [01 · Straight Waveguide — 넣은 빛이 전부 나오는가]({{ site.baseurl }}/straight-waveguide/) · 다음 글: 03 · Air–Quartz Fresnel 반사
+- 이전 글: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · 다음 글: 06 · Binary grating과 diffraction order

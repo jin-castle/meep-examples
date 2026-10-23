@@ -4,7 +4,7 @@
 measure transmission T and reflection R with mode monitors. Expected: T = 1, R = 0.
 
 Run:  python straight_waveguide.py            (~25 s on one core)
-Out:  01_layout.png, 02_field.png, result.json
+Out:  01_layout.png, 02_field.png, result.json  (-> ../assets/04/)
 """
 import json
 import os
@@ -20,7 +20,7 @@ import meep as mp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from blogfig import Label, annotated_layout, field_figure   # noqa: E402
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "01")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "04")
 os.makedirs(OUT, exist_ok=True)
 
 # ---------------------------------------------------------------- (1) units & parameters

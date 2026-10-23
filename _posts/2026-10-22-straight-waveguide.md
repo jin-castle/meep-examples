@@ -1,22 +1,22 @@
 ---
 layout: post
 date: 2026-10-22
-title: "Meep Example 01 · Straight Waveguide — 넣은 빛이 전부 나오는가?"
-title_en: "Meep Example 01 · Straight Waveguide — Does all the light come out?"
+title: "Meep Example 04 · Straight waveguide와 guided mode — EigenModeSource, mode monitor, modal transmission"
+title_en: "Meep Example 04 · Straight waveguide and guided modes — EigenModeSource, mode monitors, modal transmission"
 lang: ko
 series: meep-examples
-part: 1
+part: 4
 level: beginner
 runtime: "35 s (single core)"
 meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/"
 tags: [meep, fdtd, waveguide, eigenmode, mode-decomposition]
-image: /assets/meep/01/02_field.png
+image: /assets/meep/04/02_field.png
 excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the fundamental TE mode injected at one end and measured at the other."
 ---
 ## TL;DR (English)
 
-![hero]({{ site.baseurl }}/assets/meep/01/02_field.png)
+![hero]({{ site.baseurl }}/assets/meep/04/02_field.png)
 
 - **What**: a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the fundamental TE mode injected at one end and measured at the other.
 - **Result**: T = 1.0000, R = 8×10⁻⁶ at 1.55 µm. Everything that goes in comes out.
@@ -30,7 +30,7 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 - 2D에서 TE 편광을 고르는 규칙 (`eig_parity=mp.ODD_Y`)
 - 물리 교훈: 정답을 아는 문제로 측정 도구를 먼저 검증한다
 
-**전제 지식**: 굴절률이 높은 곳에 빛이 갇힌다는 것(전반사). **다음 글**: [02 · 90° Waveguide Bend]({{ site.baseurl }}/waveguide-bend-90/)
+**전제 지식**: 굴절률이 높은 곳에 빛이 갇힌다는 것(전반사). **다음 글**: [05 · Bent waveguide와 radiation loss]({{ site.baseurl }}/waveguide-bend-90/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -67,7 +67,7 @@ $$
 
 ## 3. 시뮬레이션 설계도
 
-![layout]({{ site.baseurl }}/assets/meep/01/01_layout.png)
+![layout]({{ site.baseurl }}/assets/meep/04/01_layout.png)
 *검은 띠 = Si core(`geometry`, 양끝이 PML을 관통), 빨간 선 = `EigenModeSource`(x = −5), 파란 선 = mode monitor 두 개(x = −4 입력·반사, x = +5 투과), 녹색 빗금 = PML, 보라 × = 종료 조건이 감시하는 점(x = 5.5). 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터 박스, ② 구조, ③ source, ④ PML, ⑤ monitor, ⑥ 종료 감시점이고, ⑦ 후처리는 그릴 것이 없다. source와 monitor는 core보다 넓은 3 µm 선이다.*
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
@@ -212,7 +212,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 
 ## 5. 결과
 
-![field]({{ site.baseurl }}/assets/meep/01/02_field.png)
+![field]({{ site.baseurl }}/assets/meep/04/02_field.png)
 *가는 실선은 유전율 경계, 즉 Si core의 윤곽이다. 위 = Re(Ey) 파면. 줄무늬 간격이 매질 내 파장(≈ λ/n_eff)이다. 아래 = \|Ey\| 포락선. 윤곽선 안에만 밝고 밖에서 급감하면 잘 갇힌 것이다. x = −5 왼쪽이 어두운 것은 source가 오른쪽으로만 쏘기 때문이다.*
 
 | 물리량 | 값 | 비교 대상 |
@@ -263,7 +263,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 measure transmission T and reflection R with mode monitors. Expected: T = 1, R = 0.
 
 Run:  python straight_waveguide.py            (~25 s on one core)
-Out:  01_layout.png, 02_field.png, result.json
+Out:  01_layout.png, 02_field.png, result.json  (-> ../assets/04/)
 """
 import json
 import os
@@ -279,7 +279,7 @@ import meep as mp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from blogfig import Label, annotated_layout, field_figure   # noqa: E402
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "01")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "04")
 os.makedirs(OUT, exist_ok=True)
 
 # ---------------------------------------------------------------- (1) units & parameters
@@ -396,4 +396,4 @@ T over band 1.476-1.632 um: 0.99999 .. 1.00001
 
 - 공식 Mode Decomposition 튜토리얼: https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/
 - `EigenModeSource` 레퍼런스: https://meep.readthedocs.io/en/latest/Python_User_Interface/#eigenmodesource
-- 다음 글: [02 · 90° Waveguide Bend — 직각으로 꺾으면 얼마나 새는가]({{ site.baseurl }}/waveguide-bend-90/)
+- 다음 글: [05 · Bent waveguide와 radiation loss]({{ site.baseurl }}/waveguide-bend-90/)
