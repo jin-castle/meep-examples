@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2026-10-24
+date: 2026-10-23
 title: "Meep Example 06 · Binary grating과 diffraction order — grating equation, 차수별 효율, duty cycle이 만드는 위상"
 title_en: "Meep Example 06 · Binary grating and diffraction orders — the grating equation, power per order, and the phase a duty cycle buys"
 lang: ko

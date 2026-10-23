@@ -28,3 +28,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - code/__pycache__
+
+# posts are listed by series part, dates are only bookkeeping; never drop a post for being "future"
+future: true
