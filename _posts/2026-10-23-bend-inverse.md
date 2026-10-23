@@ -74,7 +74,18 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 
 <h2 id="understand">3. 원리 이해하기: 두 계산에서 한 번의 갱신으로</h2>
 
-밀도 ρ는 설계 영역 안의 재료를 정하는 숫자입니다. **0은 SiO₂, 1은 Si**, 사이는 두 재료 사이의 보간 값입니다. 왼쪽과 위쪽의 폭 0.5 µm Si 도파관은 고정하고, 정사각형 안의 121개 값만 바꿉니다. 바깥 배경은 공기입니다.
+밀도 ρ는 설계 영역 안의 재료를 정하는 숫자입니다. **0은 SiO₂, 1은 Si**, 사이는 두 재료 사이의 보간 값입니다. 왼쪽과 위쪽의 폭 0.5 µm Si 도파관은 고정하고, 정사각형 안의 121개 값만 바꿉니다. 처음에는 모두 0.5이며, 바깥 배경은 공기입니다.
+
+<!-- concept-illustration:part-09:start -->
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/00_concept.png" data-lightbox aria-label="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/00_concept.png" alt="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도" loading="lazy"></a>
+<figcaption>왼쪽(+x) 입력과 위쪽(+y) 출력 도파관은 고정하고, 중앙 1 × 1 µm의 11 × 11개 밀도만 바꿉니다. 그림의 격자와 회색 농도는 설명용이며 실제 최적화 결과가 아닙니다.</figcaption>
+</figure>
+
+<!-- concept-illustration:part-09:end -->
+
+그림의 입력에서 빛을 보내는 계산이 forward, 출력의 목적함수에서 유도한 source로 설계 영역을 향해 응답을 구하는 별도 계산이 adjoint입니다. 저장한 두 field로 gradient를 구하고, 그 결과를 optimizer에 넘겨 밀도를 갱신합니다.
 
 1. **Forward field:** 왼쪽 입력 모드로 빛을 넣고, 위쪽 출력 포트의 mode 1 진폭을 구합니다.
 2. **Adjoint field:** 목적함수에서 유도한 source로 별도 계산합니다. 이 예제에서는 출력 포트에서 설계 영역 쪽으로 향합니다.
@@ -100,18 +111,7 @@ $$
 **계산 범위:** 2D Ez(TE), 파장 1.55 µm, Si 굴절률 3.4, SiO₂ 굴절률 1.44, 단일 주파수입니다. 설계 격자 11 × 11과 전자기장을 계산하는 Yee 격자는 서로 다릅니다. 최소 선폭과 이진화 제약은 없습니다.
 
 <details markdown="1">
-<summary>개념도·수식·기호 자세히 보기</summary>
-
-<!-- concept-illustration:part-09:start -->
-
-<figure class="lesson-figure">
-<a href="{{ site.baseurl }}/assets/meep/09/00_concept.png" data-lightbox aria-label="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/00_concept.png" alt="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도" loading="lazy"></a>
-<figcaption>왼쪽 입력과 위쪽 출력 도파관은 고정하고, 중앙 1 × 1 µm의 밀도만 바꿉니다. 격자와 회색 농도는 설명용이며 실제 최적화 결과가 아닙니다.</figcaption>
-</figure>
-
-*왼쪽 입력(+x)과 위쪽 출력(+y)의 폭 0.5 µm Si(n = 3.4) 도파로는 고정하고, 중앙 1 × 1 µm 정사각형의 11 × 11 = 121개 밀도만 바꿉니다. 초기 밀도는 모두 0.5이며 설계 영역 안에서만 0은 SiO₂(n = 1.44), 1은 Si입니다. 구조 밖의 기본 배경은 공기입니다. 수반 계산은 출력에서 역으로 응답을 계산하는 별도 실행입니다. 실제 변수는 11 × 11 = 121개이며, 그림의 격자와 회색 농도는 설명용 예시입니다. 실제 최적화 밀도나 제작 가능한 이진 형상을 나타내지 않습니다. 전력 투과율은 정규화한 별도 검증 결과로 확인합니다.*
-
-<!-- concept-illustration:part-09:end -->
+<summary>수식·기호 자세히 보기</summary>
 
 목적함수는 출력 포트 monitor에서 잰 mode 1 진폭의 제곱 J = |a_out|²이다. 08편과 수학은 같다. forward field E_f는 입력 도파관의 `EigenModeSource`가 만들고, adjoint field E_a는 출력 포트 monitor 자리에서 거꾸로 쏜 `EigenModeSource`가 만든다. gradient는 두 field의 겹침에 재료의 밀도 의존성과 정규화 계수를 반영해 구한다. 아래 비례식은 그 관계를 개념적으로 나타낸 것이다. 08편에서 adjoint가 위쪽 평면파 monitor에서 내려왔다면, 여기서는 출력 도파관을 타고 설계 영역으로 내려온다. 목적함수가 바뀌면 adjoint source의 위치와 모양이 바뀐다.
 
@@ -331,8 +331,22 @@ gradient gate 통과는 **현재 계산 설정에서 미분이 맞는지** 확�
 
 해상도 검사에서는 **설계 밀도를 그대로 두고 Yee 격자를 세분화**하며, 분모인 참조 입력 power도 새 해상도에서 다시 잽니다. 이번 결과는 adjoint 절차를 배우는 짧은 시연입니다. 다른 파장·편광·3D 성능이나 제조 성능은 이 수치에서 알 수 없습니다.
 
+### 시간에 따른 빛과 설계의 변화
+
+<figure class="lesson-figure lesson-animation">
+<a href="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-lightbox aria-label="갱신한 설계에서 짧은 펄스가 출력 도파관으로 진행하는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-animation-src="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-static-src="{{ site.baseurl }}/assets/meep/09/07_verify.png" alt="갱신한 설계에서 짧은 펄스가 출력 도파관으로 진행하는 애니메이션" loading="lazy"></a>
+<button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+<figcaption>fwidth = 0.3 fcen의 짧은 펄스가 source에서 출력 monitor로 진행합니다. 정지하면 별도 검증의 실제 field 그림을 보여줍니다.</figcaption>
+</figure>
+
+<figure class="lesson-figure lesson-animation">
+<a href="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-lightbox aria-label="균일 출발점에서 MMA 평가 1~5와 최종 설계로 변하는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-animation-src="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-static-src="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" alt="균일 출발점에서 MMA 평가 1~5와 최종 설계로 변하는 애니메이션" loading="lazy"></a>
+<button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+<figcaption>균일 출발점 → MMA 평가 1~5 → 보관한 5회차 순으로 바뀝니다. 정지하면 같은 실제 평가 이력의 전체 그림을 보여줍니다.</figcaption>
+</figure>
+
 <details markdown="1">
-<summary>원본 결과 그림·수치표·애니메이션 자세히 보기</summary>
+<summary>원본 결과 그림·수치표 자세히 보기</summary>
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/09/03_fields.png" data-lightbox aria-label="균일 및 랜덤 출발점의 정방향 field와 균일 출발점의 수반 field 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/03_fields.png" alt="균일 및 랜덤 출발점의 정방향 field와 균일 출발점의 수반 field" loading="lazy"></a>
@@ -380,18 +394,6 @@ gradient gate 통과는 **현재 계산 설정에서 미분이 맞는지** 확�
 | 최적화 (MMA eval 5) | 164.29 | 169.33 | 0.7801 | 0.8040 |
 
 T_total과 T_mode1의 차이(0.024)는 출력면을 지났지만 mode 1이 아닌 몫이다. 05편의 진단식과 같은 구분이다. optimizer 내부 J = 222.4를 P_in = 210.6으로 나누면 1.056이다. 그 숫자는 투과율이 아니다.
-
-<figure class="lesson-figure lesson-animation">
-<a href="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-lightbox aria-label="갱신한 설계에서 짧은 펄스가 출력 도파관으로 진행하는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/07_verify.png" data-animation-src="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-static-src="{{ site.baseurl }}/assets/meep/09/07_verify.png" alt="갱신한 설계에서 짧은 펄스가 출력 도파관으로 진행하는 애니메이션" loading="lazy"></a>
-<button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
-<figcaption>재생하면 fwidth = 0.3 fcen의 짧은 펄스가 source에서 출력 monitor로 진행합니다. 정지 상태는 별도 검증의 실제 field 그림입니다.</figcaption>
-</figure>
-
-<figure class="lesson-figure lesson-animation">
-<a href="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-lightbox aria-label="균일 출발점에서 MMA 평가 1~5와 최종 설계로 변하는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" data-animation-src="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-static-src="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" alt="균일 출발점에서 MMA 평가 1~5와 최종 설계로 변하는 애니메이션" loading="lazy"></a>
-<button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
-<figcaption>재생하면 균일 출발점 → MMA 평가 1~5 → 보관한 5회차 순으로 바뀝니다. 정지 상태는 같은 실제 평가 이력의 전체 그림입니다.</figcaption>
-</figure>
 
 ### 예측과 비교
 

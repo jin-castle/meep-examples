@@ -85,7 +85,7 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 
 </details>
 
-<h2 id="understand">3. 원리 · 모양과 시각을 함께 읽기</h2>
+<h2 id="understand">3. 원리 이해하기 · 모양과 시각을 함께 읽기</h2>
 
 <!-- concept-illustration:part-01:start -->
 
@@ -322,29 +322,26 @@ everywhere = np.abs(ez_last).mean()
 
 PML 없는 12 × 8 µm 셀에서 정점 파면은 커지며 옅어집니다. 가장자리의 잔무늬는 정점보다 먼저 나간 약한 앞머리가 벽에서 되돌아온 것입니다. 반사를 흡수하는 방법은 [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/)에서 이어집니다.
 
-<details markdown="1">
-<summary>시간에 따른 변화를 애니메이션으로 보기</summary>
+### 시간에 따른 변화를 애니메이션으로 보기
 
-애니메이션은 위 스냅샷과 달리 **12 × 12 µm 셀 중앙**에 광원을 둡니다. PML 없이 t0 − 2·width부터 정점이 벽 근처에 닿기 전까지 기록했습니다. 재생 전에는 앞서 본 A/B의 정적 비교 그림을 보여줍니다. 그림 링크로 원본 GIF도 열 수 있습니다.
+애니메이션은 위 스냅샷과 달리 **12 × 12 µm 셀 중앙**에 광원을 둡니다. PML 없이 t0 − 2·width부터 정점이 벽 근처에 닿기 전까지 기록했습니다. 자동으로 재생되며, 정지하면 앞서 본 A/B의 정적 비교 그림을 보여줍니다. 그림 링크로 원본 GIF도 열 수 있습니다.
 
 <div class="figure-pair">
   <figure class="lesson-figure lesson-animation">
     <a href="{{ site.baseurl }}/assets/meep/01/05_anim_point.gif" data-lightbox>
-      <img src="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" data-animation-src="{{ site.baseurl }}/assets/meep/01/05_anim_point.gif" data-static-src="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" alt="점원 관찰. 정적 그림은 12 × 8 µm 셀의 여섯 스냅샷이며, 재생하면 12 × 12 µm 셀 중앙 점원의 동심원 파면을 보여준다." loading="lazy">
+      <img src="{{ site.baseurl }}/assets/meep/01/05_anim_point.gif" data-animation-src="{{ site.baseurl }}/assets/meep/01/05_anim_point.gif" data-static-src="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" alt="12 × 12 µm 셀 중앙 점원의 동심원 파면. 정지하면 12 × 8 µm 셀의 여섯 스냅샷을 보여준다." loading="lazy">
     </a>
-    <button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
+    <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
     <figcaption>점원: 동심원이 모든 방향으로 퍼집니다. 정적 그림과 애니메이션은 셀 배치가 다릅니다.</figcaption>
   </figure>
   <figure class="lesson-figure lesson-animation">
     <a href="{{ site.baseurl }}/assets/meep/01/05_anim_line.gif" data-lightbox>
-      <img src="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" data-animation-src="{{ site.baseurl }}/assets/meep/01/05_anim_line.gif" data-static-src="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" alt="선원 관찰. 정적 그림은 점원과 선원의 비교이며, 재생하면 12 × 12 µm 셀 중앙 3 µm 선원의 좌우 파면과 끝 회절을 보여준다." loading="lazy">
+      <img src="{{ site.baseurl }}/assets/meep/01/05_anim_line.gif" data-animation-src="{{ site.baseurl }}/assets/meep/01/05_anim_line.gif" data-static-src="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" alt="12 × 12 µm 셀 중앙 3 µm 선원의 좌우 파면과 끝 회절. 정지하면 점원과 선원의 비교 그림을 보여준다." loading="lazy">
     </a>
-    <button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
+    <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
     <figcaption>선원: 좌우로 강하게 나가는 파면과 끝 회절을 비교합니다. 정적 그림과 애니메이션은 셀 배치가 다릅니다.</figcaption>
   </figure>
 </div>
-
-</details>
 
 <details markdown="1">
 <summary>수치 비교와 수렴성 검증 기록</summary>

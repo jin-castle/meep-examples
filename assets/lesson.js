@@ -37,25 +37,23 @@
   const animations = [...content.querySelectorAll('img[data-animation-src][data-static-src]')].map(img => {
     const button = img.closest('figure')?.querySelector('.animation-toggle');
     if (!button) return null;
-    const stop = () => {
-      img.src = img.dataset.staticSrc;
-      button.textContent = '애니메이션 재생';
-      button.setAttribute('aria-pressed', 'false');
+    let requestedPlaying = !reducedMotion.matches;
+    const render = () => {
+      const playing = requestedPlaying && !document.hidden;
+      img.src = playing ? img.dataset.animationSrc : img.dataset.staticSrc;
+      button.textContent = playing ? '애니메이션 정지' : '애니메이션 재생';
+      button.setAttribute('aria-pressed', String(playing));
     };
-    stop();
+    render();
     button.hidden = false;
     button.addEventListener('click', () => {
-      if (button.getAttribute('aria-pressed') === 'true') stop();
-      else {
-        img.src = img.dataset.animationSrc;
-        button.textContent = '애니메이션 정지';
-        button.setAttribute('aria-pressed', 'true');
-      }
+      requestedPlaying = !requestedPlaying;
+      render();
     });
-    return { stop };
+    return { render, setReducedMotion: reduce => { requestedPlaying = !reduce; render(); } };
   }).filter(Boolean);
-  reducedMotion.addEventListener('change', event => { if (event.matches) animations.forEach(animation => animation.stop()); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) animations.forEach(animation => animation.stop()); });
+  reducedMotion.addEventListener('change', event => animations.forEach(animation => animation.setReducedMotion(event.matches)));
+  document.addEventListener('visibilitychange', () => animations.forEach(animation => animation.render()));
 
   const dialog = document.querySelector('.lesson-lightbox');
   if (!dialog || typeof dialog.showModal !== 'function') return;
