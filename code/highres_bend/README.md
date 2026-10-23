@@ -27,3 +27,20 @@ The PNGs use `RdBu` with symmetric limits centered at zero: red is negative and 
 After the simulation, run `python render_scene.py /path/to/fields.npz --out /path/to/assets/meep/09/highres`. This renders native full-cell RdBu fields and matching design crops from the saved complex results; it does not rerun Meep. The helper asserts crop orientation, shared normalization and exact interior pixel agreement. The original simulation source and its SHA256 remain unchanged.
 
 The same command exports32-phase sprites for forward and adjoint playback. It checks quarter-cycle identities, loop closure, all stored RGBA frames, phase0/capture equality and source-to-design input phase progression. Every phase uses the same complex-amplitude color limit; metadata identifies the result as a normal steady-state DFT phase cycle.
+
+## Six accepted optimization updates
+
+The homepage uses the separate `assets/meep/09/iterations/manifest.json` history. From this directory, reproduce its six fresh resolution-60 cycles with:
+
+```sh
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  /home/bgs43/miniforge3/envs/pmp/bin/python iterate.py --out /tmp/meep-iterations --steps 6
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  /home/bgs43/miniforge3/envs/pmp/bin/python render_iterations.py /tmp/meep-iterations ../../assets/meep/09/iterations
+```
+
+Each accepted density is passed unchanged into the following native forward and adjoint solve. Numbered JSON/NPZ checkpoints preserve the actual gradient, before/after densities and complex fields; an existing checkpoint is validated and reused on restart. A projected maximum-density step of 0.15 was accepted in all six cycles. The unnormalized objective increased from 2.9157725347 to 147.0497944969. These are finite early optimization steps, without a binarization or convergence claim.
+
+A new centered finite difference at the second starting geometry agrees with its adjoint directional derivative to relative error 3.084e-6. Rendering verifies exact density continuity, the projected update, physical sample coordinates, all 32 stored phase frames, exact phase-zero capture crops, and independently recomputed forward-field continuity (maximum relative error 1.244e-11). All physical runs stopped before the simulation time cap.
+
+All six before/after forward scenes and captures share the same symmetric color limit, 20.3186982670; all adjoint scenes and captures share a separate common limit, 0.01794171218. The renderer only uses saved complex DFT arrays. It preserves black fixed-port contours and uses grayscale for the continuous 61x61 density. Displayed gradients use their own symmetric limits. Source and raw-array SHA256 values are recorded in the manifest; `validation.json` records numerical and rendering checks.
