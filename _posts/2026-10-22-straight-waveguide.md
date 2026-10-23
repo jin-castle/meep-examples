@@ -32,7 +32,7 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 - 전체 flux와 modal power가 왜 다른 수인지, 분모를 왜 통일해야 하는지
 - 물리 교훈: 정답을 아는 문제로 측정 도구를 먼저 검증한다
 
-**전제 지식**: 굴절률이 높은 곳에 빛이 갇힌다는 것(전반사). **공식 예제**: [Mode Decomposition 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/). **다음 글**: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/)
+**전제 지식**: 굴절률이 높은 곳에 빛이 갇힌다는 것(전반사). 01편의 source와 t0. **공식 예제**: [Mode Decomposition 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/). **다음 글**: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -243,6 +243,9 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 ![field]({{ site.baseurl }}/assets/meep/04/02_field.png)
 *가는 실선은 유전율 경계, 즉 Si core의 윤곽이다. 위 = Re(Ey) 파면. 줄무늬 간격이 매질 내 파장(≈ λ/n_eff)이다. 아래 = \|Ey\| 포락선. 윤곽선 안에만 밝고 밖에서 급감하면 잘 갇힌 것이다. x = −5 왼쪽이 어두운 것은 source가 오른쪽으로만 쏘기 때문이다.*
 
+![animation]({{ site.baseurl }}/assets/meep/04/03_animation.gif)
+*같은 설정의 시간 전개. 펄스가 켜지기 전(t0 − 2·width = 23)부터 출력 monitor(x = 5)를 지나 PML로 사라질 때까지. 빨간 선이 source, 파란 선 두 개가 입력·출력 mode monitor다. 펄스는 오른쪽으로만 가고, core 밖으로 새지 않으며, monitor를 지나 PML에서 반사 없이 사라진다.*
+
 | 물리량 | 값 | 비교 대상 |
 |--------|-----|-----------|
 | T @ 1.55 µm | 1.0000 | 이론 1 |
@@ -324,7 +327,7 @@ modal transmission T and reflection R with mode monitors. Expected: T = 1, R = 0
 Then compare total flux with modal power, and check convergence in resolution and PML.
 
 Run:  python straight_waveguide.py            (~3 min on one core: baseline + 2 convergence runs)
-Out:  00_source.png, 01_layout.png, 02_field.png, result.json  (-> ../assets/04/)
+Out:  00_source.png, 01_layout.png, 02_field.png, 03_animation.gif, result.json  (-> ../assets/04/)
 """
 import json
 import os
@@ -337,7 +340,7 @@ matplotlib.use("Agg")
 import meep as mp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blogfig import Label, annotated_layout, field_figure, source_figure   # noqa: E402
+from blogfig import Label, animate_fields, annotated_layout, field_figure, record_frames, source_figure   # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "04")
 os.makedirs(OUT, exist_ok=True)
@@ -462,6 +465,20 @@ ey = sim.get_dft_array(dft, mp.Ey, 0)
 eps = sim.get_array(vol=nonpml, component=mp.Dielectric)   # structure outline for the figure
 extent = [-(sx / 2 - DPML), sx / 2 - DPML, -(sy / 2 - DPML), sy / 2 - DPML]
 field_figure(ey, extent, os.path.join(OUT, "02_field.png"), core_halfwidth=None, wl=wl, eps=eps)
+
+# ================================================================ animation: the pulse travels from the source to the output monitor
+# A fresh simulation (the one above has already run). Timing from the source: the pulse peaks at
+# t0 = 5/df and needs (10 um) * n_eff to reach the output monitor, so record t0 - 2*width .. t0 + 10*n_eff + 5.
+sim_anim, _, _ = build()
+width = 1.0 / df
+t_src = 5.0 / df
+frames, times = record_frames(sim_anim, nonpml, mp.Ey, t_start=t_src - 2 * width,
+                              t_end=t_src + (mon_out_x - src_x) * neff[1] + 5.0, n_frames=60)
+animate_fields(frames, times, extent, os.path.join(OUT, "03_animation.gif"), eps=eps, component="Ey",
+               lines=[((src_x, -1.5), (src_x, 1.5), "red", "EigenModeSource"),
+                      ((mon_in_x, -1.5), (mon_in_x, 1.5), "blue", "mode monitor in"),
+                      ((mon_out_x, -1.5), (mon_out_x, 1.5), "blue", "mode monitor out")],
+               aspect="auto", figsize=(8.0, 3.6), title="TE0 pulse, source -> output monitor")
 
 # ================================================================ convergence: resolution x PML
 convergence = [{"resolution": RESOLUTION, "dpml": DPML, "T": float(base["T"][ic]), "R": float(base["R"][ic]),

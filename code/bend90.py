@@ -9,7 +9,7 @@ with a quarter-ring of radius R and T is swept over R to find where the loss dis
 
 Run:  python bend90.py            (~3 min on one core: sharp + radius sweep + convergence)
 Out:  00_source.png, 01_layout.png, 02_field.png, 03_spectrum.png, 04_radius_sweep.png,
-      05_field_round.png, result.json   (-> ../assets/05/)
+      05_field_round.png, 06_anim_sharp.gif, 06_anim_round.gif, result.json   (-> ../assets/05/)
 """
 import json
 import os
@@ -22,7 +22,8 @@ matplotlib.use("Agg")
 import meep as mp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blogfig import Label, annotated_layout, field_figure, line_figure, source_figure, spectrum_figure   # noqa: E402
+from blogfig import (Label, animate_fields, annotated_layout, field_figure, line_figure,   # noqa: E402
+                     record_frames, source_figure, spectrum_figure)
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "05")
 os.makedirs(OUT, exist_ok=True)
@@ -205,6 +206,23 @@ line_figure([s["radius_um"] for s in sweep],
             {"T (transmitted)": [s["T"] for s in sweep], "R (reflected)": [s["R"] for s in sweep],
              "1 - T - R (radiated)": [s["L"] for s in sweep]},
             os.path.join(OUT, "04_radius_sweep.png"), xlabel=f"bend radius [um]  (a = {a_nm:.1f} nm, wl = 1550 nm)")
+
+# ================================================================ animations: sharp corner vs rounded corner (radius 3a)
+# Fresh simulations with the same source; record from before the pulse peak (t0 = 5/df) until the
+# pulse has gone from the source to the top monitor along the guide (distance ~ 21 a at n_eff ~ 2.5).
+p = positions(DPML)
+nonpml = mp.Volume(center=mp.Vector3(), size=mp.Vector3(sx - 2 * DPML, sy - 2 * DPML))
+extent_um = [v * a_um for v in (-(sx / 2 - DPML), sx / 2 - DPML, -(sy / 2 - DPML), sy / 2 - DPML)]
+for tag, r_anim in (("sharp", 0.0), ("round", 3.0)):
+    sim_anim = make_sim(bend=True, radius=r_anim)
+    sim_anim.init_sim()
+    eps_anim = sim_anim.get_array(vol=nonpml, component=mp.Dielectric)
+    frames, times = record_frames(sim_anim, nonpml, mp.Ez, t_start=5.0 / df - 2.0 / df,
+                                  t_end=5.0 / df + 21.0 * 2.5 + 10.0, n_frames=60)
+    animate_fields(frames, times, extent_um, os.path.join(OUT, f"06_anim_{tag}.gif"), eps=eps_anim,
+                   lines=[((p["src_x"] * a_um, (ycen - 1.5) * a_um), (p["src_x"] * a_um, (ycen + 1.5) * a_um), "red", "Ez source"),
+                          (((xcen - 1.5) * a_um, p["tran_bend_y"] * a_um), ((xcen + 1.5) * a_um, p["tran_bend_y"] * a_um), "blue", "flux: transmission")],
+                   time_unit="a/c", figsize=(5.4, 4.8), title=f"{tag} corner", legend_loc="lower right")
 
 # ================================================================ convergence (sharp corner)
 convergence = [{"resolution": RESOLUTION, "dpml": DPML, "T": sweep[0]["T"], "R": sweep[0]["R"], "L": sweep[0]["L"]}]

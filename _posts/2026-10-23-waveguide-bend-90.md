@@ -279,6 +279,12 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 ![round]({{ site.baseurl }}/assets/meep/05/05_field_round.png)
 *반지름 3a = 0.70 µm. 수평 암의 정상파 마디가 사라지고(반사 0.03%), 코너 밖으로 새는 빛이 거의 없다.*
 
+![sharp animation]({{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif)
+*sharp 코너의 시간 전개. 펄스가 코너에 닿는 순간 cladding으로 큰 파면이 퍼져 나가고, 수직 암으로는 일부만 올라간다. 되돌아오는 파가 수평 암에서 입사파와 겹친다.*
+
+![round animation]({{ site.baseurl }}/assets/meep/05/06_anim_round.gif)
+*반지름 3a 코너의 시간 전개. 같은 펄스가 코너를 돌아 수직 암 위의 투과 단면(파란 선)까지 거의 그대로 간다.*
+
 | 반지름 | µm | T | R | 방사 |
 |---|---|---|---|---|
 | 0 (sharp) | 0 | 0.200 | 0.220 | 0.580 |
@@ -358,7 +364,7 @@ with a quarter-ring of radius R and T is swept over R to find where the loss dis
 
 Run:  python bend90.py            (~3 min on one core: sharp + radius sweep + convergence)
 Out:  00_source.png, 01_layout.png, 02_field.png, 03_spectrum.png, 04_radius_sweep.png,
-      05_field_round.png, result.json   (-> ../assets/05/)
+      05_field_round.png, 06_anim_sharp.gif, 06_anim_round.gif, result.json   (-> ../assets/05/)
 """
 import json
 import os
@@ -371,7 +377,8 @@ matplotlib.use("Agg")
 import meep as mp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blogfig import Label, annotated_layout, field_figure, line_figure, source_figure, spectrum_figure   # noqa: E402
+from blogfig import (Label, animate_fields, annotated_layout, field_figure, line_figure,   # noqa: E402
+                     record_frames, source_figure, spectrum_figure)
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "05")
 os.makedirs(OUT, exist_ok=True)
@@ -554,6 +561,23 @@ line_figure([s["radius_um"] for s in sweep],
             {"T (transmitted)": [s["T"] for s in sweep], "R (reflected)": [s["R"] for s in sweep],
              "1 - T - R (radiated)": [s["L"] for s in sweep]},
             os.path.join(OUT, "04_radius_sweep.png"), xlabel=f"bend radius [um]  (a = {a_nm:.1f} nm, wl = 1550 nm)")
+
+# ================================================================ animations: sharp corner vs rounded corner (radius 3a)
+# Fresh simulations with the same source; record from before the pulse peak (t0 = 5/df) until the
+# pulse has gone from the source to the top monitor along the guide (distance ~ 21 a at n_eff ~ 2.5).
+p = positions(DPML)
+nonpml = mp.Volume(center=mp.Vector3(), size=mp.Vector3(sx - 2 * DPML, sy - 2 * DPML))
+extent_um = [v * a_um for v in (-(sx / 2 - DPML), sx / 2 - DPML, -(sy / 2 - DPML), sy / 2 - DPML)]
+for tag, r_anim in (("sharp", 0.0), ("round", 3.0)):
+    sim_anim = make_sim(bend=True, radius=r_anim)
+    sim_anim.init_sim()
+    eps_anim = sim_anim.get_array(vol=nonpml, component=mp.Dielectric)
+    frames, times = record_frames(sim_anim, nonpml, mp.Ez, t_start=5.0 / df - 2.0 / df,
+                                  t_end=5.0 / df + 21.0 * 2.5 + 10.0, n_frames=60)
+    animate_fields(frames, times, extent_um, os.path.join(OUT, f"06_anim_{tag}.gif"), eps=eps_anim,
+                   lines=[((p["src_x"] * a_um, (ycen - 1.5) * a_um), (p["src_x"] * a_um, (ycen + 1.5) * a_um), "red", "Ez source"),
+                          (((xcen - 1.5) * a_um, p["tran_bend_y"] * a_um), ((xcen + 1.5) * a_um, p["tran_bend_y"] * a_um), "blue", "flux: transmission")],
+                   time_unit="a/c", figsize=(5.4, 4.8), title=f"{tag} corner", legend_loc="lower right")
 
 # ================================================================ convergence (sharp corner)
 convergence = [{"resolution": RESOLUTION, "dpml": DPML, "T": sweep[0]["T"], "R": sweep[0]["R"], "L": sweep[0]["L"]}]

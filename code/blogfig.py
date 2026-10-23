@@ -288,3 +288,120 @@ def source_figure(fcen: float, fwidth: float, out_png: str, *, mon_fcen: float |
     fig.savefig(out_png, dpi=dpi)
     plt.close(fig)
     return info
+
+
+def panel_grid(fields, titles, extent, out_png: str, *, ncols: int = 3, unit: str = "um",
+               component: str = "Ez", marks=None, circles=None, suptitle: str | None = None,
+               lines=None, figsize=None, dpi=150) -> None:
+    """Grid of Re(field) snapshots sharing ONE color scale (so amplitude decay stays visible).
+
+    ``marks``: list of (x, y) points drawn as black dots on every panel (e.g. the source).
+    ``circles``: dict {panel_index: (x, y, r, label)} dashed circles, e.g. the predicted wavefront.
+    ``lines``: dict {panel_index: ((x0, y0), (x1, y1))} thick black line, e.g. a line source.
+    """
+    n = len(fields)
+    nrows = int(np.ceil(n / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=figsize or (4.3 * ncols, 3.4 * nrows), squeeze=False)
+    lim = max(float(np.max(np.abs(np.real(f)))) for f in fields)
+    for i, ax in enumerate(axes.ravel()):
+        if i >= n:
+            ax.axis("off")
+            continue
+        im = ax.imshow(np.real(fields[i]).T, origin="lower", extent=extent, cmap="RdBu",
+                       vmin=-lim, vmax=lim, aspect="equal")
+        for (x, y) in (marks or []):
+            ax.plot(x, y, "o", color="k", ms=4, zorder=5)
+        if lines and i in lines:
+            (x0, y0), (x1, y1) = lines[i]
+            ax.plot([x0, x1], [y0, y1], color="k", lw=2.5, zorder=5)
+        if circles and i in circles:
+            x, y, r, label = circles[i]
+            ax.add_patch(plt.Circle((x, y), r, fill=False, ls="--", lw=1.1, color="k"))
+            ax.text(x, y + r, label, ha="center", va="bottom", fontsize=8)
+        ax.set_title(titles[i], fontsize=9)
+        ax.set_xlabel(f"x [{unit}]")
+        ax.set_ylabel(f"y [{unit}]")
+    fig.colorbar(im, ax=axes.ravel().tolist(), shrink=0.8, label=f"Re({component})")
+    if suptitle:
+        fig.suptitle(suptitle, fontsize=11)
+    fig.savefig(out_png, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+
+def bar_figure(categories, series: dict, out_png: str, *, ylabel: str, reference: float | None = None,
+               reference_label: str | None = None, figsize=(6.5, 3.8), dpi=150) -> None:
+    """Grouped bars: one group per category, one bar per series entry."""
+    fig, ax = plt.subplots(figsize=figsize)
+    k = len(series)
+    width = 0.8 / k
+    xs = np.arange(len(categories))
+    for j, (name, vals) in enumerate(series.items()):
+        bars = ax.bar(xs + (j - (k - 1) / 2) * width, vals, width, label=name)
+        for b, v in zip(bars, vals):
+            ax.text(b.get_x() + b.get_width() / 2, v + 0.01, f"{v:.3f}", ha="center", va="bottom", fontsize=7.5)
+    if reference is not None:
+        ax.axhline(reference, color="gray", ls="--", lw=0.9, label=reference_label)
+    ax.set_xticks(xs)
+    ax.set_xticklabels(categories)
+    ax.set_ylabel(ylabel)
+    ax.set_ylim(0, max(max(v) for v in series.values()) * 1.25)
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=dpi)
+    plt.close(fig)
+
+
+def record_frames(sim, vol, component, t_start: float, t_end: float, n_frames: int):
+    """Step a fresh Simulation and collect ``n_frames`` field snapshots between t_start and t_end.
+
+    Meep's ``sim.run(until=...)`` counts from the current time, so the pulse timing has to be
+    derived from the source: start at about ``t0 - 2*width`` (before the pulse) and end when the
+    pulse has reached the farthest monitor (``t0 + distance * n``).
+    """
+    sim.run(until=t_start)
+    dt = (t_end - t_start) / n_frames
+    frames, times = [], []
+    for i in range(n_frames):
+        sim.run(until=dt)
+        frames.append(np.real(sim.get_array(vol=vol, component=component)))
+        times.append(t_start + (i + 1) * dt)
+    return frames, times
+
+
+def animate_fields(frames, times, extent, out_gif: str, *, eps: np.ndarray | None = None,
+                   lines=None, points=None, unit: str = "um", component: str = "Ez",
+                   time_unit: str = "um/c", fps: int = 10, figsize=(7.5, 4.0), dpi=80,
+                   aspect: str = "equal", title: str | None = None, legend_loc: str = "upper right") -> None:
+    """Write a GIF of Re(field) snapshots with the structure outline and source/monitor markers.
+
+    ``lines``: [((x0, y0), (x1, y1), color, label), ...] e.g. source and monitor planes.
+    ``points``: [(x, y, color, label), ...]. One color scale for all frames (PillowWriter, no ffmpeg).
+    """
+    from matplotlib import animation
+    lim = max(float(np.max(np.abs(f))) for f in frames)
+    fig, ax = plt.subplots(figsize=figsize)
+    im = ax.imshow(frames[0].T, origin="lower", extent=extent, cmap="RdBu", vmin=-lim, vmax=lim, aspect=aspect)
+    if eps is not None and eps.max() > eps.min():
+        xs = np.linspace(extent[0], extent[1], eps.shape[0])
+        ys = np.linspace(extent[2], extent[3], eps.shape[1])
+        ax.contour(xs, ys, eps.T, levels=[0.5 * (eps.min() + eps.max())], colors="k", linewidths=0.7)
+    for (p0, p1, color, label) in (lines or []):
+        ax.plot([p0[0], p1[0]], [p0[1], p1[1]], color=color, lw=2.0, label=label)
+    for (x, y, color, label) in (points or []):
+        ax.plot(x, y, "o", color=color, ms=5, label=label)
+    if lines or points:
+        ax.legend(loc=legend_loc, fontsize=7, framealpha=0.8)
+    ax.set_xlabel(f"x [{unit}]")
+    ax.set_ylabel(f"y [{unit}]")
+    ttl = ax.set_title("", fontsize=9)
+    fig.colorbar(im, ax=ax, shrink=0.85, label=f"Re({component})")
+    fig.tight_layout()
+
+    def update(i):
+        im.set_data(frames[i].T)
+        ttl.set_text((title + "   " if title else "") + f"t = {times[i]:.1f} {time_unit}")
+        return im, ttl
+
+    anim = animation.FuncAnimation(fig, update, frames=len(frames), blit=False)
+    anim.save(out_gif, writer=animation.PillowWriter(fps=fps), dpi=dpi)
+    plt.close(fig)

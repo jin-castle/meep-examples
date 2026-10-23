@@ -6,7 +6,7 @@ modal transmission T and reflection R with mode monitors. Expected: T = 1, R = 0
 Then compare total flux with modal power, and check convergence in resolution and PML.
 
 Run:  python straight_waveguide.py            (~3 min on one core: baseline + 2 convergence runs)
-Out:  00_source.png, 01_layout.png, 02_field.png, result.json  (-> ../assets/04/)
+Out:  00_source.png, 01_layout.png, 02_field.png, 03_animation.gif, result.json  (-> ../assets/04/)
 """
 import json
 import os
@@ -19,7 +19,7 @@ matplotlib.use("Agg")
 import meep as mp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blogfig import Label, annotated_layout, field_figure, source_figure   # noqa: E402
+from blogfig import Label, animate_fields, annotated_layout, field_figure, record_frames, source_figure   # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "04")
 os.makedirs(OUT, exist_ok=True)
@@ -144,6 +144,20 @@ ey = sim.get_dft_array(dft, mp.Ey, 0)
 eps = sim.get_array(vol=nonpml, component=mp.Dielectric)   # structure outline for the figure
 extent = [-(sx / 2 - DPML), sx / 2 - DPML, -(sy / 2 - DPML), sy / 2 - DPML]
 field_figure(ey, extent, os.path.join(OUT, "02_field.png"), core_halfwidth=None, wl=wl, eps=eps)
+
+# ================================================================ animation: the pulse travels from the source to the output monitor
+# A fresh simulation (the one above has already run). Timing from the source: the pulse peaks at
+# t0 = 5/df and needs (10 um) * n_eff to reach the output monitor, so record t0 - 2*width .. t0 + 10*n_eff + 5.
+sim_anim, _, _ = build()
+width = 1.0 / df
+t_src = 5.0 / df
+frames, times = record_frames(sim_anim, nonpml, mp.Ey, t_start=t_src - 2 * width,
+                              t_end=t_src + (mon_out_x - src_x) * neff[1] + 5.0, n_frames=60)
+animate_fields(frames, times, extent, os.path.join(OUT, "03_animation.gif"), eps=eps, component="Ey",
+               lines=[((src_x, -1.5), (src_x, 1.5), "red", "EigenModeSource"),
+                      ((mon_in_x, -1.5), (mon_in_x, 1.5), "blue", "mode monitor in"),
+                      ((mon_out_x, -1.5), (mon_out_x, 1.5), "blue", "mode monitor out")],
+               aspect="auto", figsize=(8.0, 3.6), title="TE0 pulse, source -> output monitor")
 
 # ================================================================ convergence: resolution x PML
 convergence = [{"resolution": RESOLUTION, "dpml": DPML, "T": float(base["T"][ic]), "R": float(base["R"][ic]),
