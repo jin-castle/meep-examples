@@ -45,6 +45,13 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 
 ### 어디에 쓰이는가
 
+홈의 고해상도 DFT 예시는 **빨강·파랑 파면 + 회색 구조**로 표시합니다. 빨강은 음수, 파랑은 양수 Re(Ez)이며 약한 장은 투명하게 합성합니다. 회색은 고정 도파관과 연속 설계 밀도의 표시로, 저장된 실제 유전율 지도는 아닙니다. 원래의 복소장·위상·공통 색상 범위는 보존하고, gradient는 기존 RdBu로 구별합니다. 아래 저해상도 MMA 예제의 원본 그림과는 계산 이력이 다릅니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png" alt="여섯 번의 고해상도 밀도 갱신 후 회색 구조 위의 실제 DFT 파면" loading="lazy"></a>
+<figcaption>해상도 60, 61×61 연속 밀도, 6회 갱신 후의 저장된 정상상태 DFT입니다. 위상 재생은 시간에 따른 광원 켜짐이나 파면 도착을 뜻하지 않습니다.</figcaption>
+</figure>
+
 역설계 bend는 PIC 부품의 면적을 수십 배 줄이는 방법의 첫 예다. 같은 틀이 splitter, crossing, mode converter에 그대로 쓰인다.
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |

@@ -9,7 +9,7 @@ Primary users: a first-time FDTD learner choosing an example; an experienced rea
 - Paper #ffffff, soft paper #f5f8fa, ink #0d1b2a, secondary ink #526579, rule #dce5eb.
 - Cyan brand #0087ad, bright cyan field #42dfff, cyan pale #e7f7fb; amber adjoint #ffb648.
 - Physics canvas #071b2b, grid #173447, muted canvas ink #aec3d2, geometry #718899.
-- Signed fields and gradient: RdBu, negative red to zero white to positive blue; density uses0 white to1 black.
+- Signed waveguide fields: bwr_r (negative red, positive blue), composited with sqrt(abs(Re(Ez))/limit) opacity over gray fixed guides and continuous density. Gradient retains RdBu; standalone density uses0 white to1 black.
 - Font: system Korean sans stack (`Pretendard`, `Noto Sans KR`, `Apple SD Gothic Neo`, `Malgun Gothic`, sans-serif); no remote font dependency. Mono labels: ui-monospace.
 - Type scale: 12, 13, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64px; fluid display clamps to 40–64px. Body line height 1.75, headings 1.2.
 - Base space 4px; steps 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96px. Reading copy max 65ch; page max 1480px.
@@ -64,6 +64,8 @@ Assets and metadata: assets/meep/09/highres/. Reproduction code: code/highres_be
 Native transport includes play/pause, replay, speed, labeled seeking and four stage links. Scrubbing is reversible and triggers no queued capture callbacks. Reduced motion and missing GSAP use four static endpoints; their range control has four integer positions so backward keyboard input works. Hidden/offscreen scenes preserve time and resume automatic playback when visible unless the user paused it. Stage links start playback at the chosen stage and continue through the remaining stages into the next loop. Pause intent survives scrolling. Narrow controls wrap; short viewports use a nonsticky figure.
 
 ### DFT propagation during capture
+
+Approved display update: scene, phase sprites, captures and hero use the pilot's saturated red/blue wavefront over gray geometry. Gray depicts fixed guides plus bilinearly displayed continuous density, not sampled epsilon. No thresholding or binarization is applied. Raw complex fields, physical coordinates, phase convention, symmetric limits and objective values remain unchanged. Original full-field PNGs remain available. The style supersedes earlier RdBu field descriptions below and above; signed gradients remain RdBu. Metalens panels E/F use linear hot intensity with their existing individual peak normalization, while the shared-normalization linecut is unchanged. This is the original ideal PB scalar angular-spectrum model, not FDTD.
 Forward and adjoint display32 native phase samples of Re(Ez exp(-iφ)), with one fixed symmetric ±max|Ez| range per computation. This is steady-state DFT phase playback. The existing apparatus and saved-map layout stay intact. Each six-second field stage plays four1.5-second phase cycles. At its midpoint (global3/9s), phase0 is photographed: the copy holds for0.28s, then flies to its saved tile while the original phase motion continues through both waveguides and the design region. The saved copy stays at phase0 for gradient presentation. Frames use a deterministic8×4 sprite, driven by the same GSAP playhead as the shutter, so pause, speed, reverse seeking and offscreen suspension also control the field. Reduced motion, unavailable GSAP or failed sprite decoding retain the phase0 field and manual stages. The phase label states normal steady state; no wavefront arrival or turn-on delay is inferred from DFT data.
 
 ## 7. Guided lessons: parts 01 and 09

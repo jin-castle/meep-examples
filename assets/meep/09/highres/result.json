@@ -11319,7 +11319,10 @@
     "source": "saved complex128 full-cell Ez DFT, fields.npz",
     "source_sha256": "fad41cb79f2812e8172acabc5fdd074557c501b31614a77c7f5a5af53ace5aed",
     "quantity": "Re(Ez * exp(-i phase)); saved complex DFT phasor",
-    "colormap": "RdBu",
+    "colormap": "bwr_r",
+    "display_style": "approved wavefront + gray fixed geometry and continuous density; display-only change",
+    "geometry_background": "fixed guides and continuous design density, not sampled epsilon; no thresholding",
+    "opacity": "sqrt(abs(Re(Ez))/symmetric_limit); visual compositing only",
     "sign": "negative red; zero white; positive blue",
     "full_extent_um": [
       -3.0,
@@ -11346,7 +11349,7 @@
       60
     ],
     "native_spacing_um": 0.016666666666666666,
-    "orientation": "RGBA[row,col] = RdBu(normalize(real(Ez[col,Ny-1-row] * exp(-i phase)))); top is +y",
+    "orientation": "field[col,Ny-1-row]; top is +y; bwr_r overlay on density background",
     "capture_rendering": "exact full-scene design crop, nearest enlargement, black boundary and centered port markers",
     "phase_frame_count": 32,
     "phase_columns": 8,

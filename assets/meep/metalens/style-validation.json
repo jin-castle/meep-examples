@@ -1,0 +1,18 @@
+{
+  "arrays_exact": [
+    "I_samp",
+    "I_cont",
+    "I_opp",
+    "E_samp",
+    "E_cont",
+    "E_opp",
+    "xk",
+    "zs"
+  ],
+  "fwhm_um": 0.49865248633277093,
+  "reference_focus_um": 9.700000000000001,
+  "stdout": "NA=0.456 edge step=77.2 deg z_peak=9.70 FWHM cont=0.493 samp=0.499 peak ratio=0.947",
+  "colormap": "hot",
+  "normalization": "individual panel peak for E/F, original shared normalization for G",
+  "model": "1D scalar angular spectrum, ideal PB conversion, not FDTD"
+}

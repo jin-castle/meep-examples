@@ -23,6 +23,22 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 14 | 박막 속 점광원, 공기로 나오는 몫 — 광추출 효율, LDOS 정규화, kz 적분, CYL 대 3D | `code/extraction_efficiency.py` | layer on a mirror: 0.323 at mid-height (cyl, res 80), 0.52 → 0.09 with height; off-axis m series: official stop 0.632 vs 0.362 summed to m = 60; cleaved facet: 22.4 % from 76 kz runs |
 | topic | Metalens 위상 지도와 PB 위상 — 이상적 렌즈 위상, 2π 접기, 격자 샘플링 (`/metalens/`) | `code/metalens_*.py` (numpy, no Meep) | 1D scalar check: sampled PB phase focuses with FWHM 499 nm vs 493 nm for the continuous ideal phase (peak 0.95); the opposite circular polarization diverges |
 
+## Optical-beams-MEEP lab
+
+The [Optical beams lesson](https://jin-castle.github.io/meep-examples/optical-beams/)
+executes Daniel Kotik and Jörg Götte's MIT-licensed `Gauss2d.py` at its original
+resolution and duration. Two planar, s-polarized runs compare 30° and 45° incidence
+from n=1.54 into n=1.00. Field snapshots and cycle-averaged squared fields are
+visualizations, not measured R/T. Source, license, single-core reproduction commands,
+and observation wrappers are in [`code/optical_beams/`](code/optical_beams/).
+Execution checks and provenance are in `assets/meep/optical-beams/`.
+Software citation: Optical-beams-MEEP v2.1.2,
+[doi:10.5281/zenodo.5211251](https://doi.org/10.5281/zenodo.5211251).
+
+The inverse-bend DFT scene uses signed red/blue wavefronts over fixed gray guides
+and continuous design weights. Metalens intensity panels use a black-to-hot map;
+its model remains the original 1D scalar angular-spectrum calculation.
+
 ## Run a script
 
 ```bash

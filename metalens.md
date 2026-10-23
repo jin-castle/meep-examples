@@ -162,7 +162,7 @@ $$\Delta\theta \approx 180^\circ \times \frac{U\sin\theta}{\lambda}$$
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/metalens/04_ideal_pb.png" data-lightbox aria-label="이상적 PB metalens 위상의 유도, 매핑, 초점 확인 원본 확대"><img src="{{ site.baseurl }}/assets/meep/metalens/04_ideal_pb.png" alt="등광로 조건, 접기 전후 위상, fin 매핑, 두 원편광의 전파, 초점면 단면" loading="lazy"></a>
-<figcaption>(E)에서 변환된 원편광은 z ≈ 10 µm에 모이고, (F)에서 반대 원편광은 퍼집니다. (G)에서 계단 위상(빨간 점선)의 초점 단면은 연속 이상 위상(회색)과 폭이 같습니다.</figcaption>
+<figcaption>(E)에서 변환된 원편광은 z ≈ 10 µm에 모이고, (F)에서 반대 원편광은 퍼집니다. 검정→빨강→노랑→흰색의 hot 색상은 각 패널의 최대값으로 정규화한 |E|²이며 선형 척도입니다. (E)와 (F)의 밝기를 절대 세기로 비교하지 않습니다. (G)의 공통 척도 단면과 계산 데이터는 그대로 유지했습니다. 1D 스칼라 각스펙트럼 모델이며 FDTD 결과가 아닙니다.</figcaption>
 </figure>
 
 | 항목 (λ = 532 nm, f = 10 µm, 구경 ±5.12 µm, U = 250 nm) | 값 |

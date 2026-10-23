@@ -1,5 +1,5 @@
 title: Meep Examples
-description: Meep(FDTD) 공식 예제를 처음 보는 사람도 따라갈 수 있게 풀어 쓴 시리즈. Korean body, English TL;DR, English code comments.
+description: Meep(FDTD) 공식 예제와 공개 프로젝트를 직접 실행하며 배우는 시리즈. Korean body, English TL;DR, English code comments.
 url: "https://jin-castle.github.io"
 baseurl: "/meep-examples"
 author: jin-castle

@@ -4,12 +4,18 @@
 Focusing checked by angular-spectrum propagation, not FDTD.
 """
 import sys
+from pathlib import Path
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
 from matplotlib.gridspec import GridSpec
+from matplotlib import font_manager
+
+for font in (Path("/mnt/c/Windows/Fonts/malgun.ttf"), Path("/mnt/c/Windows/Fonts/malgunbd.ttf")):
+    if font.is_file():
+        font_manager.fontManager.addfont(str(font))
 
 plt.rcParams["font.family"] = ["Malgun Gothic", "DejaVu Sans"]
 plt.rcParams["axes.unicode_minus"] = False
@@ -163,7 +169,7 @@ ax2.set_xlabel("x (μm)  — 위에서 본 fin (중앙 행)")
 # (E) focusing, converted spin
 ext = [xk[0], xk[-1], zs[0], zs[-1]]
 ax = fig.add_subplot(gs[2, 0:2])
-ax.imshow(I_samp / I_samp.max(), extent=ext, origin="lower", aspect="auto", cmap="inferno")
+ax.imshow(I_samp / I_samp.max(), extent=ext, origin="lower", aspect="auto", cmap="hot", vmin=0, vmax=1)
 ax.axhline(f, color="w", ls="--", lw=0.8)
 ax.plot([-a, a], [0.15, 0.15], color="cyan", lw=4)
 ax.set_xlabel("x (μm)")
@@ -172,7 +178,7 @@ ax.set_title("(E) 변환된 원편광: +φ → z ≈ f 에 초점", fontsize=13,
 
 # (F) opposite spin
 ax = fig.add_subplot(gs[2, 2:4])
-ax.imshow(I_opp / I_opp.max(), extent=ext, origin="lower", aspect="auto", cmap="inferno")
+ax.imshow(I_opp / I_opp.max(), extent=ext, origin="lower", aspect="auto", cmap="hot", vmin=0, vmax=1)
 ax.axhline(f, color="w", ls="--", lw=0.8)
 ax.plot([-a, a], [0.15, 0.15], color="cyan", lw=4)
 ax.set_xlabel("x (μm)")
