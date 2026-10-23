@@ -2,7 +2,7 @@
 
 Meep (FDTD) 공식 예제 해설 시리즈 — 입문자용. 사이트: https://jin-castle.github.io/meep-examples/
 
-A beginner-friendly walkthrough of the official [Meep](https://meep.readthedocs.io/) examples, ordered like a 10-week applied-electromagnetics course (post number = week − 1; weeks 2–10 → posts 01–09).
+A beginner-friendly walkthrough of the official [Meep](https://meep.readthedocs.io/) examples, ordered like a 10-week applied-electromagnetics course (post number = week − 1; weeks 2–10 → posts 01–09), followed by season 2 (posts 10–16: the journey of a point source, from a mirror to light extraction and the far field).
 Korean body, English TL;DR, English code comments. Every script in `code/` was re-run before publishing.
 
 | # | Post | Script | Key numbers (Meep 1.33.0) |
@@ -16,6 +16,7 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 07 | Metalens의 meta-atom과 phase library — 폭 하나로 위상을 돌리고, 4단계로 빛을 꺾고, 어디서 설계가 틀어지는가 | `code/meta_atom.py` | library span 1.10 × 2π; 4-level supercell +1 order 0.514 = 63 % of the blazed bound; 40-atom array peaks at 58.5° |
 | 08 | Metagrating inverse design — forward, adjoint, gradient, 검증의 4단계 계약 | `code/metagrating_inverse.py` | gradient gate PASS (0.7 / 0.1 / 0.06 %); MMA x5: +1 order 0.496 → 0.623 in a fresh run (61 → 77 % of the bound) |
 | 09 | Waveguide bend inverse design — 자유 설계 영역과 출력 포트 mode power | `code/bend_inverse.py` | gate PASS (0.00 / 0.00 / 0.01 %); MMA x5: output mode-1 transmission 0.015 → 0.780 in a fresh run (0.639 at twice the resolution); 119 / 121 pixels still grey |
+| 10 | 점광원의 3D 방사 패턴 — Bloch 1D run 묶음과 PEC 거울의 image dipole | `code/dipole_pattern_3d.py` | x-dipole 3D pattern from 240 1D Bloch runs: 0.22 % vs analytic; dipole above a PEC mirror: image-dipole near2far 0.66 % (5 lobes), 1D Bloch 6.8 % below the glancing limit |
 
 ## Run a script
 
@@ -31,6 +32,7 @@ python binary_grating.py       # ~30 s, writes ../assets/06/
 python meta_atom.py            # ~35 s, writes ../assets/07/
 python metagrating_inverse.py  # ~50 s (meep.adjoint + nlopt), writes ../assets/08/
 python bend_inverse.py         # ~30 s (meep.adjoint + nlopt), writes ../assets/09/
+python dipole_pattern_3d.py    # ~4.5 min (240 1D runs + 2D near2far), writes ../assets/10/
 ```
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).

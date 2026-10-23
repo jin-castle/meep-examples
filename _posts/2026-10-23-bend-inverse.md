@@ -32,7 +32,7 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 - optimizer 내부 FOM을 입력 power로 나누면 1을 넘는다. 왜 계약 4가 필요한가
 - 설계 격자와 Yee 격자는 다른 것이다. 같은 11 × 11 설계를 해상도 20에서 다시 재면 값이 달라진다
 
-**전제 지식**: 08편의 4단계 계약과 gate, 05편의 bend와 2-run 정규화, 04편의 `EigenModeSource`. **공식 문서**: [Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/), [adjoint 예제 01 Waveguide Bend](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb). **이전 글**: [08 · Metagrating inverse design]({{ site.baseurl }}/metagrating-inverse/) · 이 글이 시리즈의 마지막이다.
+**전제 지식**: 08편의 4단계 계약과 gate, 05편의 bend와 2-run 정규화, 04편의 `EigenModeSource`. **공식 문서**: [Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/), [adjoint 예제 01 Waveguide Bend](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb). **이전 글**: [08 · Metagrating inverse design]({{ site.baseurl }}/metagrating-inverse/) · 시즌 1(강의 10주차)의 마지막 글이다. **다음 글**: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/)(시즌 2의 시작)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -696,4 +696,4 @@ resolution check [20]: T_mode1 0.6391, T_total 0.6870
 
 - [공식 Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/) · [adjoint 예제 01 Introduction (waveguide bend)](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb) · [adjoint 예제 02 filtering and projection](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/02-Filtered_Waveguide_Bend.ipynb)
 - [`MaterialGrid` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#materialgrid) · [`EigenModeSource`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#eigenmodesource) · [NLopt MMA](https://nlopt.readthedocs.io/en/latest/NLopt_Algorithms/#mma-method-of-moving-asymptotes-and-ccsa)
-- 이전 글: [08 · Metagrating inverse design]({{ site.baseurl }}/metagrating-inverse/) · 설계 변수 하나였던 bend: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · 시리즈 처음: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/)
+- 이전 글: [08 · Metagrating inverse design]({{ site.baseurl }}/metagrating-inverse/) · 설계 변수 하나였던 bend: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · 시리즈 처음: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · 다음 글(시즌 2): [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/)
