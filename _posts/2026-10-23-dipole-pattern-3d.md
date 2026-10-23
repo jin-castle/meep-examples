@@ -32,7 +32,7 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 - `Near2FarRegion` 네 조각의 `weight`가 닫힌 면의 바깥 법선이라는 것
 - 두 방법(2D near2far, 1D Bloch)이 같은 array factor를 내는지, 어디서 갈라지는지
 
-**전제 지식**: 01편의 점원과 flux box, 03편의 reference run. **공식 예제**: [Near-to-far field spectra 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/)의 [antenna above a PEC ground plane](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-above-a-perfect-electric-conductor-ground-plane)과 [dipole_in_vacuum_1D.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py). **이전 글**: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/) · **다음 글**: 11 · 두 거울 사이의 점광원
+**전제 지식**: 01편의 점원과 flux box, 03편의 reference run. **공식 예제**: [Near-to-far field spectra 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/)의 [antenna above a PEC ground plane](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-above-a-perfect-electric-conductor-ground-plane)과 [dipole_in_vacuum_1D.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py). **이전 글**: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/) · **다음 글**: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -657,4 +657,4 @@ total 258 s
 
 - [Near-to-far field spectra 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/) · [antenna above a PEC ground plane](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-above-a-perfect-electric-conductor-ground-plane) · [dipole_in_vacuum_1D.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py)
 - [`k_point`와 Bloch 경계](https://meep.readthedocs.io/en/latest/Python_User_Interface/#simulation) · [`Symmetry`와 `phase`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#symmetry) · [`Near2FarRegion`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#near2farregion)
-- 이전 글: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/) · 시즌 2의 출발점: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · 다음 글: 11 · 두 거울 사이의 점광원
+- 이전 글: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/) · 시즌 2의 출발점: [01 · Point source와 line source]({{ site.baseurl }}/point-line-source/) · 다음 글: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/)

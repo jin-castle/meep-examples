@@ -48,7 +48,6 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 
 <!-- concept-illustration:part-04:end -->
 
-
 core(실리콘, n = 3.48)가 cladding(SiO₂, n = 1.44)보다 굴절률이 높으면 빛은 전반사로 core 안에 갇혀 전파한다. 갇힌 빛의 형태를 모드(mode)라 부르고, 가장 단순한 모양이 기본 모드 TE0이다. 균일한 직선에는 반사를 일으킬 불연속이 없으므로 손실 없이 전달된다.
 
 $$

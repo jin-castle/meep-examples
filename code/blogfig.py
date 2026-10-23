@@ -388,14 +388,20 @@ def record_frames(sim, vol, component, t_start: float, t_end: float, n_frames: i
 def animate_fields(frames, times, extent, out_gif: str, *, eps: np.ndarray | None = None,
                    lines=None, points=None, unit: str = "um", component: str = "Ez",
                    time_unit: str = "um/c", fps: int = 10, figsize=(7.5, 4.0), dpi=80,
-                   aspect: str = "equal", title: str | None = None, legend_loc: str = "upper right") -> None:
+                   aspect: str = "equal", title: str | None = None, legend_loc: str = "upper right",
+                   clip_percentile: float | None = None, xlabel: str | None = None, ylabel: str | None = None) -> None:
     """Write a GIF of Re(field) snapshots with the structure outline and source/monitor markers.
 
     ``lines``: [((x0, y0), (x1, y1), color, label), ...] e.g. source and monitor planes.
     ``points``: [(x, y, color, label), ...]. One color scale for all frames (PillowWriter, no ffmpeg).
+    ``clip_percentile``: colour scale from this percentile of |field| over all frames instead of the maximum
+    (use when a point source pixel dominates the maximum). ``xlabel``/``ylabel`` override "x [unit]"/"y [unit]".
     """
     from matplotlib import animation
-    lim = max(float(np.max(np.abs(f))) for f in frames)
+    if clip_percentile is None:
+        lim = max(float(np.max(np.abs(f))) for f in frames)
+    else:
+        lim = float(np.percentile(np.abs(np.stack(frames)), clip_percentile))
     fig, ax = plt.subplots(figsize=figsize)
     im = ax.imshow(frames[0].T, origin="lower", extent=extent, cmap="RdBu", vmin=-lim, vmax=lim, aspect=aspect)
     if eps is not None and eps.max() > eps.min():
@@ -408,10 +414,10 @@ def animate_fields(frames, times, extent, out_gif: str, *, eps: np.ndarray | Non
         ax.plot(x, y, "o", color=color, ms=5, label=label)
     if lines or points:
         ax.legend(loc=legend_loc, fontsize=7, framealpha=0.8)
-    ax.set_xlabel(f"x [{unit}]")
-    ax.set_ylabel(f"y [{unit}]")
+    ax.set_xlabel(xlabel or f"x [{unit}]")
+    ax.set_ylabel(ylabel or f"y [{unit}]")
     ttl = ax.set_title("", fontsize=9)
-    fig.colorbar(im, ax=ax, shrink=0.85, label=f"Re({component})")
+    fig.colorbar(im, ax=ax, shrink=0.85, label=f"Re({component})" + (" (clipped)" if clip_percentile is not None else ""))
     fig.tight_layout()
 
     def update(i):

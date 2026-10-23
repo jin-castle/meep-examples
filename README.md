@@ -17,6 +17,7 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 08 | Metagrating inverse design — forward, adjoint, gradient, 검증의 4단계 계약 | `code/metagrating_inverse.py` | gradient gate PASS (0.7 / 0.1 / 0.06 %); MMA x5: +1 order 0.496 → 0.623 in a fresh run (61 → 77 % of the bound) |
 | 09 | Waveguide bend inverse design — 자유 설계 영역과 출력 포트 mode power | `code/bend_inverse.py` | gate PASS (0.00 / 0.00 / 0.01 %); MMA x5: output mode-1 transmission 0.015 → 0.780 in a fresh run (0.639 at twice the resolution); 119 / 121 pixels still grey |
 | 10 | 점광원의 3D 방사 패턴 — Bloch 1D run 묶음과 PEC 거울의 image dipole | `code/dipole_pattern_3d.py` | x-dipole 3D pattern from 240 1D Bloch runs: 0.22 % vs analytic; dipole above a PEC mirror: image-dipole near2far 0.66 % (5 lobes), 1D Bloch 6.8 % below the glancing limit |
+| 11 | 두 거울 사이의 점광원 — LDOS와 Purcell 인자 | `code/cavity_ldos.py` | planar cavity Purcell factor vs Abram Eq. 7: median 0.94 % away from the modal cutoffs (cyl), 3D check 2.3 / 0.9 %; metal box: dft_ldos = 0.81–0.89 of 2Q/(πωV), under-converged 0.72 when the run is capped |
 
 ## Run a script
 
@@ -33,6 +34,7 @@ python meta_atom.py            # ~35 s, writes ../assets/07/
 python metagrating_inverse.py  # ~50 s (meep.adjoint + nlopt), writes ../assets/08/
 python bend_inverse.py         # ~30 s (meep.adjoint + nlopt), writes ../assets/09/
 python dipole_pattern_3d.py    # ~4.5 min (240 1D runs + 2D near2far), writes ../assets/10/
+python cavity_ldos.py          # ~7 min (cyl sweep + 3D + Harminv/dft_ldos), writes ../assets/11/
 ```
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).

@@ -48,7 +48,6 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 
 <!-- concept-illustration:part-08:end -->
 
-
 목적함수 J = |a₊₁|²/P_in은 73개 밀도 ρ의 함수다. 미분 ∂J/∂ρ_i를 하나씩 유한차분으로 구하면 146번의 시뮬레이션이 필요하다. adjoint 방법은 두 번으로 끝낸다. 원래 source로 쏜 forward field E_f와, 목적함수 monitor 자리에서 거꾸로 쏜 adjoint field E_a의 곱이 모든 픽셀의 gradient다. "빛이 실제로 지나는 곳"과 "목적함수가 민감한 곳"이 겹치는 픽셀에서 gradient가 크다.
 
 $$

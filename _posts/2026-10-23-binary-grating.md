@@ -47,7 +47,6 @@ excerpt: "a glass binary grating under a normally incident plane wave. One perio
 
 <!-- concept-illustration:part-06:end -->
 
-
 주기 Λ의 구조는 평면파에 가로 방향 운동량 2πm/Λ를 더하거나 뺀다. 공기 중에서 전파하려면 가로 파수가 k₀ = 2π/λ보다 작아야 하므로 |m|λ/Λ < 1인 차수만 살아남는다. Λ = 2.6 µm, λ = 1.55 µm면 λ/Λ = 0.60이라 m = 0, ±1까지이고 ±1차는 ±36.6°로 간다. Λ = 1.2 µm면 λ/Λ = 1.29 > 1이라 0차만 남는다. 이때 격자는 "회절"하지 않고 하나의 유효 매질처럼 투과 진폭과 위상만 바꾼다.
 
 $$

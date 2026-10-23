@@ -47,7 +47,6 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 
 <!-- concept-illustration:part-05:end -->
 
-
 도파로를 따라가던 모드는 코너에서 갑자기 방향이 바뀐 도파로를 만난다. 입력 모드와 수직 암의 모드는 모양이 겹치는 부분이 작아서(mode mismatch), 겹치지 않는 부분만큼 밖으로 방사되거나 되돌아간다. 닫힌 해석해는 없고, 에너지 보존이 결과를 구속한다.
 
 $$
