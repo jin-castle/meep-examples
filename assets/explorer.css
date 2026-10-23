@@ -17,3 +17,4 @@
 @media(prefers-reduced-motion:reduce){#density-grid{animation:none!important}}
 @media print{.site-header,.knowledge-rail,.hero-figure,.story-figure,.catalog-controls,.scroll-cue{display:none}.page-shell{display:block}main{padding:0}.hero{display:block;min-height:0}.story-layout{display:block}.story-step{min-height:0;padding:24px 0}.example-grid{grid-template-columns:repeat(2,1fr)}.example-card{break-inside:avoid}.light-story,.examples-section,.concept-section,.learning-section{padding:24px 0}}
 .learning-section .path-subtitle{margin:56px 0 0;font-size:20px;font-weight:700;line-height:1.3;word-break:keep-all}
+.example-card>.example-thumbnail{display:block;width:100%;height:auto;aspect-ratio:5/3;object-fit:contain;background:var(--soft);border-bottom:1px solid var(--rule)}.catalog-visual-note{max-width:70ch;margin:0 0 24px;color:var(--muted);font-size:14px;line-height:1.8;word-break:keep-all}
