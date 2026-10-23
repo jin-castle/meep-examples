@@ -4,7 +4,6 @@
   if (!scene) return;
   const $ = selector => scene.querySelector(selector);
   const links = [...scene.querySelectorAll("[data-stage-link]")];
-  const chapters = [...document.querySelectorAll(".story-step")];
   const motion = matchMedia("(prefers-reduced-motion: reduce)");
   const progress = $("#sequence-progress");
   const playButton = $("#sequence-play");
@@ -32,8 +31,6 @@
   let userPaused = motion.matches;
   let visible = false;
   let desiredPlaying = false;
-  let stageStop = 5.99;
-  let manual = false;
   let densityReady = false;
   const hasTimeline = Boolean(window.gsap);
   const staticMode = () => motion.matches || !hasTimeline;
@@ -170,21 +167,12 @@
     render(value);
   }
   if (hasTimeline) {
-    timeline = gsap.timeline({ paused: true }).to(playhead, {
-      time: duration, duration, ease: "none", onUpdate: () => {
-        if (playhead.time >= stageStop) {
-          timeline.pause();
-          desiredPlaying = false;
-          seek(stageStop);
-          syncPlayback();
-        } else render(playhead.time);
-      }
+    timeline = gsap.timeline({ paused: true, repeat: -1 }).to(playhead, {
+      time: duration, duration, ease: "none", onUpdate: () => render(playhead.time)
     });
   }
-  function selectStage(stage, isManual = false) {
-    if (isManual) manual = true;
-    stageStop = Math.min(duration, stage * 6 - .01);
-    seek(staticMode() ? stageStop : (stage - 1) * 6);
+  function selectStage(stage) {
+    seek(staticMode() ? stage * 6 - .01 : (stage - 1) * 6);
     desiredPlaying = !staticMode();
     syncPlayback();
   }
@@ -216,29 +204,24 @@
       console.warn("Meep density data:", error.message);
     }
   }
-  links.forEach(link => link.addEventListener("click", event => { event.preventDefault(); selectStage(Number(link.dataset.stageLink), true); }));
+  links.forEach(link => link.addEventListener("click", event => { event.preventDefault(); selectStage(Number(link.dataset.stageLink)); }));
   playButton.addEventListener("click", () => {
-    manual = true;
-    if (staticMode()) { selectStage(currentStage % 4 + 1, true); return; }
+    if (staticMode()) { selectStage(currentStage % 4 + 1); return; }
     if (desiredPlaying && !userPaused) desiredPlaying = false;
     else {
       if (time >= 23.99) seek(0);
-      stageStop = duration;
       desiredPlaying = true;
       userPaused = false;
     }
     syncPlayback();
   });
   $("#sequence-replay").addEventListener("click", () => {
-    manual = true;
-    stageStop = duration;
     seek(staticMode() ? 5.99 : 0);
     desiredPlaying = !staticMode();
     userPaused = motion.matches;
     syncPlayback();
   });
   progress.addEventListener("input", () => {
-    manual = true;
     desiredPlaying = false;
     const value = Number(progress.value);
     seek(staticMode() ? value * 6 - .01 : value);
@@ -249,25 +232,7 @@
   $(".sequence-transport").hidden = false;
   toggle.addEventListener("click", () => { userPaused = !userPaused; syncPlayback(); });
   document.addEventListener("visibilitychange", syncPlayback);
-  motion.addEventListener("change", () => { userPaused = motion.matches; selectStage(currentStage || 1, manual); });
-
-  // Scroll selects chapters; transport interaction takes ownership until the
-  // reader scrolls again. Observer notifications cannot overwrite a scrub.
-  let chapterObserver;
-  function observeChapters() {
-    if (!("IntersectionObserver" in window)) return;
-    if (chapterObserver) chapterObserver.disconnect();
-    const sticky = getComputedStyle(scene).position === "sticky";
-    const narrow = matchMedia("(max-width: 680px)").matches;
-    const inset = narrow && sticky ? Math.min(innerHeight - 96, Math.ceil(scene.getBoundingClientRect().height) + 80) : 150;
-    const ratios = new Map();
-    chapterObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => ratios.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0));
-      const active = chapters.reduce((best, chapter) => (ratios.get(chapter) || 0) > (ratios.get(best) || 0) ? chapter : best, chapters[0]);
-      if (!manual && (ratios.get(active) || 0) > 0 && Number(active.dataset.step) !== currentStage) selectStage(Number(active.dataset.step));
-    }, { rootMargin: `-${inset}px 0px -12% 0px`, threshold: [0, .1, .25, .5, .75, 1] });
-    chapters.forEach(chapter => chapterObserver.observe(chapter));
-  }
+  motion.addEventListener("change", () => { userPaused = motion.matches; selectStage(currentStage || 1); });
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -280,13 +245,7 @@
   } else visible = true;
   if ("ResizeObserver" in window) new ResizeObserver(() => {
     document.documentElement.style.setProperty("--scene-height", `${Math.ceil(scene.getBoundingClientRect().height)}px`);
-    observeChapters();
   }).observe(scene);
-  else observeChapters();
-  ["wheel", "touchstart"].forEach(type => window.addEventListener(type, () => { manual = false; }, { passive: true }));
-  document.addEventListener("keydown", event => {
-    if (["PageDown", "PageUp", "Home", "End", "ArrowDown", "ArrowUp", " "].includes(event.key) && !/^(INPUT|SELECT|BUTTON|TEXTAREA)$/.test(event.target.tagName)) manual = false;
-  });
   const hashStage = () => ({ "#forward": 1, "#adjoint": 2, "#gradient": 3, "#update": 4 })[location.hash];
   window.addEventListener("hashchange", () => { if (hashStage()) selectStage(hashStage()); });
   selectStage(hashStage() || 1);

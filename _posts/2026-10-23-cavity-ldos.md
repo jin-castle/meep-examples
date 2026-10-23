@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /cavity-ldos/
+lesson_title: "두 거울 사이에서 빛의 양은 어떻게 달라질까?"
+lesson_summary: "같은 쌍극자의 LDOS를 거울 유무에 따라 비교합니다. Purcell 인자, 모드 cutoff, 높은 Q에서의 실행 시간 한계를 읽습니다."
+lesson_goals:
+  - "같은 source의 cavity·bulk 비율로 Purcell 인자를 구한다."
+  - "평면 cavity의 cutoff와 두 좌표계의 결과를 해석한다."
+  - "2D 상자의 Q·LDOS와 미수렴 결과를 구별한다."
+lesson_prerequisites: "01편 점원 · 10편 PEC와 image dipole"
 date: 2026-10-23
 title: "Meep Example 11 · 두 거울 사이의 점광원 — LDOS와 Purcell 인자"
 title_en: "Meep Example 11 · A point source between two mirrors — the local density of states and the Purcell factor"
@@ -14,16 +22,145 @@ tags: [meep, fdtd, ldos, purcell, cavity, harminv, dft_ldos, cylindrical]
 image: /assets/meep/11/03_purcell.png
 excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here the dipole sits between two mirrors and the question is the emitted power itself. Meep measures it as the local density of states (LDOS) at the source point with `dft_ldos`. Part A: an in-plane dipole in a dielectric slab (n = 2.4) between two lossless metallic mirrors, the Purcell factor F = LDOS(cavity)/LDOS(bulk) versus the normalized thickness t = nL/λ, swept in cylindrical coordinates and checked in 3D. Part B: a dipole in a 2D metal box with one aperture, where the LDOS at resonance is compared with the single-mode estimate 2Q/(πωV)."
 ---
-## TL;DR (English)
 
-![hero]({{ site.baseurl }}/assets/meep/11/03_purcell.png)
+<h2 id="observe">1. 먼저 보기: 거울은 빛의 양도 바꿀까?</h2>
+
+10편에서는 거울 하나가 빛이 나가는 방향을 바꿨습니다. 이번에는 **같은 쌍극자를 두 거울 사이에 놓았을 때 방출 power가 얼마나 달라지는지** 봅니다. source 위치에서 잰 LDOS를 거울 없는 bulk의 LDOS로 나눈 값이 Purcell 인자입니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/03_purcell.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/03_purcell.png" alt="두 거울 간격에 따른 실제 Purcell 인자와 해석식 및 cylindrical와 3D 결과 비교"></a>
+<figcaption>파트 A의 실제 결과입니다. 가로축은 정규화 두께 t = nL/λ입니다. cutoff 세 점을 제외한 18점의 해석식 대비 오차는 중앙값 0.94%, 최대 3.6%입니다.</figcaption>
+</figure>
+
+<p class="lesson-note"><strong>두 실험의 물리량을 구별하세요.</strong> 파트 A는 손실 없는 평면 거울 사이에서 bulk로 정규화한 Purcell 인자를 계산합니다. 파트 B는 구멍이 있는 2D PEC 상자의 raw LDOS와 Q/V 근사를 비교합니다. 파트 B의 숫자를 검증된 3D Purcell 인자로 해석할 수 없습니다.</p>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/06_anim_planar.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/06_anim_planar.gif" data-animation-src="{{ site.baseurl }}/assets/meep/11/06_anim_planar.gif" data-static-src="{{ site.baseurl }}/assets/meep/11/04_cavity_field.png" alt="두 평면 거울 사이에서 r 방향으로 퍼지는 실제 cylindrical Er 펄스"></a>
+<button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
+<figcaption>파트 A, t = 1.0의 펄스입니다. 두 검은 선이 거울이고 가로는 r, 세로는 z입니다. 읽기 위해 z축을 늘려 그렸으며 실제 비율의 3D 장면은 아닙니다.</figcaption>
+</figure>
+
+<h2 id="predict">2. 먼저 예측하기: 거울을 두면 항상 더 밝아질까?</h2>
+
+<fieldset class="prediction">
+<legend>같은 source를 두 거울 사이에 넣으면 Purcell 인자는 항상 1보다 클까요?</legend>
+<label><input type="radio" name="cavity-prediction" value="always"> 빛을 가두므로 항상 1보다 크다.</label>
+<label><input type="radio" name="cavity-prediction" value="modes"> 간격과 허용되는 모드에 따라 1보다 작아질 수도 있다.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측과 실제 결과 비교하기</summary>
+
+두 번째입니다. t = 1.0에서 cylindrical 계산은 **0.912**, 3D는 **0.933**, 해석식은 **0.9375**입니다. 모두 1보다 작습니다. 거울은 source가 결합할 수 있는 모드를 바꾸므로 방출을 강화할 수도, 억제할 수도 있습니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기: 같은 source로 두 번 재는 이유</h2>
+
+쌍극자는 자신이 만든 field와 상호작용합니다. 거울에서 돌아온 field가 source 자리의 응답을 바꾸면, 같은 진폭의 전류가 내는 power도 달라집니다. <code>dft_ldos</code>는 source 자리의 field와 전류의 주파수 성분으로 이 응답을 구합니다.
+
+<figure class="lesson-figure">
+<svg viewBox="0 0 320 210" role="img" aria-labelledby="cavity-concept-title" xmlns="http://www.w3.org/2000/svg">
+<title id="cavity-concept-title">설명용 도식: 같은 source를 거울 없는 bulk와 두 거울 사이에서 계산해 LDOS 비율을 구한다</title>
+<rect width="320" height="210" fill="#f5f8fa" />
+<g font-family="sans-serif" font-size="16" fill="#0d1b2a">
+<text x="26" y="29">① bulk</text><text x="176" y="29">② cavity</text>
+<text x="27" y="155">같은 source</text><text x="183" y="155">거울 간격 L</text>
+<text x="25" y="193">Purcell 인자 = LDOS② / LDOS①</text>
+</g>
+<rect x="21" y="42" width="117" height="90" fill="#e7f7fb" stroke="#dce5eb" />
+<rect x="176" y="42" width="119" height="90" fill="#e7f7fb" />
+<path d="M176 43H295M176 131H295" stroke="#0d1b2a" stroke-width="6" />
+<circle cx="79" cy="87" r="7" fill="#0087ad" /><circle cx="235" cy="87" r="7" fill="#0087ad" />
+<path d="M56 87H102M212 87H258M56 87l8-5M56 87l8 5M102 87l-8-5M102 87l-8 5M212 87l8-5M212 87l8 5M258 87l-8-5M258 87l-8 5" fill="none" stroke="#0087ad" stroke-width="2" />
+</svg>
+<figcaption>설명용 도식입니다. 검은 선은 손실 없는 PEC 거울, 청록 점과 가로 화살표는 거울에 평행한 쌍극자입니다. 두 run은 같은 매질과 source 표현을 사용하며, 그림은 실제 field 값이 아닙니다.</figcaption>
+</figure>
+
+**F_P = LDOS(cavity) / LDOS(bulk)**로 나누면 같은 source·좌표계·격자 정규화의 영향을 비교에서 상쇄할 수 있습니다. cylindrical과 3D는 각각 자신의 bulk run으로 나눠야 합니다.
+
+거울 간격은 매질 안 파장으로 환산한 **t = nL/λ**로 읽습니다. 이 평면 cavity와 in-plane 쌍극자에서는 t가 0.5, 1.5, 2.5를 지날 때 모드가 새로 열리며 해석식이 불연속으로 뜁니다. 이 지점이 cutoff입니다. 유한 격자와 유한 시간으로 계산한 cutoff 값을 매끈한 구간과 같은 오차 통계에 섞지 않습니다.
+
+<p class="lesson-note"><strong>평면 cavity의 조건.</strong> 파장 1 µm, 굴절률 2.4, 손실 없는 매질·PEC 거울입니다. cylindrical은 Er와 m = −1, 3D는 Ex로 in-plane 쌍극자를 표현합니다. 거울 방향 z에는 PML을 두지 않고 옆으로 나가는 파만 흡수합니다. 손실 매질의 점광원 LDOS에 이 절차를 그대로 적용할 수는 없습니다.</p>
+
+다음으로 파트 B에서는 1 × 1 µm의 2D PEC 상자에 폭 w의 구멍을 냅니다. 구멍이 좁을수록 누설이 줄어 Q가 커지고, 공진 근처 LDOS를 재는 데 필요한 시간도 길어집니다. 이 예제는 **2Q/f**를 실행 시간의 기준으로 쓰며, 최대 6000에서 자릅니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/07_anim_metal.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/07_anim_metal.gif" data-animation-src="{{ site.baseurl }}/assets/meep/11/07_anim_metal.gif" data-static-src="{{ site.baseurl }}/assets/meep/11/05_metal_ldos.png" alt="2D PEC 상자 안의 Ez 펄스가 공진하며 폭 0.4 마이크로미터 구멍으로 누설되는 모습"></a>
+<button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
+<figcaption>파트 B, w = 0.4 µm의 실제 펄스입니다. 상자 안에서 field가 진동하며 오른쪽 구멍으로 나갑니다. 이 그림은 평면 cavity의 Purcell sweep과 별도인 2D 실험입니다.</figcaption>
+</figure>
+
+<h2 id="run">4. 직접 실행하기: 높은 Q를 더 오래 관찰하기</h2>
+
+Meep 1.33.0 환경에서 저장소의 <code>code/</code> 폴더에 있는 원본과 공통 helper를 사용합니다. 먼저 원본 결과를 보관하세요. 기존 단일 코어 실행은 약 6.6분입니다.
+
+~~~bash
+OMP_NUM_THREADS=1 python cavity_ldos.py
+~~~
+
+**T_MAX만 6000.0에서 12000.0으로 바꿔** 같은 명령으로 실행합니다. 이것은 파트 B의 실행 시간 상한 한 가지만 바꾸는 실험입니다. 다른 파라미터와 source는 그대로 둡니다.
+
+w = 0.2의 로그에서 <code>T_run</code>, <code>dft_ldos</code>, 스펙트럼 폭으로 구한 Q를 원본과 비교하세요. 더 긴 계산에서 공진 스펙트럼이 어떻게 변하는지 확인합니다. 원본이 요구한 시간은 23915이므로 **12000 역시 그 기준보다 짧습니다.** 새 수치를 수렴한 값으로 단정하지 말고, 원본의 3499.1119와 구별해 기록하세요.
+
+<h2 id="interpret">5. 결과 해석하기: 큰 Q와 믿을 수 있는 LDOS는 다르다</h2>
+
+| 평면 cavity의 비교 | 실제 기록 |
+|---|---|
+| cutoff를 제외한 해석식 대비 오차 | 중앙값 0.94%, 최대 3.6% |
+| t = 1.0: CYL / 3D / 해석식 | 0.912 / 0.933 / 0.9375 |
+| t = 2.0: CYL / 3D / 해석식 | 0.988 / 0.979 / 0.9844 |
+| t = 1.5 cutoff의 CYL 값 | 0.507, 아래쪽 해석식 극한 약 0.519에 가까움 |
+
+3D 확인은 t = 1, 2 **두 점뿐**입니다. 이 일치가 cutoff 근처를 포함한 모든 두께와 해상도의 검증은 아닙니다. t = 2.5의 CYL 값 1.172는 아래쪽 0.728과 위쪽 1.320 사이에 있어, 한쪽 계단에 정확히 일치한다고 말할 수 없습니다.
+
+| 2D 상자의 구멍 w | Harminv Q | 시간 기준 2Q/f | 실행 시간 | LDOS / (Q/V 기반 추정) |
+|---|---:|---:|---:|---:|
+| 0.2 µm | 8060 | 23915 | 6000, 상한 도달 | 0.72 |
+| 0.3 µm | 1271 | 3802 | 3802 | 0.89 |
+| 0.4 µm | 189 | 574 | 574 | 0.85 |
+| 0.5 µm | 74 | 230 | 230 | 0.81 |
+
+표의 근사값은 2Q/(πωV)이며, V = a²/4는 **닫힌 상자**의 해석값입니다. 구멍이 있는 상자에는 근사이므로 충분히 실행해도 비가 정확히 1일 필요는 없습니다. w = 0.2에서는 시간까지 부족해 스펙트럼 Q가 5597로 Harminv의 8060보다 작았습니다. 따라서 raw LDOS 3499를 수렴한 값으로 보고하지 않습니다.
+
+<h2 id="check">6. 이해 확인하기</h2>
+
+1. cavity의 LDOS 하나만 알고 있을 때 “방출이 몇 배 변했다”고 말할 수 없는 이유는 무엇인가요?
+2. w = 0.2에서 Q가 8060으로 측정되었는데도 LDOS를 수렴한 값으로 보고할 수 없는 이유는 무엇인가요?
+
+<details markdown="1">
+<summary>두 질문의 답 확인하기</summary>
+
+1. 같은 매질·source·좌표계의 bulk 기준값이 필요합니다. 두 LDOS의 비율이 Purcell 인자이고, raw LDOS 하나에는 정규화 조건이 섞여 있습니다.
+2. LDOS 실행은 6000에서 잘렸고 시간 기준 2Q/f는 23915입니다. 공진의 긴 시간 응답을 충분히 포함하지 못했으며 스펙트럼 Q도 다릅니다. 큰 Q 자체가 LDOS 수렴을 보증하지 않습니다.
+
+</details>
+
+<h2 id="reference">7. 참고 자료와 전체 코드</h2>
+
+원본의 해석식, 좌표계별 설정, 자세한 측정 표와 실행 기록은 아래에서 확인할 수 있습니다.
+
+
+<details markdown="1">
+<summary>English summary</summary>
+
+### TL;DR (English)
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/03_purcell.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/03_purcell.png" alt="두 거울 사이에서 빛의 양은 어떻게 달라질까? — hero 원본 그림" loading="lazy"></a>
+</figure>
 
 - **What**: post 10 put one mirror next to a dipole and the pattern changed. Here the dipole sits between two mirrors and the question is the emitted power itself. Meep measures it as the local density of states (LDOS) at the source point with `dft_ldos`. Part A: an in-plane dipole in a dielectric slab (n = 2.4) between two lossless metallic mirrors, the Purcell factor F = LDOS(cavity)/LDOS(bulk) versus the normalized thickness t = nL/λ, swept in cylindrical coordinates and checked in 3D. Part B: a dipole in a 2D metal box with one aperture, where the LDOS at resonance is compared with the single-mode estimate 2Q/(πωV).
 - **Result**: away from the three modal cutoffs the cylindrical sweep matches the analytic curve of Abram et al. with a median error of 0.94% (max 3.6%); at the cutoffs t = 0.5, 1.5, 2.5 the LDOS is discontinuous and FDTD lands on one side of the step. Two full-3D points agree with the cylindrical run to 2.3% / 0.9% (t = 1.0 / 2.0). In the metal box the Harminv Q rises from 74 (w = 0.5) to 8060 (w = 0.2); the directly measured LDOS is 0.81–0.89 of 2Q/(πωV) where the run was long enough, and only 0.72 of it for w = 0.2, whose required run time 2Q/f = 23915 was capped at 6000.
 - **Takeaway**: a mirror changes not only where light goes but how much is emitted. The Purcell factor is always a ratio of two LDOS runs with the same source. A new cavity mode opens at every half wavelength and the LDOS jumps there. A high-Q LDOS costs a run time of order 2Q/f, and an under-converged LDOS is not a small error but a different number.
 - **Code**: full script at the bottom, ~6.6 min on one core.
 
-## 0. 이 글에서 배우는 것
+</details>
+
+<details markdown="1">
+<summary>배경·물리식·파라미터 자세히 보기</summary>
+
+### 원본 §0 · 이 글에서 배우는 것
 
 - LDOS가 무엇인가: 단위 쌍극자가 그 자리에서 내는 power. `dft_ldos`는 공간 monitor 없이 source 점에서 이것을 잰다
 - Purcell 인자는 LDOS 하나가 아니라 같은 source로 돌린 두 run(cavity, bulk)의 비율이라는 것
@@ -34,7 +171,8 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 
 **전제 지식**: 10편의 image dipole과 PEC, 01편의 점원. **공식 예제**: [Local density of states 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/)의 [planar cavity with lossless metallic walls](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#planar-cavity-with-lossless-metallic-walls)와 [metal cavity with an aperture](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#square-box-with-a-small-opening), 스크립트 [planar_cavity_ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/planar_cavity_ldos.py) · [metal-cavity-ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/metal-cavity-ldos.py). **이전 글**: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · **다음 글**: [12 · 빛을 가두는 고리]({{ site.baseurl }}/ring-resonator/)
 
-## 1. 무엇을 알고 싶은가
+
+### 원본 §1 · 무엇을 알고 싶은가
 
 10편의 끝 질문이었다. 거울 하나는 방사 패턴을 다섯 lobe로 바꿨다. 거울 둘 사이에 점광원을 두면 패턴만이 아니라 내는 빛의 양 자체가 바뀌는가. 같은 쌍극자, 같은 진폭인데 주변 구조에 따라 power가 달라진다는 것은 고전 전자기학 안에서 설명된다. 쌍극자가 내는 power는 자기 자신이 만든 field가 자기 전류에 하는 일이고, 거울이 그 field를 되돌려 보내면 일의 양이 바뀐다. 이 양을 재는 물리량이 LDOS이고, bulk 대비 비율이 Purcell 인자다. 두 번째 질문은 가둬 둔 빛에 관한 것이다. 금속 상자에 작은 구멍 하나를 내면 빛이 오래 머물고(Q), 그만큼 LDOS가 커진다는 Q/V 관계가 실제 측정과 맞는가.
 
@@ -51,13 +189,14 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 | 열방사·복사 냉각 | LDOS 그 자체(열 LDOS) | — |
 
 
-## 2. 물리 한 페이지
+
+### 원본 §2 · 물리 한 페이지
 
 주파수 ω에서 위치 $\mathbf x_0$의 쌍극자 $\hat p$가 내는 power는 그 자리의 전기장이 전류에 하는 일 $-\tfrac12\mathrm{Re}[\hat E\cdot\hat J^*]$에 비례한다. Meep의 `dft_ldos`는 이것을 단위 쌍극자로 정규화해 돌려준다.
 
 $$
 \mathrm{LDOS}(\mathbf x_0,\omega)=-\frac{2}{\pi}\,\varepsilon(\mathbf x_0)\,
-\frac{\mathrm{Re}\big[\hat E_\ell(\mathbf x_0,\omega)\,\hat p(\omega)^*\big]}{|\hat p(\omega)|^2},\qquad
+\frac{\mathrm{Re}\big[\hat E_\ell(\mathbf x_0,\omega)\,\hat p(\omega)^*\big]}{\lvert \hat p(\omega)\lvert ^2},\qquad
 F_P=\frac{\mathrm{LDOS}_{\mathrm{cavity}}}{\mathrm{LDOS}_{\mathrm{bulk}}}
 $$
 
@@ -106,13 +245,20 @@ $$
 
 **판정 기준**: cutoff 밖 median > 5%면 bulk 정규화나 경계(z PML 유무)를 의심한다. converged run에서 LDOS/(Q/V 추정)이 2배 넘게 다르면 Harminv가 다른 모드를 잡은 것이다.
 
-## 3. 시뮬레이션 설계도
 
-![layout cyl]({{ site.baseurl }}/assets/meep/11/02_layout_cyl.png)
-*파트 A의 cylindrical r–z 셀($t=1.0$, L = 0.417 µm). 가로가 반지름 r, 세로가 거울 법선 z. 위아래 셀 벽에 PML이 없다. 그 벽이 완전도체 거울이다. PML은 r 바깥쪽(녹색 빗금)에만 있다. 빨간 점이 축에서 1.5 픽셀 떨어진 Er 쌍극자.*
+### 원본 §3 · 시뮬레이션 설계도
 
-![layout]({{ site.baseurl }}/assets/meep/11/01_layout.png)
-*파트 B의 2D 셀. 완전도체 상자(1 × 1 µm, 벽 0.1 µm)의 오른쪽 벽에 폭 w의 구멍. 가운데 Ez 쌍극자가 Harminv의 probe이자 `dft_ldos`의 점이다. 사방 PML 1 µm. `plot2D`는 `mp.metal`(ε = −∞)을 흰색으로, 공기를 검게 그리므로 흰 테두리가 금속이다. 파란 사각형은 대표 Ez DFT 영역.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/02_layout_cyl.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/02_layout_cyl.png" alt="파트 A의 cylindrical r–z 셀(t=1.0, L = 0.417 µm). 가로가 반지름 r, 세로가 거울 법선 z. 위아래 셀 벽에 PML이 없다. 그 벽이 완전도체 거울이다. PML은 r 바깥쪽(녹색 빗금)에만 있다. 빨간" loading="lazy"></a>
+<figcaption markdown="span">파트 A의 cylindrical r–z 셀($t=1.0$, L = 0.417 µm). 가로가 반지름 r, 세로가 거울 법선 z. 위아래 셀 벽에 PML이 없다. 그 벽이 완전도체 거울이다. PML은 r 바깥쪽(녹색 빗금)에만 있다. 빨간 점이 축에서 1.5 픽셀 떨어진 Er 쌍극자.</figcaption>
+</figure>
+
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/01_layout.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/01_layout.png" alt="파트 B의 2D 셀. 완전도체 상자(1 × 1 µm, 벽 0.1 µm)의 오른쪽 벽에 폭 w의 구멍. 가운데 Ez 쌍극자가 Harminv의 probe이자 `dft_ldos`의 점이다. 사방 PML 1 µm. `plot2D`는 `mp." loading="lazy"></a>
+<figcaption markdown="span">파트 B의 2D 셀. 완전도체 상자(1 × 1 µm, 벽 0.1 µm)의 오른쪽 벽에 폭 w의 구멍. 가운데 Ez 쌍극자가 Harminv의 probe이자 `dft_ldos`의 점이다. 사방 PML 1 µm. `plot2D`는 `mp.metal`(ε = −∞)을 흰색으로, 공기를 검게 그리므로 흰 테두리가 금속이다. 파란 사각형은 대표 Ez DFT 영역.</figcaption>
+</figure>
+
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -125,12 +271,20 @@ $$
 | B Harminv | fcen = √0.5/a = 0.707, df 0.2, 500 time unit | 닫힌 상자의 기본 모드 주파수 | 대역을 넓히면 고차 모드가 섞인다 |
 | B `dft_ldos` 시간 | min(2Q/f, 6000) | 공식은 cap 없음. w = 0.2는 일부러 미수렴 | cap을 없애면 w = 0.2가 수십 분 |
 
-![source]({{ site.baseurl }}/assets/meep/11/00_source.png)
-*파트 A의 source 파형과 스펙트럼(1000 nm, fwidth 0.2 fcen). LDOS는 이 대역의 중심 주파수 하나에서 잰다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/00_source.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/00_source.png" alt="파트 A의 source 파형과 스펙트럼(1000 nm, fwidth 0.2 fcen). LDOS는 이 대역의 중심 주파수 하나에서 잰다." loading="lazy"></a>
+<figcaption markdown="span">파트 A의 source 파형과 스펙트럼(1000 nm, fwidth 0.2 fcen). LDOS는 이 대역의 중심 주파수 하나에서 잰다.</figcaption>
+</figure>
+
 
 **강의 노트북과의 차이**: 강의 범위 밖이다. 10_sources의 두 노트는 각각 41점 sweep(CYL + 3D 전체, res 71)과 구멍 세 개(2000 cap)를 돌렸다. 이 글은 sweep을 21점으로 줄이고 3D를 두 점으로 제한한 대신, 구멍에 w = 0.5를 더하고 `dft_ldos` 스펙트럼의 폭으로 Q를 한 번 더 재서 Harminv와 맞춘다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>원본 코드 단계별 설명</summary>
+
+### 원본 §4 · 코드 따라가기
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이번 글의 ⑤는 공간 monitor가 아니라 source 점의 `dft_ldos`와 `Harminv`다.
@@ -238,10 +392,18 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 
 > **함정**: Meep은 셀 크기를 픽셀 정수로 반올림한다. $L\times$res가 정수가 아니면 이웃한 두께가 같은 z 격자 수를 쓰게 되어 sweep 곡선에 작은 계단이 생긴다. cutoff 근처에서는 이 반올림이 열린 모드의 표현을 바꿀 수 있다. 로그의 "cell size will be rounded"는 무시할 문자열이 아니다.
 
-## 5. 결과
+</details>
 
-![purcell]({{ site.baseurl }}/assets/meep/11/03_purcell.png)
-*파트 A. 왼쪽: Purcell 인자 vs $t$. 검은 선이 Eq. 7, 빨간 점이 cylindrical sweep, 파란 네모가 3D 두 점. 점선이 cutoff. 오른쪽: cutoff를 뺀 상대오차. 회색 막대가 cutoff 세 점이다.*
+<details markdown="1">
+<summary>원본 결과·검증 표·오류 진단·추가 탐구</summary>
+
+### 원본 §5 · 결과
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/03_purcell.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/03_purcell.png" alt="파트 A. 왼쪽: Purcell 인자 vs t. 검은 선이 Eq. 7, 빨간 점이 cylindrical sweep, 파란 네모가 3D 두 점. 점선이 cutoff. 오른쪽: cutoff를 뺀 상대오차. 회색 막대가 cutoff 세 점" loading="lazy"></a>
+<figcaption markdown="span">파트 A. 왼쪽: Purcell 인자 vs $t$. 검은 선이 Eq. 7, 빨간 점이 cylindrical sweep, 파란 네모가 3D 두 점. 점선이 cutoff. 오른쪽: cutoff를 뺀 상대오차. 회색 막대가 cutoff 세 점이다.</figcaption>
+</figure>
+
 
 | $t$ | Eq. 7 | CYL | 3D (res 48) | 비고 |
 |---|---|---|---|---|
@@ -252,11 +414,17 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 | 2.5 | 1.320 (위) / 0.728 (아래) | 1.172 | — | cutoff |
 | cutoff 제외 18점 | — | median 0.94%, max 3.6% (t = 0.70) | — | |
 
-![cavity field]({{ site.baseurl }}/assets/meep/11/04_cavity_field.png)
-*거울 사이의 정상상태 Re(Er), r–z 평면(z를 늘려 그렸다). $t=1.0$에서는 z 방향으로 마디 없는 모드 하나가 r 방향으로 퍼져 나간다. $t=2.0$에서는 z 방향으로 마디가 둘인 모드가 겹쳐 위아래 lobe의 부호가 가운데와 반대다. 초록 점이 쌍극자, 색 범위는 source 픽셀을 빼고 잘랐다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/04_cavity_field.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/04_cavity_field.png" alt="거울 사이의 정상상태 Re(Er), r–z 평면(z를 늘려 그렸다). t=1.0에서는 z 방향으로 마디 없는 모드 하나가 r 방향으로 퍼져 나간다. t=2.0에서는 z 방향으로 마디가 둘인 모드가 겹쳐 위아래 lobe의 부호가 가운데" loading="lazy"></a>
+<figcaption markdown="span">거울 사이의 정상상태 Re(Er), r–z 평면(z를 늘려 그렸다). $t=1.0$에서는 z 방향으로 마디 없는 모드 하나가 r 방향으로 퍼져 나간다. $t=2.0$에서는 z 방향으로 마디가 둘인 모드가 겹쳐 위아래 lobe의 부호가 가운데와 반대다. 초록 점이 쌍극자, 색 범위는 source 픽셀을 빼고 잘랐다.</figcaption>
+</figure>
 
-![metal ldos]({{ site.baseurl }}/assets/meep/11/05_metal_ldos.png)
-*파트 B. 왼쪽: 공진 주변의 `dft_ldos` 스펙트럼. 폭이 $f/Q$다. 가운데: Q/V 추정(파랑)과 직접 측정(빨강)을 a/w에 대해 semilog로. w = 0.2는 run을 잘라 미수렴. 오른쪽: w = 0.3의 공진 Ez. 닫힌 상자의 기본 모드 $\sin(\pi x/a)\sin(\pi y/a)$에 구멍 쪽 누설이 더해진 모양.*
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/11/05_metal_ldos.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/05_metal_ldos.png" alt="파트 B. 왼쪽: 공진 주변의 `dft_ldos` 스펙트럼. 폭이 f/Q다. 가운데: Q/V 추정(파랑)과 직접 측정(빨강)을 a/w에 대해 semilog로. w = 0.2는 run을 잘라 미수렴. 오른쪽: w = 0.3의 공진 Ez" loading="lazy"></a>
+<figcaption markdown="span">파트 B. 왼쪽: 공진 주변의 `dft_ldos` 스펙트럼. 폭이 $f/Q$다. 가운데: Q/V 추정(파랑)과 직접 측정(빨강)을 a/w에 대해 semilog로. w = 0.2는 run을 잘라 미수렴. 오른쪽: w = 0.3의 공진 Ez. 닫힌 상자의 기본 모드 $\sin(\pi x/a)\sin(\pi y/a)$에 구멍 쪽 누설이 더해진 모양.</figcaption>
+</figure>
+
 
 | w | f (Harminv) | Q (Harminv) | Q (스펙트럼 폭) | 2Q/f | 실행 | $2Q/(\pi\omega V)$ | `dft_ldos` | 비 |
 |---|---|---|---|---|---|---|---|---|
@@ -265,11 +433,7 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 | 0.4 | 0.6569 | 189 | 196 | 574 | 574 | 116 | 98 | 0.85 |
 | 0.5 | 0.6465 | 74 | 78 | 230 | 230 | 46.7 | 37.6 | 0.81 |
 
-![animation planar]({{ site.baseurl }}/assets/meep/11/06_anim_planar.gif)
-*파트 A, $t=1.0$. 쌍극자(빨강)에서 나온 펄스가 두 거울(검은 선) 사이에 갇힌 채 r 방향으로만 빠져나간다.*
 
-![animation metal]({{ site.baseurl }}/assets/meep/11/07_anim_metal.gif)
-*파트 B, w = 0.4. 상자 안에서 기본 모드가 울리고 구멍(파란 선)으로 조금씩 샌다. 검은 윤곽이 금속.*
 
 ### 예측과 비교
 
@@ -277,7 +441,7 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 |--------|-------------|-----------|------|
 | $F_P(t=1.0)$ | 0.94 | 0.912 | ✅ (2.7% 차) |
 | cutoff 제외 median 오차 | 2% 안 | 0.94% | ✅ |
-| cutoff 세 점 | Eq. 7과 다름 | 0.5: 3.018, 1.5: 0.507, 2.5: 1.172 | ✅ (1.5와 2.5는 아래 계단) |
+| cutoff 세 점 | Eq. 7과 다름 | 0.5: 3.018, 1.5: 0.507, 2.5: 1.172 | cutoff: 1.5는 아래쪽에 가깝고, 2.5는 두 극한 사이 |
 | 3D vs CYL | 3% 안 | 2.3% / 0.9% (t = 1.0 / 2.0) | ✅ |
 | $Q$의 w 의존 | 수십 배 | 74 → 8060 | ✅ (109배) |
 | $Q$(w = 0.2) | 8000 근처 | 8060 | ✅ |
@@ -285,7 +449,7 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 | w = 0.2 미수렴 | 절반 아래 | 0.72 (28% 부족) | ❌ (절반보다 위) |
 | 스펙트럼 Q vs Harminv Q | 10% 안 | 1324/1271, 196/189, 78/74 (4~5%) | ✅ |
 
-아홉 예측 중 여덟이 맞았다. 틀린 것은 w = 0.2의 미수렴 정도다. 노트는 필요 시간의 8%(2000)만 돌려 62%가 모자랐고, 이 글은 25%(6000)를 돌려 28%가 모자랐다. run을 자르면 공진 봉우리의 꼬리가 DFT에 다 들어오지 못해 LDOS가 작아지고 스펙트럼은 넓어진다. 스펙트럼 폭으로 잰 Q가 5597로 Harminv의 8060보다 작은 것이 그 지문이다. 나머지 세 구멍에서는 스펙트럼 Q와 Harminv Q가 5% 안에서 같고, 직접 잰 LDOS는 Q/V 추정의 81~89%다. 남은 10~20%는 모드 부피 $a^2/4$가 닫힌 상자의 값이라 구멍이 넓을수록 실제 모드가 더 퍼지기 때문이고, 실제로 w가 넓어질수록 비가 0.89에서 0.81로 내려간다. 파트 A에서 $t=1.0$의 CYL 값 0.912는 Eq. 7의 0.9375보다 2.7% 낮지만 3D 값 0.933이 그 사이에 있어 좌표계 표현의 차이로 본다. cutoff에서는 예측대로 FDTD가 계단의 한쪽에 걸렸다. $t=0.5$는 위 계단(3.018 vs 3.0), $t=1.5$와 $2.5$는 아래 계단(0.507 vs 0.519, 1.172 vs 0.728과 1.320 사이)이다.
+아홉 예측 중 여덟이 맞았다. 틀린 것은 w = 0.2의 미수렴 정도다. 노트는 필요 시간의 8%(2000)만 돌려 62%가 모자랐고, 이 글은 25%(6000)를 돌려 28%가 모자랐다. run을 자르면 공진 봉우리의 꼬리가 DFT에 다 들어오지 못해 LDOS가 작아지고 스펙트럼은 넓어진다. 스펙트럼 폭으로 잰 Q가 5597로 Harminv의 8060보다 작은 것이 그 지문이다. 나머지 세 구멍에서는 스펙트럼 Q와 Harminv Q가 5% 안에서 같고, 직접 잰 LDOS는 Q/V 추정의 81~89%다. 남은 10~20%는 모드 부피 $a^2/4$가 닫힌 상자의 값이라 구멍이 넓을수록 실제 모드가 더 퍼지기 때문이고, 실제로 w가 넓어질수록 비가 0.89에서 0.81로 내려간다. 파트 A에서 $t=1.0$의 CYL 값 0.912는 Eq. 7의 0.9375보다 2.7% 낮지만 3D 값 0.933이 그 사이에 있어 좌표계 표현의 차이로 본다. cutoff에서는 예측대로 FDTD가 계단의 한쪽에 걸렸다. $t=0.5$는 위 계단(3.018 vs 3.0), $t=1.5$는 아래쪽 극한에 가깝고(0.507 vs 0.519), $t=2.5$의 1.172는 아래쪽 0.728과 위쪽 1.320 사이이다.
 
 ### 수렴성
 
@@ -297,10 +461,11 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 
 ### 주장할 수 있는 것 / 없는 것
 
-- 할 수 있는 것: n = 2.4, 완전도체 거울, res 71에서 cylindrical `dft_ldos`의 Purcell 인자는 cutoff 밖에서 Eq. 7과 0.94% 안에서 같고, 3D 두 점과 2.3% / 0.9% (t = 1.0 / 2.0) 안에서 같다. 금속 상자에서 Harminv의 Q로 정한 시간만큼 돌리면 직접 잰 LDOS가 $2Q/(\pi\omega V)$와 0.81~0.89 안에서 같다.
+- 할 수 있는 것: n = 2.4, 완전도체 거울, res 71에서 cylindrical `dft_ldos`의 Purcell 인자는 cutoff 밖에서 Eq. 7 대비 상대오차 중앙값 0.94%, 최대 3.6%이며, 3D 두 점과 2.3% / 0.9% (t = 1.0 / 2.0) 안에서 같다. 금속 상자에서 Harminv의 Q로 정한 시간만큼 돌리면 직접 잰 LDOS가 $2Q/(\pi\omega V)$와 0.81~0.89 안에서 같다.
 - 할 수 없는 것: cutoff 세 점의 값. 해석식 자체가 불연속이다. 노트가 본 3D의 국소 11% 오차($t=1.45$)는 이 글의 두 점에 없다. 손실 있는 거울이나 매질. 모드 부피 $a^2/4$는 닫힌 상자의 값이라 구멍이 넓어질수록 근사가 나빠진다. w = 0.2의 LDOS는 이 글의 run 시간으로는 모른다.
 
-## 6. 흔한 실수
+
+### 원본 §6 · 흔한 실수
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -315,7 +480,8 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 | field 그림이 거의 비어 보임 | source 픽셀이 색 범위의 최대값을 차지 | 99 percentile로 색 범위를 자른다 |
 | LDOS가 공진값보다 작음 | `dft_ldos` 주파수를 Harminv의 f가 아니라 fcen으로 | Harminv f를 넘긴다 |
 
-## 7. 직접 해보기
+
+### 원본 §7 · 직접 해보기
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
@@ -325,7 +491,7 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 | 파트 B의 cap을 없애고 w = 0.2 | 비가 1 근처로 | 비, 걸린 시간 |
 | 파트 B에 w = 0.1 | Q 수만, 2Q/f 수십만 | Harminv만으로 Q/V 추정 |
 
-## 8. 전체 코드
+</details>
 
 <details>
 <summary>code/cavity_ldos.py 전체 (클릭하여 펼치기)</summary>
@@ -632,6 +798,9 @@ print(f"total {time.time() - t_all:.0f} s")
 {% endhighlight %}
 </details>
 
+<details markdown="1">
+<summary>원본 실행 기록과 재현 환경</summary>
+
 §4의 발췌 코드와 달리 전체 코드에는 cylindrical 설계도, r–z field 그림, 스펙트럼 그림, GIF 두 개, result.json 기록이 들어 있다. 그림 helper `blogfig.py`는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
 **실행 결과 (2026-10-23 실행)**:
@@ -648,13 +817,9 @@ total 396 s
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python cavity_ldos.py` (약 6.6 min, 단일 코어)
 
-## 확인 질문
+</details>
 
-1. Purcell 인자를 구할 때 bulk run이 왜 필요한가. cavity run의 LDOS 값 하나만으로 "방출이 몇 배 늘었다"고 말하면 무엇이 섞여 있는가.
-2. $t=1.5$에서 FDTD는 아래 계단에 걸렸다. 이것이 Meep의 오류가 아닌 이유를 Eq. 7의 $N=\mathrm{fix}(t+\tfrac12)$로 설명해 보라.
-3. 금속 상자는 공진 주파수에서만 빛을 오래 가둔다. 칩 위에서는 금속 상자 대신 유전체 고리로 가두고, 그 고리가 필터·변조기·센서·레이저의 부품이 된다. 고리에는 공진 주파수가 여러 개(FSR 간격으로) 생긴다. 그 주파수들과 각각의 Q를 어떻게 재고, 어떤 Q가 어떤 소자에 필요한가. (12편)
-
-## 9. 더 읽기
+### 공식 문서와 다음 글
 
 - [Local density of states 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/) · [planar_cavity_ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/planar_cavity_ldos.py) · [metal-cavity-ldos.py](https://github.com/NanoComp/meep/blob/master/python/examples/metal-cavity-ldos.py)
 - [`dft_ldos` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#ldos-spectra) · [`Harminv`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#harminv) · [cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/)

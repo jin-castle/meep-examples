@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /binary-grating/
+lesson_title: "격자는 빛을 어느 방향으로 나눌까?"
+lesson_summary: "하나의 평면파가 세 방향으로 갈라지는 장면에서 출발합니다. 격자 방정식으로 가능한 방향을 정하고, 차수별 효율과 전체 power가 맞는지 검산합니다."
+lesson_goals:
+  - "주기와 파장으로 전파 가능한 회절 차수와 각도를 구한다."
+  - "차수별 효율의 합을 flux 및 반사율과 비교한다."
+  - "파장보다 작은 주기에서 진폭·위상만 남는 이유를 설명한다."
+lesson_prerequisites: "03편의 입사장 빼기와 04편의 모드 계수를 먼저 읽으면 좋습니다. 실행에는 Meep와 Python이 필요합니다."
 date: 2026-10-23
 title: "Meep Example 06 · Binary grating과 diffraction order — grating equation, 차수별 효율, duty cycle이 만드는 위상"
 title_en: "Meep Example 06 · Binary grating and diffraction orders — the grating equation, power per order, and the phase a duty cycle buys"
@@ -14,56 +22,93 @@ tags: [meep, fdtd, grating, diffraction, periodic, phase-library]
 image: /assets/meep/06/04_finite.png
 excerpt: "a glass binary grating under a normally incident plane wave. One period with Bloch-periodic boundaries gives the power in each diffraction order; a subwavelength period gives the amplitude and phase of the only surviving order as the duty cycle changes; a finite 8-ridge grating shows the beams."
 ---
-## TL;DR (English)
-
-![hero]({{ site.baseurl }}/assets/meep/06/04_finite.png)
+<details markdown="1">
+<summary>English summary</summary>
 
 - **What**: a glass binary grating under a normally incident plane wave. One period with Bloch-periodic boundaries gives the power in each diffraction order; a subwavelength period gives the amplitude and phase of the only surviving order as the duty cycle changes; a finite 8-ridge grating shows the beams.
 - **Result**: for a 2.6 µm period only m = 0, ±1 propagate (±36.6°). Power: m = 0 0.759, m = ±1 0.088 each; the orders add up to the transmitted flux and T + R = 0.999. The finite grating's beams sit at 35.2° by spatial FFT. A duty-cycle sweep of a 1.2 µm period turns the phase by 0.09 × 2π (h = 0.35 µm) or 0.23 × 2π (h = 0.9 µm), close to Δn·h/λ.
 - **Takeaway**: the grating equation fixes where the light can go; only a simulation says how much goes where. A single period with `k_point` is enough for the numbers, and `DiffractedPlanewave` decomposes the transmitted field order by order.
 - **Code**: full script at the bottom, ~27 s on one core.
 
-## 0. 이 글에서 배우는 것
+</details>
 
-- 격자 방정식 sin θ_m = mλ/Λ와, 주기가 파장보다 큰가 작은가에 따라 전파 차수가 몇 개인지
-- 한 주기만 담은 셀: `k_point`로 Bloch 주기 경계, PML은 전파 방향에만
-- `DiffractedPlanewave`로 투과장을 차수별로 분해하고, 차수의 합 = 전체 flux, T + R = 1로 검산하기
-- subwavelength 격자에서 duty cycle이 0차 투과의 진폭과 위상을 어떻게 바꾸는지. 07편 phase library의 원형
-- 유한 격자(ridge 8개)에서 빔이 실제로 갈라지는 모습과, far cut의 공간 FFT로 각도 읽기
+<h2 id="observe">1. 관찰 · 빛의 경로를 먼저 보기</h2>
 
-**전제 지식**: 03편의 reference run 빼기, 04편의 mode coefficient. **공식 예제**: [binary_grating.py](https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating.py), [Diffraction Spectrum of a Binary Grating 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-a-binary-grating). **이전 글**: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/) · **다음 글**: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/)
+유리 막대 8개에 왼쪽에서 평면파를 보냈습니다. 막대 뒤에서 빛이 **곧장 가는 방향과 비스듬히 가는 방향**으로 나뉩니다. 청록 점선은 방정식으로 예측한 방향이고, 오른쪽 곡선은 실제 필드의 공간 FFT입니다.
 
-## 1. 무엇을 알고 싶은가
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/06/04_finite.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/04_finite.png" alt="유한한 8개 유리 격자 뒤의 세 회절 빔과 산란장 공간 FFT 피크." loading="lazy">
+  </a>
+  <figcaption>유한 격자의 실제 필드입니다. 예측 각도는 0°, ±36.6°이고 FFT에서 읽은 양의 피크는 35.2°입니다. 두 값의 비교에는 유한한 cut 길이의 분해능을 함께 봐야 합니다.</figcaption>
+</figure>
 
-유리 표면에 같은 간격으로 새긴 홈에 빛을 수직으로 쏘면 빛은 아무 방향이 아니라 정해진 몇 개 방향으로만 갈라진다. CD 뒷면이 무지개로 보이는 그 현상이다. 방향은 주기와 파장만으로 정해지지만, 각 방향으로 얼마가 가는지는 홈의 높이와 폭에 달려 있고 손으로 풀 수 없다. 이 글은 세 가지를 잰다. 2.6 µm 주기에서 세 차수의 효율, 1.2 µm 주기에서 유일하게 살아남는 0차의 진폭과 위상이 duty cycle에 따라 어떻게 움직이는지, 그리고 유한한 격자에서 그 빔들이 실제로 어느 각도로 나가는지.
+<figure class="lesson-figure lesson-animation">
+  <a href="{{ site.baseurl }}/assets/meep/06/05_anim_finite.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/05_anim_finite.gif" alt="8개 유리 막대 뒤에서 세 회절 빔이 형성되는 펄스의 시간 전개" loading="lazy" data-animation-src="{{ site.baseurl }}/assets/meep/06/05_anim_finite.gif" data-static-src="{{ site.baseurl }}/assets/meep/06/04_finite.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>같은 유한 격자를 짧은 펄스로. 평면파가 막대를 지나는 순간 막대마다 산란파가 생기고, 그것들이 보강되는 세 방향으로만 빔이 자란다. 0차는 곧장, ±1차는 비스듬히.</figcaption>
+</figure>
 
-### 어디에 쓰이는가
+<h2 id="predict">2. 예측 · 결과를 읽기 전에</h2>
 
-회절 격자는 분광기, 광섬유 결합기, AR 안경, 홀로그램의 공통 부품이다. 차수별 효율이 그 부품의 성능이다.
+파장 1.55 µm에서 주기를 2.6 µm에서 1.2 µm로 줄이면, 공기 쪽으로 전파하는 ±1차 빔은 어떻게 될까요?
 
-| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
-|---|---|---|
-| 분광기·모노크로미터 | 차수별 효율, grating equation | 16편 far field |
-| grating coupler(광섬유 ↔ 칩) | 차수 하나로 몰기, 각도 | 07편 meta-atom |
-| AR 안경의 도파로 격자, 홀로그램, 회절 광학소자(DOE) | duty cycle이 만드는 위상 | 07편 phase library |
-| 유한한 격자의 빔 각도 | FFT로 잰 회절 각도 | 16편 |
+<fieldset class="prediction">
+  <legend>먼저 하나를 골라보세요.</legend>
+  <label><input type="radio" name="prediction-06" value="0"> 주기가 작아져 더 큰 각도로 계속 전파한다</label>
+  <label><input type="radio" name="prediction-06" value="1"> 전파 조건을 벗어나 0차만 남는다</label>
+</fieldset>
 
+<details markdown="1">
+<summary>예측의 근거 확인하기</summary>
 
-## 2. 물리 한 페이지
+두 번째입니다. ±1차는 sin θ = ±λ/Λ를 만족해야 합니다. 1.55/1.2가 1보다 커 실수 각도가 없으므로 공기 중으로 멀리 전파하지 않습니다. 구조 가까이의 소멸장까지 사라진다는 뜻은 아닙니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기 · 관찰을 설명하는 방법</h2>
 
 <!-- concept-illustration:part-06:start -->
 
-![왼쪽은 유리에서 공기로 돌출한 한 주기 격자와 y 주기 경계 및 x PML, 오른쪽은 +x 기준 0도와 ±36.6도의 공기 중 회절 방향을 보여준다.]({{ site.baseurl }}/assets/meep/06/00_concept.png)
-
-*A 실험의 유리(n = 1.5)는 왼쪽에 있고, 유리 돌출부가 오른쪽 공기로 이어집니다. 빛은 유리에서 +x 방향으로 입사합니다. y 방향 주기 2.6 µm, 돌출 높이 0.5 µm, 폭 1.3 µm이며 한 주기 셀은 y 주기 경계와 x PML을 사용합니다. 파장 1.55 µm에서 공기로 전파하는 차수는 0, ±1이며 각도 ±36.6°는 +x 법선 기준입니다. 오른쪽 반복 배열은 방향 설명용이며 별도 유한 8개 격자의 계산 배치와 구분합니다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/06/00_concept.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/00_concept.png" alt="왼쪽은 유리에서 공기로 돌출한 한 주기 격자와 y 주기 경계 및 x PML, 오른쪽은 +x 기준 0도와 ±36.6도의 공기 중 회절 방향을 보여준다." loading="lazy">
+  </a>
+  <figcaption>A 실험의 유리(n = 1.5)는 왼쪽에 있고, 유리 돌출부가 오른쪽 공기로 이어집니다. 빛은 유리에서 +x 방향으로 입사합니다. y 방향 주기 2.6 µm, 돌출 높이 0.5 µm, 폭 1.3 µm이며 한 주기 셀은 y 주기 경계와 x PML을 사용합니다. 파장 1.55 µm에서 공기로 전파하는 차수는 0, ±1이며 각도 ±36.6°는 +x 법선 기준입니다. 오른쪽 반복 배열은 방향 설명용이며 별도 유한 8개 격자의 계산 배치와 구분합니다.</figcaption>
+</figure>
 
 <!-- concept-illustration:part-06:end -->
 
-주기 Λ의 구조는 평면파에 가로 방향 운동량 2πm/Λ를 더하거나 뺀다. 공기 중에서 전파하려면 가로 파수가 k₀ = 2π/λ보다 작아야 하므로 |m|λ/Λ < 1인 차수만 살아남는다. Λ = 2.6 µm, λ = 1.55 µm면 λ/Λ = 0.60이라 m = 0, ±1까지이고 ±1차는 ±36.6°로 간다. Λ = 1.2 µm면 λ/Λ = 1.29 > 1이라 0차만 남는다. 이때 격자는 "회절"하지 않고 하나의 유효 매질처럼 투과 진폭과 위상만 바꾼다.
+### 방향은 주기와 파장으로 정한다
+
+수직 입사한 빛이 공기로 나갈 때, 주기 Λ는 가로 방향 파수를 차수 m마다 다르게 만듭니다.
+
+$$\sin\theta_m=m\lambda/\Lambda$$
+
+전파하려면 $\lvert m\rvert\lambda/\Lambda<1$이어야 합니다. 주기 2.6 µm와 파장 1.55 µm에서는 m = 0, ±1만 전파하고, ±1차 각도는 법선에서 ±36.6°입니다. 이 식은 **갈 수 있는 방향**을 알려주며 각 방향의 power는 알려주지 않습니다.
+
+### 한 주기로 효율을 구하고 전체 합을 확인한다
+
+무한히 반복되는 격자는 막대 하나와 y 방향 주기 경계로 계산합니다. PML은 빛이 진행하는 x 방향에만 둡니다. `DiffractedPlanewave`로 각 차수의 복소 진폭을 분해한 뒤 입사 flux로 정규화합니다.
+
+$$T_m=\lvert a_m\rvert^2/P_{\mathrm{in}},\qquad \sum_mT_m=T_{\mathrm{total}},\qquad T_{\mathrm{total}}+R\approx1$$
+
+주기 1.2 µm에서는 0차만 전파합니다. 이때 duty cycle(막대 폭/주기)을 바꾸면 빔 개수보다 투과 진폭과 위상이 달라집니다. 유리의 낮은 굴절률 대비 때문에 높이 0.9 µm에서도 위상 변화는 한 바퀴에 못 미칩니다.
+
+<aside class="lesson-note" markdown="1">
+**한 주기 실험과 유한 격자를 구분하세요.** 수치는 2D Ez, 수직 입사, 손실 없는 유리 n = 1.5의 한 주파수 결과입니다. 한 주기 셀의 정확한 회절 각도와 유한 8개 격자의 넓은 빔 피크는 같은 종류의 관측값이 아닙니다.
+</aside>
+
+<details markdown="1">
+<summary>기호·설계 가정과 예측표 자세히 보기</summary>
+
+주기 Λ의 구조는 평면파에 가로 방향 운동량 2πm/Λ를 더하거나 뺀다. 공기 중에서 전파하려면 가로 파수가 k₀ = 2π/λ보다 작아야 하므로 \|m\|λ/Λ < 1인 차수만 살아남는다. Λ = 2.6 µm, λ = 1.55 µm면 λ/Λ = 0.60이라 m = 0, ±1까지이고 ±1차는 ±36.6°로 간다. Λ = 1.2 µm면 λ/Λ = 1.29 > 1이라 0차만 남는다. 이때 격자는 "회절"하지 않고 하나의 유효 매질처럼 투과 진폭과 위상만 바꾼다.
 
 $$
 \sin\theta_m=\frac{m\lambda}{\Lambda},\qquad
-T_m=\frac{|a_m|^2}{P_{\mathrm{in}}},\qquad \sum_m T_m = T_{\mathrm{total}},\qquad T_{\mathrm{total}}+R=1
+T_m=\frac{\|a_m\|^2}{P_{\mathrm{in}}},\qquad \sum_m T_m = T_{\mathrm{total}},\qquad T_{\mathrm{total}}+R=1
 $$
 
 $$
@@ -96,10 +141,27 @@ $$
 
 **판정 기준**: ΣT_m이 T_total과 1%p 이상 다르면 차수 누락이나 DiffractedPlanewave 설정 오류. T + R이 1에서 1% 이상 벗어나면 reference run이 잘못됐다.
 
-## 3. 시뮬레이션 설계도
+</details>
 
-![layout]({{ site.baseurl }}/assets/meep/06/01_layout.png)
-*실험 A의 한 주기 셀(2.6 µm 높이). 왼쪽 검은 블록 = 유리 기판(PML 관통), 가운데 작은 블록 = 막대(높이 0.5, 폭 1.3 µm), 빨간 선 = 유리 안의 평면파 source, 파란 선 = 반사 monitor(유리)와 투과 monitor(공기), 녹색 빗금 = x 방향 PML. y 방향은 PML이 없고 `k_point`로 주기 경계다. 보라 × = 종료 감시점. 동그라미 숫자는 §4의 단계 번호다.*
+<h2 id="run">4. 직접 실행 · 변수 하나만 바꾸기</h2>
+
+### 한 번만 바꿔보기: 회절 주기
+
+1. 전체 코드와 `blogfig.py`가 있는 `code/` 폴더에서 `python binary_grating.py`를 실행하고 기준 `result.json`을 보관합니다.
+2. `GP_A, GH_A, GDC_A = 2.6, 0.5, 0.5`에서 **첫 값만 3.5로** 바꿉니다. 높이·duty cycle·파장은 그대로 둡니다.
+3. 다시 실행해 `orders_propagating`의 차수 목록, 각 차수의 `T_m`, 그 합과 `T_total`을 비교합니다.
+
+방정식은 ±2차도 전파할 것으로 예측합니다. 새 차수에 얼마가 갈지는 계산으로 확인해야 합니다. 아래 측정 효율은 원래 2.6 µm 주기의 값이며, **3.5 µm의 효율은 새 실험 결과로 채워야 합니다**. B 실험의 `GP_B = 1.2`는 그대로 유지합니다.
+
+<details markdown="1">
+<summary>계산 배치·광원·파라미터 보기</summary>
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/06/01_layout.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/01_layout.png" alt="주기 2.6 µm 격자의 유리 기판, 막대, 광원, flux monitor와 x 방향 PML" loading="lazy">
+  </a>
+  <figcaption>실험 A의 한 주기 셀(2.6 µm 높이). 왼쪽 검은 블록 = 유리 기판(PML 관통), 가운데 작은 블록 = 막대(높이 0.5, 폭 1.3 µm), 빨간 선 = 유리 안의 평면파 source, 파란 선 = 반사 monitor(유리)와 투과 monitor(공기), 녹색 빗금 = x 방향 PML. y 방향은 PML이 없고 `k_point`로 주기 경계다. 보라 × = 종료 감시점. 동그라미 숫자는 §4의 단계 번호다.</figcaption>
+</figure>
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -111,12 +173,19 @@ $$
 | reference run | 셀 전체가 유리 | 공식 예제 방식. P_in은 유리 안 입사 flux | 공기로 채우면 계면 반사가 분모에 들어간다 |
 | 유한 격자 | ridge 8개, 공기 10 µm, 전면 PML | 빔이 분리될 거리. FFT cut은 막대 뒤 8 µm | ridge 수가 적으면 빔이 넓어진다 |
 
-![source]({{ site.baseurl }}/assets/meep/06/00_source.png)
-*source 파형과 스펙트럼. width 15.5, t0 = 77.5. 대역이 좁아 flux·차수 분해는 fcen 한 점이다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/06/00_source.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/00_source.png" alt="격자 실험의 좁은 대역 가우시안 광원 시간 파형과 스펙트럼" loading="lazy">
+  </a>
+  <figcaption>source 파형과 스펙트럼. width 15.5, t0 = 77.5. 대역이 좁아 flux·차수 분해는 fcen 한 점이다.</figcaption>
+</figure>
 
 **강의 노트북과의 차이**: 강의 week 7은 1.2 µm 주기 하나로 duty cycle sweep을 하고 band 1 mode coefficient를 0차의 대리로 쓴다. 이 글은 공식 예제의 회절 주기(2.6 µm)에서 `DiffractedPlanewave`로 세 차수를 직접 분해하고, 수지 검산과 유한 격자 실험을 더했다. duty cycle sweep의 수치(위상 span 0.089 × 2π)는 강의와 같다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>코드 단계별 설명 보기</summary>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 실험 A·B는 같은 함수 `run_periodic`로, 실험 C는 별도의 유한 셀로 돈다.
@@ -218,18 +287,52 @@ T_total = mp.get_fluxes(tran)[0] / P_in
 R = -mp.get_fluxes(refl)[0] / P_in
 ```
 
-- **무엇**: 차수 m의 평면파 진폭 a_m을 하나씩 구해 |a_m|²/P_in을 효율로, 위각을 위상으로 쓴다.
+- **무엇**: 차수 m의 평면파 진폭 a_m을 하나씩 구해 \|a_m\|²/P_in을 효율로, 위각을 위상으로 쓴다.
 - **왜**: `DiffractedPlanewave((0, m, 0), axis, s, p)`는 "주기 방향 y로 m번째 차수, s 편광(Ez)"이라는 하나의 평면파 모드다. `get_eigenmode_coefficients`는 이 객체를 한 번에 하나만 받는다. 04편의 band 번호 대신 차수를 직접 지정하는 셈이다.
 - **틀리면**: 리스트로 여러 `DiffractedPlanewave`를 넘기면 `TypeError`가 난다(처음 실행에서 그랬다). `axis`를 x로 주면 평면 정의가 바뀌어 s·p가 뒤집힌다.
 
 > **함정**: 위상 sweep은 `np.unwrap`으로 잇는다. 인접 표본의 위상차가 π보다 작을 때만 옳으므로 duty cycle을 촘촘히(9점) 잡는다. 이 글의 최대 인접 차는 0.33 rad이다.
 
-## 5. 결과
+</details>
+
+<h2 id="interpret">5. 해석 · 측정값과 한계를 함께 읽기</h2>
+
+### 방향 예측과 power 측정을 따로 읽기
+
+| 차수 | 공기 중 각도 | 입사 power 대비 효율 |
+|---|---|---|
+| −1 | −36.6° | 0.0884 |
+| 0 | 0° | 0.7591 |
+| +1 | +36.6° | 0.0884 |
+
+차수 합은 0.9358로 전체 투과 flux 0.9358과 맞고, R = 0.0635를 더하면 0.9994입니다. 대칭 구조·수직 입사이므로 ±1차가 같습니다. 해상도 50에서는 T₀ = 0.7597, T±1 = 0.0881로 바뀝니다.
+
+주기 1.2 µm의 duty sweep은 높이 0.35/0.9 µm에서 각각 **0.089/0.229 × 2π**의 위상 범위를 줍니다. 높이가 커져도 여기서는 2π 전체를 덮지 못해 다음 편의 phase library 설계에 한계가 있습니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/06/02_orders.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/02_orders.png" alt="0차와 ±1차의 측정 효율 및 차수 합과 전체 flux 비교" loading="lazy">
+  </a>
+  <figcaption>세 전파 차수의 효율과 검산. m = 0이 0.759, ±1차가 0.088씩. 세 차수의 합 0.936은 투과 monitor의 flux와 같고, 반사 0.064를 더하면 0.999다.</figcaption>
+</figure>
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/06/03_duty_sweep.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/06/03_duty_sweep.png" alt="두 막대 높이에서 duty cycle에 따른 0차 투과율과 위상 변화" loading="lazy">
+  </a>
+  <figcaption>왼쪽: 0차 투과 T₀. 두 높이 모두 0.83~0.97 사이에서 비단조로 움직인다. 오른쪽: 0차의 위상(duty 0.1 기준, 2π 단위). h = 0.35 µm는 0.09 바퀴, 0.9 µm는 0.23 바퀴를 돈다. 빨간 선이 phase library가 필요로 하는 한 바퀴다.</figcaption>
+</figure>
+
+<aside class="lesson-note" markdown="1">
+**유한 격자의 각도에는 분해능이 있습니다.** FFT 피크 0.372 cycles/µm(35.2°)와 방정식의 0.385 cycles/µm(36.6°)는 cut 길이가 정하는 약 ±0.037 cycles/µm, ±1.8° 범위 안에서 비교합니다. 이 결과만으로 1° 이하의 각도 정확도, 비스듬한 입사·다른 편광·파장 스펙트럼까지 검증했다고 볼 수 없습니다.
+</aside>
+
+<details markdown="1">
+<summary>전체 측정표·예측 비교·수렴성 기록 보기</summary>
 
 ### A. 2.6 µm 주기: 차수별 효율
 
-![orders]({{ site.baseurl }}/assets/meep/06/02_orders.png)
-*세 전파 차수의 효율과 검산. m = 0이 0.759, ±1차가 0.088씩. 세 차수의 합 0.936은 투과 monitor의 flux와 같고, 반사 0.064를 더하면 0.999다.*
+
 
 | 양 | 값 (res 25) | 값 (res 50) | 10_sources 원본 (res 50) |
 |---|---|---|---|
@@ -242,8 +345,7 @@ R = -mp.get_fluxes(refl)[0] / P_in
 
 ### B. 1.2 µm 주기: duty cycle이 만드는 진폭과 위상
 
-![duty sweep]({{ site.baseurl }}/assets/meep/06/03_duty_sweep.png)
-*왼쪽: 0차 투과 T₀. 두 높이 모두 0.83~0.97 사이에서 비단조로 움직인다. 오른쪽: 0차의 위상(duty 0.1 기준, 2π 단위). h = 0.35 µm는 0.09 바퀴, 0.9 µm는 0.23 바퀴를 돈다. 빨간 선이 phase library가 필요로 하는 한 바퀴다.*
+
 
 | 높이 h | 위상 span / 2π | 어림 (n − 1)h/λ | T₀ 범위 | max \|T_total − T₀\| |
 |---|---|---|---|---|
@@ -252,11 +354,9 @@ R = -mp.get_fluxes(refl)[0] / P_in
 
 ### C. 유한 격자: 빔과 각도
 
-![finite]({{ site.baseurl }}/assets/meep/06/04_finite.png)
-*왼쪽: ridge 8개 격자의 \|Ez\|. 흰 선이 구조, 청록 점선이 격자 방정식의 세 각도(0°, ±36.6°), 연두 점선이 FFT를 취한 cut. 오른쪽: cut 위 산란장(격자 − 평평한 기판)의 공간 FFT. 피크 0.372 cycles/µm는 1/Λ = 0.385 근처이고, 각도로 35.2°다.*
 
-![animation]({{ site.baseurl }}/assets/meep/06/05_anim_finite.gif)
-*같은 유한 격자를 짧은 펄스로. 평면파가 막대를 지나는 순간 막대마다 산란파가 생기고, 그것들이 보강되는 세 방향으로만 빔이 자란다. 0차는 곧장, ±1차는 비스듬히.*
+
+
 
 ### 예측과 비교
 
@@ -285,7 +385,10 @@ R = -mp.get_fluxes(refl)[0] / P_in
 - 할 수 있는 것: 이 격자에서 수직 입사 Ez 편광의 세 차수 효율은 0.76 / 0.088 / 0.088이고 수지가 닫힌다. subwavelength 유리 격자는 duty cycle로 위상을 (n − 1)h/λ 바퀴 이하만 돌린다.
 - 할 수 없는 것: 유한 격자의 각도를 1° 안으로. FFT cut 길이가 ±1.8° 분해능을 정한다. 비스듬한 입사(Bloch 위상이 0이 아님)와 p 편광. 효율의 파장 의존성(한 주파수만 계산했다).
 
-## 6. 흔한 실수
+</details>
+
+<details markdown="1">
+<summary>증상별 점검표 보기</summary>
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -296,16 +399,31 @@ R = -mp.get_fluxes(refl)[0] / P_in
 | 위상 곡선이 톱니 | unwrap 실패(표본 간격이 넓음) | duty cycle 점을 촘촘히 |
 | 유한 격자 FFT 피크가 넓음 | cut이 짧거나 ridge 수가 적음 | cut 길이·ridge 수 늘리기 |
 
-## 7. 직접 해보기
+</details>
 
-| 바꿀 것 | 예상 변화 | 확인할 수치 |
-|---------|----------|------------|
-| `GP_A` 2.6 → 3.5 µm | ±2차 등장(3.1 µm부터) | `orders_propagating`, 차수 합 |
-| `GH_A` 0.5 → 1.0 µm | 0차와 ±1차 배분 역전 가능 | T₀, T±1 |
-| `n_glass` 1.5 → 3.45 (Si), h 0.9 | 위상 span이 1바퀴를 넘음 | span/2π |
-| `fwidth` 0.1 → 0.3 fcen, nfreq 21 | 차수별 효율 스펙트럼. 차수 cutoff 파장 1.3·2.6 = 3.4 µm 밖 | T_m(λ) |
+<h2 id="check">6. 확인 · 두 질문에 답해보기</h2>
 
-## 8. 전체 코드
+### 1. 0차만 전파하면 막대가 빛에 아무 영향도 주지 않는 것일까요?
+
+<details markdown="1">
+<summary>설명 확인하기</summary>
+
+아닙니다. 멀리 전파하는 방향은 하나여도 0차의 진폭과 위상, 그리고 반사율이 바뀝니다. 이 복소 투과계수의 변화를 활용하는 것이 phase library의 출발점입니다.
+
+</details>
+
+### 2. ±1차 각도는 맞는데 차수 합이 전체 투과 flux와 다르면 무엇을 확인할까요?
+
+<details markdown="1">
+<summary>설명 확인하기</summary>
+
+전파하는 차수를 빠뜨렸거나 소멸 차수를 넣지 않았는지, DiffractedPlanewave의 주기 방향·편광 설정과 monitor 위치가 맞는지 확인합니다. 각도 방정식이 맞아도 효율 분해의 검산은 별도로 필요합니다.
+
+</details>
+
+<h2 id="reference">7. 참고 · 전체 코드와 원본 기록</h2>
+
+아래 전체 프로그램은 원본 그대로입니다. 실행 환경과 결과 기록을 함께 확인하세요.
 
 <details>
 <summary>binary_grating.py (클릭해서 펼치기)</summary>
@@ -549,6 +667,9 @@ if mp.am_master():
 {% endhighlight %}
 </details>
 
+<details markdown="1">
+<summary>원본 실행 로그·재현 환경 보기</summary>
+
 §4의 발췌 코드와 달리 전체 코드에는 유한 격자 실험(C), 그림 저장·GIF 녹화·result.json 기록이 들어 있다. 그림 helper `blogfig.py`는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
 **실행 결과 (2026-10-23 실행)**:
@@ -563,13 +684,23 @@ C. finite grating (8 ridges): spatial-FFT peak at 0.372 cycles/um -> theta = 35.
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python binary_grating.py` (약 27 s, 단일 코어)
 
-## 확인 질문
+</details>
 
-1. 주기를 1.2 µm로 줄이면 왜 T_total과 T₀가 같은가? 그때 "격자"는 무엇으로 바뀌는가?
-2. 위상 span이 (n − 1)h/λ보다 항상 작은 이유는? 같은 높이에서 span을 키우는 방법 두 가지는?
-3. 유한 격자 FFT의 각도 분해능 ±1.8°를 ±0.5°로 줄이려면 무엇을 바꿔야 하는가? ridge 수인가, cut 길이인가?
+<details markdown="1">
+<summary>응용과 다음 학습 주제 보기</summary>
 
-## 9. 더 읽기
+### 어디에 쓰이는가
+
+회절 격자는 분광기, 광섬유 결합기, AR 안경, 홀로그램의 공통 부품이다. 차수별 효율이 그 부품의 성능이다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| 분광기·모노크로미터 | 차수별 효율, grating equation | 16편 far field |
+| grating coupler(광섬유 ↔ 칩) | 차수 하나로 몰기, 각도 | 07편 meta-atom |
+| AR 안경의 도파로 격자, 홀로그램, 회절 광학소자(DOE) | duty cycle이 만드는 위상 | 07편 phase library |
+| 유한한 격자의 빔 각도 | FFT로 잰 회절 각도 | 16편 |
+
+</details>
 
 - [공식 예제 binary_grating.py](https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating.py) · [튜토리얼: Diffraction Spectrum of a Binary Grating](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-a-binary-grating)
 - [`DiffractedPlanewave` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#diffractedplanewave) · [Bloch 주기 경계와 `k_point`](https://meep.readthedocs.io/en/latest/FAQ/#how-do-i-model-a-periodic-structure)

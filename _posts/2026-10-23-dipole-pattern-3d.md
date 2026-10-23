@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /dipole-pattern-3d/
+lesson_title: "점광원의 빛은 어느 방향으로 나갈까?"
+lesson_summary: "방향별 1D 계산으로 3D 방사 패턴을 구성하고, 거울의 image가 만드는 밝고 어두운 방향을 해석합니다."
+lesson_goals:
+  - "Bloch 1D run 묶음으로 3D 패턴을 구하는 원리를 설명한다."
+  - "flux 환산과 계산하지 않은 큰 각도의 의미를 구별한다."
+  - "2D 거울 모형과 3D 패턴의 비교 범위를 판단한다."
+lesson_prerequisites: "01편 점원과 flux box · 03편 reference run"
 date: 2026-10-23
 title: "Meep Example 10 · 점광원의 3D 방사 패턴 — Bloch 1D run 묶음과 PEC 거울의 image dipole"
 title_en: "Meep Example 10 · 3D radiation pattern of a point dipole — a family of 1D Bloch runs, and the image dipole of a PEC mirror"
@@ -14,16 +22,158 @@ tags: [meep, fdtd, dipole, radiation-pattern, bloch, near2far, pec, image-dipole
 image: /assets/meep/10/05_pec_pattern.png
 excerpt: "post 01 left the point source radiating equally in all directions, in 2D. This post asks the 3D question twice. First, the 3D pattern of an x-polarized dipole in vacuum without a 3D cell: one 1D simulation per direction, with the direction encoded in a transverse Bloch wavevector. Second, the same dipole above a perfect-electric-conductor mirror, solved in 2D with an opposite-sign image dipole and a closed near2far box, and again with the 1D method."
 ---
-## TL;DR (English)
 
-![hero]({{ site.baseurl }}/assets/meep/10/05_pec_pattern.png)
+<h2 id="observe">1. 먼저 보기: 점광원은 모든 방향으로 똑같이 빛날까?</h2>
+
+01편의 2D 점원에서 한 걸음 나아가, **진동하는 축이 있는 3D 쌍극자**를 봅니다. x 방향으로 진동하면 x축 방향은 어둡고, 그 축에 수직인 면에서는 고르게 빛납니다. 이를 큰 3D 셀 대신 방향별 1D 계산을 모아 재현할 수 있습니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png" alt="240개 Bloch 1D 계산으로 재구성한 진공 x 쌍극자의 3D 방사 패턴과 해석해 비교"></a>
+<figcaption>계산한 240개 방향에서 올바르게 환산한 패턴의 상대 L2 오차는 0.22%입니다. 아래 지도의 회색 띠는 계산하지 않은 각도이며, 빛이 나오지 않는 영역이라는 뜻이 아닙니다.</figcaption>
+</figure>
+
+<p class="lesson-note"><strong>3D 패턴과 2D 그림을 구별하세요.</strong> 파트 A·C는 Bloch 1D run 묶음으로 3D Ex 쌍극자의 방향별 성분을 구합니다. 파트 B의 거울 애니메이션은 별도의 2D Ez 모델입니다. 모든 패턴 비교는 최대값으로 정규화한 모양이며 절대 방출 power나 directivity를 검증한 결과는 아닙니다.</p>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/06_anim_pec.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/06_anim_pec.gif" data-animation-src="{{ site.baseurl }}/assets/meep/10/06_anim_pec.gif" data-static-src="{{ site.baseurl }}/assets/meep/10/04_pec_field.png" alt="2D Ez 쌍극자와 반대 부호의 image가 거울면에서 상쇄하는 펄스 전파"></a>
+<button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
+<figcaption>파트 B의 실제 2D 펄스입니다. 위쪽 source와 아래쪽 image가 y = 0에서 상쇄합니다. 위쪽 절반만 거울 위의 물리적 공간입니다.</figcaption>
+</figure>
+
+<h2 id="predict">2. 먼저 예측하기: 계산하지 않은 방향을 어떻게 읽을까?</h2>
+
+<fieldset class="prediction">
+<legend>방사 패턴 지도에서 약 72° 이상의 방향이 회색으로 비어 있다면?</legend>
+<label><input type="radio" name="dipole-prediction" value="null"> 그 방향으로는 빛이 전혀 나가지 않는다.</label>
+<label><input type="radio" name="dipole-prediction" value="missing"> 계산하지 않은 표본이므로 방사 세기를 판단할 수 없다.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측과 계산 조건 비교하기</summary>
+
+두 번째입니다. 파트 A는 sin θ > 0.95인 방향을 건너뜁니다. 거의 옆으로 진행하는 파는 z 방향 PML에 비스듬하게 들어가 흡수가 어려워집니다. 이 빈칸을 0으로 채워 해석해와 비교하면 물리적인 null과 누락된 데이터를 혼동합니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기: 한 방향씩 계산하고, 거울은 image로 보기</h2>
+
+점광원의 field를 평면파 성분으로 나누면, 횡방향 파수 <code>k_point</code> 하나가 나가는 방향 하나에 대응합니다. 각 방향에서 z축을 따라 계산하고, 얻은 flux를 **S_r = S_z cos θ**로 환산한 뒤 모읍니다. θ는 +z축으로부터 잰 각도입니다.
+
+<figure class="lesson-figure">
+<svg viewBox="0 0 320 210" role="img" aria-labelledby="dipole-bloch-title" xmlns="http://www.w3.org/2000/svg">
+<title id="dipole-bloch-title">설명용 도식: z축만 계산하고 k_point로 비스듬한 전파 방향을 지정한다</title>
+<rect width="320" height="210" fill="#f5f8fa" />
+<path d="M68 180V28M68 28l-6 12M68 28l6 12" stroke="#0d1b2a" fill="none" stroke-width="2" />
+<rect x="53" y="46" width="30" height="119" fill="#e7f7fb" stroke="#0087ad" />
+<circle cx="68" cy="151" r="6" fill="#0087ad" />
+<path d="M74 146L208 64M208 64l-15 1M208 64l-7 14" stroke="#0087ad" fill="none" stroke-width="3" />
+<path d="M68 119Q89 117 96 132" fill="none" stroke="#526579" stroke-width="2" />
+<g font-family="sans-serif" font-size="16" fill="#0d1b2a">
+<text x="30" y="26">+z</text><text x="93" y="119">θ</text>
+<text x="109" y="42">k_point → 방향</text>
+<text x="109" y="171">1D 셀은 z만 계산</text>
+<text x="18" y="200">방향별 표본 → 환산 → 3D 패턴</text>
+</g>
+</svg>
+<figcaption>설명용 도식입니다. 화살표는 수치 field가 아니라 하나의 평면파 방향을 나타냅니다. 방향을 바꿔 반복한 여러 1D run이 3D 패턴을 구성합니다.</figcaption>
+</figure>
+
+cos θ는 단순히 z flux를 진행 방향으로 돌리는 투영만으로 정해지는 값이 아닙니다. 횡방향 파수 공간의 표본을 입체각당 power로 바꾸는 Jacobian까지 포함합니다. 원본 계산에서 곱하면 오차 0.22%, 그대로 쓰면 53%, 나누면 76%였습니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/07_anim_1d.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/07_anim_1d.gif" data-animation-src="{{ site.baseurl }}/assets/meep/10/07_anim_1d.gif" data-static-src="{{ site.baseurl }}/assets/meep/10/02_layout_1d.png" alt="45도 방향을 나타내는 한 Bloch 1D 계산에서 z축을 따라 이동하는 Ex 펄스"></a>
+<button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
+<figcaption>파트 A의 실제 1D run 한 개, θ = 45°입니다. 비스듬한 평면파 성분을 z축에서 관찰한 모습으로, 3D 공간 전체의 애니메이션은 아닙니다.</figcaption>
+</figure>
+
+거울 옆에서는 반사된 field가 source의 field와 더해집니다. 거울에 평행한 전기 쌍극자는 거울 아래 같은 거리에 **부호가 반대인 image**를 놓아 설명할 수 있습니다. 둘의 경로차 2h cos θ가 방향마다 달라서 밝은 방향과 어두운 방향이 번갈아 생깁니다.
+
+<figure class="lesson-figure">
+<svg viewBox="0 0 320 210" role="img" aria-labelledby="dipole-image-title" xmlns="http://www.w3.org/2000/svg">
+<title id="dipole-image-title">설명용 도식: PEC 위 쌍극자와 거울 아래 반대 부호 image의 대칭 위치</title>
+<rect width="320" height="210" fill="#f5f8fa" />
+<path d="M22 107H296" stroke="#0d1b2a" stroke-width="5" />
+<circle cx="86" cy="58" r="8" fill="#0087ad" /><circle cx="86" cy="156" r="8" fill="#526579" />
+<path d="M86 68V97M86 117V146" stroke="#526579" stroke-dasharray="4 4" stroke-width="2" />
+<g font-family="sans-serif" font-size="16" fill="#0d1b2a">
+<text x="111" y="62">실제 쌍극자 (+)</text><text x="111" y="161">image (−)</text>
+<text x="40" y="85">h</text><text x="40" y="139">h</text>
+<text x="175" y="98">PEC 면</text><text x="23" y="199">접선 전기장이 거울면에서 상쇄</text>
+</g>
+</svg>
+<figcaption>거울의 경계 조건을 설명하는 도식이며, 아래쪽 image는 실제로 추가한 광원이 아닙니다. 파트 B는 이 대칭으로 2D 거울 문제를 풉니다.</figcaption>
+</figure>
+
+파트 B는 2D Ez·배경 n = 1.2·파장 650 nm·높이 h = 1.25 µm입니다. 반면 파트 C의 Bloch 계산은 <code>k_point</code> 때문에 셀 벽이 주기경계이므로, 아래쪽에 **명시적인 mp.metal 블록**을 넣어 거울을 만듭니다. 모든 거울은 손실 없는 PEC입니다.
+
+<h2 id="run">4. 직접 실행하기: 거울과의 거리만 줄이기</h2>
+
+Meep 1.33.0이 있는 환경에서 저장소의 <code>code/</code> 폴더에서 원본을 실행하고 결과를 따로 보관합니다. 단일 코어의 기존 실행 기록은 약 4.3분입니다.
+
+~~~bash
+OMP_NUM_THREADS=1 python dipole_pattern_3d.py
+~~~
+
+**높이 H만 1.25에서 0.3 µm로 바꿔** 같은 명령을 실행하세요. 전체 코드의 <code>H = 1.25</code>를 <code>H = 0.3</code>으로 바꿉니다. 파트 B와 C가 공유하는 높이이므로 두 방법에 같은 변화가 적용됩니다.
+
+<code>05_pec_pattern.png</code>에서 밝은 봉우리(lobe)의 개수와 각도를 원본과 비교하세요. h가 작아지면 위상차의 변화 폭도 작아져 봉우리가 줄어들 것으로 예상할 수 있습니다. 새 봉우리 위치와 오차는 실행 결과에서 읽고, 진공인 파트 A의 0.22%와 거울 계산의 오차를 섞지 마세요.
+
+<h2 id="interpret">5. 결과 해석하기: 정확한 패턴에도 적용 범위가 있다</h2>
+
+| 원본에서 비교한 것 | 상대 L2 오차 |
+|---|---:|
+| 진공 3D 패턴, 계산한 240개 방향 | 0.22% |
+| 2D near2far와 해석 array factor | 0.66% |
+| 거울 위 1D Bloch와 2D, 72° 아래 | 6.4% |
+| 거울 위 1D Bloch φ = 90°와 해석해, 85°까지 | 10.5% |
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/05_pec_pattern.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/05_pec_pattern.png" alt="거울 위 쌍극자의 다섯 방사 봉우리와 2D near2far 및 Bloch 1D 결과의 차이" loading="lazy"></a>
+<figcaption>원본 높이 1.25 µm에서 다섯 lobe가 보이며 최대 봉우리는 12.9°입니다. 회색 띠는 72° 이상의 영역입니다. 서로 다른 모델을 정규화한 패턴의 적절한 단면에서 비교합니다.</figcaption>
+</figure>
+
+거울이 없는 경우의 0.22%를 거울 문제 전체의 정확도로 가져오면 안 됩니다. 거울 계산은 72° 아래에서도 두 방법이 6.4% 다릅니다. 원문은 거울 위치의 격자 반 칸 오차와 각도 표본 간격을 가능한 원인으로 해석하며, 여기서 두 효과를 독립적으로 검증한 것은 아닙니다.
+
+<p class="lesson-note"><strong>말할 수 없는 범위.</strong> 72° 이상의 1D 방사 세기, 절대 power와 directivity, 손실 금속 거울의 응답은 검증하지 않았습니다. 2D near2far도 그 큰 각도 영역의 수렴성을 별도로 확인하지 않았습니다.</p>
+
+<h2 id="check">6. 이해 확인하기</h2>
+
+1. 1D run 하나로 3D 패턴 전체를 얻을 수 있나요? 필요한 반복과 환산을 설명해 보세요.
+2. 2D 거울 애니메이션과 3D 패턴을 비교할 때, 회색 빈칸과 6.4% 오차를 어떻게 해석해야 하나요?
+
+<details markdown="1">
+<summary>두 질문의 답 확인하기</summary>
+
+1. 한 run은 한 방향의 표본입니다. 여러 <code>k_point</code>로 반복하고 z flux에 cos θ를 곱해 방향별 패턴을 구성합니다.
+2. 2D Ez와 3D Ex의 적절한 단면을 정규화한 모양으로 비교합니다. 회색은 계산하지 않은 영역이고, 6.4%는 72° 아래에서도 남은 두 방법의 차이입니다. 절대 방출량의 일치를 뜻하지 않습니다.
+
+</details>
+
+<h2 id="reference">7. 참고 자료와 전체 코드</h2>
+
+방향별 계산 설정, 원본의 실패 사례와 상세 수치, 전체 프로그램을 아래에 보관했습니다.
+
+
+<details markdown="1">
+<summary>English summary</summary>
+
+### TL;DR (English)
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/05_pec_pattern.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/05_pec_pattern.png" alt="점광원의 빛은 어느 방향으로 나갈까? — hero 원본 그림" loading="lazy"></a>
+</figure>
 
 - **What**: post 01 left the point source radiating equally in all directions, in 2D. This post asks the 3D question twice. First, the 3D pattern of an x-polarized dipole in vacuum without a 3D cell: one 1D simulation per direction, with the direction encoded in a transverse Bloch wavevector. Second, the same dipole above a perfect-electric-conductor mirror, solved in 2D with an opposite-sign image dipole and a closed near2far box, and again with the 1D method.
 - **Result**: 240 one-dimensional runs reproduce the dipole pattern $1-\sin^2\theta\cos^2\phi$ with 0.22% relative error on the computed hemisphere; multiplying the z flux by $\cos\theta$ is the right conversion (dividing gives 76%). Above the mirror the 2D near2far pattern matches the two-element array factor $\sin^2(kh\cos\theta)$ to 0.66% with five lobes; the 1D method agrees with it to 6.4% below 72°, and breaks down at grazing angles where the PML cannot absorb a wave travelling almost parallel to it.
 - **Takeaway**: a 3D pattern can be bought with many cheap 1D runs, but only away from grazing angles, and the per-direction flux needs a Jacobian. An infinite mirror is never put inside a near2far box: it is replaced by an image source and a symmetry. A mirror does not just reflect; it rewrites the pattern of the source next to it.
 - **Code**: full script at the bottom, ~4.3 min on one core.
 
-## 0. 이 글에서 배우는 것
+</details>
+
+<details markdown="1">
+<summary>배경·물리식·파라미터 자세히 보기</summary>
+
+### 원본 §0 · 이 글에서 배우는 것
 
 - 3D 점광원의 방사 패턴을 3D 셀 없이 얻는 법: 방향 하나 = `k_point`가 다른 1D run 하나
 - 1D run의 z flux를 입체각당 power로 바꾸는 환산 인자 $\cos\theta$와, 그것을 틀리게 잡으면 어떻게 보이는지
@@ -34,7 +184,8 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 
 **전제 지식**: 01편의 점원과 flux box, 03편의 reference run. **공식 예제**: [Near-to-far field spectra 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/)의 [antenna above a PEC ground plane](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-above-a-perfect-electric-conductor-ground-plane)과 [dipole_in_vacuum_1D.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py). **이전 글**: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/) · **다음 글**: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/)
 
-## 1. 무엇을 알고 싶은가
+
+### 원본 §1 · 무엇을 알고 싶은가
 
 01편은 2D 점원이 네 면으로 25%씩 나간다는 데서 끝났다. 실제 점광원은 3D이고 축이 있다. x 방향으로 진동하는 쌍극자는 x축 방향으로는 빛을 내지 않고 그에 수직한 면에서는 고르게 낸다. 이것을 Meep으로 확인하려면 3D 셀이 필요할 것 같지만, 공식 예제는 1D run 수백 개로 같은 답을 얻는다. 왜 그것이 가능한지, 그리고 어디서 안 되는지가 첫 질문이다. 두 번째 질문은 시즌 2의 출발점이다. 점광원 옆에 거울 하나를 두면 방사 패턴은 어떻게 바뀌는가.
 
@@ -50,17 +201,18 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 | 메타표면·격자의 far field | 닫힌 near2far box의 규칙 | 16편 far field |
 
 
-## 2. 물리 한 페이지
+
+### 원본 §2 · 물리 한 페이지
 
 점광원의 field는 평면파의 합이다. 횡방향 파수 $\mathbf k_\perp=(k_x,k_y)$를 하나 고정하면 Maxwell 방정식은 z만 남은 1D 문제가 되고, 그 1D 해는 $e^{i\mathbf k_\perp\cdot\mathbf r_\perp}$를 곱한 평면파다. Meep에서 이것이 `k_point`다. 방향 $(\theta,\phi)$로 나가는 평면파는 $\mathbf k_\perp=f\sin\theta\,(\cos\phi,\sin\phi)$를 가지므로, 1D 셀에 쌍극자를 두고 `k_point`를 바꿔 가며 돌리면 run 하나가 방향 하나의 표본이 된다. 1D run이 주는 것은 그 평면파 성분의 z 방향 flux $S_z$다. 입체각당 power로 바꾸려면 $d^2k_\perp=f^2\cos\theta\,d\Omega$의 Jacobian이 들어가 $S_r=S_z\cos\theta$가 된다.
 
 $$
-\frac{dP}{d\Omega}\Big|_{x\text{-dipole}}\propto 1-\sin^2\theta\cos^2\phi,\qquad
+\frac{dP}{d\Omega}\Big\lvert _{x\text{-dipole}}\propto 1-\sin^2\theta\cos^2\phi,\qquad
 S_r(\theta,\phi)=S_z(\theta,\phi)\cos\theta,\qquad
-\big|1-e^{\,i\,2kh\cos\theta}\big|^2=4\sin^2(kh\cos\theta),\quad k=\frac{2\pi n}{\lambda}
+\big\lvert 1-e^{\,i\,2kh\cos\theta}\big\lvert ^2=4\sin^2(kh\cos\theta),\quad k=\frac{2\pi n}{\lambda}
 $$
 
-$\theta$가 90°에 가까우면 평면파가 PML과 거의 평행하게 진행한다. PML은 법선 방향으로 들어오는 파를 흡수하도록 만든 층이라 이 파는 흡수되지 않고 셀을 오간다. 공식 예제는 $|\mathbf k_\perp|>0.95f$, 즉 $\theta>71.8°$를 계산하지 않는다.
+$\theta$가 90°에 가까우면 평면파가 PML과 거의 평행하게 진행한다. PML은 법선 방향으로 들어오는 파를 흡수하도록 만든 층이라 이 파는 흡수되지 않고 셀을 오간다. 공식 예제는 $&#124;\mathbf k_\perp&#124;>0.95f$, 즉 $\theta>71.8°$를 계산하지 않는다.
 
 거울 위의 쌍극자는 image 이론으로 푼다. 거울에 접한 전기장은 0이어야 하므로 거울 아래 같은 거리에 부호가 반대인 쌍극자를 두면 거울면에서 두 field가 상쇄된다. 거울을 지우고 쌍극자 둘을 두는 것과 같다. 둘의 경로차가 $2h\cos\theta$이므로 방사 패턴에 array factor $4\sin^2(kh\cos\theta)$가 곱해진다. 2D Ez 쌍극자의 자체 패턴은 등방이라 2D에서는 이 인자가 패턴의 전부다.
 
@@ -73,7 +225,7 @@ $\theta$가 90°에 가까우면 평면파가 PML과 거의 평행하게 진행�
 | $kh$ | 경로차의 위상 척도 | `K_B * H` |
 | image | 부호 −1인 두 번째 source | `amplitude=-1.0` |
 
-**가정과 유효 범위**: 파트 A는 진공, 단일 주파수, Ex 편광. 파트 B는 2D Ez(거울에 접한 편광), 배경 n = 1.2, 파장 650 nm, 거울은 손실 없는 PEC. 파트 C는 3D Ex 쌍극자이고 거울은 1D 셀의 기본 경계(metallic)다. 패턴은 모두 최대값으로 정규화한 모양 비교이며 절대 power는 다루지 않는다.
+**가정과 유효 범위**: 파트 A는 진공, 단일 주파수, Ex 편광. 파트 B는 2D Ez(거울에 접한 편광), 배경 n = 1.2, 파장 650 nm, 거울은 손실 없는 PEC. 파트 C는 3D Ex 쌍극자이고 거울은 1D 셀 아래쪽의 명시적인 `mp.metal` 블록이다. `k_point`가 있으면 셀 벽 자체는 Bloch 주기경계다. 패턴은 모두 최대값으로 정규화한 모양 비교이며 절대 power는 다루지 않는다.
 
 ### 결과 보기 전에 맞춰보기
 
@@ -90,13 +242,20 @@ $\theta$가 90°에 가까우면 평면파가 PML과 거의 평행하게 진행�
 
 **판정 기준**: 계산한 반구의 상대 L2 > 5%면 환산 인자나 `k_point`를 의심한다. $y=0$의 $\lvert E_z\rvert$가 최대의 수 % 이상이면 symmetry 위상이 틀렸다(격자 반 칸 때문에 정확히 0은 아니다). 두 방법이 72° 아래에서 10% 이상 다르면 한쪽의 거울이나 monitor 위치를 의심한다.
 
-## 3. 시뮬레이션 설계도
 
-![layout 1d]({{ site.baseurl }}/assets/meep/10/02_layout_1d.png)
-*파트 A·C의 1D 셀. z축만 계산한다. 양 끝 PML(파트 C는 위쪽만, 아래는 PEC), 빨간 선 = Ex 쌍극자, 파란 네모 = flux 점. 보라색 화살표가 `k_point`로 정해지는 전파 방향이다. 동그라미 숫자는 §4의 단계 번호다.*
+### 원본 §3 · 시뮬레이션 설계도
 
-![layout]({{ site.baseurl }}/assets/meep/10/01_layout.png)
-*파트 B의 2D 셀(7 × 7 µm, n = 1.2). 빨간 점 두 개가 물리 쌍극자(y = +1.25)와 image 쌍극자(y = −1.25, 진폭 −1), 파란 사각형이 닫힌 near2far box, 녹색 빗금이 PML. y = 0이 유효 PEC 면이고 위쪽 절반만 물리적이다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/02_layout_1d.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/02_layout_1d.png" alt="파트 A·C의 1D 셀. z축만 계산한다. 양 끝 PML(파트 C는 위쪽만, 아래는 PEC), 빨간 선 = Ex 쌍극자, 파란 네모 = flux 점. 보라색 화살표가 `k_point`로 정해지는 전파 방향이다. 동그라미 숫자는 §4의" loading="lazy"></a>
+<figcaption markdown="span">파트 A·C의 1D 셀. z축만 계산한다. 양 끝 PML(파트 C는 위쪽만, 아래는 PEC), 빨간 선 = Ex 쌍극자, 파란 네모 = flux 점. 보라색 화살표가 `k_point`로 정해지는 전파 방향이다. 동그라미 숫자는 §4의 단계 번호다.</figcaption>
+</figure>
+
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/01_layout.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/01_layout.png" alt="파트 B의 2D 셀(7 × 7 µm, n = 1.2). 빨간 점 두 개가 물리 쌍극자(y = +1.25)와 image 쌍극자(y = −1.25, 진폭 −1), 파란 사각형이 닫힌 near2far box, 녹색 빗금이 PML. y = " loading="lazy"></a>
+<figcaption markdown="span">파트 B의 2D 셀(7 × 7 µm, n = 1.2). 빨간 점 두 개가 물리 쌍극자(y = +1.25)와 image 쌍극자(y = −1.25, 진폭 −1), 파란 사각형이 닫힌 near2far box, 녹색 빗금이 PML. y = 0이 유효 PEC 면이고 위쪽 절반만 물리적이다.</figcaption>
+</figure>
+
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -112,12 +271,20 @@ $\theta$가 90°에 가까우면 평면파가 PML과 거의 평행하게 진행�
 | C 셀 | metal 0.5 + h 1.25 + 공기 10 + PML 1 µm | `k_point`가 있으면 셀 벽은 Bloch 주기라 거울은 `mp.metal` 블록으로 | 벽을 거울로 믿으면 거울이 없다(§4 ④) |
 | C 종료 | 고정 150 time unit | 85°의 파가 공기 10 µm(n 1.2)를 가로지르는 시간 140 | 감쇠 조건은 glancing에서 정체 |
 
-![source]({{ site.baseurl }}/assets/meep/10/00_source.png)
-*파트 B의 source 파형과 스펙트럼(650 nm, fwidth 0.2 fcen). 파트 A는 파장 1 µm에 같은 상대 대역폭이다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/00_source.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/00_source.png" alt="파트 B의 source 파형과 스펙트럼(650 nm, fwidth 0.2 fcen). 파트 A는 파장 1 µm에 같은 상대 대역폭이다." loading="lazy"></a>
+<figcaption markdown="span">파트 B의 source 파형과 스펙트럼(650 nm, fwidth 0.2 fcen). 파트 A는 파장 1 µm에 같은 상대 대역폭이다.</figcaption>
+</figure>
+
 
 **강의 노트북과의 차이**: 강의 범위 밖이다. 01편(강의 week 2)의 점광원을 3D와 거울로 확장한다. 10_sources의 두 PEC 노트가 각각 2D near2far(L2 0.47%)와 1D Bloch(상관 0.947)를 따로 다뤘는데, 이 글은 둘을 같은 축에 올려 어디서 갈라지는지 본다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>원본 코드 단계별 설명</summary>
+
+### 원본 §4 · 코드 따라가기
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 파트 A·C는 1D라 ②가 없고, 파트 B는 ②가 "거울 대신 image + symmetry"다.
@@ -223,10 +390,18 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 
 > **함정**: 이 글의 첫 실행은 `dimensions=1`을 명시한 채였고, 그때는 $\theta=0$의 감쇠 조건이 time step 백만을 넘겨도 멈추지 않았으며 flux는 모든 각도에서 같았다. `dimensions`를 지우고 `k_point`에 z 성분을 넣자 공식 예제의 감쇠 조건이 run당 1초 안에 끝났다. 멈추지 않는 run은 대개 종료 조건이 아니라 설정의 문제다. `until_after_sources`에 조건 두 개를 리스트로 주면 둘 다 만족해야 멈추므로 `stop_after_walltime`은 상한이 되지 못한다.
 
-## 5. 결과
+</details>
 
-![vacuum pattern]({{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png)
-*파트 A. 위: $\phi=0$ 단면은 $\cos^2\theta$, $\phi=90°$ 단면은 상수. 파란 점이 $S_z\cos\theta$, 빨간 ×가 $S_z/\cos\theta$(틀린 환산). 오른쪽 막대가 세 환산의 L2. 아래: 계산한 반구의 Meep·해석·차이 지도. 회색 띠는 계산하지 않은 glancing 영역이다.*
+<details markdown="1">
+<summary>원본 결과·검증 표·오류 진단·추가 탐구</summary>
+
+### 원본 §5 · 결과
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png" alt="파트 A. 위: =0 단면은 ^2, =90° 단면은 상수. 파란 점이 S_z, 빨간 ×가 S_z/(틀린 환산). 오른쪽 막대가 세 환산의 L2. 아래: 계산한 반구의 Meep·해석·차이 지도. 회색 띠는 계산하지 않은 glancing" loading="lazy"></a>
+<figcaption markdown="span">파트 A. 위: $\phi=0$ 단면은 $\cos^2\theta$, $\phi=90°$ 단면은 상수. 파란 점이 $S_z\cos\theta$, 빨간 ×가 $S_z/\cos\theta$(틀린 환산). 오른쪽 막대가 세 환산의 L2. 아래: 계산한 반구의 Meep·해석·차이 지도. 회색 띠는 계산하지 않은 glancing 영역이다.</figcaption>
+</figure>
+
 
 | 환산 | 상대 L2 (계산한 240 표본) |
 |---|---|
@@ -234,14 +409,23 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 | $S_z$ 그대로 | 53% |
 | $S_z/\cos\theta$ | 76% |
 
-![wrong setup]({{ site.baseurl }}/assets/meep/10/03b_vacuum_pattern_wrong_setup.png)
-*같은 스크립트의 첫 실행. `dimensions=1`을 명시하고 `k_point`에 z 성분이 없었다. Meep 지도(왼쪽 아래)가 $\phi$에 전혀 의존하지 않고 $\theta=0$ 행만 어둡다. 두 증상이 각각 "횡방향 k가 무시됨"과 "k = 0이라 실수 field"의 지문이다. L2 0.35. 그림은 틀렸지만 어디가 틀렸는지를 말해 주기 때문에 남겨 둔다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/03b_vacuum_pattern_wrong_setup.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/03b_vacuum_pattern_wrong_setup.png" alt="같은 스크립트의 첫 실행. `dimensions=1`을 명시하고 `k_point`에 z 성분이 없었다. Meep 지도(왼쪽 아래)가 에 전혀 의존하지 않고 =0 행만 어둡다. 두 증상이 각각 &quot;횡방향 k가 무시됨&quot;과" loading="lazy"></a>
+<figcaption markdown="span">같은 스크립트의 첫 실행. `dimensions=1`을 명시하고 `k_point`에 z 성분이 없었다. Meep 지도(왼쪽 아래)가 $\phi$에 전혀 의존하지 않고 $\theta=0$ 행만 어둡다. 두 증상이 각각 "횡방향 k가 무시됨"과 "k = 0이라 실수 field"의 지문이다. L2 0.35. 그림은 틀렸지만 어디가 틀렸는지를 말해 주기 때문에 남겨 둔다.</figcaption>
+</figure>
 
-![pec field]({{ site.baseurl }}/assets/meep/10/04_pec_field.png)
-*파트 B. 쌍극자 + image의 정상상태 Ez. 흰 점선 $y=0$이 거울면이고 그 위의 $\lvert E_z\rvert$는 최대의 0.012배다. 위쪽 절반만 물리적이다. 점선 사각형이 near2far box.*
 
-![pec pattern]({{ site.baseurl }}/assets/meep/10/05_pec_pattern.png)
-*왼쪽: 거울 위 쌍극자의 패턴. 파란 선이 2D near2far, 검은 점선이 array factor, 초록 점이 1D Bloch($\phi=90°$), 빨간 ×가 glancing 각. 가운데: $\phi=0$ 단면은 array factor에 쌍극자의 $\cos^2\theta$가 곱해진다. 오른쪽: 각도별 오차. 회색 띠가 72° 위다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/04_pec_field.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/04_pec_field.png" alt="파트 B. 쌍극자 + image의 정상상태 Ez. 흰 점선 y=0이 거울면이고 그 위의  E_z는 최대의 0.012배다. 위쪽 절반만 물리적이다. 점선 사각형이 near2far box." loading="lazy"></a>
+<figcaption markdown="span">파트 B. 쌍극자 + image의 정상상태 Ez. 흰 점선 $y=0$이 거울면이고 그 위의 $\lvert E_z\rvert$는 최대의 0.012배다. 위쪽 절반만 물리적이다. 점선 사각형이 near2far box.</figcaption>
+</figure>
+
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/10/05_pec_pattern.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/05_pec_pattern.png" alt="왼쪽: 거울 위 쌍극자의 패턴. 파란 선이 2D near2far, 검은 점선이 array factor, 초록 점이 1D Bloch(=90°), 빨간 ×가 glancing 각. 가운데: =0 단면은 array factor에 쌍극자의 ^" loading="lazy"></a>
+<figcaption markdown="span">왼쪽: 거울 위 쌍극자의 패턴. 파란 선이 2D near2far, 검은 점선이 array factor, 초록 점이 1D Bloch($\phi=90°$), 빨간 ×가 glancing 각. 가운데: $\phi=0$ 단면은 array factor에 쌍극자의 $\cos^2\theta$가 곱해진다. 오른쪽: 각도별 오차. 회색 띠가 72° 위다.</figcaption>
+</figure>
+
 
 | 방법 | 비교 대상 | 상대 L2 |
 |---|---|---|
@@ -251,11 +435,7 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 | C: 1D Bloch ($\phi=0$), 72° 아래 | $\cos^2\theta\,\sin^2(kh\cos\theta)$ | 6.0% |
 | B vs C, 72° 아래 | 서로 | 6.4% |
 
-![animation]({{ site.baseurl }}/assets/meep/10/06_anim_pec.gif)
-*파트 B의 펄스. 빨간 점(쌍극자)과 주황 점(image)에서 나온 파가 검은 선 $y=0$에서 상쇄되고, 파란 선(near2far box 윗변)을 지나 나간다.*
 
-![animation 1d]({{ site.baseurl }}/assets/meep/10/07_anim_1d.gif)
-*파트 A의 1D run 하나($\theta=45°$). 펄스가 z 방향으로 $c\cos\theta$의 속도로 가서 PML에 흡수된다. 실제 파는 비스듬히 가지만 셀은 z만 본다.*
 
 ### 예측과 비교
 
@@ -285,7 +465,8 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 - 할 수 있는 것: x 쌍극자의 3D 패턴은 72° 아래에서 1D run 묶음으로 0.22% 안에 재현된다. $S_z\cos\theta$가 맞는 환산이다. 거울 위 쌍극자의 패턴은 image 이론의 array factor와 0.66% 안에서 같고, 1D 방법도 72° 아래에서는 같은 답을 준다.
 - 할 수 없는 것: 72° 위의 방사 세기. 1D 방법은 그 영역을 계산하지 못하고, 이 글의 2D near2far도 그 영역의 수렴성을 따로 보지 않았다. 절대 power와 directivity. 손실 있는 금속 거울. y 편광과 다른 해상도로의 일반화.
 
-## 6. 흔한 실수
+
+### 원본 §6 · 흔한 실수
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -300,7 +481,8 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 | 파트 C에서 거울이 사라짐(L2 43%) | `k_point`가 셀 벽을 Bloch 주기로 바꿈 | 거울은 `mp.metal` 블록으로 geometry에 넣는다 |
 | 1D Bloch의 lobe 진폭이 5% 어긋남 | 거울 면이 Yee 격자 반 칸(10 nm) 안에서 불확실, $kh$가 0.12 rad 흔들림 | 해상도를 올리거나 h를 격자에 맞춘다 |
 
-## 7. 직접 해보기
+
+### 원본 §7 · 직접 해보기
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
@@ -310,7 +492,7 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 | 파트 B 해상도 50 / 100 / 150 | L2 사다리 | 0.66%가 어디서 정체하는지 |
 | 파트 B를 Hz 편광으로 | image 부호 +1, `Mirror(Y, phase=+1)` | $y=0$이 antinode인지 |
 
-## 8. 전체 코드
+</details>
 
 <details>
 <summary>code/dipole_pattern_3d.py 전체 (클릭하여 펼치기)</summary>
@@ -645,6 +827,9 @@ print(f"total {time.time() - t_all:.0f} s")
 {% endhighlight %}
 </details>
 
+<details markdown="1">
+<summary>원본 실행 기록과 재현 환경</summary>
+
 §4의 발췌 코드와 달리 전체 코드에는 1D 셀 설계도 그리기, 반구 지도, GIF 두 개, result.json 기록이 들어 있다. 그림 helper `blogfig.py`는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
 **실행 결과 (2026-10-23 실행)**:
@@ -659,13 +844,9 @@ total 258 s
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python dipole_pattern_3d.py` (약 4.3 min, 단일 코어)
 
-## 확인 질문
+</details>
 
-1. 1D run 하나가 방향 하나의 표본이 되는 이유를 `k_point`와 평면파 분해로 설명해 보라. 왜 $\cos\theta$를 곱하는가.
-2. 거울을 image 쌍극자로 바꿀 때 Ez는 부호 −1이고 Hz는 +1이다. 경계 조건에서 그 차이를 유도해 보라.
-3. 거울 하나가 방사 패턴을 다섯 lobe로 바꿨다. 그렇다면 거울 두 장 사이에 점광원을 두면 패턴만이 아니라 방출량 자체가 바뀔까. 그 양을 재는 물리량의 이름은 무엇인가. (11편)
-
-## 9. 더 읽기
+### 공식 문서와 다음 글
 
 - [Near-to-far field spectra 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/) · [antenna above a PEC ground plane](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-above-a-perfect-electric-conductor-ground-plane) · [dipole_in_vacuum_1D.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py)
 - [`k_point`와 Bloch 경계](https://meep.readthedocs.io/en/latest/Python_User_Interface/#simulation) · [`Symmetry`와 `phase`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#symmetry) · [`Near2FarRegion`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#near2farregion)

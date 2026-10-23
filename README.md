@@ -19,6 +19,8 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 10 | 점광원의 3D 방사 패턴 — Bloch 1D run 묶음과 PEC 거울의 image dipole | `code/dipole_pattern_3d.py` | x-dipole 3D pattern from 240 1D Bloch runs: 0.22 % vs analytic; dipole above a PEC mirror: image-dipole near2far 0.66 % (5 lobes), 1D Bloch 6.8 % below the glancing limit |
 | 11 | 두 거울 사이의 점광원 — LDOS와 Purcell 인자 | `code/cavity_ldos.py` | planar cavity Purcell factor vs Abram Eq. 7: median 0.94 % away from the modal cutoffs (cyl), 3D check 2.3 / 0.9 %; metal box: dft_ldos = 0.81–0.89 of 2Q/(πωV), under-converged 0.72 when the run is capped |
 | 12 | 빛을 가두는 고리 — Harminv, Q, FSR, solve_cw 교차검증 | `code/ring_resonator.py` | three Ez modes at 0.118 / 0.147 / 0.176 (Q 81 / 317 / 1675 at res 10, tutorial values); FSR 0.029 → n_g 3.69; m = 3 / 4 / 5; solve_cw vs time-domain DFT 0.40 % |
+| 13 | 회전 대칭으로 3D를 계산하기 — cylindrical 좌표, m 급수, on/off-axis 쌍극자, 디스크 방사 | `code/cylindrical_dipole.py` | on-axis dipoles 0.43 / 0.46 % vs sin² / cos²; off-axis dipole as m = 0..8, 0.63 %; post-12 ring per m within 0.1 % in f; disc near/far gap 7.43 % → 6.41 % with a larger cell |
+| topic | Metalens 위상 지도와 PB 위상 — 이상적 렌즈 위상, 2π 접기, 격자 샘플링 (`/metalens/`) | `code/metalens_*.py` (numpy, no Meep) | 1D scalar check: sampled PB phase focuses with FWHM 499 nm vs 493 nm for the continuous ideal phase (peak 0.95); the opposite circular polarization diverges |
 
 ## Run a script
 
@@ -37,6 +39,7 @@ python bend_inverse.py         # ~30 s (meep.adjoint + nlopt), writes ../assets/
 python dipole_pattern_3d.py    # ~4.5 min (240 1D runs + 2D near2far), writes ../assets/10/
 python cavity_ldos.py          # ~7 min (cyl sweep + 3D + Harminv/dft_ldos), writes ../assets/11/
 mpirun -np 4 python ring_resonator.py   # ~4 min (Harminv x3 res, mode images, solve_cw), writes ../assets/12/
+mpirun -np 4 python cylindrical_dipole.py   # ~8 min (cylindrical m runs, disc), writes ../assets/13/
 ```
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).

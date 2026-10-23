@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /reference-subtraction/
+lesson_title: "물체가 흩뜨린 빛만 어떻게 골라낼까?"
+lesson_summary: "물체 없는 계산과 물체 있는 계산을 비교합니다. 장을 뺀 뒤의 산란 power와 전력 차이가 답하는 질문을 구분합니다."
+lesson_goals:
+  - "incident·total·scattered field의 관계를 설명한다."
+  - "전력 수지와 산란 단면적에 맞는 monitor를 구분한다."
+  - "Fresnel 검산과 해상도 비교로 결과의 신뢰 범위를 판단한다."
+lesson_prerequisites: "01편의 flux box와 02편의 reference run 빼기를 먼저 읽으면 좋습니다."
 date: 2026-10-21
 title: "Meep Example 03 · Reference run 빼기 — incident·total·scattered field, R·T·S 수지, 산란 단면적"
 title_en: "Meep Example 03 · Reference-run subtraction — incident, total and scattered fields, the R·T·S budget, and a scattering cross section"
@@ -14,50 +22,85 @@ tags: [meep, fdtd, scattering, reference-subtraction, fresnel, flux]
 image: /assets/meep/03/03_fields.png
 excerpt: "run the same cell twice, without and with the object. The difference of the two fields is the scattered field; the difference of the two fluxes is what the object did to the power. Checked first in 1D (air | quartz, Fresnel formula), then on a 2D dielectric cylinder."
 ---
-## TL;DR (English)
+<details markdown="1">
+<summary>English summary</summary>
 
-![hero]({{ site.baseurl }}/assets/meep/03/03_fields.png)
-
-- **What**: run the same cell twice, without and with the object. The difference of the two fields is the scattered field; the difference of the two fluxes is what the object did to the power. Checked first in 1D (air | quartz, Fresnel formula), then on a 2D dielectric cylinder.
+- **What**: run the same cell twice, without and with the object. The difference of the two fields is the scattered field; the difference of the two fluxes is what the object did to the power. Checked first in 1D (air \| quartz, Fresnel formula), then on a 2D dielectric cylinder.
 - **Result**: 1D reflectance matches Fresnel to 1.6 × 10⁻⁴ over 400–800 nm. For the cylinder, R = 0.082, T = 0.674, sideways S = 0.243, R + T + S = 0.999; the scattered-field flux through a closed box gives Q_sca = 2.515 against the 2D Mie value 2.513.
 - **Takeaway**: subtract fields, not just fluxes, and know which one you are looking at. Flux is quadratic, so the flux of (E_total − E_inc) is the scattered power, not "total minus incident"; the two agree only where incident and scattered waves travel in opposite directions.
 - **Code**: full script at the bottom, ~28 s on one core.
 
-## 0. 이 글에서 배우는 것
+</details>
 
-- reference run(물체 없음)과 device run(물체 있음)을 같은 셀에서 돌리고, E_scat = E_total − E_inc로 산란장을 분리하기
-- `get_flux_data` / `load_minus_flux_data`가 하는 일과, 그것이 "flux의 차"가 아니라 "field의 차의 flux"라는 것
-- R·T·S 수지가 1로 닫히는 조건: 닫힌 flux box, 모든 면의 바깥 법선, total field의 flux 차
-- 산란장의 flux로 산란 단면적 σ와 효율 Q_sca를 구하고 해석해(2D Mie)와 맞춰 보기
-- 해석해가 있는 1D Fresnel 문제로 절차를 먼저 검증하는 습관
+<h2 id="observe">1. 관찰 · 세 장의 차이 보기</h2>
 
-**전제 지식**: 02편의 참조 빼기, 01편의 flux box. **공식 예제**: [refl-quartz.py](https://github.com/NanoComp/meep/blob/master/python/examples/refl-quartz.py), [cylinder_cross_section.py](https://github.com/NanoComp/meep/blob/master/python/examples/cylinder_cross_section.py). **이전 글**: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/) · **다음 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/)
+왼쪽은 원기둥 없는 입사장, 가운데는 원기둥이 있는 전체장, 오른쪽은 두 장의 차이입니다. **가운데의 줄무늬 중 무엇이 원래 들어온 파이고, 무엇이 물체가 만든 변화일까요?** 오른쪽 산란장은 그 변화를 따로 보여줍니다.
 
-## 1. 무엇을 알고 싶은가
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/03_fields.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/03_fields.png" alt="1550 nm의 Re(Ez)를 같은 색 범위로 비교합니다. 점선은 원기둥 위치이며, 오른쪽 산란장은 total − incident입니다." loading="lazy">
+  </a>
+  <figcaption>1550 nm의 Re(Ez)를 같은 색 범위로 비교합니다. 점선은 원기둥 위치이며, 오른쪽 산란장은 total − incident입니다.</figcaption>
+</figure>
 
-빛이 물체를 만나면 일부는 되돌아오고(반사), 일부는 지나가고(투과), 나머지는 옆으로 흩어진다(산란). 시뮬레이션의 field는 이 모두가 섞인 total field다. 물체가 무엇을 했는지 보려면 물체가 없을 때의 field, 즉 incident field를 빼야 한다. 02편에서 경계가 만든 반사를 분리할 때 쓴 바로 그 방법이다. 이 글은 그 절차를 정답이 있는 문제(공기·석영 계면의 Fresnel 반사)로 먼저 검증하고, 정답이 없는 문제(유전체 원기둥)에서 R, T, S를 재어 수지가 1로 닫히는지, 산란 단면적이 해석해와 맞는지 본다.
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/05_anim_scatter.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/05_anim_scatter.gif" alt="왼쪽 입사장, 가운데 전체장, 오른쪽 산란장의 시간 변화입니다. 프레임마다 두 장을 빼며, 입사 펄스가 지난 뒤에도 원기둥에 저장된 빛이 새어 나옵니다." data-animation-src="{{ site.baseurl }}/assets/meep/03/05_anim_scatter.gif" data-static-src="{{ site.baseurl }}/assets/meep/03/03_fields.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>왼쪽 입사장, 가운데 전체장, 오른쪽 산란장의 시간 변화입니다. 프레임마다 두 장을 빼며, 입사 펄스가 지난 뒤에도 원기둥에 저장된 빛이 새어 나옵니다.</figcaption>
+</figure>
 
-### 어디에 쓰이는가
+<h2 id="predict">2. 예측 · 결과를 읽기 전에</h2>
 
-반사·투과·산란 스펙트럼은 광학 소자의 사양서 그 자체다. 이 글의 세 측정은 코팅, 필터, 나노입자, 레이더 단면적의 공통 기초다.
+전체장에서 입사장을 뺀 뒤 flux를 구하면, 전체 flux에서 입사 flux를 뺀 값과 항상 같을까요?
 
-| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
-|---|---|---|
-| 박막·무반사 코팅·DBR 거울·필터 | 수직 입사 R·T 스펙트럼과 Fresnel 검산 | 18편 비스듬한 입사, 24편 Bragg stack |
-| 나노입자 센서·색소·라만 기판 | 산란 단면적 Q_sca, 산란장만 따로 보는 monitor | 23편 3D Mie 산란 |
-| 레이더 단면적(RCS)·스텔스 | 같은 산란 단면적 개념을 마이크로파에서 | — |
-| 구조가 있을 때와 없을 때의 모든 비교 | reference run 빼기 | 05편 2-run 정규화 |
+<fieldset class="prediction">
+  <legend>하나를 고르고 근거를 생각해 보세요.</legend>
+  <label><input type="radio" name="lesson-03-prediction" value="1"> 같다. 장에서도 전력에서도 같은 빼기다.</label>
+  <label><input type="radio" name="lesson-03-prediction" value="2"> 다르다. 전력에는 두 장의 간섭항이 들어간다.</label>
+</fieldset>
 
+<details markdown="1">
+<summary>예측의 근거 확인하기</summary>
 
-## 2. 물리 한 페이지
+두 번째입니다. 장은 선형으로 더해지지만 power는 장의 곱으로 계산됩니다. 따라서 산란장의 flux에는 total field의 입사·산란 간섭항이 없습니다. 두 값을 섞으면 손실 없는 물체에서도 전력 수지가 모자라 보일 수 있습니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기</h2>
 
 <!-- concept-illustration:part-03:start -->
-
-![물체 없는 입사장, 원기둥이 포함된 전체장, 두 장의 차이인 산란장을 같은 좌표에서 세 패널로 비교한다. 원기둥은 z 방향으로 무한하다.]({{ site.baseurl }}/assets/meep/03/00_concept.png)
-
-*B 실험은 진공에 놓인 굴절률 2, 반지름 0.75 µm의 z 방향 무한 원기둥에 +x 방향 Ez 평면파를 입사시킵니다. 물체 없는 기준 계산과 원기둥을 넣은 계산을 같은 위치에서 비교해 E_scat = E_total − E_inc를 구합니다. 전력을 먼저 빼는 과정이 아닙니다. A 실험에서는 별도로 공기–융합석영 단일 계면의 Fresnel 반사와 같은 방법을 비교합니다.*
-
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/00_concept.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/00_concept.png" alt="물체 없는 입사장, 원기둥이 포함된 전체장, 두 장의 차이인 산란장을 같은 좌표에서 세 패널로 비교한다. 원기둥은 z 방향으로 무한하다." loading="lazy">
+  </a>
+  <figcaption>B 실험은 진공에 놓인 굴절률 2, 반지름 0.75 µm의 z 방향 무한 원기둥에 +x 방향 Ez 평면파를 입사시킵니다. 물체 없는 기준 계산과 원기둥을 넣은 계산을 같은 위치에서 비교해 E_scat = E_total − E_inc를 구합니다. 전력을 먼저 빼는 과정이 아닙니다. A 실험에서는 별도로 공기–융합석영 단일 계면의 Fresnel 반사와 같은 방법을 비교합니다.</figcaption>
+</figure>
 <!-- concept-illustration:part-03:end -->
+
+### 같은 입사파를 두 번 계산합니다
+
+물체가 없는 계산이 reference run입니다. 물체만 넣은 두 번째 계산에서는 입사장에 산란장이 더해집니다. 두 계산의 광원·셀·격자·monitor를 동일하게 두면 다음 차이로 산란장을 얻습니다.
+
+$$E_{\mathrm{scat}} = E_{\mathrm{total}} - E_{\mathrm{inc}}$$
+
+`get_flux_data`는 monitor의 DFT 장을 저장하고, `load_minus_flux_data`는 새 계산에서 그 입사장을 뺍니다. 이렇게 얻은 monitor의 출력은 **산란장만의 power**입니다.
+
+### 전력 수지와 산란 단면적은 서로 다른 질문입니다
+
+R·T·S는 들어온 power가 뒤·앞·옆으로 얼마나 나갔는지 묻습니다. 이 수지는 total field의 flux와 reference flux를 사용합니다. 반면 산란 단면적은 물체가 만든 산란 power를 입사 세기로 나눈 값이므로, 입사장을 뺀 monitor를 사용합니다.
+
+$$\sigma_{\mathrm{sc}} = P_{\mathrm{sc}}/I_{\mathrm{inc}},\qquad Q_{\mathrm{sca}} = \sigma_{\mathrm{sc}}/(2r)$$
+
+왼쪽과 아래 면은 바깥 방향이 음의 좌표 방향입니다. 닫힌 상자의 네 면을 더할 때 이 부호를 맞춰야 합니다.
+
+<aside class="lesson-note" markdown="1">
+원기둥은 **z 방향으로 무한한 2D 모델**, Ez 편광, 굴절률 2의 손실 없는 재료입니다. 유한 폭 평면파를 사용합니다. 여기의 2D 원기둥 결과를 3D 구의 Mie 산란과 동일하게 읽으면 안 됩니다.
+</aside>
+
+<details markdown="1">
+<summary>수식·기호와 원문의 예측 더 읽기</summary>
 
 입사파 E_inc는 물체 없이도 존재하는 field다. 물체를 넣으면 E_total = E_inc + E_scat이 되고, E_scat은 물체가 새로 만든 field다. 두 run의 source·셀·격자가 같으면 E_inc를 그대로 빼서 E_scat을 얻는다.
 
@@ -87,7 +130,7 @@ $$
 
 **가정과 유효 범위**: 2D, Ez 편광, 손실 없는 원기둥(n = 2), 유한 폭(8 µm)의 평면파. 1D 문제는 수직 입사·단일 계면이며 n(λ)은 Meep materials library의 fused_quartz 분산 모델이다.
 
-### 결과 보기 전에 맞춰보기
+#### 결과 보기 전에 맞춰보기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -100,33 +143,61 @@ $$
 
 **판정 기준**: 1D R이 Fresnel에서 0.5%p 이상 벗어나면 정규화 오류. R + T + S가 1에서 2% 이상 벗어나면 box가 안 닫혔거나 weight 부호 실수.
 
-## 3. 시뮬레이션 설계도
+</details>
 
-![layout]({{ site.baseurl }}/assets/meep/03/01_layout.png)
-*2D 실험의 device run. 빨간 세로선 = 셀 전체 높이를 가로지르는 Ez 선원(PML까지 뻗어 평면파를 만든다), 검은 원 = 원기둥(r 0.75 µm, n 2), 파란 사각형 = flux box 네 면(x = ±5.1, y = ±3.8). 각 면에 monitor가 두 개씩 겹쳐 있다. 하나는 total field, 하나는 입사장을 뺀 산란장용. 보라 × = 종료 감시점. 동그라미 숫자는 §4의 단계 번호다.*
+<h2 id="run">4. 실행 · 한 가지 조건만 바꾸기</h2>
+
+먼저 원본을 실행해 기준 결과를 기록합니다. **Meep 1.33.0 · Python 3.11**, 기록된 단일 코어 실행 시간은 약 28초입니다. [전체 코드와 공통 helper](https://github.com/jin-castle/meep-examples/blob/main/code)의 `reference_subtraction.py`와 `blogfig.py`를 같은 폴더에 두세요. [아래 전체 코드](#reference)도 그대로 사용할 수 있습니다.
+
+```bash
+OMP_NUM_THREADS=1 python reference_subtraction.py
+```
+
+원본의 `r_cyl, n_cyl = 0.75, 2.0`에서 **반지름만** `0.25`로 바꿉니다. 굴절률과 파장·셀·box는 그대로 두고 다시 실행하세요. 원본의 **Q_sca = 2.515**와 `B. scattered field`에 출력되는 전방·후방 값을 비교합니다. 크기 매개변수가 약 3.04에서 약 1.01로 줄어들면 산란의 방향성이 어떻게 달라지는지 보세요. 변경 후 Q_sca와 방향별 값은 직접 실행해 확인합니다.
+
+### 배치에서 확인할 것
+
+면마다 total용 monitor와 산란장용 monitor를 함께 둡니다. total용 monitor에는 입사장을 빼지 않습니다. box는 광원을 포함하지 않으며 PML 안쪽에 있어야 합니다.
+
+<details markdown="1">
+<summary>설계도·파라미터와 source 파형</summary>
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/01_layout.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/01_layout.png" alt="2D 실험의 device run. 빨간 세로선 = 셀 전체 높이를 가로지르는 Ez 선원(PML까지 뻗어 평면파를 만든다), 검은 원 = 원기둥(r 0.75 µm, n 2), 파란 사각형 = flux box 네 면(x = ±5.1, y = ±3.8). 각 면에 monitor가 두 개씩 겹쳐 있다. 하나는 total field, 하나는 입사장을 뺀 산란장용. 보라 × = 종료 감시점. 동그라미 숫자는 코드 따라가기의 단계 번호다." loading="lazy">
+  </a>
+  <figcaption>2D 실험의 device run. 빨간 세로선 = 셀 전체 높이를 가로지르는 Ez 선원(PML까지 뻗어 평면파를 만든다), 검은 원 = 원기둥(r 0.75 µm, n 2), 파란 사각형 = flux box 네 면(x = ±5.1, y = ±3.8). 각 면에 monitor가 두 개씩 겹쳐 있다. 하나는 total field, 하나는 입사장을 뺀 산란장용. 보라 × = 종료 감시점. 동그라미 숫자는 코드 따라가기의 단계 번호다.</figcaption>
+</figure>
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
 | 1D 셀, 해상도 | 10 µm, 200 px/µm | 공식 refl-quartz 값. λ_min/n = 0.27 µm → 54 px | 해상도를 낮추면 Fresnel 오차 증가 |
 | 1D 대역 | 400–800 nm, 25점 | 분산 곡선 전체와 비교 | — |
 | 2D `fwidth` | 0.12 (width 8.3, t0 41.7) | 좁은 대역 → fcen 한 주파수의 깨끗한 field map | 넓히면 map이 여러 파장의 합이 된다 |
-| 2D 셀, 해상도 | 14 × 10 µm, 20 px/µm | 강의 값. 원기둥 지름 30 px | 40에서 Q_sca가 4.6% 바뀐다(§5) |
+| 2D 셀, 해상도 | 14 × 10 µm, 20 px/µm | 강의 값. 원기둥 지름 30 px | 40에서 Q_sca가 4.6% 바뀐다(상세 결과) |
 | 원기둥 | r 0.75 µm, n 2.0 | 강의 값. x = 3.04 | n을 높이면 공명이 날카로워진다 |
 | 선원 | x = −5.75, 높이 = 셀 전체, `is_integrated=True` | PML 안까지 뻗어야 가장자리 회절 없는 평면파 | 높이를 줄이면 가장자리에서 회절 |
 | box | x ±5.1, y ±3.8 | source 바깥, PML 안쪽, 원기둥에서 3 µm 이상 | box가 source를 품으면 수지가 깨진다 |
 | 종료 | 오른쪽 면 중앙 Ez가 1e-5로 감쇠 | 원기둥의 저장 에너지가 다 빠져나갈 때까지 | 이르게 끊으면 수지가 안 닫힌다 |
 
-![source]({{ site.baseurl }}/assets/meep/03/00_source.png)
-*2D source의 파형과 스펙트럼. width 8.3, t0 = 41.7. 대역이 좁아 flux monitor는 fcen 한 점만 쓴다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/00_source.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/00_source.png" alt="2D source의 파형과 스펙트럼. width 8.3, t0 = 41.7. 대역이 좁아 flux monitor는 fcen 한 점만 쓴다." loading="lazy">
+  </a>
+  <figcaption>2D source의 파형과 스펙트럼. width 8.3, t0 = 41.7. 대역이 좁아 flux monitor는 fcen 한 점만 쓴다.</figcaption>
+</figure>
 
 **강의 노트북과의 차이**: 강의 week 4는 왼쪽·오른쪽 monitor만 두고 A = 1 − R − T = 0.278을 "남은 몫"으로 둔다. 이 글은 위·아래 면을 더해 그 몫을 옆 방향 산란 S로 실측하고, 산란장 flux로 산란 단면적을 구해 2D Mie 해석해와 비교한다. 1D Fresnel 검증은 10_sources의 공식 refl-quartz 재현을 그대로 가져왔다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>코드 따라가기 · 일곱 단계의 역할</summary>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
-> 1D(Fresnel)와 2D(원기둥)가 같은 절차를 두 번 밟는다. 아래는 2D 기준이고, 1D는 §8 전체 코드에 있다.
+> 1D(Fresnel)와 2D(원기둥)가 같은 절차를 두 번 밟는다. 아래는 2D 기준이고, 1D는 전체 코드 전체 코드에 있다.
 
-### ① 단위와 파라미터 — 어떤 숫자를 고정하는가
+#### ① 단위와 파라미터 — 어떤 숫자를 고정하는가
 
 ```python
 wl = 1.55
@@ -145,7 +216,7 @@ ym = 0.5 * sy - DPML - 0.2    # flux box: y = +-3.8
 - **왜**: field map을 "fcen에서의 정상상태"로 보려면 대역이 좁아야 한다. box는 source 바깥쪽이면서 PML 안쪽에 있어야 한다. source가 box 안에 있으면 source가 넣는 power가 수지에 들어온다.
 - **틀리면**: box를 PML 안으로 넣으면 흡수된 power를 재서 수지가 모자란다.
 
-### ② 재료와 구조 — 무엇이 어디에 있는가
+#### ② 재료와 구조 — 무엇이 어디에 있는가
 
 ```python
 cylinder = [mp.Cylinder(radius=r_cyl, height=mp.inf, center=mp.Vector3(), material=mp.Medium(index=n_cyl))]
@@ -156,7 +227,7 @@ cylinder = [mp.Cylinder(radius=r_cyl, height=mp.inf, center=mp.Vector3(), materi
 - **왜**: 두 run의 차이는 물체 하나뿐이어야 한다. 그래야 field의 차가 물체의 산란장이다.
 - **틀리면**: run 2에서 셀 크기나 해상도를 바꾸면 `load_minus_flux_data`가 배열 크기 불일치로 실패하거나, 실패하지 않더라도 엉뚱한 field를 뺀다.
 
-### ③ Source — 빛을 어떻게 넣는가
+#### ③ Source — 빛을 어떻게 넣는가
 
 ```python
 def plane_wave(fw):
@@ -168,7 +239,7 @@ def plane_wave(fw):
 - **왜**: 선이 PML 안에서 끝나야 가장자리 회절 없는 평면파가 된다. `is_integrated=True`는 PML 안에 놓인 source를 올바르게 다루는 옵션이다.
 - **틀리면**: 높이를 PML 안쪽까지만 잡으면 01편처럼 양 끝에서 둥근 파면이 생겨 "평면파"가 아니게 된다. `is_integrated`를 빼면 PML 안의 source 부분이 잘못 감쇠된다.
 
-### ④ Simulation과 경계 — 계산 상자와 PML
+#### ④ Simulation과 경계 — 계산 상자와 PML
 
 ```python
 def build(geometry, resolution=RESOLUTION, fw=fwidth):
@@ -183,7 +254,7 @@ def build(geometry, resolution=RESOLUTION, fw=fwidth):
 - **왜**: 한 monitor는 total field의 flux, 다른 하나는 뒤에서 입사장을 빼 산란장의 flux를 잰다. 둘을 같은 run에서 같이 재야 두 수지를 직접 비교할 수 있다.
 - **틀리면**: monitor를 하나만 두고 `load_minus_flux_data`를 걸면 total flux(T 계산에 필요)를 잃는다.
 
-### ⑤ Monitor — 무엇을 재는가
+#### ⑤ Monitor — 무엇을 재는가
 
 ```python
 REGIONS = {
@@ -205,7 +276,7 @@ for k, m in scat.items():
 
 > **함정**: `flux(E_tot − E_inc) ≠ flux(E_tot) − flux(E_inc)`. 같아지는 것은 두 파가 정반대 방향으로 지나가 간섭항이 상쇄되는 면뿐이다.
 
-### ⑥ 실행과 종료 조건 — 언제 멈추는가
+#### ⑥ 실행과 종료 조건 — 언제 멈추는가
 
 ```python
 def run_decay(sim):
@@ -216,7 +287,7 @@ def run_decay(sim):
 - **왜**: 원기둥은 빛을 잠시 가둔다(공명). 가둔 에너지가 다 빠져나가기 전에 멈추면 수지가 모자란다.
 - **틀리면**: 고정 시각으로 끊으면 긴 펄스(t0 = 41.7)의 꼬리와 공명 누설을 놓친다. 이 글의 기준 run은 t ≈ 150에서 멈췄다.
 
-### ⑦ 후처리 — 숫자로 바꾸기
+#### ⑦ 후처리 — 숫자로 바꾸기
 
 ```python
 R = -(tot["left"] - inc_side["left"]) / inc                 # total-field flux difference, -x outward
@@ -234,12 +305,29 @@ Q_sca = sigma / (2 * r_cyl)
 - **왜**: 수지는 total field의 보존에서 나온다. 산란 단면적은 정의가 "산란된 power / 입사 세기"라 산란장만의 flux가 필요하다. 둘은 다른 질문에 답하는 다른 수다.
 - **틀리면**: `outward`에서 왼쪽 면 부호를 안 뒤집으면 P_sc에 왼쪽 산란이 음수로 들어가 σ가 작아진다. 입사 세기를 box 폭으로 안 나누면 σ의 단위가 틀린다.
 
-## 5. 결과
+</details>
 
-### 1D: 절차가 해석해를 재현하는가
+<h2 id="interpret">5. 해석 · 숫자로 확인하고 한계 읽기</h2>
 
-![fresnel]({{ site.baseurl }}/assets/meep/03/02_fresnel.png)
-*왼쪽: 1D 셀. z < 0 공기, z > 0 석영이 PML까지, 빨강 = source, 파랑 = 반사·투과 monitor. 오른쪽: Meep의 R(λ)(점)과 Fresnel 공식(선). n(λ)은 같은 materials library에서 가져왔다.*
+먼저 공기–석영 단일 계면으로 절차를 확인했습니다. 533 nm에서 **R = 0.03513**, Fresnel 해석값은 **0.03505**이며, 400–800 nm의 최대 차이는 **1.6 × 10⁻⁴**입니다.
+
+원기둥의 total field 수지는 **R = 0.0823, T = 0.6736, S = 0.2430**, 합 **0.9988**입니다. 산란장만 합한 값은 **P_sc/P_inc = 0.4963**으로, 수지의 합과 다른 양입니다. 이를 입사 세기로 나누면 **σ_sc = 3.77 µm**, **Q_sca = 2.515**입니다.
+
+<aside class="lesson-note" markdown="1">
+**2D Mie 값 2.513과 가깝다는 것만으로 수렴했다고 할 수 없습니다.** 해상도 20 → 40에서 Q_sca는 **2.515 → 2.628**로 약 4.5% 변했습니다. 수지의 합은 0.9997로 더 잘 닫혔지만 Q_sca는 해석값에서 멀어졌습니다. 현재 결과는 약 5% 수준의 비교이며, 유한 폭 입사파와 box 위치의 영향을 분리하지 못했습니다.
+</aside>
+
+<details markdown="1">
+<summary>전체 결과·예측 비교·수렴성 표</summary>
+
+#### 1D: 절차가 해석해를 재현하는가
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/02_fresnel.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/02_fresnel.png" alt="왼쪽: 1D 셀. z < 0 공기, z > 0 석영이 PML까지, 빨강 = source, 파랑 = 반사·투과 monitor. 오른쪽: Meep의 R(λ)(점)과 Fresnel 공식(선). n(λ)은 같은 materials library에서 가져왔다." loading="lazy">
+  </a>
+  <figcaption>왼쪽: 1D 셀. z < 0 공기, z > 0 석영이 PML까지, 빨강 = source, 파랑 = 반사·투과 monitor. 오른쪽: Meep의 R(λ)(점)과 Fresnel 공식(선). n(λ)은 같은 materials library에서 가져왔다.</figcaption>
+</figure>
 
 | 물리량 | Meep | 해석해 |
 |---|---|---|
@@ -247,16 +335,16 @@ Q_sca = sigma / (2 * r_cyl)
 | max \|R − R_Fresnel\| (400–800 nm) | 1.6 × 10⁻⁴ | — |
 | R + T @ 533 nm | 1.00000 | 1 |
 
-### 2D: 원기둥의 세 field와 수지
+#### 2D: 원기둥의 세 field와 수지
 
-![fields]({{ site.baseurl }}/assets/meep/03/03_fields.png)
-*1550 nm에서의 Re(Ez), 색 범위 공통, 점선 = 원기둥. 왼쪽 incident는 평면파, 가운데 total은 원기둥 앞쪽에 반사 간섭 무늬와 뒤쪽에 그림자·집속이 섞여 있고, 오른쪽 scattered는 둘의 차다. 산란장은 앞쪽(+x)으로 강하게 치우쳐 있고 원기둥 안에는 정상파가 선다.*
 
-![animation]({{ site.baseurl }}/assets/meep/03/05_anim_scatter.gif)
-*같은 세 가지를 시간으로. 짧은 펄스(fwidth 0.3 fcen)가 왼쪽에서 들어와 원기둥을 지난다. 세 번째 패널은 프레임마다 total에서 incident를 뺀 것이다. 입사 펄스가 원기둥에 닿는 순간부터 산란장이 생기고, 펄스가 지나간 뒤에도 원기둥 안에 갇힌 빛이 천천히 새어 나온다.*
 
-![budget]({{ site.baseurl }}/assets/meep/03/04_budget.png)
-*네 면의 power. 파랑 = total field의 flux에서 reference run의 flux를 뺀 것(R, T, S), 주황 = 입사장을 뺀 산란장의 flux. 파랑의 합은 1로 닫히고, 주황의 합은 산란된 power다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/03/04_budget.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/03/04_budget.png" alt="네 면의 power. 파랑 = total field의 flux에서 reference run의 flux를 뺀 것(R, T, S), 주황 = 입사장을 뺀 산란장의 flux. 파랑의 합은 1로 닫히고, 주황의 합은 산란된 power다." loading="lazy">
+  </a>
+  <figcaption>네 면의 power. 파랑 = total field의 flux에서 reference run의 flux를 뺀 것(R, T, S), 주황 = 입사장을 뺀 산란장의 flux. 파랑의 합은 1로 닫히고, 주황의 합은 산란된 power다.</figcaption>
+</figure>
 
 | 양 | total field 차 | 산란장 flux |
 |---|---|---|
@@ -271,9 +359,9 @@ Q_sca = sigma / (2 * r_cyl)
 | Q_sca = σ / 2r (Meep, res 20) | 2.515 |
 | Q_sca (2D Mie, E ∥ 축, x = 3.04, m = 2) | 2.513 |
 
-### 예측과 비교
+#### 예측과 비교
 
-| 물리량 | 내 예측 (§2) | 시뮬레이션 | 판정 |
+| 물리량 | 내 예측 (원문 예측) | 시뮬레이션 | 판정 |
 |--------|-------------|-----------|------|
 | 1D R @ 533 nm | 3.5% | 3.513% (Fresnel 3.505%) | ✅ |
 | 1D R + T | 1.000 | 1.00000 | ✅ |
@@ -284,7 +372,7 @@ Q_sca = sigma / (2 * r_cyl)
 
 예측은 맞았지만 과정에서 하나 틀렸다. 처음에는 `load_minus_flux_data`를 건 monitor의 값을 위·아래 면에서 "total − incident"로 읽어 S = 0.195, 합 0.955가 나왔다. 빠진 4.5%는 입사파와 산란파의 간섭항이다. 왼쪽 면에서는 두 값(0.0823과 0.0857)이 가깝다. 입사파와 반사파가 정반대 방향이라 간섭항이 거의 상쇄되기 때문이고, 그래서 04·05편의 R 측정은 이 방법으로 충분하다.
 
-### 수렴성
+#### 수렴성
 
 | resolution | R | T | S | R + T + S | Q_sca |
 |---|---|---|---|---|---|
@@ -293,12 +381,55 @@ Q_sca = sigma / (2 * r_cyl)
 
 수지는 두 해상도 모두 1로 닫힌다. R·T·S 각각은 1~5% 움직이고, Q_sca는 2.515에서 2.628로 4.5% 올라가 Mie 값에서 멀어진다. 해상도 20의 0.1% 일치는 우연에 가깝다.
 
-### 주장할 수 있는 것 / 없는 것
+#### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: reference run + `load_minus_flux_data` 절차는 해석해(Fresnel)를 10⁻⁴ 수준으로 재현한다. 손실 없는 원기둥의 total field 수지는 닫힌 box에서 1로 닫힌다. 산란 단면적은 2D Mie와 5% 안에서 맞는다.
 - 할 수 없는 것: Q_sca의 소수점 둘째 자리. 해상도에 따라 4.5% 움직이고, 유한 폭 평면파와 원기둥에서 3 µm 떨어진 box의 영향도 분리하지 못했다. 3D 구의 Mie 산란(공식 cylinder_cross_section 예제는 원통 좌표계의 3D 문제다).
 
-## 6. 흔한 실수
+</details>
+
+<h2 id="check">6. 확인 · 내 말로 설명하기</h2>
+
+### 1. 산란장 monitor의 위·아래 flux를 그대로 S에 넣으면 왜 수지가 어긋날까요?
+
+<details markdown="1">
+<summary>답과 이유 확인하기</summary>
+
+S는 total flux와 incident flux의 차이로 계산해야 합니다. 산란장 flux에는 입사파와 산란파의 간섭항이 없습니다. 원래 실행에서 이를 혼동하면 S = 0.195, R + T + S = 0.955가 되어 약 4.5%가 빠져 보였습니다.
+
+</details>
+
+### 2. R + T + S가 1에 가깝고 Q_sca가 해석값에 가까우면 검증이 끝났을까요?
+
+<details markdown="1">
+<summary>답과 이유 확인하기</summary>
+
+아닙니다. 에너지 보존은 각 산란량의 정확도나 격자 수렴을 보장하지 않습니다. 해상도 비교에서 Q_sca가 4.5% 변했으므로, 그 차이보다 작은 정밀도를 주장할 수 없습니다.
+
+</details>
+
+<h2 id="reference">7. 코드와 참고 자료</h2>
+
+<details markdown="1">
+<summary>이 예제가 쓰이는 곳</summary>
+
+빛이 물체를 만나면 일부는 되돌아오고(반사), 일부는 지나가고(투과), 나머지는 옆으로 흩어진다(산란). 시뮬레이션의 field는 이 모두가 섞인 total field다. 물체가 무엇을 했는지 보려면 물체가 없을 때의 field, 즉 incident field를 빼야 한다. 02편에서 경계가 만든 반사를 분리할 때 쓴 바로 그 방법이다. 이 글은 그 절차를 정답이 있는 문제(공기·석영 계면의 Fresnel 반사)로 먼저 검증하고, 정답이 없는 문제(유전체 원기둥)에서 R, T, S를 재어 수지가 1로 닫히는지, 산란 단면적이 해석해와 맞는지 본다.
+
+#### 어디에 쓰이는가
+
+반사·투과·산란 스펙트럼은 광학 소자의 사양서 그 자체다. 이 글의 세 측정은 코팅, 필터, 나노입자, 레이더 단면적의 공통 기초다.
+
+| 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
+|---|---|---|
+| 박막·무반사 코팅·DBR 거울·필터 | 수직 입사 R·T 스펙트럼과 Fresnel 검산 | 18편 비스듬한 입사, 24편 Bragg stack |
+| 나노입자 센서·색소·라만 기판 | 산란 단면적 Q_sca, 산란장만 따로 보는 monitor | 23편 3D Mie 산란 |
+| 레이더 단면적(RCS)·스텔스 | 같은 산란 단면적 개념을 마이크로파에서 | — |
+| 구조가 있을 때와 없을 때의 모든 비교 | reference run 빼기 | 05편 2-run 정규화 |
+
+</details>
+
+<details markdown="1">
+<summary>흔한 실수와 해결 방법</summary>
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -309,7 +440,10 @@ Q_sca = sigma / (2 * r_cyl)
 | 평면파 양 끝에서 둥근 파면 | 선원이 PML 안으로 안 뻗음 | `size=(0, sy)`, `is_integrated=True` |
 | 수지가 해상도마다 크게 다름 | 공명 에너지가 빠지기 전에 종료 | decay 감시점·임계값 확인 |
 
-## 7. 직접 해보기
+</details>
+
+<details markdown="1">
+<summary>원문의 추가 탐구 아이디어</summary>
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
@@ -318,7 +452,8 @@ Q_sca = sigma / (2 * r_cyl)
 | box를 원기둥에 바싹 (xm, ym 절반) | 근접장이 섞여 P_sc 변화? | Q_sca 비교 |
 | `fwidth` 0.12 → 0.3 fcen + nfreq 11 | Q_sca(λ) 스펙트럼. Mie 공명 위치 | `mie_q_sca_2d_tm`를 파장별로 |
 
-## 8. 전체 코드
+</details>
+
 
 <details>
 <summary>reference_subtraction.py (클릭해서 펼치기)</summary>
@@ -593,7 +728,7 @@ if mp.am_master():
 {% endhighlight %}
 </details>
 
-§4의 발췌 코드와 달리 전체 코드에는 1D Fresnel 실험, 그림 저장·GIF 녹화·result.json 기록이 들어 있다. 그림 helper `blogfig.py`는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
+코드 따라가기의 발췌 코드와 달리 전체 코드에는 1D Fresnel 실험, 그림 저장·GIF 녹화·result.json 기록이 들어 있다. 그림 helper `blogfig.py`는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
 
 **실행 결과 (2026-10-23 실행)**:
 ```
@@ -605,13 +740,8 @@ convergence res=40: R=0.0861 T=0.6626 S=0.2510 sum=0.9997 Q_sca=2.628
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python reference_subtraction.py` (약 28 s, 단일 코어)
 
-## 확인 질문
 
-1. 왼쪽 면에서는 "total flux의 차"(0.0823)와 "산란장 flux"(0.0857)가 가깝고 위·아래 면에서는 다르다. 어느 쪽 면의 어떤 성질 때문인가?
-2. 손실이 있는 원기둥(복소 굴절률)이면 R + T + S는 1보다 큰가, 작은가? 그 차이를 무엇이라 부르는가?
-3. 04편 도파로의 R은 산란장 monitor(`load_minus_flux_data`) 하나로 쟀다. 그것이 정당한 이유를 이 글의 용어로 말해 보라.
-
-## 9. 더 읽기
+### 더 읽기
 
 - [공식 예제 refl-quartz.py](https://github.com/NanoComp/meep/blob/master/python/examples/refl-quartz.py) (1D 정규화 run + Fresnel)
 - [공식 예제 cylinder_cross_section.py](https://github.com/NanoComp/meep/blob/master/python/examples/cylinder_cross_section.py) (3D 원통 좌표계의 산란 단면적)
