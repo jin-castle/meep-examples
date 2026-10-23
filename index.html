@@ -18,7 +18,10 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
   <link rel="canonical" href="https://jin-castle.github.io/meep-examples/">
   <link rel="alternate" type="application/atom+xml" title="Meep Examples" href="./feed.xml">
   <link rel="stylesheet" href="./assets/explorer.css">
+  <link rel="stylesheet" href="./assets/inverse-story.css">
+  <script src="./assets/vendor/gsap-3.15.0.min.js" defer></script>
   <script src="./assets/explorer.js" defer></script>
+  <script src="./assets/inverse-story.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -26,13 +29,17 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
   <defs>
     <pattern id="scene-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#173447" stroke-width="1"/></pattern>
     <linearGradient id="guide-material" x2="0" y2="1"><stop stop-color="#a1b6c7" stop-opacity=".38"/><stop offset="1" stop-color="#718899" stop-opacity=".16"/></linearGradient>
-    <linearGradient id="signed-scale"><stop stop-color="#053061"/><stop offset=".25" stop-color="#4393c3"/><stop offset=".5" stop-color="#f7f7f7"/><stop offset=".75" stop-color="#d6604d"/><stop offset="1" stop-color="#67001f"/></linearGradient>
+    <pattern id="layout-grid" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#f5f8fa"/><path d="M28 0H0V28" fill="none" stroke="#dce5eb" stroke-width="1"/></pattern>
+    <linearGradient id="signed-scale"><stop stop-color="#67001f"/><stop offset=".25" stop-color="#d6604d"/><stop offset=".5" stop-color="#f7f7f7"/><stop offset=".75" stop-color="#4393c3"/><stop offset="1" stop-color="#053061"/></linearGradient>
     <symbol id="bend-guide" viewBox="0 0 660 460">
       <rect width="660" height="460" fill="url(#scene-grid)"/>
-      <path d="M70 296H410V362H70ZM476 60H542V230H476Z" fill="url(#guide-material)" stroke="#718899" stroke-width="2"/>
+      <path d="M70 263H410V329H70ZM443 60H509V230H443Z" fill="url(#guide-material)" stroke="#718899" stroke-width="2"/>
       <rect x="410" y="230" width="132" height="132" fill="#718899" fill-opacity=".38"/>
-      <path d="M70 296H410M70 362H542M476 60V230M542 60V362" fill="none" stroke="#aec3d2" stroke-opacity=".45" stroke-width="1"/>
+      <path d="M70 263H410M70 329H410M443 60V230M509 60V230" fill="none" stroke="#aec3d2" stroke-opacity=".45" stroke-width="1"/>
     </symbol>
+    <symbol id="dft-forward-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/forward-design.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="dft-adjoint-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/adjoint-design.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="initial-gradient-map" viewBox="0 0 720 720"><image href="./assets/meep/09/highres/gradient-design.png" width="720" height="720" style="image-rendering:pixelated"/></symbol>
     <symbol id="thumb-source" viewBox="0 0 400 180"><rect width="400" height="180" fill="#071b2b"/><g fill="none" stroke="#42dfff" stroke-opacity=".45"><circle cx="200" cy="90" r="24"/><circle cx="200" cy="90" r="48"/><circle cx="200" cy="90" r="72"/><circle cx="200" cy="90" r="96"/><circle cx="200" cy="90" r="120"/><circle cx="200" cy="90" r="144"/><circle cx="200" cy="90" r="168"/></g><circle cx="200" cy="90" r="5" fill="#ffb648"/></symbol>
     <symbol id="thumb-guide" viewBox="0 0 400 180"><rect width="400" height="180" fill="#071b2b"/><path d="M28 64H372V116H28Z" fill="#718899" fill-opacity=".25" stroke="#718899"/><path d="M32 90H370" stroke="#42dfff" stroke-width="34" stroke-dasharray="2 19" opacity=".8"/><path d="M28 64V116" stroke="#ffb648" stroke-width="5"/></symbol>
     <symbol id="thumb-bend" viewBox="0 0 400 180"><rect width="400" height="180" fill="#071b2b"/><path d="M30 132H275Q330 132 330 77V20" fill="none" stroke="#718899" stroke-width="48" opacity=".45"/><path d="M30 132H275Q330 132 330 77V20" fill="none" stroke="#42dfff" stroke-width="32" stroke-dasharray="2 18"/><path d="M30 109V155" stroke="#ffb648" stroke-width="5"/></symbol>
@@ -50,43 +57,61 @@ title: Meep Examples · 빛이 다니는 길을 설계하다
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy"><p class="eyebrow">눈으로 이해하는 전자기학</p><h1 id="hero-title">빛이 다니는 길을,<br>직접 설계해 보세요.</h1><p class="hero-description">그림으로 이해하고, 코드로 확인하는<br class="desktop-break"> Meep 예제 백과.</p><div class="hero-actions"><a class="button primary" href="./point-line-source/">첫 예제 따라가기 <span aria-hidden="true">→</span></a><a class="button secondary" href="#examples">전체 예제 보기</a></div><a class="scroll-cue" href="#light-story"><span class="mouse-mark" aria-hidden="true"></span>스크롤하며 빛의 설계를 따라가 보세요 <span aria-hidden="true">↓</span></a></div>
-      <figure class="hero-figure animated-scene"><div class="scene-topline"><span>LIGHT, BY DESIGN</span><span>전파 방향 개념도</span></div><svg class="hero-diagram" viewBox="0 0 660 460" role="img" aria-label="왼쪽 입력에서 위쪽 출력으로 진행하는 빛과 정사각형 설계 영역"><use href="#bend-guide"/><path class="field-glow" d="M70 329H440Q509 329 509 260V60"/><path class="wavefront forward-wave" d="M70 329H440Q509 329 509 260V60"/><path d="M70 296V362" class="source-line"/><path d="M476 60H542" class="output-line"/><rect x="404" y="224" width="144" height="144" class="design-outline"/><g class="diagram-label"><text x="70" y="280">입력 광원</text><text x="476" y="42">목표 출력</text><text x="395" y="400">설계 영역</text><text x="260" y="315">→</text><text x="500" y="160">↑</text></g></svg><figcaption><span><i></i> 빛을 보내고, 반응을 읽고, 구조를 바꾸다.</span><a href="#light-story">SCROLL TO EXPLORE ↓</a></figcaption></figure>
+      <figure class="hero-figure animated-scene"><div class="scene-topline"><span>LIGHT, BY DESIGN</span><span>전파 방향 개념도</span></div><svg class="hero-diagram" viewBox="0 0 660 460" role="img" aria-label="설계 영역 왼쪽 변 중앙의 입력과 위쪽 변 중앙의 출력을 연결한 도파로"><use href="#bend-guide"/><path class="field-glow" d="M70 296H440Q476 296 476 260V60"/><path class="wavefront forward-wave" d="M70 296H440Q476 296 476 260V60"/><path d="M70 263V329" class="source-line"/><path d="M443 60H509" class="output-line"/><rect x="404" y="224" width="144" height="144" class="design-outline"/><g class="diagram-label"><text x="70" y="244">입력 광원</text><text x="443" y="42">목표 출력</text><text x="395" y="400">설계 영역</text><text x="260" y="280">→</text><text x="465" y="160">↑</text></g></svg><figcaption><span><i></i> 빛을 보내고, 반응을 읽고, 구조를 바꾸다.</span><a href="#light-story">SCROLL TO EXPLORE ↓</a></figcaption></figure>
     </section>
 
     <section id="light-story" class="light-story" aria-labelledby="story-title">
       <div class="section-heading story-heading"><div><p class="eyebrow">SCROLL TO UNDERSTAND</p><h2 id="story-title">빛의 길은 어떻게 설계할까요?</h2></div><a class="text-link" href="./bend-inverse/">09편에서 코드로 확인하기 <span aria-hidden="true">↗</span></a></div>
       <div class="story-layout">
         <div class="story-chapters">
-          <article class="story-step" id="forward" data-step="1"><span class="step-number">01 / FORWARD FIELD</span><h3>지금의 빛을 <br>보냅니다.</h3><p>입력에서 빛을 보내고, <br>목표 출력에 얼마나 도달하는지 살펴봅니다.</p><p class="step-detail">첫 번째 계산에서 목적함수와 <br>설계 영역의 전자기장을 저장합니다.</p><a href="#adjoint" class="step-next">다음은 목표에서 출발합니다 <span aria-hidden="true">↓</span></a></article>
-          <article class="story-step" id="adjoint" data-step="2"><span class="step-number adjoint-ink">02 / ADJOINT FIELD</span><h3>목표에서 <br>되짚어 봅니다.</h3><p>목표 출력에 맞춘 adjoint source로, <br>구조 변화가 출력에 미치는 영향을 계산합니다.</p><p class="step-detail">같은 구조에서 수행하는 별도의 계산입니다. <br>이때 원래의 입력 광원은 꺼져 있습니다.</p><a href="#update" class="step-next">두 계산으로 구조를 바꿉니다 <span aria-hidden="true">↓</span></a></article>
-          <article class="story-step" id="update" data-step="3"><span class="step-number">03 / GRADIENT → GEOMETRY</span><h3>민감도로 <br>빛의 길을 고칩니다.</h3><p>저장한 두 장으로 픽셀마다 민감도를 구하고, <br>최적화기가 설계 영역의 밀도를 갱신합니다.</p><p class="step-detail">파랑(−)은 Si를 줄이는 쪽, 빨강(+)은 늘리는 쪽. <br>그림은 09편의 실제 초기 gradient와 <br>MMA 5회 평가 뒤 저장된 설계입니다. <br>121개 픽셀 중 119개는 회색조로 남아 있습니다.</p><a href="./bend-inverse/" class="text-link">계산 결과와 검증 살펴보기 <span aria-hidden="true">→</span></a></article>
+          <article class="story-step" id="forward" data-step="1"><span class="step-number">01 / FORWARD · CAPTURE</span><h3>빛을 보내고,<br>장을 찍습니다.</h3><p>왼쪽 변 중앙의 입력에서 빛을 보냅니다. 설계 영역의 DFT 장을 누적한 뒤, 한 장의 이미지처럼 저장합니다.</p><p class="step-detail">사진기는 저장을 설명하는 비유입니다. DFT는 한순간의 파동이 아니라 시간에 걸쳐 누적한 복소 주파수장입니다.</p><a href="#adjoint" class="step-next">다음은 목표에서 출발합니다 <span aria-hidden="true">↓</span></a></article>
+          <article class="story-step" id="adjoint" data-step="2"><span class="step-number adjoint-ink">02 / ADJOINT · CAPTURE</span><h3>목표에서 보내고,<br>다시 찍습니다.</h3><p>같은 구조에서 위쪽 출력의 adjoint source를 켭니다. 설계 영역을 다시 촬영해 두 번째 DFT 장을 저장합니다.</p><p class="step-detail">목적함수가 정하는 별도의 계산입니다. 원래의 입력 광원은 OFF. 두 이미지는 같은 설계 영역의 같은 주파수를 봅니다.</p><a href="#gradient" class="step-next">저장한 두 장을 모읍니다 <span aria-hidden="true">↓</span></a></article>
+          <article class="story-step" id="gradient" data-step="3"><span class="step-number">03 / FIELD OVERLAP → GRADIENT</span><h3>두 장이 만나,<br>민감도가 됩니다.</h3><p>저장한 forward·adjoint 복소장을 픽셀마다 겹쳐 후처리합니다. 어느 픽셀의 밀도를 바꾸면 출력이 좋아질지 gradient로 읽습니다.</p><p class="step-detail">화면의 실수부 이미지를 단순히 더하거나 곱하는 계산은 아닙니다. 복소장·정규화·설계 변수의 미분을 반영한 실제 초기 gradient입니다.</p><a href="#update" class="step-next">민감도를 설계로 돌려보냅니다 <span aria-hidden="true">↓</span></a></article>
+          <article class="story-step" id="update" data-step="4"><span class="step-number">04 / OPTIMIZER → GEOMETRY</span><h3>바꿀 곳을 알고,<br>구조를 갱신합니다.</h3><p>Gradient를 받은 최적화기가 설계 영역의 밀도를 바꿉니다. 연결된 두 waveguide port는 고정된 채, 사각형 안만 갱신됩니다.</p><p class="step-detail">해상도 60, 설계 변수 61×61로 다시 계산했습니다. 유한차분 검증을 통과한 gradient로 밀도를 한 번 갱신하고, 출력이 증가한 결과를 표시합니다. 아직 회색 밀도인 초기 단계입니다.</p><a href="./assets/meep/09/highres/result.json" class="text-link">새 계산과 검증 결과 <span aria-hidden="true">→</span></a></article>
         </div>
-        <figure class="story-figure animated-scene" data-stage="1" aria-labelledby="scene-caption">
-          <div class="scene-topline"><span id="scene-stage">01 / FORWARD</span><button id="motion-toggle" type="button" aria-pressed="false" hidden>애니메이션 멈추기</button></div>
-          <svg class="story-diagram" viewBox="0 0 660 460" role="img" aria-labelledby="physics-title physics-description"><title id="physics-title">Forward field</title><desc id="physics-description">입력에서 목표 출력으로 진행하는 빛의 개념도입니다. 수치 시뮬레이션 장을 나타내지 않습니다.</desc>
-            <use href="#bend-guide"/>
-            <g class="propagation forward-layer"><path class="field-glow" d="M70 329H440Q509 329 509 260V60"/><path class="wavefront forward-wave" d="M70 329H440Q509 329 509 260V60"/><path d="M70 296V362" class="source-line"/><path d="M476 60H542" class="output-line"/><g class="diagram-label"><text x="70" y="278">입력 광원 · ON</text><text x="450" y="42">목표 출력</text><text x="255" y="316">→</text><text x="500" y="155">↑</text></g></g>
-            <g class="propagation adjoint-layer"><path class="field-glow amber-glow" d="M70 329H440Q509 329 509 260V60"/><path class="wavefront adjoint-wave" d="M70 329H440Q509 329 509 260V60"/><path d="M70 296V362" class="inactive-source"/><path d="M476 60H542" class="adjoint-source"/><g class="diagram-label"><text x="70" y="278">입력 위치 · OFF</text><text x="400" y="42">Adjoint source</text><text x="255" y="316">←</text><text x="500" y="155">↓</text></g></g>
-            <g class="update-layer">
-              <rect x="28" y="60" width="304" height="338" rx="4" class="gradient-card"/>
-              <g class="diagram-label"><text x="48" y="88">저장한 Forward + Adjoint</text></g>
-              <text x="48" y="118" class="gradient-title">실제 adjoint gradient</text>
-              <svg x="64" y="140" width="176" height="176" viewBox="707 78 397 397" preserveAspectRatio="xMidYMid meet"><image href="./assets/meep/09/04_gradient.png" width="1800" height="570" style="image-rendering:pixelated"/></svg>
-              <g class="diagram-label"><text x="254" y="156">11 × 11</text><text x="254" y="178">∂J/∂ρ</text><text x="254" y="292">y ↑</text><text x="254" y="314">x →</text></g>
-              <rect x="64" y="334" width="176" height="8" fill="url(#signed-scale)"/><g class="scale-label"><text x="64" y="362">−13.4</text><text x="148" y="362" text-anchor="middle">0</text><text x="240" y="362" text-anchor="end">+13.4</text></g>
-              <path d="M344 190H393M383 180L393 190L383 200" class="optimizer-arrow"/><text x="338" y="164" class="optimizer-label">최적화기</text>
-              <g id="density-grid" shape-rendering="crispEdges"></g>
-              <g class="diagram-label"><text x="408" y="207">저장된 최종 밀도</text><text x="408" y="394">ρ = 0 (흰색) → 1 (검정)</text><text x="408" y="416" id="density-label">MMA 5회 평가 · 09편</text></g>
-            </g>
-            <rect x="404" y="224" width="144" height="144" class="design-outline"/><g class="diagram-label design-label"><text x="393" y="400">설계 영역 · 1 × 1 µm</text></g>
+        <figure class="inverse-figure animated-scene" data-stage="1" aria-labelledby="scene-caption">
+          <div class="scene-topline"><span id="scene-stage">01 / FORWARD DFT</span><button id="motion-toggle" type="button" aria-pressed="false" hidden>동작 멈추기</button></div>
+          <div class="experiment-meta"><span>1 × 1 µm · RES 60 px/µm</span><span>λ = 1.55 µm</span></div>
+          <svg class="inverse-diagram" viewBox="0 0 720 470" role="img" aria-labelledby="physics-title physics-description"><title id="physics-title">설계 영역에서 촬영한 DFT 장으로 구조를 바꾸는 네 단계</title><desc id="physics-description">왼쪽 변 중앙의 입력과 위쪽 변 중앙의 출력. 같은 설계 영역에서 forward와 adjoint DFT 장을 각각 저장하고, 두 복소장을 후처리한 gradient로 최적화기가 밀도를 갱신합니다.</desc>
+            <defs><marker id="flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
+            <rect width="720" height="294" fill="url(#layout-grid)"/>
+            <g id="fixed-ports"><path id="input-guide" d="M52 137.5H430V212.5H52Z"/><path id="output-guide" d="M467.5 28H542.5V100H467.5Z"/></g>
+            <rect x="430" y="100" width="150" height="150" class="uniform-density"/>
+            <path id="forward-flow" class="sequence-wave" d="M52 175H465Q505 175 505 135V28"/>
+            <path id="adjoint-flow" class="sequence-wave adjoint-wave" d="M52 175H465Q505 175 505 135V28"/>
+            <use id="forward-region" href="#dft-forward-map" x="430" y="100" width="150" height="150"/>
+            <use id="adjoint-region" href="#dft-adjoint-map" x="430" y="100" width="150" height="150"/>
+            <g id="density-grid" shape-rendering="crispEdges"></g>
+            <rect x="430" y="100" width="150" height="150" class="region-outline"/>
+            <path id="input-beacon" d="M52 137.5V212.5" class="source-line"/>
+            <path id="output-beacon" d="M467.5 28H542.5" class="output-line"/>
+            <g class="experiment-label"><text x="52" y="118" id="input-caption">INPUT · ON</text><text x="560" y="38" id="output-caption">OUTPUT</text><text x="430" y="278" id="geometry-caption">ρ = 0.5 · 고정된 구조</text></g>
+            <path id="capture-frame" d="M422 122V92H452M558 92H588V122M588 228V258H558M452 258H422V228"/>
+            <path id="capture-scan" d="M430 100H580"/>
+            <rect id="capture-flash" x="430" y="100" width="150" height="150" fill="white" opacity="0"/>
+            <g id="capture-camera" transform="translate(630 155)"><path d="M-18-12H-7L-3-18H9L13-12H22V14H-18Z"/><circle cx="2" cy="0" r="8"/><path class="camera-ray" d="M-24 0H-37"/></g>
+            <text x="632" y="202" text-anchor="middle" class="experiment-label" id="capture-caption">DFT 누적</text>
+            <path id="gradient-return" d="M620 330C684 286 644 225 591 194" marker-end="url(#flow-arrow)"/>
+            <text id="optimizer-caption" x="622" y="282" text-anchor="middle" class="experiment-label">ASCENT</text>
+            <g class="snapshot-slots"><rect x="42" y="324" width="124" height="124" rx="4"/><rect x="254" y="324" width="124" height="124" rx="4"/><rect x="502" y="324" width="124" height="124" rx="4"/></g>
+            <g class="snapshot-placeholder"><text x="104" y="391">FWD</text><text x="316" y="391">ADJ</text><text x="564" y="391">∂J/∂ρ</text></g>
+            <text x="210" y="392" class="field-operator">⊙</text><path d="M415 386H462M454 378L462 386L454 394" class="overlap-arrow"/>
+            <g id="forward-snapshot" class="captured-tile" transform="translate(48 330)"><rect x="-6" y="-6" width="124" height="124" rx="4"/><use href="#dft-forward-map" width="112" height="112"/></g>
+            <g id="adjoint-snapshot" class="captured-tile" transform="translate(260 330)"><rect x="-6" y="-6" width="124" height="124" rx="4"/><use href="#dft-adjoint-map" width="112" height="112"/></g>
+            <g id="forward-overlap"><use href="#dft-forward-map" width="112" height="112"/></g>
+            <g id="adjoint-overlap"><use href="#dft-adjoint-map" width="112" height="112"/></g>
+            <use id="gradient-snapshot" href="#initial-gradient-map" x="508" y="330" width="112" height="112"/>
+            <g id="gradient-transfer"><use href="#initial-gradient-map" width="112" height="112"/></g>
           </svg>
-          <div class="mobile-update" aria-label="실제 초기 민감도와 최종 설계 비교"><div class="mobile-data-panels"><figure><svg viewBox="707 78 397 397" role="img" aria-label="실제 11×11 signed adjoint gradient"><image href="./assets/meep/09/04_gradient.png" width="1800" height="570" style="image-rendering:pixelated"/></svg><figcaption>초기 gradient · 11×11</figcaption></figure><figure><svg viewBox="410 230 132 132" role="img" aria-label="MMA 5회 평가 후 실제 설계 밀도"><rect x="410" y="230" width="132" height="132" fill="#718899"/><use href="#density-grid"/></svg><figcaption>MMA 5회 후 밀도</figcaption></figure></div><div class="mobile-scale"><span>−13.4</span><i></i><span>+13.4</span></div><p>파랑(−) Si 줄이기 · 빨강(+) Si 늘리기</p><p class="mobile-pipeline">민감도 → 최적화기 → 설계 영역만 갱신</p></div>
-          <div class="scene-explanation" id="scene-caption"><strong id="scene-summary">빛을 보내고 출력을 관찰합니다.</strong><span id="scene-note">전파 방향 개념도 · 수치장 아님</span></div>
-          <nav class="stage-nav" aria-label="계산 단계"><a href="#forward" data-stage-link="1" aria-current="step"><span>01</span> Forward</a><a href="#adjoint" data-stage-link="2"><span>02</span> Adjoint</a><a href="#update" data-stage-link="3"><span>03</span> Update</a></nav>
-          <p class="data-credit">데이터 출처: <a href="./bend-inverse/">Meep Example 09</a> · <a href="./assets/meep/09/04_gradient.png">원본 gradient</a> · <a href="./assets/meep/09/result.json">계산 결과</a></p>
+          <div class="snapshot-captions"><div><strong>Forward DFT</strong><span id="forward-status">촬영 대기</span></div><div><strong>Adjoint DFT</strong><span id="adjoint-status">촬영 대기</span></div><div><strong>Gradient</strong><span id="gradient-status">두 장 기다리는 중</span></div></div>
+          <div class="field-key"><span>DFT: Re Ẽz · 각 장의 ±max 정규화</span><span class="gradient-key" role="img" aria-label="RdBu: 빨강 음수, 파랑 양수">− <i aria-hidden="true"></i> +</span></div>
+          <div class="scene-explanation" id="scene-caption"><strong id="scene-summary">설계 영역의 forward DFT 장을 누적합니다.</strong><span id="scene-note">전파는 개념도 · DFT·gradient는 RES 60 실제 계산</span></div>
+          <div class="sequence-transport" hidden><div class="transport-buttons"><button type="button" id="sequence-play">전체 흐름 재생</button><button type="button" id="sequence-replay" aria-label="처음부터 다시 보기"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg></button><label class="speed-control"><span class="visually-hidden">재생 속도</span><select id="sequence-speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select></label><output id="sequence-time" for="sequence-progress">00:00 / 00:24</output></div><label class="timeline-control"><span class="visually-hidden">애니메이션 재생 위치</span><input id="sequence-progress" type="range" min="0" max="24" step="0.01" value="0" aria-valuetext="Forward DFT · 0초"></label></div>
+          <nav class="stage-nav" aria-label="계산 단계"><a href="#forward" data-stage-link="1" aria-current="step"><span>01</span> Forward</a><a href="#adjoint" data-stage-link="2"><span>02</span> Adjoint</a><a href="#gradient" data-stage-link="3"><span>03</span> Gradient</a><a href="#update" data-stage-link="4"><span>04</span> Update</a></nav>
+          <p class="data-credit"><a href="./assets/meep/09/highres/forward-full.png">Forward 원본</a> · <a href="./assets/meep/09/highres/adjoint-full.png">Adjoint 원본</a> · <a href="./assets/meep/09/highres/gradient-design.png">Gradient</a> · <a href="./assets/meep/09/highres/result.json">계산·검증 데이터</a><span id="density-data-status"></span></p>
         </figure>
       </div>
-      <p class="story-footnote">두 장을 단순히 더해 구조가 만들어지는 것은 아닙니다. 장을 후처리해 민감도를 구하고, 최적화기가 다음 설계를 결정합니다.</p>
+      <p class="story-footnote">촬영 → 복소장 겹침·후처리 → gradient → 설계 갱신. 표시한 실수부 두 장만으로 gradient를 계산할 수는 없습니다. 같은 forward·adjoint 실행에서 얻은 복소장과 Meep의 미분을 사용했습니다. 마지막 전환은 검증한 gradient ascent 1회이며, 수렴한 최종 구조는 아닙니다.</p>
     </section>
 
     <section id="examples" class="examples-section" aria-labelledby="examples-title">
