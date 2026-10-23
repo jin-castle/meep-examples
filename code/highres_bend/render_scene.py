@@ -19,7 +19,7 @@ def field_rgba(values, limit):
     return matplotlib.colormaps["RdBu"]((values.T[::-1] / limit + 1) / 2, bytes=True)
 
 
-def save_phase_sprite(field, limit, path):
+def save_phase_sprite(field, limit, path, render=field_rgba):
     phases = np.arange(PHASE_FRAME_COUNT) * 2 * np.pi / PHASE_FRAME_COUNT
     fields = np.real(field[None, :, :] * np.exp(-1j * phases[:, None, None]))
     quarter_errors = {}
@@ -31,14 +31,14 @@ def save_phase_sprite(field, limit, path):
     assert loop_error < 1e-12 * limit
     atlas = Image.new("RGBA", (360 * PHASE_COLUMNS, 300 * PHASE_ROWS))
     for frame, values in enumerate(fields):
-        atlas.paste(Image.fromarray(field_rgba(values, limit)), ((frame % PHASE_COLUMNS) * 360, (frame // PHASE_COLUMNS) * 300))
+        atlas.paste(Image.fromarray(render(values, limit)), ((frame % PHASE_COLUMNS) * 360, (frame // PHASE_COLUMNS) * 300))
     atlas.save(path)
     saved = Image.open(path)
     for frame, values in enumerate(fields):
         left, top = (frame % PHASE_COLUMNS) * 360, (frame // PHASE_COLUMNS) * 300
-        assert np.array_equal(np.asarray(saved.crop((left, top, left + 360, top + 300))), field_rgba(values, limit))
-    assert not np.array_equal(field_rgba(fields[0], limit), field_rgba(fields[1], limit))
-    assert not np.array_equal(field_rgba(fields[0], limit), field_rgba(fields[-1], limit))
+        assert np.array_equal(np.asarray(saved.crop((left, top, left + 360, top + 300))), render(values, limit))
+    assert not np.array_equal(render(fields[0], limit), render(fields[1], limit))
+    assert not np.array_equal(render(fields[0], limit), render(fields[-1], limit))
     return {
         "sprite": path.name, "sprite_pixels": list(saved.size),
         "quarter_cycle_max_absolute_errors": quarter_errors,
