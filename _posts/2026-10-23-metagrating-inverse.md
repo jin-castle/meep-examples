@@ -32,7 +32,7 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 - MMA 5회의 의미와 한계. 회색조 픽셀은 재료가 아니다
 - 계약 4: optimizer 내부 FOM이 아니라 새 시뮬레이션의 차수별 power로 다시 재기
 
-**전제 지식**: 07편의 library와 supercell, 06편의 `DiffractedPlanewave`. **공식 문서**: [Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/), [adjoint 예제 01](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb). **이전 글**: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/) · **다음 글**: 09 · Waveguide bend inverse design
+**전제 지식**: 07편의 library와 supercell, 06편의 `DiffractedPlanewave`. **공식 문서**: [Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/), [adjoint 예제 01](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb). **이전 글**: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/) · **다음 글**: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -658,4 +658,4 @@ verify [optimized]: m=-1 0.0973, m=0 0.0169, m=+1 0.6228; sum 0.7369 = total 0.7
 
 - [공식 Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/) · [adjoint 예제 01 Introduction](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb)
 - [`MaterialGrid` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#materialgrid) · [NLopt MMA](https://nlopt.readthedocs.io/en/latest/NLopt_Algorithms/#mma-method-of-moving-asymptotes-and-ccsa)
-- 이전 글: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/) · 다음 글: 09 · Waveguide bend inverse design
+- 이전 글: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/) · 다음 글: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/)
