@@ -67,15 +67,17 @@ PB(Pancharatnam–Berry) 위상을 쓰는 메타렌즈의 SEM 사진을 보면 �
 
 <h2 id="ideal">2. 이상적 렌즈 위상</h2>
 
-평면파를 축 위의 한 점(초점 거리 $f$)으로 모으려면, 렌즈 위 어느 점에서 출발한 빛이든 초점에 같은 위상으로 도착해야 합니다(등광로 조건). 반지름 $r$에서 초점까지의 거리는 $\sqrt{r^2+f^2}$이므로
+평면파를 축 위의 한 점(초점 거리 $f$)으로 모으려면, 렌즈 위 어느 점에서 출발한 빛이든 초점에 같은 위상으로 도착해야 합니다(등광로 조건). 반지름 $r$에서 초점까지의 거리는 $\sqrt{r^2+f^2}$이므로, $k = 2\pi/\lambda$로 두면
 
-$$\varphi(r) + k\sqrt{r^2+f^2} = k f \quad\Rightarrow\quad \varphi(r) = -k\left(\sqrt{r^2+f^2}-f\right),\qquad k = \frac{2\pi}{\lambda}$$
+$$\varphi(r) + k\sqrt{r^2+f^2} = k f$$
 
-입니다. 위상 기울기를 확인하면 $\frac{1}{k}\frac{d\varphi}{dr} = -\frac{r}{\sqrt{r^2+f^2}} = -\sin\theta$로, 렌즈의 각 점이 빛을 초점 방향의 각도 $\theta$로 꺾습니다. 물체 거리 $s_o$의 점광원을 상 거리 $s_i$에 맺으려면 같은 조건에서 $\varphi(r) = -k\left[\left(\sqrt{r^2+s_o^2}-s_o\right)+\left(\sqrt{r^2+s_i^2}-s_i\right)\right]$이 됩니다.
+$$\varphi(r) = -k\left(\sqrt{r^2+f^2}-f\right)$$
+
+입니다. 위상 기울기를 확인하면 $\frac{1}{k}\frac{d\varphi}{dr} = -\frac{r}{\sqrt{r^2+f^2}} = -\sin\theta$로, 렌즈의 각 점이 빛을 초점 방향의 각도 $\theta$로 꺾습니다. 물체 거리 $s_o$의 점광원을 상 거리 $s_i$에 맺으려면 같은 조건에서 $\varphi(r) = -k\,(L_o + L_i)$가 됩니다. 여기서 $L_o = \sqrt{r^2+s_o^2}-s_o$, $L_i = \sqrt{r^2+s_i^2}-s_i$입니다.
 
 Fourier optics 교과서의 얇은 렌즈 $t(r) = \exp\left(-ik\,r^2/2f\right)$는 이 쌍곡 위상을 근축 근사로 전개한 첫 항입니다.
 
-$$-k\left(\sqrt{r^2+f^2}-f\right) = -\frac{k r^2}{2f} + \frac{k r^4}{8 f^3} - \cdots$$
+$$\varphi(r) = -\frac{k r^2}{2f} + \frac{k r^4}{8 f^3} - \cdots$$
 
 둘째 항부터가 2차 위상으로 고NA 렌즈를 만들 때 생기는 구면수차입니다. 이 항이 1/4 파장(Rayleigh 기준)보다 작으려면 대략 $\mathrm{NA}^4 < 2\lambda/f$여야 합니다.
 
