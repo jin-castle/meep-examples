@@ -20,12 +20,12 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 
 - **What**: a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the fundamental TE mode injected at one end and measured at the other.
 - **Result**: T = 1.0000, R = 8×10⁻⁶ at 1.55 µm. Everything that goes in comes out.
-- **Takeaway**: start with a problem whose answer you already know. If T ≠ 1 here, your *measurement setup* is wrong, not your device.
+- **Takeaway**: start with a problem whose answer you already know. If T ≠ 1 here, the measurement setup is wrong, not the device.
 - **Code**: full script at the bottom, ~35 s on one core.
 
 ## 0. 이 글에서 배우는 것
 
-- `EigenModeSource`로 도파로의 기본 모드(fundamental mode)를 깨끗하게 주입하기
+- `EigenModeSource`로 도파로의 기본 모드(fundamental mode)를 주입하기
 - mode monitor와 `get_eigenmode_coefficients`로 투과율(transmission)·반사율(reflection) 구하기
 - 2D에서 TE 편광을 고르는 규칙 (`eig_parity=mp.ODD_Y`)
 - 물리 교훈: 정답을 아는 문제로 측정 도구를 먼저 검증한다
@@ -34,7 +34,7 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 
 ## 1. 무엇을 알고 싶은가
 
-실리콘 광도파로는 "빛의 전선"이다. 전선에 전류를 흘리면 반대쪽에서 거의 그대로 나오듯, 직선 도파로에 빛을 넣으면 반대쪽에서 전부 나와야 한다. 이 글은 그 당연한 사실을 Meep으로 확인한다. 정답(T = 1)을 이미 아는 문제를 일부러 고른 이유는, 빛을 넣는 도구(source)와 재는 도구(monitor)가 제대로 동작하는지를 **구조와 분리해서** 검증하기 위해서다. 여기서 1이 나오지 않으면 이후 어떤 구조를 시뮬레이션해도 결과를 믿을 수 없다.
+직선 실리콘 도파로에 빛을 넣으면 반대쪽에서 전부 나와야 한다. 이 글은 그것을 Meep으로 확인한다. 답(T = 1)을 아는 문제를 먼저 고른 이유는, 빛을 넣는 source와 재는 monitor가 제대로 동작하는지를 구조와 분리해서 보기 위해서다. 여기서 1이 안 나오면 뒤에 어떤 구조를 돌려도 결과를 믿을 수 없다.
 
 ## 2. 물리 한 페이지
 
@@ -55,7 +55,7 @@ $$
 
 **가정과 유효 범위**: 2D(z 방향 무한), lossless 재료, 폭 0.5 µm에서 TE 단일 모드.
 
-### 🎯 결과 보기 전에 맞춰보기
+### 결과 보기 전에 맞춰보기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -68,7 +68,7 @@ $$
 ## 3. 시뮬레이션 설계도
 
 ![layout]({{ site.baseurl }}/assets/meep/01/01_layout.png)
-*무엇을 봐야 하는가: 검은 띠 = Si core(`geometry`, 양끝이 PML을 관통), 빨간 선 = `EigenModeSource`(x = −5), 파란 선 = mode monitor 두 개(x = −4 입력·반사, x = +5 투과), 녹색 빗금 = PML, 보라 × = 종료 조건이 감시하는 점(x = 5.5). 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터 박스, ② 구조, ③ source, ④ PML, ⑤ monitor, ⑥ 종료 감시점이고, ⑦ 후처리는 그릴 것이 없다. source와 monitor는 core보다 넓은 3 µm 선이다.*
+*검은 띠 = Si core(`geometry`, 양끝이 PML을 관통), 빨간 선 = `EigenModeSource`(x = −5), 파란 선 = mode monitor 두 개(x = −4 입력·반사, x = +5 투과), 녹색 빗금 = PML, 보라 × = 종료 조건이 감시하는 점(x = 5.5). 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터 박스, ② 구조, ③ source, ④ PML, ⑤ monitor, ⑥ 종료 감시점이고, ⑦ 후처리는 그릴 것이 없다. source와 monitor는 core보다 넓은 3 µm 선이다.*
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -81,8 +81,8 @@ $$
 
 ## 4. 코드 따라가기
 
-> 읽는 순서: **단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리**.
-> Meep 스크립트는 거의 항상 이 7단계 순서다.
+> 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
+> Meep 스크립트는 거의 항상 이 순서다.
 
 ### ① 단위와 파라미터 — 어떤 숫자를 고정하는가
 
@@ -106,10 +106,10 @@ sx, sy = 14.0, 6.0       # cell size [um], PML included
 ```
 
 - **무엇**: 길이 단위(µm)를 정하고, 그 단위로 파장·주파수·구조 치수·격자 밀도를 고정한다.
-- **왜**: Meep에는 단위가 없다. "1 = 1 µm"로 정하면 주파수는 1/µm가 되고, 1.55 µm 파장은 f = 0.645가 된다. 모든 숫자는 이 약속 위에 있다.
+- **왜**: Meep에는 단위가 없다. 1 = 1 µm로 정하면 주파수 단위는 1/µm이고, 파장 1.55 µm는 f = 0.645다.
 - **틀리면**: `resolution`이 낮으면 core가 몇 픽셀로만 표현되어 모드 형태가 왜곡되고 T가 1에서 벗어난다. `df`가 너무 좁으면 펄스가 길어져 실행 시간이 늘어난다.
 
-> ⚠️ **초보 함정**: `fcen = 1.55`라고 쓰는 실수. Meep의 주파수는 파장의 역수다.
+> **함정**: `fcen = 1.55`라고 쓰는 실수. Meep의 주파수는 파장의 역수다.
 
 ### ② 재료와 구조 — 무엇이 어디에 있는가
 
@@ -121,7 +121,7 @@ geometry = [mp.Block(center=mp.Vector3(0, 0),
 ```
 
 - **무엇**: 폭 0.5 µm, 길이 무한한 실리콘 띠 하나.
-- **왜**: 길이를 `mp.inf`로 두면 도파로가 PML 안까지 이어진다. PML은 "계속 이어지는 구조"를 흡수할 때 반사가 가장 적다.
+- **왜**: 길이를 `mp.inf`로 두면 도파로가 PML 안까지 이어진다. PML은 경계를 가로질러 이어지는 구조를 흡수할 때 반사가 가장 적다.
 - **틀리면**: cell보다 짧게 두면 끝면에서 반사가 생겨 R이 커진다.
 
 ### ③ Source — 빛을 어떻게 넣는가
@@ -136,10 +136,10 @@ sources = [mp.EigenModeSource(src=mp.GaussianSource(fcen, fwidth=df),
 ```
 
 - **무엇**: x = −5 위치의 세로선에서, 도파로의 기본 모드 모양으로 가우시안 펄스를 주입한다.
-- **왜**: 점 source나 평면파를 넣으면 모드에 맞지 않는 성분이 함께 들어가 반사·방사 잡음을 만든다. `EigenModeSource`는 MPB로 모드를 먼저 풀어 그 모양대로 넣기 때문에 "순수한 TE0"이 들어간다.
+- **왜**: 점 source나 평면파를 넣으면 모드에 맞지 않는 성분이 함께 들어가 반사·방사 잡음을 만든다. `EigenModeSource`는 MPB로 모드를 먼저 풀어 그 모양대로 넣으므로 TE0만 들어간다.
 - **틀리면**: `eig_parity`를 `EVEN_Y`로 두면 2D에서는 TM이 되어 전혀 다른 모드를 넣는다. `size`를 core 폭만큼만 잡으면 꼬리가 잘려 T < 1.
 
-> ⚠️ **초보 함정**: `eig_band=0`은 없다. 1부터 센다.
+> **함정**: `eig_band=0`은 없다. 1부터 센다.
 
 ### ④ Simulation과 경계 — 계산 상자와 PML
 
@@ -156,7 +156,7 @@ plt.savefig("01_layout.png", dpi=150)
 ```
 
 - **무엇**: 지금까지 만든 재료·구조·source를 14 × 6 µm 상자에 넣고, 네 변에 1 µm PML을 두른다.
-- **왜**: PML(perfectly matched layer)은 상자 경계에 닿은 빛을 반사 없이 흡수해 "무한히 넓은 공간"을 흉내 낸다. `plot2D`는 §3 그림을 만든다. 실행 전에 반드시 눈으로 확인한다.
+- **왜**: PML(perfectly matched layer)은 상자 경계에 닿은 빛을 반사 없이 흡수해 무한히 넓은 공간을 흉내 낸다. `plot2D`가 §3 그림을 만든다. 실행 전에 한 번 본다.
 - **틀리면**: `boundary_layers`를 빼면 경계가 거울이 되어 빛이 되돌아오고 R이 커진다.
 
 ### ⑤ Monitor — 무엇을 재는가
@@ -173,7 +173,7 @@ dft = sim.add_dft_fields([mp.Ey], fcen, 0, 1,
 ```
 
 - **무엇**: source 바로 뒤(x = −4)와 반대쪽 끝(x = +5)에 모드 분해용 monitor 두 개, 그리고 전체 영역의 정상상태 필드 저장.
-- **왜**: 입력 monitor 하나로 "앞으로 가는 양"과 "뒤로 오는 양(반사)"을 동시에 분리할 수 있다. 그래서 reflection monitor를 source 앞이 아니라 **뒤**에 둔다.
+- **왜**: 입력 monitor 하나로 앞으로 가는 양과 뒤로 오는 양(반사)을 동시에 분리할 수 있다. 그래서 반사 monitor를 source 앞이 아니라 뒤에 둔다.
 - **틀리면**: monitor를 source와 같은 x에 두면 주입 중인 필드와 섞여 계수가 오염된다. PML 안에 두면 흡수된 값을 잰다.
 
 ### ⑥ 실행과 종료 조건 — 언제 멈추는가
@@ -207,13 +207,13 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 ```
 
 - **무엇**: 두 monitor의 필드를 TE0 모드에 투영해 진폭 $a^{\pm}$를 얻고, §2의 식으로 T·R을 계산한다.
-- **왜**: `alpha[band, freq, direction]`의 마지막 축이 0 = 앞, 1 = 뒤다. 입력 monitor의 "뒤" 성분이 곧 반사다.
+- **왜**: `alpha[band, freq, direction]`의 마지막 축이 0 = 앞, 1 = 뒤다. 입력 monitor의 뒤 성분이 곧 반사다.
 - **틀리면**: `eig_parity`를 source와 다르게 주면 다른 모드에 투영되어 T가 엉뚱하게 나온다.
 
 ## 5. 결과
 
 ![field]({{ site.baseurl }}/assets/meep/01/02_field.png)
-*무엇을 봐야 하는가: 가는 실선은 유전율 경계, 즉 Si core의 윤곽이다. 위 = Re(Ey) 파면. 줄무늬 간격이 매질 내 파장(≈ λ/n_eff)이다. 아래 = \|Ey\| 포락선. 윤곽선 안에만 밝고 밖에서 급감하면 잘 갇힌 것이다. x = −5 왼쪽이 어두운 것은 source가 오른쪽으로만 쏘기 때문이다.*
+*가는 실선은 유전율 경계, 즉 Si core의 윤곽이다. 위 = Re(Ey) 파면. 줄무늬 간격이 매질 내 파장(≈ λ/n_eff)이다. 아래 = \|Ey\| 포락선. 윤곽선 안에만 밝고 밖에서 급감하면 잘 갇힌 것이다. x = −5 왼쪽이 어두운 것은 source가 오른쪽으로만 쏘기 때문이다.*
 
 | 물리량 | 값 | 비교 대상 |
 |--------|-----|-----------|
@@ -230,7 +230,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 | R | ≪ 10⁻³ | 8 × 10⁻⁶ | ✅ |
 | 필드 모양 | core 안에 갇힘 | 그림 확인 | ✅ |
 
-불일치 없음. 균일 직선에는 반사원이 없으므로 맞을 수밖에 없고, 그래서 이 결과는 구조가 아니라 **source·monitor·PML·정규화 셋업이 옳다**는 증거로 쓴다.
+불일치 없음. 직선에는 반사원이 없으니 맞아야 하는 결과이고, 이 값은 source·monitor·PML·정규화 설정이 옳다는 증거로 쓴다.
 
 **검증 체크**: T + R = 1.0000 · source(x = −5)와 monitor(x = −4, +5) 모두 PML(|x| > 6) 밖 · 종료는 field decay 기준.
 
