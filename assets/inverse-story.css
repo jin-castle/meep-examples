@@ -12,6 +12,7 @@
 .uniform-density { fill: #808080; }
 .region-outline { fill: none; stroke: var(--layout-black); stroke-width: 1.5; stroke-dasharray: 5 5; }
 .apparatus-fields image { image-rendering: pixelated; }
+.phase-viewport { overflow: hidden; opacity: 0; }
 .experiment-label { fill: var(--muted); font: 13px/1.5 ui-monospace, monospace; }
 #capture-frame { stroke: var(--brand); stroke-width: 2; fill: none; }
 #capture-scan { stroke: var(--cyan); stroke-width: 2; }

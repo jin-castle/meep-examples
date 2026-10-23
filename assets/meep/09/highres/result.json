@@ -11318,7 +11318,7 @@
   "scene_rendering": {
     "source": "saved complex128 full-cell Ez DFT, fields.npz",
     "source_sha256": "fad41cb79f2812e8172acabc5fdd074557c501b31614a77c7f5a5af53ace5aed",
-    "quantity": "Re(Ez); original complex phase, no phase rotation",
+    "quantity": "Re(Ez * exp(-i phase)); saved complex DFT phasor",
     "colormap": "RdBu",
     "sign": "negative red; zero white; positive blue",
     "full_extent_um": [
@@ -11346,45 +11346,96 @@
       60
     ],
     "native_spacing_um": 0.016666666666666666,
-    "orientation": "RGBA[row,col] = RdBu(normalize(real(Ez[col,Ny-1-row]))); top is +y",
+    "orientation": "RGBA[row,col] = RdBu(normalize(real(Ez[col,Ny-1-row] * exp(-i phase)))); top is +y",
     "capture_rendering": "exact full-scene design crop, nearest enlargement, black boundary and centered port markers",
+    "phase_frame_count": 32,
+    "phase_columns": 8,
+    "phase_rows": 4,
+    "phase_convention": "phase_k = 2*pi*k/32; Re(F*exp(-i*phase_k)); phase0 is the original real phasor",
+    "normalization": "fixed symmetric +/-max(abs(complex full Ez)) per calculation, shared by every phase, scene, capture",
+    "notTransient": true,
+    "provenance": "DFT phase cycle / steady state; no wavefront arrival, source turn-on, or propagation delay",
     "scenes": {
       "forward": {
         "scene": "forward-scene.png",
-        "symmetric_limit": 13.863693012097434,
-        "vmin": -13.863693012097434,
-        "vmax": 13.863693012097434,
+        "symmetric_limit": 20.31869826702306,
+        "vmin": -20.31869826702306,
+        "vmax": 20.31869826702306,
+        "sprite": "forward-phases.png",
+        "sprite_pixels": [
+          2880,
+          1200
+        ],
+        "quarter_cycle_max_absolute_errors": {
+          "0": 0.0,
+          "8": 8.881784197001252e-16,
+          "16": 1.7763568394002505e-15,
+          "24": 3.552713678800501e-15
+        },
+        "loop_closure_max_absolute_error": 4.440892098500626e-15,
+        "saved_all_frames_match": true,
+        "animated_content": true,
         "capture": "forward-capture.png",
-        "capture_limit": 13.863693012097434,
+        "capture_limit": 20.31869826702306,
         "scene_crop_box_pixels": [
           150,
           120,
           210,
           180
         ],
-        "capture_matches_scene_interior": true
+        "capture_matches_scene_interior": true,
+        "frame0_capture_match": true,
+        "frame0_scene_match": true
       },
       "adjoint": {
         "scene": "adjoint-scene.png",
-        "symmetric_limit": 0.0020056100269988534,
-        "vmin": -0.0020056100269988534,
-        "vmax": 0.0020056100269988534,
+        "symmetric_limit": 0.0030279939741658535,
+        "vmin": -0.0030279939741658535,
+        "vmax": 0.0030279939741658535,
+        "sprite": "adjoint-phases.png",
+        "sprite_pixels": [
+          2880,
+          1200
+        ],
+        "quarter_cycle_max_absolute_errors": {
+          "0": 0.0,
+          "8": 2.168404344971009e-19,
+          "16": 4.336808689942018e-19,
+          "24": 4.336808689942018e-19
+        },
+        "loop_closure_max_absolute_error": 6.505213034913027e-19,
+        "saved_all_frames_match": true,
+        "animated_content": true,
         "capture": "adjoint-capture.png",
-        "capture_limit": 0.0020056100269988534,
+        "capture_limit": 0.0030279939741658535,
         "scene_crop_box_pixels": [
           150,
           120,
           210,
           180
         ],
-        "capture_matches_scene_interior": true
+        "capture_matches_scene_interior": true,
+        "frame0_capture_match": true,
+        "frame0_scene_match": true
       },
       "updated-forward": {
         "scene": "updated-forward-scene.png",
-        "symmetric_limit": 15.072785628244924,
-        "vmin": -15.072785628244924,
-        "vmax": 15.072785628244924
+        "symmetric_limit": 18.579813822588232,
+        "vmin": -18.579813822588232,
+        "vmax": 18.579813822588232
       }
+    },
+    "input_phase_direction_check": {
+      "sample_x_range_um": [
+        -1.3416666666666668,
+        -0.6583333333333332
+      ],
+      "sample_y_um": -0.008333333333333304,
+      "phase_slope_rad_per_um": 13.125825966783962,
+      "convention": "positive spatial phase slope with exp(-i phase) advances constant phase toward +x",
+      "direction": "source to design (+x)",
+      "passed": true,
+      "interpretation": "total steady-state field may also contain reflected waves; this is not transient arrival"
     }
   }
 }

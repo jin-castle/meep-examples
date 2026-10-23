@@ -25,3 +25,5 @@ The PNGs use `RdBu` with symmetric limits centered at zero: red is negative and 
 ## Unified scene and capture colors
 
 After the simulation, run `python render_scene.py /path/to/fields.npz --out /path/to/assets/meep/09/highres`. This renders native full-cell RdBu fields and matching design crops from the saved complex results; it does not rerun Meep. The helper asserts crop orientation, shared normalization and exact interior pixel agreement. The original simulation source and its SHA256 remain unchanged.
+
+The same command exports32-phase sprites for forward and adjoint playback. It checks quarter-cycle identities, loop closure, all stored RGBA frames, phase0/capture equality and source-to-design input phase progression. Every phase uses the same complex-amplitude color limit; metadata identifies the result as a normal steady-state DFT phase cycle.

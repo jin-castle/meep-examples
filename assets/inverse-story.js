@@ -10,10 +10,15 @@
   const playButton = $("#sequence-play");
   const toggle = $("#motion-toggle");
   const duration = 24;
+  const captureAt = 3;
+  const phaseCycleSeconds = 1.5;
+  const phaseFrames = 32;
+  const sheetColumns = 8;
+  const phaseReady = { forward: false, adjoint: false };
   const names = ["FORWARD DFT", "ADJOINT DFT", "FIELD OVERLAP", "GEOMETRY UPDATE"];
   const descriptions = [
-    "입력 광원을 켜고 같은 설계 영역의 forward DFT 장을 누적·저장합니다.",
-    "입력 광원은 끄고, 목적함수가 정한 출력의 adjoint source로 같은 설계 영역의 DFT 장을 저장합니다.",
+    "Forward DFT의 정상상태 위상 전파 중간에 설계 영역을 촬영합니다. 저장된 이미지는 멈추고, 원래 장의 위상 전파는 계속됩니다.",
+    "입력 광원은 끄고 출력의 adjoint source로 계산한 DFT를 위상 재생합니다. 같은 설계 영역을 촬영한 뒤에도 전파는 이어집니다.",
     "저장한 두 복소장을 후처리해 설계 변수에 대한 초기 gradient를 구합니다. 표시한 실수부 이미지의 단순한 곱이 아닙니다.",
     "유한차분 검증을 통과한 gradient로 설계 영역을 한 번 갱신합니다. 실제 계산에서 출력이 증가한 61×61 밀도이며 포트는 고정됩니다."
   ];
@@ -41,9 +46,34 @@
     $(selector).setAttribute("transform", `translate(${x} ${y}) scale(${scale}) rotate(${rotation} 56 56)`);
   }
   function captured(selector, start, targetX, t) {
-    const flight = smooth(ramp(t, start, 1.8));
+    const flight = smooth(ramp(t, start + .28, 1.8));
     move(selector, 430 + (targetX - 430) * flight, 100 + 230 * flight - Math.sin(Math.PI * flight) * 40, 150 / 112 + (1 - 150 / 112) * flight, Math.sin(Math.PI * flight) * -6);
-    opacity(selector, ramp(t, start, .2));
+    opacity(selector, ramp(t, start, .08));
+  }
+  function phaseField(kind, local, active) {
+    const playingPhase = active && phaseReady[kind] && !staticMode();
+    const cycle = (((local - captureAt) / phaseCycleSeconds) % 1 + 1) % 1;
+    const frame = playingPhase ? Math.floor(cycle * phaseFrames + 1e-7) % phaseFrames : 0;
+    const sheet = $(`#${kind}-phase-sheet`);
+    sheet.setAttribute("x", String(-(frame % sheetColumns) * 360));
+    sheet.setAttribute("y", String(-Math.floor(frame / sheetColumns) * 300));
+    $(`#${kind}-phase`).dataset.frame = String(frame);
+    opacity(`#${kind}-phase`, playingPhase ? 1 : 0);
+    return frame;
+  }
+  async function loadPhaseSheet(kind) {
+    try {
+      const image = new Image();
+      image.src = $(`#${kind}-phase-sheet`).getAttribute("href");
+      await image.decode();
+      if (image.naturalWidth !== 2880 || image.naturalHeight !== 1200) throw new Error("Invalid DFT phase sheet");
+      phaseReady[kind] = true;
+      scene.dataset[`${kind}PhaseReady`] = "true";
+      render(time);
+    } catch (error) {
+      scene.dataset[`${kind}PhaseError`] = "true";
+      console.warn("Meep phase animation:", error.message);
+    }
   }
   function render(value) {
     time = Math.max(0, Math.min(duration, value));
@@ -63,8 +93,13 @@
     const updating = stage === 4;
     const local = time - (stage - 1) * 6;
     const staticFrame = staticMode();
-    const captureStart = forward ? 3 : 9;
-    const accumulating = (forward || adjoint) && local < 3;
+    const captureStart = forward ? captureAt : 6 + captureAt;
+    const beforeCapture = (forward || adjoint) && local < captureAt;
+    const forwardFrame = phaseField("forward", local, forward);
+    const adjointFrame = phaseField("adjoint", local, adjoint);
+    const phaseKind = adjoint ? "adjoint" : "forward";
+    const phaseAnimated = (forward || adjoint) && phaseReady[phaseKind] && !staticFrame;
+    text("#phase-label", phaseAnimated ? `DFT 위상 ${Math.round((adjoint ? adjointFrame : forwardFrame) * 360 / phaseFrames)}° · 정상상태` : "DFT 저장 위상 · 정상상태");
     const updated = densityReady ? smooth(ramp(time, 21, 2.2)) : 0;
     opacity("#forward-field", forward ? ramp(time, .3, 2) : stage === 3 ? 1 : updating ? 1 - ramp(time, 18, .6) : 0);
     opacity("#adjoint-field", adjoint ? ramp(time, 6.3, 2) : 0);
@@ -81,14 +116,14 @@
     $("#capture-scan").style.stroke = captureColor;
     opacity("#capture-camera", forward || adjoint ? 1 : .25);
     opacity("#capture-frame", forward || adjoint ? 1 : .35);
-    opacity("#capture-scan", accumulating && !staticFrame ? .7 : 0);
-    $("#capture-scan").setAttribute("transform", `translate(0 ${150 * ramp(local, 0, 3)})`);
+    opacity("#capture-scan", beforeCapture && !staticFrame ? .7 : 0);
+    $("#capture-scan").setAttribute("transform", `translate(0 ${150 * ramp(local, 0, captureAt)})`);
     const flash = !staticFrame && (forward || adjoint) ? .28 * Math.max(0, 1 - Math.abs(time - captureStart) / .2) : 0;
     opacity("#capture-flash", flash);
-    text("#capture-caption", forward || adjoint ? accumulating ? "DFT 누적" : "저장 완료" : "CAPTURED");
+    text("#capture-caption", forward || adjoint ? beforeCapture ? "촬영 대기" : local < 3.28 ? "찰칵 · DFT" : "저장 완료" : "CAPTURED");
     text("#geometry-caption", updating ? evaluatedField >= .99 ? "갱신 후 DFT · RES 60" : updated >= .99 ? "gradient ascent · 1회" : "gradient → 밀도 갱신" : "ρ = 0.5 · 같은 구조");
-    captured("#forward-snapshot", 3, 48, time);
-    captured("#adjoint-snapshot", 9, 260, time);
+    captured("#forward-snapshot", captureAt, 48, time);
+    captured("#adjoint-snapshot", 6 + captureAt, 260, time);
     const overlap = smooth(ramp(time, 12.5, 2.2));
     const overlapOpacity = ramp(time, 12.5, .4) * (1 - ramp(time, 15.2, .8));
     move("#forward-overlap", 48 + 460 * overlap, 330 - 36 * Math.sin(Math.PI * overlap), 1, -8 * Math.sin(Math.PI * overlap));
@@ -101,15 +136,15 @@
     opacity("#gradient-transfer", ramp(time, 18.8, .3) * (1 - ramp(time, 21, .6)) * .85);
     opacity("#gradient-return", updating ? .75 : 0);
     opacity("#optimizer-caption", updating ? 1 : 0);
-    text("#forward-status", time < .3 ? "촬영 대기" : time < 3 ? "DFT 누적 중" : time < 4.8 ? "이미지 저장 중" : "저장 완료");
-    text("#adjoint-status", time < 6.3 ? "촬영 대기" : time < 9 ? "DFT 누적 중" : time < 10.8 ? "이미지 저장 중" : "저장 완료");
+    text("#forward-status", time < .3 ? "촬영 대기" : time < 3 ? "위상 전파 중" : time < 5.08 ? "DFT 저장 중" : "저장 완료");
+    text("#adjoint-status", time < 6.3 ? "촬영 대기" : time < 9 ? "위상 전파 중" : time < 11.08 ? "DFT 저장 중" : "저장 완료");
     text("#gradient-status", time < 12.5 ? "두 장 기다리는 중" : time < 16.2 ? "복소장 겹침·후처리" : "초기 ∂J/∂ρ · 61×61");
-    const summary = forward ? accumulating ? "설계 영역의 forward DFT 장을 누적합니다." : "첫 번째 장을 찍어 저장합니다."
-      : adjoint ? accumulating ? "같은 구조의 adjoint DFT 장을 누적합니다." : "두 번째 장을 찍어 저장합니다."
+    const summary = forward ? beforeCapture ? "Forward 장이 전파되는 중간에 촬영합니다." : "DFT 한 장을 저장해도 전파는 계속됩니다."
+      : adjoint ? beforeCapture ? "Adjoint 장이 전파되는 중간에 다시 촬영합니다." : "두 번째 DFT를 저장하며 전파를 이어갑니다."
       : stage === 3 ? time < 16.2 ? "저장한 두 복소장을 겹쳐 민감도를 구합니다." : "픽셀마다 바꿀 방향이 gradient로 남습니다."
       : densityReady ? time < 23.2 ? "Gradient를 받아 설계 영역의 밀도를 바꿉니다." : "갱신한 구조의 forward DFT를 다시 확인합니다." : "최종 밀도를 불러오지 못했습니다. 계산 결과 링크를 확인하세요.";
     text("#scene-summary", summary);
-    text("#scene-note", updating ? "균일 0.5 → 검증한 1회 갱신 · 최대 밀도 변화 0.15" : "입력·설계 영역·출력 모두 RES 60 실제 DFT");
+    text("#scene-note", updating ? "균일 0.5 → 검증한 1회 갱신 · 최대 밀도 변화 0.15" : "복소 DFT의 정상상태 위상 재생 · 촬영본은 위상 0°에 고정");
     progress.min = staticFrame ? "1" : "0";
     progress.max = staticFrame ? "4" : String(duration);
     progress.step = staticFrame ? "1" : ".01";
@@ -256,4 +291,6 @@
   window.addEventListener("hashchange", () => { if (hashStage()) selectStage(hashStage()); });
   selectStage(hashStage() || 1);
   loadDensity();
+  loadPhaseSheet("forward");
+  loadPhaseSheet("adjoint");
 })();
