@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /bend-inverse/
+lesson_title: "빛이 꺾이는 길을 스스로 찾게 하려면?"
+lesson_summary: "121개 밀도를 바꾸며 출력 도파관으로 빛을 보냅니다. 계산한 gradient를 검증하고, 최적화 점수와 실제 투과율을 구별해 봅니다."
+lesson_goals:
+  - "정방향·수반 계산에서 밀도 gradient로 이어지는 과정을 설명한다."
+  - "유한차분으로 gradient를 확인하고 한 번의 설계 갱신을 해석한다."
+  - "별도 검증과 해상도 확인으로 설계의 한계를 판단한다."
+lesson_prerequisites: "04편 EigenModeSource · 05편 bend와 정규화 · 08편 adjoint와 gradient gate"
 date: 2026-10-23
 title: "Meep Example 09 · Waveguide bend inverse design — 자유 설계 영역과 출력 포트 mode power"
 title_en: "Meep Example 09 · Waveguide bend inverse design — a free design region and the output-port mode power"
@@ -14,29 +22,26 @@ tags: [meep, fdtd, adjoint, inverse-design, waveguide-bend, nlopt, mma]
 image: /assets/meep/09/07_verify.png
 excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corner is a 1 × 1 µm square opened as a free design region of 11 × 11 densities (SiO2 to Si), and the adjoint gradient fills it. The contract is the one from post 08; only the objective changes, from a diffraction order to the mode-1 power at the output port."
 ---
-## TL;DR (English)
+<h2 id="observe">1. 먼저 보기: 회색 블록에서 빛은 어디로 갈까?</h2>
 
-![hero]({{ site.baseurl }}/assets/meep/09/07_verify.png)
+입력은 왼쪽, 원하는 출력은 위쪽입니다. 가운데 1 × 1 µm 정사각형의 재료만 바꿀 수 있다면, 빛이 90° 꺾이도록 어떤 구조를 만들면 될까요? 05편에서는 반지름 하나를 바꿨고, 이번에는 11 × 11 = **121개 밀도**를 바꿉니다.
 
-- **What**: post 05 steered a 90° bend with one number, the radius. Here the corner is a 1 × 1 µm square opened as a free design region of 11 × 11 densities (SiO2 to Si), and the adjoint gradient fills it. The contract is the one from post 08; only the objective changes, from a diffraction order to the mode-1 power at the output port.
-- **Result**: the source puts 100.4 % of its flux into mode 1. The gradient passes the gate with 0.00 %, 0.00 %, 0.01 % error. Unlike post 08, one hand-made step keeps rising as α grows (3.9×, 28×, 41×, 55×) because pixels saturate at 0/1. Five MMA evaluations lift the internal objective 52×. Measured again in a fresh simulation and normalized to the input mode-1 power, the bend transmission goes from 0.015 to 0.780 (total flux through the port: 0.117 to 0.804). At twice the resolution the same design gives 0.639.
-- **Takeaway**: the four steps transfer unchanged when the objective changes. What does not transfer is intuition about step size: whether a gradient step overshoots depends on the problem. The optimizer's internal number is not a transmission (it even exceeds the input power), 119 of 121 pixels are still grey, and the design is not converged in resolution. This is a smoke test, not a device.
-- **Code**: full script at the bottom, ~29 s on one core.
+<div class="figure-pair">
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/07_verify.png" data-lightbox aria-label="출발점의 전기장 원본 확대">
+<svg viewBox="690 45 630 560" role="img" aria-labelledby="start-field-title"><title id="start-field-title">균일한 밀도 0.5에서 빛이 오른쪽으로 퍼지는 실제 전기장</title><image href="{{ site.baseurl }}/assets/meep/09/07_verify.png" width="1950" height="630" /></svg>
+</a>
+<figcaption>출발점: 밀도가 모두 0.5입니다. 빛이 오른쪽으로 퍼지고, 위쪽 mode 1 투과율은 0.0154입니다.</figcaption>
+</figure>
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/07_verify.png" data-lightbox aria-label="갱신한 설계의 전기장 원본 확대">
+<svg viewBox="1335 45 610 560" role="img" aria-labelledby="updated-field-title"><title id="updated-field-title">MMA 다섯 번째 평가 설계에서 빛이 위쪽 도파관으로 진행하는 실제 전기장</title><image href="{{ site.baseurl }}/assets/meep/09/07_verify.png" width="1950" height="630" /></svg>
+</a>
+<figcaption>갱신 후: MMA 5회 평가 중 가장 높은 설계입니다. 새 시뮬레이션에서 잰 mode 1 투과율은 0.7801입니다.</figcaption>
+</figure>
+</div>
 
-## 0. 이 글에서 배우는 것
-
-- 설계 변수가 하나(반지름)에서 121개(밀도 격자)로 늘면 무엇이 같고 무엇이 달라지는가
-- `EigenModeSource`가 mode 1을 제대로 넣는지 확인하는 법과 그 값을 투과율의 분모로 쓰는 이유
-- 출력 포트 mode power를 목적함수로 잡을 때 adjoint source가 어디에 생기는가
-- 손 step에서 목적함수가 꺾이지 않고 계속 오르는 경우. 08편과 다른 이유
-- optimizer 내부 FOM을 입력 power로 나누면 1을 넘는다. 왜 계약 4가 필요한가
-- 설계 격자와 Yee 격자는 다른 것이다. 같은 11 × 11 설계를 해상도 20에서 다시 재면 값이 달라진다
-
-**전제 지식**: 08편의 4단계 계약과 gate, 05편의 bend와 2-run 정규화, 04편의 `EigenModeSource`. **공식 문서**: [Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/), [adjoint 예제 01 Waveguide Bend](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb). **이전 글**: [08 · Metagrating inverse design]({{ site.baseurl }}/metagrating-inverse/) · 시즌 1(강의 10주차)의 마지막 글이다. **다음 글**: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/)(시즌 2의 시작)
-
-## 1. 무엇을 알고 싶은가
-
-05편의 bend는 반지름을 키우면 손실이 줄었다. 설계 변수가 하나라 trade-off 곡선 하나로 끝났다. 이번에는 꺾이는 자리의 1 × 1 µm 정사각형을 통째로 열어 두고 121개 픽셀의 밀도를 adjoint 최적화에 맡긴다. 질문은 두 가지다. 균일한 회색(ρ = 0.5)에서 출발해 다섯 번의 평가로 어디까지 가는가. 그리고 08편의 절차가 목적함수를 바꿔도 그대로 쓰이는가.
+<p class="lesson-note"><strong>이 결과를 읽는 조건.</strong> 두 그림은 같은 해상도 10의 실제 Re(Ez) 결과입니다. 같은 설계를 해상도 20으로 다시 재면 투과율은 0.6391입니다. 121개 중 119개가 회색조이고 최적화는 5회 평가뿐이므로, 수렴한 설계나 제작 도면으로 볼 수 없습니다.</p>
 
 ### 어디에 쓰이는가
 
@@ -49,17 +54,66 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 | 설계 변수 1개와 121개의 비교 | 05편 반지름 sweep과 이 글 | — |
 
 
-## 2. 물리 한 페이지
+
+<h2 id="predict">2. 먼저 예측하기: gradient는 완성된 길을 그릴까?</h2>
+
+지금 아는 것은 왼쪽에서 들어온 빛을 위로 보내고 싶다는 것뿐입니다. 균일한 출발점에서 계산한 첫 gradient가 무엇을 보여 줄지 골라 보세요.
+
+<fieldset class="prediction">
+<legend>첫 gradient에서 가장 두드러지는 패턴은?</legend>
+<label><input type="radio" name="gradient-prediction" value="diagonal"> 입력과 출력을 잇는 대각선 전체가 양수다.</label>
+<label><input type="radio" name="gradient-prediction" value="local"> 중앙을 줄이고 일부 도파관 연결부를 늘리라는 국소적인 변화다.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측과 실제 결과 비교하기</summary>
+
+이 출발점에서는 두 번째에 가깝습니다. 가장 큰 절댓값은 중앙의 **음수 −13.4**이고, 양수는 두 도파관을 설계 영역 안으로 연장하는 부근에 있습니다. 대각선 모양은 큰 step 뒤 일부 밀도가 0이나 1에 닿으면서 나타납니다. 첫 미분은 현재 설계를 조금 바꿀 방향을 알려 주며, 완성된 형상을 직접 그려 주지는 않습니다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기: 두 계산에서 한 번의 갱신으로</h2>
+
+밀도 ρ는 설계 영역 안의 재료를 정하는 숫자입니다. **0은 SiO₂, 1은 Si**, 사이는 두 재료 사이의 보간 값입니다. 왼쪽과 위쪽의 폭 0.5 µm Si 도파관은 고정하고, 정사각형 안의 121개 값만 바꿉니다. 바깥 배경은 공기입니다.
+
+1. **Forward field:** 왼쪽 입력 모드로 빛을 넣고, 위쪽 출력 포트의 mode 1 진폭을 구합니다.
+2. **Adjoint field:** 목적함수에서 유도한 source로 별도 계산합니다. 이 예제에서는 출력 포트에서 설계 영역 쪽으로 향합니다.
+3. **Gradient:** 저장한 두 field의 겹침과 재료의 밀도 의존성을 이용해 각 픽셀의 ∂J/∂ρ를 계산합니다.
+4. **Geometry update:** gradient를 검증한 뒤, optimizer가 0 ≤ ρ ≤ 1 안에서 밀도를 갱신합니다.
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/04_gradient.png" data-lightbox aria-label="실제 11×11 gradient와 색상 막대 원본 확대">
+<svg viewBox="625 0 585 555" role="img" aria-labelledby="gradient-map-title"><title id="gradient-map-title">실제 초기 signed gradient: 중앙은 강한 음수, 일부 도파관 연결부는 양수</title><image href="{{ site.baseurl }}/assets/meep/09/04_gradient.png" width="1800" height="570" /></svg>
+</a>
+<figcaption>실제로 계산한 초기 11 × 11 gradient입니다. 빨강(양수)은 밀도를 높이는 쪽, 파랑(음수)은 낮추는 쪽이 J를 증가시키는 국소 방향입니다. 양수 49개, 음수 72개입니다.</figcaption>
+</figure>
+
+<p class="lesson-note"><strong>색을 읽는 기준.</strong> 이 그림의 색은 재료 밀도가 아니라 J의 민감도입니다. 밀도를 낮추는 것은 설계 영역 안에서 SiO₂ 쪽으로 옮긴다는 뜻입니다. 검정·회색·흰색으로 그린 밀도 지도와 구별하세요.</p>
+
+목적함수는 출력 mode 1 진폭의 제곱 **J = |a_out|²**입니다. 최적화 도중의 J는 optimizer의 정규화 관례를 따릅니다. 보고할 투과율은 최종 설계를 **새 시뮬레이션**으로 측정하고, 직선 도파관 참조 run의 입력 mode 1 power로 나눈 값입니다.
+
+$$
+T_{\mathrm{mode1}}=
+\frac{P_{\mathrm{out,mode1}}\;\text{(fresh run)}}{P_{\mathrm{in,mode1}}\;\text{(reference run)}}
+$$
+
+**계산 범위:** 2D Ez(TE), 파장 1.55 µm, Si 굴절률 3.4, SiO₂ 굴절률 1.44, 단일 주파수입니다. 설계 격자 11 × 11과 전자기장을 계산하는 Yee 격자는 서로 다릅니다. 최소 선폭과 이진화 제약은 없습니다.
+
+<details markdown="1">
+<summary>개념도·수식·기호 자세히 보기</summary>
 
 <!-- concept-illustration:part-09:start -->
 
-![공기 중 고정된 왼쪽 입력 및 위쪽 출력 도파로와 중앙 정사각형 설계 영역을 보여준다. 정방향과 수반 계산을 분리하고 중앙의 SiO₂–Si 밀도 변수만 갱신한다.]({{ site.baseurl }}/assets/meep/09/00_concept.png)
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/00_concept.png" data-lightbox aria-label="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/00_concept.png" alt="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도" loading="lazy"></a>
+<figcaption>왼쪽 입력과 위쪽 출력 도파관은 고정하고, 중앙 1 × 1 µm의 밀도만 바꿉니다. 격자와 회색 농도는 설명용이며 실제 최적화 결과가 아닙니다.</figcaption>
+</figure>
 
 *왼쪽 입력(+x)과 위쪽 출력(+y)의 폭 0.5 µm Si(n = 3.4) 도파로는 고정하고, 중앙 1 × 1 µm 정사각형의 11 × 11 = 121개 밀도만 바꿉니다. 초기 밀도는 모두 0.5이며 설계 영역 안에서만 0은 SiO₂(n = 1.44), 1은 Si입니다. 구조 밖의 기본 배경은 공기입니다. 수반 계산은 출력에서 역으로 응답을 계산하는 별도 실행입니다. 실제 변수는 11 × 11 = 121개이며, 그림의 격자와 회색 농도는 설명용 예시입니다. 실제 최적화 밀도나 제작 가능한 이진 형상을 나타내지 않습니다. 전력 투과율은 정규화한 별도 검증 결과로 확인합니다.*
 
 <!-- concept-illustration:part-09:end -->
 
-목적함수는 출력 포트 monitor에서 잰 mode 1 진폭의 제곱 J = |a_out|²이다. 08편과 수학은 같다. forward field E_f는 입력 도파관의 `EigenModeSource`가 만들고, adjoint field E_a는 출력 포트 monitor 자리에서 거꾸로 쏜 `EigenModeSource`가 만든다. gradient는 둘의 곱이다. 08편에서 adjoint가 위쪽 평면파 monitor에서 내려왔다면, 여기서는 출력 도파관을 타고 설계 영역으로 내려온다. 목적함수가 바뀌면 adjoint source의 위치와 모양이 바뀐다.
+목적함수는 출력 포트 monitor에서 잰 mode 1 진폭의 제곱 J = |a_out|²이다. 08편과 수학은 같다. forward field E_f는 입력 도파관의 `EigenModeSource`가 만들고, adjoint field E_a는 출력 포트 monitor 자리에서 거꾸로 쏜 `EigenModeSource`가 만든다. gradient는 두 field의 겹침에 재료의 밀도 의존성과 정규화 계수를 반영해 구한다. 아래 비례식은 그 관계를 개념적으로 나타낸 것이다. 08편에서 adjoint가 위쪽 평면파 monitor에서 내려왔다면, 여기서는 출력 도파관을 타고 설계 영역으로 내려온다. 목적함수가 바뀌면 adjoint source의 위치와 모양이 바뀐다.
 
 $$
 J=\lvert a_{\mathrm{out}}\rvert^{2},\qquad
@@ -81,29 +135,39 @@ $$
 
 **가정과 유효 범위**: 2D Ez(TE), 굴절률 Si 3.4 / SiO2 1.44, 폭 0.5 µm, 해상도 10(픽셀 100 nm), 단일 주파수. 설계 격자 11 × 11은 Yee 격자와 별개다. 제작 제약(최소 선폭, 이진화)은 없다.
 
-### 결과 보기 전에 맞춰보기
 
-| 물리량 | 내 예측 | 근거 |
-|--------|---------|------|
-| 입력면 mode 1 비율 | 0.98~1.02 | 04편에서 `EigenModeSource`는 단일 모드를 넣었다 |
-| 균일 0.5 출발점의 T_mode1 | 몇 % | 회색 블록은 도파관이 아니다. 빛은 직진해서 새어 나간다 |
-| gradient 패턴 | 입력과 출력을 잇는 대각선 띠가 양수 | 45° 거울이 가장 단순한 bend다 |
-| gate 상대오차 | 1% 안 | 08편 0.7% |
-| 손 step α | 오르다 꺾임 | 08편과 같은 선형 근사의 한계 |
-| MMA 5회 뒤 T_mode1 | 0.5~0.7 | 자유도 121, 05편 sharp bend 0.20보다는 높을 것 |
-| 해상도 20에서 같은 설계 | 몇 % 차이 | 설계는 격자에 고정됐으니 유전율 분포는 같다 |
-| 회색조 픽셀 | 절반 이상 | 5회로는 포화하지 않는다 |
+</details>
 
-**판정 기준**: gate 상대오차 > 20%면 HOLD. mode 1 비율이 0.95 아래면 source부터 다시. T_mode1 > T_total이면 분해 오류.
+<h2 id="run">4. 직접 실행하기: step 크기 하나만 비교하기</h2>
 
-## 3. 시뮬레이션 설계도
+먼저 [전체 스크립트와 공통 helper](https://github.com/jin-castle/meep-examples/blob/main/code)를 같은 폴더에 두세요. `bend_inverse.py`와 `blogfig.py`가 필요합니다. Meep 1.33.0, NLopt, autograd가 준비된 환경에서 원본을 한 번 실행합니다. 기록된 실행 시간은 단일 코어 약 29초입니다.
 
-![layout]({{ site.baseurl }}/assets/meep/09/01_layout.png)
-*6 × 5 µm 셀. 입력 도파관이 −x에서 들어와 원점의 1 × 1 µm 설계 영역(회색, 초기값 0.5)을 지나 +y로 나간다. 빨간 세로선 = `EigenModeSource`(x = −1.5 µm), 파란 세로선 = 입력 monitor(x = −1 µm, 정규화용), 파란 가로선 = 목적함수 monitor(y = 1 µm), 보라 × = 종료 감시점, 녹색 빗금 = PML 1 µm. 동그라미 숫자는 §4의 단계 번호다.*
+```bash
+python bend_inverse.py
+```
+
+이번에 볼 출력은 **`one manual step:` 한 줄**입니다. 원본은 같은 출발점과 같은 정규화 gradient 방향에서 α = 0.2, 1, 3, 8을 비교합니다. 각 설계는 앞선 결과에 이어서 움직인 것이 아니라, 모두 균일한 0.5에서 한 번씩 이동한 결과입니다.
+
+```python
+# 원본 전체 코드에서 발췌: 이 조각만 단독 실행하지 않습니다.
+x_try = np.clip(x_start + alpha * v, 0, 1)
+```
+
+**한 가지 실험:** 원본의 `for alpha in (0.2, 1.0, 3.0, 8.0):`에서 마지막 값만 `4.0`으로 바꿔 다시 실행하세요. α = 4와 8에서 J와 밀도 포화가 어떻게 달라질지 먼저 적고, 출력과 `06_step_mma.png`로 확인합니다. 다른 파라미터와 MMA 평가 횟수는 그대로 둡니다.
+
+**실행 전 확인:** gradient gate가 PASS인지 먼저 봅니다. 이 예제는 세 유한차분 step 모두 상대오차가 0.01% 이내였습니다. gate가 HOLD이면 optimizer 결과 해석을 멈추고 원인을 확인하세요. 입력 mode 1 비율이 0.95 아래라면 source부터 점검합니다.
+
+<details markdown="1">
+<summary>시뮬레이션 설계도·파라미터·source 검증</summary>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/01_layout.png" data-lightbox aria-label="6×5 마이크로미터 계산 셀의 source와 입출력 monitor 배치 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/01_layout.png" alt="6×5 마이크로미터 계산 셀의 source와 입출력 monitor 배치" loading="lazy"></a>
+<figcaption>6 × 5 µm 셀과 PML 1 µm입니다. Source는 x = −1.5 µm, 입력 monitor는 x = −1 µm, 출력 monitor는 y = 1 µm에 있습니다.</figcaption>
+</figure>
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
-| 셀, 해상도 | 6 × 5 µm, res 10 | 강의 week 10과 같다. 한 run이 2~3 s | res 20이면 §5의 해상도 표처럼 값이 바뀐다 |
+| 셀, 해상도 | 6 × 5 µm, res 10 | 강의 week 10과 같다. 한 run이 2~3 s | res 20이면 결과 해석의 해상도 표처럼 값이 바뀐다 |
 | 설계 영역 | 1 × 1 µm, 11 × 11 | 도파관 폭의 2배. 변수 121개 | 1.5 × 1.5면 변수 256개, 시간도 비례 |
 | 초기값 | 균일 0.5 | 내부점이라 gate를 바로 잴 수 있고 방향 편향이 없다 | 0/1 초기값이면 08편처럼 clip 처리 필요 |
 | source | mode 1, fwidth 0.12 fcen | 좁은 대역. 단일 주파수 목적함수에 맞춘다 | 넓히면 펄스가 짧아져 GIF에 좋지만 forward run은 그대로 |
@@ -112,15 +176,23 @@ $$
 | 손 step α | 0.2, 1, 3, 8 | 08편(0.05~2)보다 넓다. 포화를 보기 위해 | — |
 | `maxeval` | 5 | 수업용 smoke test | 수렴을 보려면 수십 회 + 이진화 |
 
-![source]({{ site.baseurl }}/assets/meep/09/00_source.png)
-*source 파형과 스펙트럼. fwidth = 0.12 fcen이라 펄스가 길다(폭 12.9, 정점 t0 = 64.6 µm/c). 1550 nm에서 ±50 nm 밖은 power가 1% 아래다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/00_source.png" data-lightbox aria-label="가우스 source의 시간 파형과 주파수 스펙트럼 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/00_source.png" alt="가우스 source의 시간 파형과 주파수 스펙트럼" loading="lazy"></a>
+<figcaption>fwidth = 0.12 fcen인 source입니다. 펄스 폭은 12.9, 정점은 t0 = 64.6 µm/c이며, 1550 nm에서 ±50 nm 밖의 power는 1% 아래입니다.</figcaption>
+</figure>
 
-![source check]({{ site.baseurl }}/assets/meep/09/02_source_check.png)
-*직선 도파관만 둔 참조 run. 빨간 점선이 source, 파란 점선이 입력 monitor. 입력면의 mode 1 power / 전체 flux = 1.0043. 1을 살짝 넘는 것은 분모가 순 flux(전방 − 후방)이고 분자는 전방 mode 1만이기 때문이다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/02_source_check.png" data-lightbox aria-label="직선 도파관 참조 실행에서 측정한 입력 모드 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/02_source_check.png" alt="직선 도파관 참조 실행에서 측정한 입력 모드" loading="lazy"></a>
+<figcaption>입력 mode 1 power / 전체 flux = 1.0043입니다. 분자는 전방 mode 1, 분모는 전방에서 후방을 뺀 순 flux여서 1을 조금 넘을 수 있습니다.</figcaption>
+</figure>
 
-**강의 노트북과의 차이**: 파라미터와 수치(mode 1 비율 1.0043, gate 0.0000/0.0000/0.0001, 손 step 16.7/118.9/176.2/235.5, MMA 4.31 → 222.4, 검증 0.0154 → 0.7801)는 강의 week 10과 같다. 강의는 Meep 1.34, 여기는 1.33인데 소수 넷째 자리까지 같다. 이 글이 더한 것은 해상도 20에서의 재측정(§5 수렴성)과 GIF 두 개, 단계 번호가 붙은 설계도다.
+**강의 노트북과의 차이**: 파라미터와 수치(mode 1 비율 1.0043, gate 0.0000/0.0000/0.0001, 손 step 16.7/118.9/176.2/235.5, MMA 4.31 → 222.4, 검증 0.0154 → 0.7801)는 강의 week 10과 같다. 강의는 Meep 1.34, 여기는 1.33인데 소수 넷째 자리까지 같다. 이 글이 더한 것은 해상도 20에서의 재측정(결과 해석 수렴성)과 GIF 두 개, 단계 번호가 붙은 설계도다.
 
-## 4. 코드 따라가기
+
+</details>
+
+<details markdown="1">
+<summary>코드 7단계 해설: 각 줄의 역할과 흔한 함정</summary>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 08편과 같은 구조이고, 달라지는 줄은 ⑤의 목적함수와 ⑦의 정규화뿐이다.
@@ -231,16 +303,51 @@ T_mode1 = mode1 / input_power          # input_power: mode-1 power at x = -1 um 
 
 > **함정**: `mpa.EigenmodeCoefficient`의 |a|²와 `get_eigenmode_coefficients`의 |α|²는 같은 물리량이지만 정규화 관례가 다르다. 둘을 섞어 비율을 만들면 1이 넘는 투과율이 나온다. 분자와 분모를 같은 함수로 재는 것이 계약 4의 실질이다.
 
-## 5. 결과
 
-![fields]({{ site.baseurl }}/assets/meep/09/03_fields.png)
-*위: 균일 0.5 출발점의 forward field. 빛이 설계 영역에서 꺾이지 않고 오른쪽으로 퍼져 나간다. J = 4.31. 아래: 랜덤 회색조 출발점. 같은 셀, 같은 source인데 field가 다르고 J = 12.23이다. 오른쪽 열: 균일 출발점의 adjoint field. 출력 도파관을 타고 내려와 설계 영역에서 퍼진다.*
+</details>
 
-![gradient]({{ site.baseurl }}/assets/meep/09/04_gradient.png)
-*균일 0.5에서의 날것 gradient. 가장 큰 값은 중앙의 음수(−13.4)다. 중앙을 비우라는 뜻이다. 양수는 왼쪽 가운데와 위쪽 가운데, 즉 입력 도파관과 출력 도파관을 설계 영역 안으로 연장하는 자리에 있다. 양수 49개, 음수 72개.*
+<h2 id="interpret">5. 결과 해석하기: 좋아진 숫자가 무엇을 뜻할까?</h2>
 
-![gate]({{ site.baseurl }}/assets/meep/09/05_gate.png)
-*gradient gate. 세 step에서 FD 38.240, 38.241, 38.244 대 adjoint 38.240. PASS.*
+이 예제에서는 α가 8까지 커져도 J가 올랐습니다. 그렇다고 큰 step이 언제나 유리한 것은 아닙니다. 08편은 큰 step에서 값이 떨어졌고, 이 예제의 MMA도 **4.31 → 180.7 → 4.5 → 106.2 → 222.4**처럼 오르내렸습니다. 그래서 평가한 설계 중 가장 높은 J를 낸 5회차를 보관합니다.
+
+| 확인할 값 | 출발점 | 보관한 설계 |
+|---|---|---|
+| 새 run의 mode 1 투과율 | 0.0154 | 0.7801 |
+| 새 run의 전체 flux / 입력 mode 1 power | 0.1165 | 0.8040 |
+
+두 열은 같은 참조 입력 power로 정규화했습니다. 최종 T_total과 T_mode1의 차이 약 0.024는 출력면을 지났지만 mode 1로 잡히지 않은 몫입니다.
+
+<p class="lesson-note"><strong>J = 222.4를 투과율로 읽지 않기.</strong> 이를 입력 power 210.6으로 나누면 1.056이 됩니다. 두 수의 정규화 관례가 다르기 때문입니다. 분자와 분모를 같은 함수로 다시 측정한 투과율이 0.7801입니다.</p>
+
+### 이 설계를 얼마나 믿을 수 있을까?
+
+gradient gate 통과는 **현재 계산 설정에서 미분이 맞는지** 확인합니다. 최적화 수렴, 해상도 수렴, 제작 가능성까지 보장하지는 않습니다.
+
+| 검사 | 이번 결과 | 의미 |
+|---|---|---|
+| Gradient gate | 세 step 모두 PASS, 오차 0.01% 이내 | 유한차분과 adjoint가 일치 |
+| 같은 121개 밀도, 해상도 10 → 20 | T_mode1 0.7801 → 0.6391 | 해상도 수렴이 확인되지 않음 |
+| 밀도와 평가 횟수 | 회색조 119/121개, MMA 5회 | 이진 재료 설계나 수렴한 최적해가 아님 |
+
+해상도 검사에서는 **설계 밀도를 그대로 두고 Yee 격자를 세분화**하며, 분모인 참조 입력 power도 새 해상도에서 다시 잽니다. 이번 결과는 adjoint 절차를 배우는 짧은 시연입니다. 다른 파장·편광·3D 성능이나 제조 성능은 이 수치에서 알 수 없습니다.
+
+<details markdown="1">
+<summary>원본 결과 그림·수치표·애니메이션 자세히 보기</summary>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/03_fields.png" data-lightbox aria-label="균일 및 랜덤 출발점의 정방향 field와 균일 출발점의 수반 field 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/03_fields.png" alt="균일 및 랜덤 출발점의 정방향 field와 균일 출발점의 수반 field" loading="lazy"></a>
+<figcaption>위는 균일 출발점(J = 4.31), 아래는 랜덤 출발점(J = 12.23)의 forward field입니다. 오른쪽 열은 출력에서 시작한 균일 출발점의 adjoint field입니다.</figcaption>
+</figure>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/04_gradient.png" data-lightbox aria-label="균일한 밀도 0.5에서 계산한 signed gradient와 gradient 절댓값 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/04_gradient.png" alt="균일한 밀도 0.5에서 계산한 signed gradient와 gradient 절댓값" loading="lazy"></a>
+<figcaption>초기 gradient의 가장 큰 절댓값은 중앙의 음수 −13.4입니다. 양수 49개, 음수 72개이며, 양수는 주로 두 도파관을 설계 영역 안으로 연장하는 부근에 있습니다.</figcaption>
+</figure>
+
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/05_gate.png" data-lightbox aria-label="세 step에서 유한차분과 수반 방향미분을 비교한 gradient gate 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/05_gate.png" alt="세 step에서 유한차분과 수반 방향미분을 비교한 gradient gate" loading="lazy"></a>
+<figcaption>세 step의 유한차분은 38.240, 38.241, 38.244이고 adjoint는 38.240입니다. 세 번 모두 gate를 통과했습니다.</figcaption>
+</figure>
 
 | step | FD | adjoint g·v | 상대오차 |
 |---|---|---|---|
@@ -248,8 +355,10 @@ T_mode1 = mode1 / input_power          # input_power: mode-1 power at x = -1 um 
 | 5e-3 | 38.2405 | 38.2395 | 0.0000 |
 | 1e-2 | 38.2436 | 38.2395 | 0.0001 |
 
-![step mma]({{ site.baseurl }}/assets/meep/09/06_step_mma.png)
-*위: 손으로 한 걸음(α sweep)과 MMA history. α = 8에서도 꺾이지 않는다. 픽셀이 0과 1로 포화하면서 대각선 구조가 드러난다. 아래: MMA 다섯 번의 설계. 2회차에서 180.7, 3회차에서 4.5로 추락, 5회차에 222.4. 5회차를 최종으로 둔다. 121개 중 119개가 회색조다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" data-lightbox aria-label="한 번의 gradient step 크기별 설계와 MMA 다섯 번의 평가 이력 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" alt="한 번의 gradient step 크기별 설계와 MMA 다섯 번의 평가 이력" loading="lazy"></a>
+<figcaption>위는 같은 출발점에서 α만 달리한 한 걸음, 아래는 MMA의 실제 평가 이력입니다. 5회차 J = 222.4를 보관했으며 119/121개 픽셀이 회색조입니다.</figcaption>
+</figure>
 
 | α | J | J / J_start |
 |---|---|---|
@@ -260,8 +369,10 @@ T_mode1 = mode1 / input_power          # input_power: mode-1 power at x = -1 um 
 
 08편에서는 α = 2에서 목적함수가 떨어졌다. 여기서는 α = 8까지 오른다. 출발점이 균일 0.5라 각 픽셀은 "올릴지 내릴지"만 정해지면 되고, 끝까지 밀어 clip되어도 방향이 맞으면 J는 오른다. 08편의 출발점은 이미 괜찮은 설계였고 거기서 멀리 가면 구조가 망가졌다. 좋은 step size는 문제마다 다르다. optimizer가 step을 스스로 조절해야 하는 이유다.
 
-![verify]({{ site.baseurl }}/assets/meep/09/07_verify.png)
-*계약 4. 새 시뮬레이션에서 잰 투과율(왼쪽)과 출발점·최종 설계의 Re(Ez)(가운데·오른쪽). 최종 설계에서는 빛이 위로 꺾여 출력 도파관을 탄다.*
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/09/07_verify.png" data-lightbox aria-label="새 시뮬레이션에서 다시 측정한 투과율과 출발점 및 갱신 후 전기장 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/07_verify.png" alt="새 시뮬레이션에서 다시 측정한 투과율과 출발점 및 갱신 후 전기장" loading="lazy"></a>
+<figcaption>새 시뮬레이션의 정규화 투과율과 Re(Ez)입니다. 갱신한 설계에서는 빛이 위로 꺾여 출력 도파관을 탑니다.</figcaption>
+</figure>
 
 | 설계 | mode 1 power | 전체 flux | T_mode1 | T_total |
 |---|---|---|---|---|
@@ -270,15 +381,21 @@ T_mode1 = mode1 / input_power          # input_power: mode-1 power at x = -1 um 
 
 T_total과 T_mode1의 차이(0.024)는 출력면을 지났지만 mode 1이 아닌 몫이다. 05편의 진단식과 같은 구분이다. optimizer 내부 J = 222.4를 P_in = 210.6으로 나누면 1.056이다. 그 숫자는 투과율이 아니다.
 
-![animation]({{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif)
-*최적화한 설계에 짧은 펄스(fwidth 0.3 fcen). source(빨강)에서 출발한 wave packet이 설계 영역에서 꺾여 출력 monitor(파랑)를 지난다.*
+<figure class="lesson-figure lesson-animation">
+<a href="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-lightbox aria-label="갱신한 설계에서 짧은 펄스가 출력 도파관으로 진행하는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/07_verify.png" data-animation-src="{{ site.baseurl }}/assets/meep/09/08_anim_optimized.gif" data-static-src="{{ site.baseurl }}/assets/meep/09/07_verify.png" alt="갱신한 설계에서 짧은 펄스가 출력 도파관으로 진행하는 애니메이션" loading="lazy"></a>
+<button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
+<figcaption>재생하면 fwidth = 0.3 fcen의 짧은 펄스가 source에서 출력 monitor로 진행합니다. 정지 상태는 별도 검증의 실제 field 그림입니다.</figcaption>
+</figure>
 
-![design animation]({{ site.baseurl }}/assets/meep/09/09_anim_design.gif)
-*설계의 변화. 균일 회색 → MMA 평가 1~5 → 최종. 2회차와 4회차에서 대각선이 나타났다가 3회차에서 흐트러지고 5회차에서 돌아온다.*
+<figure class="lesson-figure lesson-animation">
+<a href="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-lightbox aria-label="균일 출발점에서 MMA 평가 1~5와 최종 설계로 변하는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" data-animation-src="{{ site.baseurl }}/assets/meep/09/09_anim_design.gif" data-static-src="{{ site.baseurl }}/assets/meep/09/06_step_mma.png" alt="균일 출발점에서 MMA 평가 1~5와 최종 설계로 변하는 애니메이션" loading="lazy"></a>
+<button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
+<figcaption>재생하면 균일 출발점 → MMA 평가 1~5 → 보관한 5회차 순으로 바뀝니다. 정지 상태는 같은 실제 평가 이력의 전체 그림입니다.</figcaption>
+</figure>
 
 ### 예측과 비교
 
-| 물리량 | 내 예측 (§2) | 시뮬레이션 | 판정 |
+| 물리량 | 내 예측 (처음의 예측) | 시뮬레이션 | 판정 |
 |--------|-------------|-----------|------|
 | 입력면 mode 1 비율 | 0.98~1.02 | 1.0043 | ✅ |
 | 출발점 T_mode1 | 몇 % | 0.0154 | ✅ |
@@ -289,7 +406,7 @@ T_total과 T_mode1의 차이(0.024)는 출력면을 지났지만 mode 1이 아�
 | 해상도 20에서 같은 설계 | 몇 % 차이 | 0.780 → 0.639 | ❌ |
 | 회색조 픽셀 | 절반 이상 | 119 / 121 | ✅ |
 
-예측이 네 개 틀렸고, 틀린 것이 이 글의 내용이다. 첫째, 날것 gradient는 거울을 그리지 않는다. 첫 미분이 말하는 것은 "중앙을 비우고 두 팔을 들이밀어라"이고, 대각선은 여러 픽셀이 포화한 뒤에 나타나는 구조다. 둘째, step size의 직관은 문제를 넘어 옮겨지지 않는다. 셋째, 다섯 번으로 0.78까지 간 것은 설계 자유도가 큰 덕이지 설계가 좋아서가 아니다. 넷째, 해상도 20에서 0.64로 떨어진 것은 이 설계가 res 10의 격자에 맞춰진 설계라는 뜻이다.
+예측이 네 개 틀렸고, 틀린 것이 이 글의 내용이다. 첫째, 날것 gradient는 거울을 그리지 않는다. 첫 미분이 말하는 것은 "중앙의 밀도를 낮추고 두 도파관 연결부의 밀도를 높여라"이고, 대각선은 여러 픽셀이 포화한 뒤에 나타나는 구조다. 둘째, step size의 직관은 문제를 넘어 옮겨지지 않는다. 셋째, 다섯 번으로 0.78까지 간 것은 설계 자유도가 큰 덕이지 설계가 좋아서가 아니다. 넷째, 해상도 20에서 0.64로 떨어진 것은 이 설계가 res 10의 격자에 맞춰진 설계라는 뜻이다.
 
 ### 수렴성
 
@@ -299,14 +416,18 @@ T_total과 T_mode1의 차이(0.024)는 출력면을 지났지만 mode 1이 아�
 | 해상도 | 20 | 0.6391 | 0.6870 | 같은 11 × 11 밀도, 분모도 res 20 참조 run |
 | gate step | 2e-3 / 5e-3 / 1e-2 | FD 38.240 / 38.241 / 38.244 | — | 세 step 모두 adjoint 38.240과 0.01% 안 |
 
-해상도 10에서 Si 안의 파장은 456 nm이고 격자 간격은 100 nm다. 파장당 4.5칸은 Meep 문서의 권장(8칸 이상)에 못 미친다. 회색조 픽셀이 119개라 유전율이 매끄럽게 변하는 설계인데, 그 보간이 Yee 격자에 어떻게 얹히는지가 해상도에 따라 다르다. res 20에서 다시 최적화하면 다른 설계가 나온다. 이 글의 모든 숫자는 res 10에서의 값이다.
+해상도 10에서 Si 안의 파장은 456 nm이고 격자 간격은 100 nm다. 파장당 4.5칸은 Meep 문서의 권장(8칸 이상)에 못 미친다. 회색조 픽셀이 119개라 유전율이 매끄럽게 변하는 설계인데, 그 보간이 Yee 격자에 어떻게 얹히는지가 해상도에 따라 다르다. res 20에서 다시 최적화하면 다른 설계가 나온다. 별도로 표시한 해상도 검사 외의 최적화 결과는 res 10에서의 값이다.
 
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: 이 셀, 해상도 10, 단일 주파수에서 adjoint gradient는 유한차분과 0.01% 안에서 같다. 균일 0.5에서 다섯 번의 MMA 평가로 출력 mode 1 투과율이 0.015에서 0.780으로 올랐고, 그 값은 별도 run으로 재확인됐다. 08편의 절차는 목적함수를 바꿔도 그대로 쓰인다.
 - 할 수 없는 것: "0.78짜리 bend를 설계했다". 121개 중 119개가 회색조라 물리적 재료가 아니다. 해상도 20에서 0.64다. maxeval 5는 수렴이 아니다. 최소 선폭 제약이 없어 이진화하면 값이 달라진다. 다른 파장, 다른 편광, 3D에서의 값.
 
-## 6. 흔한 실수
+
+</details>
+
+<details markdown="1">
+<summary>문제가 생겼을 때: 증상과 점검 위치</summary>
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -318,7 +439,56 @@ T_total과 T_mode1의 차이(0.024)는 출력면을 지났지만 mode 1이 아�
 | 해상도를 올리니 값이 다름 | 설계가 격자에 맞춰짐 | 목표 해상도에서 최적화하거나 필터로 선폭 제한 |
 | 회색조 설계를 소자로 해석 | 이진화·선폭 제약 없음 | 필터·투영·β 스케줄(공식 adjoint 예제 02 이후) |
 
-## 7. 직접 해보기
+
+</details>
+
+<h2 id="check">6. 확인하기: 두 가지를 설명할 수 있나요?</h2>
+
+<details markdown="1">
+<summary>1. Forward와 adjoint는 각각 어디에서 시작하며, gradient는 무엇을 바꾸라고 하나요?</summary>
+
+Forward는 왼쪽 입력 도파관의 mode 1 source에서 시작합니다. Adjoint는 출력 mode 1 목적함수에서 유도되어 위쪽 출력 포트에 생긴 source로 별도 계산합니다. 두 계산으로 얻은 gradient는 설계 영역의 121개 밀도를 현재 상태에서 어느 방향으로 바꾸면 J가 늘어나는지 알려 줍니다. 첫 gradient 자체가 최종 도파관 모양은 아닙니다.
+
+</details>
+
+<details markdown="1">
+<summary>2. J = 222.4이고 투과율이 0.7801인데, 왜 완성된 소자라고 할 수 없나요?</summary>
+
+J는 optimizer 내부 정규화 값이며 투과율은 새 run과 참조 run에서 다시 측정한 전력의 비입니다. 투과율도 해상도를 20으로 올리면 0.6391로 달라집니다. 설계는 119개 회색조 픽셀을 포함하고 평가도 5회뿐입니다. 해상도·최적화 수렴과 최소 선폭·이진화 검증이 더 필요합니다.
+
+</details>
+
+<h2 id="reference">7. 참고 자료와 전체 코드</h2>
+
+<details markdown="1">
+<summary>English summary</summary>
+
+- **What**: post 05 steered a 90° bend with one number, the radius. Here the corner is a 1 × 1 µm square opened as a free design region of 11 × 11 densities (SiO2 to Si), and the adjoint gradient fills it. The contract is the one from post 08; only the objective changes, from a diffraction order to the mode-1 power at the output port.
+- **Result**: the source puts 100.4 % of its flux into mode 1. The gradient passes the gate with 0.00 %, 0.00 %, 0.01 % error. Unlike post 08, one hand-made step keeps rising as α grows (3.9×, 28×, 41×, 55×) because pixels saturate at 0/1. Five MMA evaluations lift the internal objective 52×. Measured again in a fresh simulation and normalized to the input mode-1 power, the bend transmission goes from 0.015 to 0.780 (total flux through the port: 0.117 to 0.804). At twice the resolution the same design gives 0.639.
+- **Takeaway**: the four steps transfer unchanged when the objective changes. What does not transfer is intuition about step size: whether a gradient step overshoots depends on the problem. The optimizer's internal number is not a transmission (it even exceeds the input power), 119 of 121 pixels are still grey, and the design is not converged in resolution. This is a smoke test, not a device.
+- **Code**: full script at the bottom, ~29 s on one core.
+
+
+</details>
+
+<details markdown="1">
+<summary>처음 세웠던 예측과 추가 실험 아이디어</summary>
+
+### 결과 보기 전에 맞춰보기
+
+| 물리량 | 내 예측 | 근거 |
+|--------|---------|------|
+| 입력면 mode 1 비율 | 0.98~1.02 | 04편에서 `EigenModeSource`는 단일 모드를 넣었다 |
+| 균일 0.5 출발점의 T_mode1 | 몇 % | 회색 블록은 도파관이 아니다. 빛은 직진해서 새어 나간다 |
+| gradient 패턴 | 입력과 출력을 잇는 대각선 띠가 양수 | 45° 거울이 가장 단순한 bend다 |
+| gate 상대오차 | 1% 안 | 08편 0.7% |
+| 손 step α | 오르다 꺾임 | 08편과 같은 선형 근사의 한계 |
+| MMA 5회 뒤 T_mode1 | 0.5~0.7 | 자유도 121, 05편 sharp bend 0.20보다는 높을 것 |
+| 해상도 20에서 같은 설계 | 몇 % 차이 | 설계는 격자에 고정됐으니 유전율 분포는 같다 |
+| 회색조 픽셀 | 절반 이상 | 5회로는 포화하지 않는다 |
+
+**판정 기준**: gate 상대오차 > 20%면 HOLD. mode 1 비율이 0.95 아래면 source부터 다시. T_mode1 > T_total이면 분해 오류.
+
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
@@ -328,7 +498,10 @@ T_total과 T_mode1의 차이(0.024)는 출력면을 지났지만 mode 1이 아�
 | res 20에서 처음부터 최적화 | 다른 설계, res 10과 비교 | 두 해상도의 T_mode1 |
 | 목적함수를 두 주파수 평균으로 (`nf=2`) | 대역폭 대 피크 trade-off | 각 주파수의 T_mode1 |
 
-## 8. 전체 코드
+
+</details>
+
+### 전체 Python 코드
 
 <details>
 <summary>code/bend_inverse.py 전체 (클릭하여 펼치기)</summary>
@@ -705,13 +878,7 @@ resolution check [20]: T_mode1 0.6391, T_total 0.6870
 
 **재현 환경**: meep 1.33.0 · nlopt 2.x · autograd · Python 3.11 · `conda install -c conda-forge pymeep nlopt autograd` · 실행 `python bend_inverse.py` (약 29 s, 단일 코어)
 
-## 확인 질문
-
-1. 08편과 비교해 코드에서 실제로 바뀐 줄은 어디인가. 그 줄이 adjoint source의 위치와 모양을 어떻게 바꾸는가.
-2. optimizer 내부 J를 P_in으로 나누면 1.056이다. 이 숫자가 틀린 것이 아니라 "투과율이 아닌" 이유를 정규화 관례로 설명해 보라.
-3. 해상도 20에서 T_mode1이 0.78에서 0.64로 떨어졌다. 설계 밀도 11 × 11은 그대로인데 무엇이 달라졌는가. 이 설계를 제작 도면으로 쓸 수 없는 이유를 두 가지 말해 보라.
-
-## 9. 더 읽기
+### 공식 문서와 이어 읽기
 
 - [공식 Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/) · [adjoint 예제 01 Introduction (waveguide bend)](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb) · [adjoint 예제 02 filtering and projection](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/02-Filtered_Waveguide_Bend.ipynb)
 - [`MaterialGrid` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#materialgrid) · [`EigenModeSource`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#eigenmodesource) · [NLopt MMA](https://nlopt.readthedocs.io/en/latest/NLopt_Algorithms/#mma-method-of-moving-asymptotes-and-ccsa)

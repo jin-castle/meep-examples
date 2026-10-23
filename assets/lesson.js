@@ -1,0 +1,86 @@
+(() => {
+  'use strict';
+  const content = document.querySelector('.lesson-content');
+  if (!content) return;
+
+  content.querySelectorAll('table').forEach((table, index) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-scroll';
+    wrapper.tabIndex = 0;
+    wrapper.setAttribute('role', 'region');
+    wrapper.setAttribute('aria-label', `표 ${index + 1}, 가로로 스크롤할 수 있습니다`);
+    table.before(wrapper);
+    wrapper.append(table);
+  });
+  content.querySelectorAll('pre').forEach((pre, index) => {
+    pre.tabIndex = 0;
+    pre.setAttribute('aria-label', `코드 또는 실행 기록 ${index + 1}, 가로로 스크롤할 수 있습니다`);
+  });
+
+  const mobileToc = document.querySelector('.mobile-toc');
+  mobileToc?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { mobileToc.open = false; }));
+  const sections = [...content.querySelectorAll('h2[id]')];
+  const navLinks = [...document.querySelectorAll('.lesson-sidebar nav a, .mobile-toc nav a')];
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => {
+      const entered = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (!entered) return;
+      navLinks.forEach(link => {
+        if (link.hash === `#${entered.target.id}`) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-10% 0px -65% 0px' });
+    sections.forEach(section => observer.observe(section));
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const animations = [...content.querySelectorAll('img[data-animation-src][data-static-src]')].map(img => {
+    const button = img.closest('figure')?.querySelector('.animation-toggle');
+    if (!button) return null;
+    const stop = () => {
+      img.src = img.dataset.staticSrc;
+      button.textContent = '애니메이션 재생';
+      button.setAttribute('aria-pressed', 'false');
+    };
+    stop();
+    button.hidden = false;
+    button.addEventListener('click', () => {
+      if (button.getAttribute('aria-pressed') === 'true') stop();
+      else {
+        img.src = img.dataset.animationSrc;
+        button.textContent = '애니메이션 정지';
+        button.setAttribute('aria-pressed', 'true');
+      }
+    });
+    return { stop };
+  }).filter(Boolean);
+  reducedMotion.addEventListener('change', event => { if (event.matches) animations.forEach(animation => animation.stop()); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) animations.forEach(animation => animation.stop()); });
+
+  const dialog = document.querySelector('.lesson-lightbox');
+  if (!dialog || typeof dialog.showModal !== 'function') return;
+  const image = dialog.querySelector('.lightbox-image');
+  const caption = dialog.querySelector('.lightbox-caption');
+  const original = dialog.querySelector('.lightbox-original');
+  let opener;
+  content.querySelectorAll('a[data-lightbox]').forEach(link => link.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    const thumbnail = link.querySelector('img');
+    const figure = link.closest('figure');
+    const staticSrc = thumbnail?.dataset.staticSrc;
+    const isAnimated = /\.gif(?:$|\?)/i.test(link.href);
+    image.src = reducedMotion.matches && isAnimated && staticSrc ? staticSrc : link.href;
+    image.alt = thumbnail?.alt || link.getAttribute('aria-label') || '시뮬레이션 결과 확대';
+    caption.textContent = figure?.querySelector('figcaption')?.textContent || image.alt;
+    original.href = link.href;
+    opener = link;
+    dialog.showModal();
+    event.preventDefault();
+  }));
+  dialog.querySelector('.lightbox-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener('close', () => {
+    image.removeAttribute('src');
+    opener?.focus({ preventScroll: true });
+  });
+})();

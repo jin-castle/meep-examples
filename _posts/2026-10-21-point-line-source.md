@@ -1,5 +1,13 @@
 ---
-layout: post
+layout: lesson
+permalink: /point-line-source/
+lesson_title: "점과 선, 빛은 어떻게 퍼질까?"
+lesson_summary: "광원의 모양만 바꾸면 빛이 퍼지는 방향도 달라질까? 파면을 먼저 관찰하고, 촬영 시각과 네 면의 power로 그 차이를 확인합니다."
+lesson_goals:
+  - "점원과 선원의 파면을 보고 빛이 강하게 나가는 방향을 설명한다."
+  - "펄스 정점 시각 t0로부터 스냅샷의 파면 위치를 계산한다."
+  - "flux box 네 면의 비율을 읽고 측정의 한계를 구분한다."
+lesson_prerequisites: "파장과 파동의 속도를 알면 시작할 수 있습니다. 코드 실행에는 Meep와 Python 환경이 필요합니다."
 date: 2026-10-21
 title: "Meep Example 01 · Point source와 line source — 파원 배치, 펄스 시각 t0, flux box로 보는 방향 분포"
 title_en: "Meep Example 01 · Point source and line source — source placement, the pulse time t0, and a flux box for directionality"
@@ -14,28 +22,39 @@ tags: [meep, fdtd, source, point-source, line-source, flux]
 image: /assets/meep/01/02_snapshots.png
 excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 µm line. Snapshots after the pulse peak, and a box of four flux planes around the source."
 ---
-## TL;DR (English)
-
-![hero]({{ site.baseurl }}/assets/meep/01/02_snapshots.png)
+<details markdown="1">
+<summary>English summary</summary>
 
 - **What**: a single Ez source in an empty 2D cell, first as a point, then as a 3 µm line. Snapshots after the pulse peak, and a box of four flux planes around the source.
 - **Result**: the point source radiates exactly 25 % through each side of the box; the 3 µm line sends 92 % through the two sides facing it. The wavefront peak sits on the circle r = c (t − t0).
 - **Takeaway**: in FDTD a picture is a time stamp. Know the pulse time t0 = 5/fwidth before you read any field, and derive the recording window from the source and the distances, not by guessing.
 - **Code**: full script at the bottom, ~21 s on one core.
 
-## 0. 이 글에서 배우는 것
+</details>
 
-- `mp.Source`의 `center`와 `size`. `size=(0,0,0)`이면 점원, `(0, L, 0)`이면 길이 L의 선원
-- `GaussianSource`의 펄스 폭 width = 1/fwidth와 정점 시각 t0 = 5/fwidth. 스냅샷·애니메이션의 시각은 여기서 유도한다
-- Meep의 시간 단위: c = 1이라 파면은 1 time unit에 1 µm를 간다
-- `add_flux`와 `FluxRegion`으로 source를 둘러싼 네 면의 power를 재고 방향 분포를 숫자로 만들기
-- PML이 없으면 벽이 거울이라는 것. 이것이 02편 PML의 동기다
+<h2 id="observe">1. 관찰 · 광원의 모양이 바꾸는 것</h2>
 
-**전제 지식**: 파동이 파장과 속도를 가진다는 것. **공식 예제**: [Basics 튜토리얼의 첫 예제](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#fields-in-a-waveguide)(도파로 안의 점원), [Antenna radiation pattern](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna)(점원의 등방성). **다음 글**: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/)
+빈 공간에 빛을 넣는 **source(광원)** 하나만 둡니다. 왼쪽은 점 하나, 오른쪽은 세로로 놓인 길이 3 µm의 선입니다. 두 그림은 같은 시각에 찍었습니다. 색이 강한 부분이 어느 방향으로 뻗는지 먼저 살펴보세요.
 
-## 1. 무엇을 알고 싶은가
+<div class="figure-pair">
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" data-lightbox aria-label="점원 파면과 공통 색상 막대 원본 확대">
+    <svg viewBox="0 90 460 370" role="img" aria-labelledby="point-field-title"><title id="point-field-title">점원에서 동심원 모양으로 퍼지는 실제 Re(Ez) 파면</title><image href="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" width="1065" height="463" /></svg>
+  </a>
+  <figcaption>점원: 동심원 모양으로 퍼집니다.</figcaption>
+</figure>
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" data-lightbox aria-label="선원 파면과 공통 색상 막대 원본 확대">
+    <svg viewBox="460 90 460 370" role="img" aria-labelledby="line-field-title"><title id="line-field-title">세로 3 마이크로미터 선원에서 좌우로 더 강하게 퍼지는 실제 Re(Ez) 파면</title><image href="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" width="1065" height="463" /></svg>
+  </a>
+  <figcaption>세로 선원: 좌우로 더 강하게 퍼집니다.</figcaption>
+</figure>
+</div>
+<p class="lesson-figure-scale">두 그림은 같은 시각 t0 + 3.6, PML 없는 셀의 결과입니다. 색 범위는 Re(Ez) −1(빨강)부터 +1(파랑)까지 같습니다. 그림을 누르면 색상 막대를 포함한 원본을 볼 수 있습니다.</p>
 
-Meep 시뮬레이션은 빛을 넣는 source로 시작한다. 구조도 monitor도 없는 빈 상자에 source 하나만 두면 source 자체가 무엇을 하는지 보인다. 점 하나에서 나온 빛은 어떤 모양으로 퍼지는가, 그 모양은 몇 time unit 뒤에 어디까지 가는가, 짧은 선에서 나온 빛은 무엇이 다른가. 세 질문의 답은 그림 한 장이 아니라 시각이 찍힌 그림 여러 장과 네 개의 숫자다.
+<aside class="lesson-note" markdown="1">
+**이 그림의 조건**은 진공의 2D Ez 시뮬레이션입니다. 여기서 점원은 화면에 수직한 z 방향으로 이어진 선전류의 단면입니다. 실제 3D 점광원·쌍극자의 방사 패턴과 구분해야 합니다.
+</aside>
 
 ### 어디에 쓰이는가
 
@@ -48,25 +67,65 @@ Meep 시뮬레이션은 빛을 넣는 source로 시작한다. 구조도 monitor�
 | 광섬유·격자 결합기의 입사 빔 | 선원 = 유한한 폭의 입사파. 파면이 평면에 가까워지는 조건 | 17편 평면파, 19편 Gaussian beam |
 | 모든 flux 측정 | source를 둘러싼 flux box와 면의 방향 규칙 | 03편의 reference run |
 
+<h2 id="predict">2. 예측 · 네 방향으로 똑같이 나갈까?</h2>
 
-## 2. 물리 한 페이지
+광원을 정사각형 상자로 둘러싸고 각 면을 통과하는 power를 잰다고 생각해 보세요. 세로 선원에서 나온 전체 power 중 **좌우 두 면(±x)을 지나는 몫**은 어느 쪽에 가까울까요?
+
+<fieldset class="prediction">
+  <legend>결과를 읽기 전에 하나를 골라보세요.</legend>
+  <label><input type="radio" name="direction-prediction" value="equal"> 약 50% · 네 면으로 비슷하게 나간다</label>
+  <label><input type="radio" name="direction-prediction" value="horizontal"> 80% 이상 · 선에 수직인 좌우로 더 많이 나간다</label>
+  <label><input type="radio" name="direction-prediction" value="vertical"> 20% 이하 · 선을 따라 위아래로 더 많이 나간다</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측의 근거 확인하기</summary>
+
+선 위의 모든 점은 같은 위상으로 진동합니다. 선에 수직인 좌우 방향에서는 파동이 잘 보강되므로 **80% 이상**을 예상할 수 있습니다. 정확한 값은 뒤의 flux 측정에서 확인합니다. 점원이라면 대칭 때문에 네 면이 각각 25%이고 좌우 두 면의 합은 50%입니다.
+
+</details>
+
+<h2 id="understand">3. 원리 · 모양과 시각을 함께 읽기</h2>
 
 <!-- concept-illustration:part-01:start -->
 
-![왼쪽은 xy 평면의 점원과 동심원 파면, 오른쪽은 y 방향 3 µm 선원과 양쪽 x 방향 파면 및 끝 회절을 보여준다. 작은 삽화는 생략한 z 방향의 연장을 설명한다.]({{ site.baseurl }}/assets/meep/01/00_concept.png)
-
-*진공의 xy 평면에서 Ez 점원은 원형 파면을 만들고, y 방향 길이 3 µm의 같은 위상 선원은 ±x 방향으로 더 강하게 방사합니다. 선원 끝에서는 회절이 생깁니다. 2D 점원은 z 방향으로 이어진 선전류의 단면이며 3D 점광원과 다릅니다. 이 그림은 A/B의 광원 개념을 보여주며, C의 중심 광원·PML·flux box 배치는 아래 설계도에서 확인합니다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/00_concept.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/01/00_concept.png" alt="점원의 동심원과 세로 선원의 좌우 파면 및 끝 회절을 비교하는 개념도. 생략한 z 방향은 무한히 이어진다." loading="lazy">
+  </a>
+  <figcaption>광원의 모양을 설명하는 개념도입니다. 선원 끝에서는 회절이 생겨 둥근 파면이 남습니다. 실제 flux 측정에는 아래 설계도의 PML과 상자를 사용합니다.</figcaption>
+</figure>
 
 <!-- concept-illustration:part-01:end -->
 
-2D에서 Ez 점원은 지면에 수직한 무한 선전류다. 그 빛은 원통파로 퍼진다. 파면은 동심원이고, 진폭은 1/√r로 줄며, 방향 의존성은 없다. 펄스의 정점이 t0에 나갔다면 시각 t의 정점 위치는 r = c (t − t0)이고 Meep에서 c = 1이다.
+### 파면의 모양
+
+2D Ez 점원의 빛은 원통파로 퍼집니다. 파면은 동심원이고 멀어질수록 진폭이 대략 1/√r로 줄어듭니다. 길이 L의 선원은 선 위의 점원들이 같은 위상으로 진동하는 경우입니다. L이 파장보다 길면 선에 수직한 ±x 방향에서는 보강되고, 선을 따른 ±y 방향에서는 서로 상쇄됩니다. 유한한 선의 양 끝에는 회절이 남습니다.
+
+### 파면은 언제 출발했을까?
+
+이 펄스는 시각 0에 가장 강하지 않습니다. **정점 시각 t0 = 5/fwidth = 15.5**를 먼저 계산해야 합니다. 진공에서 c = 1이므로 정점이 출발한 뒤 3.6 time unit이 지나면 정점 파면의 반지름은 3.6 µm입니다.
+
+$$r_{\mathrm{peak}} = c\,(t-t_0)$$
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/00_source.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/01/00_source.png" alt="가우시안 광원의 시간 파형과 스펙트럼. 펄스 폭은 3.1, 정점 시각은 15.5다." loading="lazy">
+  </a>
+  <figcaption>펄스 폭은 3.1, 정점은 t0 = 15.5입니다. 정점보다 먼저 나간 약한 앞머리는 벽에 먼저 도착합니다.</figcaption>
+</figure>
+
+<aside class="lesson-note" markdown="1">
+**정점이 벽에 닿기 전에도 반사는 보일 수 있습니다.** 정점보다 약 2 × width = 6.2 앞선 약한 앞머리가 먼저 벽에 도착하기 때문입니다. 파면 사진을 찍는 A/B 실험에는 PML이 없고, power를 재는 C 실험에는 PML이 있습니다.
+</aside>
+
+<details markdown="1">
+<summary>수식과 기호를 더 자세히 보기</summary>
 
 $$
 E_z(r,t)\propto \frac{1}{\sqrt r}\,\cos\!\big(k r-\omega t\big),\qquad r_{\mathrm{peak}}(t)=c\,(t-t_0),\qquad
 P_{+x}=P_{-x}=P_{+y}=P_{-y}=\tfrac14 P
 $$
-
-길이 L의 선원은 선 위의 점원들을 같은 위상으로 더한 것이다. L이 파장보다 길면 선에 수직한 방향(±x)으로는 파면이 평면에 가깝게 보강되고, 선 방향(±y)으로는 서로 상쇄된다. 양 끝에서는 회절로 둥근 파면이 남는다.
 
 | 기호 | 뜻 | 코드 변수 |
 |------|----|-----------|
@@ -76,24 +135,31 @@ $$
 | $d_{\mathrm{wall}}$ | source에서 가장 가까운 벽까지 거리 | `d_wall` |
 | $P_{\pm x}, P_{\pm y}$ | box 네 면을 바깥쪽으로 지나는 power | `mp.get_fluxes(mons["+x"])` 등 |
 
-**가정과 유효 범위**: 2D, 진공, Ez 편광. 선원은 같은 위상·같은 진폭의 균일 선전류. 스냅샷 실험은 PML 없이, flux 실험은 PML을 두고 한다.
+</details>
 
-### 결과 보기 전에 맞춰보기
+<h2 id="run">4. 실행 · 선의 길이 하나만 바꿔보기</h2>
 
-| 물리량 | 내 예측 | 근거 |
-|--------|---------|------|
-| 점원 파면 모양 | 동심원 | 2D 점원의 방위 대칭 |
-| t0 + 3.6에서 정점 반지름 | 3.6 µm | c = 1 |
-| 점원 box 네 면 비율 | 각 0.25 | 등방 |
-| 선원(3 µm ≈ 2λ) ±x 비율 | 0.8 이상 | 선에 수직한 방향으로 보강, 선 방향으로 상쇄 |
-| PML 없는 셀 | 벽에서 되돌아온 파가 보임 | 경계가 완전 도체처럼 반사 |
+먼저 원본 코드를 실행해 기준 결과를 얻습니다. 재현 환경은 **Meep 1.33.0 · Python 3.11**, 기록된 실행 시간은 단일 코어 약 21초입니다. [전체 코드와 공통 helper](https://github.com/jin-castle/meep-examples/blob/main/code)에서 `point_line_source.py`와 `blogfig.py`를 같은 폴더에 두세요. 아래의 [전체 코드](#reference)도 사용할 수 있습니다.
 
-**판정 기준**: 점원 네 면이 1% 이상 다르면 flux 면의 weight(법선 방향) 실수. 정점 파면이 예측 원에서 벗어나면 t0를 잘못 알았거나 `until`을 절대 시각으로 착각한 것.
+```bash
+OMP_NUM_THREADS=1 python point_line_source.py
+```
 
-## 3. 시뮬레이션 설계도
+실행이 끝나면 `C. line source` 줄의 **x-sides**를 찾습니다. 원본의 값은 약 **0.919**입니다. 이어서 `line_len = 3.0`을 `line_len = 1.0`으로 바꾸고 다시 실행해 보세요. 파장 1.55 µm보다 짧은 선은 점원에 가까워지므로 좌우 비율이 줄어들 것으로 예상합니다. 두 값을 메모해 비교하면 됩니다. 변경한 실행의 수치는 직접 확인해야 합니다.
 
-![layout]({{ site.baseurl }}/assets/meep/01/01_layout.png)
-*flux 실험(C)의 배치. 빨간 점 = Ez 점원(원점), 파란 사각형 = 반쪽 길이 2.5 µm의 flux box 네 면(법선은 바깥쪽), 녹색 빗금 = PML, 보라 × = 종료 조건 감시점. 동그라미 숫자는 §4의 코드 단계 번호다. ① 파라미터, ② 구조(없음: 진공), ③ source, ④ PML, ⑤ flux 면, ⑥ 종료 감시점, ⑦ 후처리는 그릴 것이 없다. 스냅샷 실험(A, B)은 PML 없는 12 × 8 µm 셀에 source를 (−2, 0)에 둔다.*
+### 무엇을 측정하는가
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/01_layout.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/01/01_layout.png" alt="C 실험의 중앙 광원, 네 면 flux box, 외곽 PML, 필드 감쇠 감시점 배치." loading="lazy">
+  </a>
+  <figcaption>C 실험은 10 × 10 µm 셀의 중앙 광원을 네 면의 flux box로 둘러쌉니다. 상자의 반쪽 길이는 2.5 µm이고, 바깥 PML은 되돌아오는 파를 흡수합니다.</figcaption>
+</figure>
+
+네 면의 power를 모두 더한 뒤 각 면의 값을 그 합으로 나눕니다. 왼쪽(−x)과 아래(−y) 면은 **바깥쪽을 양수로 세기 위해 `weight=-1`**이 필요합니다. A/B의 파면 사진은 별도의 12 × 8 µm 셀, 광원 (−2, 0), PML 없음 조건입니다.
+
+<details markdown="1">
+<summary>설계 파라미터와 강의 예제의 차이</summary>
 
 | 파라미터 | 값 | 왜 이 값인가 | 바꾸면 |
 |----------|-----|-------------|--------|
@@ -106,12 +172,12 @@ $$
 | `line_len` | 3.0 µm | 약 2 파장. 지향성이 뚜렷해지는 길이 | 파장보다 짧으면 점원과 비슷 |
 | flux 셀, `half` | 10 × 10 µm, 2.5 µm | box가 선원 끝(±1.5)과 PML(±4) 사이 | box가 선원에 닿으면 면이 source를 가른다 |
 
-![source]({{ site.baseurl }}/assets/meep/01/00_source.png)
-*source의 시간 파형(왼쪽)과 스펙트럼(오른쪽). width = 3.1, 정점 t0 = 15.5. 정점보다 2 × width = 6.2 앞선 약한 앞머리가 먼저 나간다. 이 앞머리는 t0 전에 이미 4 µm 벽에 닿는다. §5의 가장자리 잔무늬가 그것이다.*
-
 **강의 노트북과의 차이**: 강의 week 2는 fwidth 0.18(긴 펄스)로 스냅샷만 본다. 이 글은 짧은 펄스로 고리를 또렷하게 하고, PML을 둔 flux box 실험(C)을 더해 방향 분포를 숫자로 만든다.
 
-## 4. 코드 따라가기
+</details>
+
+<details markdown="1">
+<summary>코드 따라가기 · 일곱 단계의 역할과 주의점</summary>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이 글은 실험이 셋(A 스냅샷, B 점원 vs 선원, C flux box)이라 ④~⑦이 두 번 나온다.
@@ -228,22 +294,60 @@ everywhere = np.abs(ez_last).mean()
 - **왜**: 비율로 만들면 source의 절대 세기(단위가 임의다)가 사라져 점원과 선원을 바로 비교할 수 있다. 원 위 평균이 셀 평균보다 뚜렷이 크면 정점이 예측 위치에 있는 것이다.
 - **틀리면**: 합이 아니라 한 면으로 나누면 "비율"이 1을 넘는다. 원 두께(±0.4)를 파장보다 넓게 잡으면 고리 여러 개가 평균에 들어가 대비가 사라진다.
 
-## 5. 결과
+</details>
 
-![snapshots]({{ site.baseurl }}/assets/meep/01/02_snapshots.png)
-*PML 없는 12 × 8 µm 셀, 점원 (−2, 0). 펄스 정점 t0 = 15.5부터 0.8씩 뒤의 여섯 장, 색 범위는 공통. 정점 고리가 매 장 0.8 µm씩 커지고 멀어질수록 옅어진다(1/√r). 마지막 장의 점선 원이 예측 r = 3.6 µm다. 가장자리의 가는 잔무늬는 정점보다 6 µm 앞선 약한 앞머리가 벽에서 되돌아온 것이다.*
+<h2 id="interpret">5. 해석 · 사진을 숫자로 확인하기</h2>
 
-![point animation]({{ site.baseurl }}/assets/meep/01/05_anim_point.gif)
-*점원, PML 없음, 12 × 12 µm 셀 중앙. 펄스가 켜지기 전(t0 − 2·width)부터 정점이 벽 근처에 닿기 직전까지. 동심원이 사방으로 같은 속도로 퍼진다.*
+**선원의 좌우 두 면을 지나는 power는 전체의 약 92%입니다.** 점원은 네 면에 25%씩 나누어집니다. 처음 보았던 파면의 차이가 flux 측정에서도 드러납니다.
 
-![line animation]({{ site.baseurl }}/assets/meep/01/05_anim_line.gif)
-*같은 조건의 3 µm 선원. 선에 수직한 ±x로는 평면파에 가까운 파면이 나가고, 선 방향 ±y로는 거의 나가지 않으며, 양 끝에서 회절한 둥근 파면이 보인다.*
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/04_flux_box.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/01/04_flux_box.png" alt="네 면의 power 비율. 점원은 면마다 0.25, 선원은 좌우 면마다 0.4594, 위아래 면마다 0.0406이다." loading="lazy">
+  </a>
+  <figcaption>선원은 좌우 두 면에 합계 0.919, 위아래 두 면에 0.081을 보냅니다. 유한한 선의 끝에서 생기는 회절 때문에 위아래의 값도 0이 아닙니다.</figcaption>
+</figure>
 
-![point vs line]({{ site.baseurl }}/assets/meep/01/03_point_vs_line.png)
-*같은 시각 t0 + 3.6의 점원(왼쪽)과 선원(오른쪽). 선원은 ±x 방향 진폭이 점원보다 크고 ±y 방향은 약하다.*
+<aside class="lesson-note" markdown="1">
+**이 수치는 가까운 상자의 면별 power 비율입니다.** box는 광원에서 2.5 µm(약 1.6λ) 떨어져 있으므로 먼 곳의 방사 패턴을 측정한 것은 아닙니다. far field는 near2far가 필요합니다. 또한 2D Ez 점원의 대칭을 3D 쌍극자의 등방성으로 일반화할 수 없습니다.
+</aside>
 
-![flux box]({{ site.baseurl }}/assets/meep/01/04_flux_box.png)
-*flux box 네 면의 power 비율. 점원은 네 면이 정확히 0.25. 3 µm 선원은 ±x 두 면이 0.459씩, ±y 두 면이 0.041씩이다.*
+### 시간이 지나면 정점은 어디에 있을까?
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" alt="펄스 정점 t0부터 t0 + 3.6까지 점원 파면이 퍼지는 여섯 스냅샷. 마지막 점선 원의 반지름은 3.6 µm다." loading="lazy">
+  </a>
+  <figcaption>마지막 점선 원은 예측 반지름 3.6 µm입니다. 원 위 평균 |Ez|는 셀 평균의 1.26배입니다. 여섯 장은 공통 색 범위를 사용합니다.</figcaption>
+</figure>
+
+PML 없는 12 × 8 µm 셀에서 정점 파면은 커지며 옅어집니다. 가장자리의 잔무늬는 정점보다 먼저 나간 약한 앞머리가 벽에서 되돌아온 것입니다. 반사를 흡수하는 방법은 [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/)에서 이어집니다.
+
+<details markdown="1">
+<summary>시간에 따른 변화를 애니메이션으로 보기</summary>
+
+애니메이션은 위 스냅샷과 달리 **12 × 12 µm 셀 중앙**에 광원을 둡니다. PML 없이 t0 − 2·width부터 정점이 벽 근처에 닿기 전까지 기록했습니다. 재생 전에는 앞서 본 A/B의 정적 비교 그림을 보여줍니다. 그림 링크로 원본 GIF도 열 수 있습니다.
+
+<div class="figure-pair">
+  <figure class="lesson-figure lesson-animation">
+    <a href="{{ site.baseurl }}/assets/meep/01/05_anim_point.gif" data-lightbox>
+      <img src="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" data-animation-src="{{ site.baseurl }}/assets/meep/01/05_anim_point.gif" data-static-src="{{ site.baseurl }}/assets/meep/01/02_snapshots.png" alt="점원 관찰. 정적 그림은 12 × 8 µm 셀의 여섯 스냅샷이며, 재생하면 12 × 12 µm 셀 중앙 점원의 동심원 파면을 보여준다." loading="lazy">
+    </a>
+    <button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
+    <figcaption>점원: 동심원이 모든 방향으로 퍼집니다. 정적 그림과 애니메이션은 셀 배치가 다릅니다.</figcaption>
+  </figure>
+  <figure class="lesson-figure lesson-animation">
+    <a href="{{ site.baseurl }}/assets/meep/01/05_anim_line.gif" data-lightbox>
+      <img src="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" data-animation-src="{{ site.baseurl }}/assets/meep/01/05_anim_line.gif" data-static-src="{{ site.baseurl }}/assets/meep/01/03_point_vs_line.png" alt="선원 관찰. 정적 그림은 점원과 선원의 비교이며, 재생하면 12 × 12 µm 셀 중앙 3 µm 선원의 좌우 파면과 끝 회절을 보여준다." loading="lazy">
+    </a>
+    <button class="animation-toggle" type="button" hidden>애니메이션 재생</button>
+    <figcaption>선원: 좌우로 강하게 나가는 파면과 끝 회절을 비교합니다. 정적 그림과 애니메이션은 셀 배치가 다릅니다.</figcaption>
+  </figure>
+</div>
+
+</details>
+
+<details markdown="1">
+<summary>수치 비교와 수렴성 검증 기록</summary>
 
 | 물리량 | 값 | 비교 대상 |
 |--------|-----|-----------|
@@ -254,7 +358,7 @@ everywhere = np.abs(ez_last).mean()
 
 ### 예측과 비교
 
-| 물리량 | 내 예측 (§2) | 시뮬레이션 | 판정 |
+| 물리량 | 물리적 예측 | 시뮬레이션 | 판정 |
 |--------|-------------|-----------|------|
 | 점원 파면 모양 | 동심원 | 동심원 (그림, GIF) | ✅ |
 | t0 + 3.6에서 정점 반지름 | 3.6 µm | 원 위 평균이 셀 평균의 1.26배 | ✅ |
@@ -274,12 +378,10 @@ everywhere = np.abs(ez_last).mean()
 
 점원의 0.25는 격자 대칭이 만드는 값이라 해상도와 무관하게 정확하다. 선원의 지향성 0.919는 해상도와 PML 두께에 0.1% 안에서 둔감하다.
 
-### 주장할 수 있는 것 / 없는 것
+</details>
 
-- 할 수 있는 것: 2D Ez 점원은 등방이고, 파면 정점은 c(t − t0)를 따른다. 2λ 길이의 균일 선원은 power의 92%를 선에 수직한 두 방향으로 보낸다.
-- 할 수 없는 것: 먼 곳(far field)의 방사 패턴. box 면은 source에서 2.5 µm(1.6λ)뿐이라 근접장이다. 공식 antenna 예제는 near2far로 1000λ에서 등방성을 0.5% 안으로 확인하며, 08편에서 다룬다. 3D 점원(쌍극자)은 등방이 아니다.
-
-## 6. 흔한 실수
+<details markdown="1">
+<summary>결과가 다를 때 · 흔한 실수 찾기</summary>
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -290,16 +392,25 @@ everywhere = np.abs(ez_last).mean()
 | 네 면 합이 0 근처 | −x, −y 면에 `weight=-1` 누락 | 바깥 법선 방향으로 weight |
 | 오래 돌리면 화면이 정상파로 가득 | PML 없음 | `mp.PML(1.0)` (02편) |
 
-## 7. 직접 해보기
+</details>
 
-| 바꿀 것 | 예상 변화 | 확인할 수치 |
-|---------|----------|------------|
-| `line_len` 3 → 1.0 µm (파장보다 짧게) | 지향성이 사라져 네 면이 비슷해짐 | ±x 합 |
-| `line_len` 3 → 6 µm | ±x 비율 더 증가, 회절 끝이 상대적으로 작아짐 | ±x 합 |
-| `fwidth` 0.323 → 0.18 (강의 값) | 펄스가 길어져 고리가 여러 겹, t0가 27.8로 늦어짐 | t0, 스냅샷 |
-| `component` Ez → Hz | 면내 편광. 점원인데도 방향 의존성 등장 | 네 면 비율 |
+<h2 id="check">6. 확인 · 두 문장으로 설명해보기</h2>
 
-## 8. 전체 코드
+1. fwidth를 반으로 줄이면 펄스 폭 width와 정점 시각 t0는 어떻게 달라질까요? 같은 시각에 찍은 두 그림을 바로 비교해도 될까요?
+2. 세로 선원의 power가 좌우로 더 많이 나가는 이유는 무엇일까요? 위아래에도 약 8%가 남는 이유는 무엇일까요?
+
+<details markdown="1">
+<summary>내 설명과 비교하기</summary>
+
+**1.** width = 1/fwidth와 t0 = 5/fwidth이므로 둘 다 두 배가 됩니다. 같은 절대 시각이어도 펄스의 진행 단계가 다릅니다. t − t0를 기준으로 읽어야 하며, 앞머리와 벽 반사가 섞이는지도 확인해야 합니다.
+
+**2.** 같은 위상으로 진동하는 선 위의 점들이 좌우 방향에서 보강됩니다. 유한한 선의 양 끝에는 회절이 있어 위아래 방향에도 power가 남습니다.
+
+</details>
+
+이제 광원의 모양과 촬영 시각을 함께 읽을 수 있습니다. 다음에는 광원이 아니라 **상자의 경계**를 바꿔 반사가 어떻게 달라지는지 확인합니다: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/).
+
+<h2 id="reference">7. 참고 · 전체 코드와 재현 기록</h2>
 
 <details>
 <summary>point_line_source.py (클릭해서 펼치기)</summary>
@@ -480,7 +591,10 @@ if mp.am_master():
 {% endhighlight %}
 </details>
 
-§4의 발췌 코드와 달리 전체 코드에는 그림 저장·GIF 녹화·result.json 기록이 들어 있다. 그림 helper `blogfig.py`(`panel_grid`, `bar_figure`, `record_frames`, `animate_fields` 등)는 시리즈 공통이며 같은 폴더(`code/`)에 있다. 전체 코드와 helper: [https://github.com/jin-castle/meep-examples/blob/main/code](https://github.com/jin-castle/meep-examples/blob/main/code).
+위의 코드 따라가기 발췌와 달리 전체 코드에는 그림 저장·GIF 녹화·result.json 기록이 들어 있습니다. 그림 helper `blogfig.py`(`panel_grid`, `bar_figure`, `record_frames`, `animate_fields` 등)는 시리즈 공통이며 같은 폴더(`code/`)에 있습니다. 전체 코드와 helper: [GitHub의 code 폴더](https://github.com/jin-castle/meep-examples/blob/main/code).
+
+<details markdown="1">
+<summary>기록된 실행 출력과 재현 환경</summary>
 
 **실행 결과 (2026-10-23 실행)**:
 ```
@@ -493,13 +607,9 @@ convergence res=20 dpml=2.0: point max|frac-0.25|=1.94e-16, line x-sides=0.9188
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python point_line_source.py` (약 21 s, 단일 코어)
 
-## 확인 질문
+</details>
 
-1. fwidth를 반으로 줄이면 t0와 width는 각각 어떻게 되는가? 같은 셀에서 "정점이 벽에 닿기 전" 스냅샷을 찍을 수 있는 시간 여유는 늘어나는가, 줄어드는가?
-2. 선원의 ±y 두 면에 8%가 남는다. 이 power는 선의 어디에서 나오는가?
-3. 04편의 `EigenModeSource`도 결국 `size`가 있는 선원이다. 그런데 왜 한쪽으로만 빛이 나가는가?
-
-## 9. 더 읽기
+### 더 읽기
 
 - [공식 Basics 튜토리얼: Fields in a Waveguide](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#fields-in-a-waveguide) (점원으로 시작하는 첫 예제)
 - [공식 Antenna radiation pattern 예제](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna) (점원 등방성, near2far)
