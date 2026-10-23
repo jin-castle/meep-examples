@@ -197,3 +197,94 @@ def spectrum_figure(wavelengths, curves: dict, out_png: str, *, unit: str = "nm"
     fig.tight_layout()
     fig.savefig(out_png, dpi=dpi)
     plt.close(fig)
+
+
+def line_figure(x, curves: dict, out_png: str, *, xlabel: str,
+                ylabel: str = "fraction of input power", mark: float | None = None,
+                mark_label: str | None = None, ylim=(0, 1.12), figsize=(7, 4), dpi=150) -> None:
+    """Several curves (name -> y) against one x axis, optional vertical marker."""
+    fig, ax = plt.subplots(figsize=figsize)
+    for name, y in curves.items():
+        ax.plot(x, y, marker="o", ms=3.5, label=name)
+    if mark is not None:
+        ax.axvline(mark, color="gray", ls="--", lw=0.8)
+        if mark_label:
+            ax.text(mark, ylim[1] - 0.05, mark_label, ha="center", va="center", fontsize=8, color="gray",
+                    bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none"))
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_ylim(*ylim)
+    ax.grid(alpha=0.3)
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=dpi)
+    plt.close(fig)
+
+
+def source_figure(fcen: float, fwidth: float, out_png: str, *, mon_fcen: float | None = None,
+                  mon_df: float | None = None, cutoff: float = 5.0, wl_scale: float = 1.0,
+                  wl_unit: str = "nm", time_unit: str = "a/c", figsize=(11, 3.8), dpi=150) -> dict:
+    """Time waveform and power spectrum of ``mp.GaussianSource(fcen, fwidth=fwidth)``.
+
+    Meep's Gaussian source has ``width = 1/fwidth`` and its peak at ``t0 = cutoff * width``
+    (cutoff defaults to 5). The spectrum is computed numerically from the sampled waveform.
+    ``mon_fcen``/``mon_df`` mark the monitor band (edges at mon_fcen +- mon_df/2) and the
+    relative power there is annotated and returned, so the post can say how much (little)
+    source power the band edges receive. ``wl_scale`` converts 1/f to the wavelength unit.
+    """
+    width = 1.0 / fwidth
+    t0 = cutoff * width
+    dt = 1.0 / (fcen * 60)
+    t = np.arange(0.0, 2 * t0, dt)
+    env = np.exp(-((t - t0) ** 2) / (2 * width ** 2))
+    s = env * np.cos(2 * np.pi * fcen * t)
+
+    npad = 16 * len(t)
+    spec = np.abs(np.fft.rfft(s, n=npad)) ** 2
+    f = np.fft.rfftfreq(npad, dt)
+    spec /= spec.max()
+    # plot window: around the monitor band if given, else around the source band; never down to f = 0
+    if mon_fcen is not None and mon_df is not None:
+        f_lo, f_hi = mon_fcen - 0.8 * mon_df, mon_fcen + 0.8 * mon_df
+    else:
+        f_lo, f_hi = fcen - 1.2 * fwidth, fcen + 1.2 * fwidth
+    f_lo = max(f_lo, 0.4 * fcen)
+    sel = (f >= f_lo) & (f <= f_hi)
+
+    fig, (ax_t, ax_f) = plt.subplots(1, 2, figsize=figsize)
+    ax_t.plot(t, s, lw=0.8, color="tab:blue")
+    ax_t.plot(t, env, lw=1.0, color="tab:red", ls="--", label="envelope")
+    ax_t.plot(t, -env, lw=1.0, color="tab:red", ls="--")
+    ax_t.axvline(t0, color="gray", ls=":", lw=1.0)
+    ax_t.text(t0, 1.08, f"t0 = {cutoff:g}/fwidth = {t0:.1f}", ha="center", fontsize=8, color="gray")
+    ax_t.set_xlabel(f"time [{time_unit}]")
+    ax_t.set_ylabel("source amplitude")
+    ax_t.set_ylim(-1.2, 1.25)
+    ax_t.set_title(f"GaussianSource(fcen={fcen:g}, fwidth={fwidth:g}): width = 1/fwidth = {width:.2f}", fontsize=9)
+    ax_t.legend(loc="lower right", fontsize=8)
+
+    wl = wl_scale / f[sel]
+    ax_f.semilogy(wl, spec[sel], color="tab:blue", lw=1.2)
+    ax_f.set_xlabel(f"wavelength [{wl_unit}]")
+    ax_f.set_ylabel("relative source power")
+    ax_f.set_ylim(1e-6, 2)
+    ax_f.grid(alpha=0.3, which="both")
+    info = {"t0": t0, "width": width}
+    if mon_fcen is not None and mon_df is not None:
+        edges = (mon_fcen - mon_df / 2, mon_fcen + mon_df / 2)
+        pes = []
+        for fe in edges:
+            pe = float(np.interp(fe, f, spec))
+            pes.append(pe)
+            ax_f.axvline(wl_scale / fe, color="tab:red", ls="--", lw=0.9)
+            ax_f.plot([wl_scale / fe], [pe], "o", color="tab:red", ms=4)
+            info[f"rel_power_at_f={fe:.4g}"] = pe
+        ax_f.axvline(wl_scale / mon_fcen, color="gray", ls=":", lw=1.0)
+        ax_f.set_title(f"power spectrum; red = monitor band edges "
+                       f"({wl_scale/edges[1]:.0f}-{wl_scale/edges[0]:.0f} {wl_unit})\n"
+                       f"relative source power at the edges: {pes[1]:.1e} / {pes[0]:.1e}", fontsize=8.5)
+        info["band_edges_rel_power"] = pes
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=dpi)
+    plt.close(fig)
+    return info

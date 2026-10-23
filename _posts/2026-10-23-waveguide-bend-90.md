@@ -1,13 +1,13 @@
 ---
 layout: post
 date: 2026-10-23
-title: "Meep Example 05 · Bent waveguide와 radiation loss — sharp bend의 2-run flux 정규화"
-title_en: "Meep Example 05 · Bent waveguide and radiation loss — two-run flux normalization on a sharp bend"
+title: "Meep Example 05 · Bent waveguide와 radius trade-off — 2-run flux 정규화, sharp bend 기준값, radius sweep"
+title_en: "Meep Example 05 · Bent waveguide and the radius trade-off — two-run flux normalization, sharp-bend baseline, radius sweep"
 lang: ko
 series: meep-examples
 part: 5
 level: beginner
-runtime: "12 s (two runs, single core)"
+runtime: "95 s (sharp bend 10 s + radius sweep + convergence)"
 meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend"
 tags: [meep, fdtd, waveguide, bend, flux, normalization]
@@ -19,18 +19,19 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 ![hero]({{ site.baseurl }}/assets/meep/05/02_field.png)
 
 - **What**: a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. We measure how much power goes around the corner, how much comes back, and how much leaks out.
-- **Result**: T = 0.20, R = 0.22, radiated = 0.58 at the center wavelength. Most of the light is lost at the corner.
+- **Result**: T = 0.20, R = 0.22, radiated = 0.58 at the center wavelength. Most of the light is lost at the sharp corner. Rounding it recovers the light: T = 0.91 at a bend radius of 0.35 µm and 0.99 at 0.70 µm.
 - **Takeaway**: two-run flux normalization. A straight reference run gives the input power and the incident fields; subtracting them in the bend run leaves only the reflection. A sharp corner is not usable in a photonic circuit.
-- **Code**: full script at the bottom, ~12 s on one core.
+- **Code**: full script at the bottom, ~95 s on one core (the sharp bend alone takes 10 s).
 
 ## 0. 이 글에서 배우는 것
 
 - `add_flux`와 `FluxRegion`으로 단면을 지나는 power(flux) 재기
 - 2-run 정규화: 직선 기준 run의 `get_flux_data` → bend run의 `load_minus_flux_data`로 입사 성분을 빼고 반사만 남기기
 - 뒤로 가는 flux는 음수라는 것, 그리고 에너지 수지 T + R + L = 1로 결과를 검산하는 법
+- 코너에 반지름을 주면서 손실이 사라지는 지점(knee)을 찾는 radius sweep
 - 물리 교훈: 급격한 직각 꺾임은 빛의 절반 이상을 밖으로 버린다. 그래서 광회로는 곡선 굽힘을 쓴다
 
-**전제 지식**: 04편의 도파로·모드 개념. **이전 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: 06 · Binary grating과 diffraction order
+**전제 지식**: 04편의 도파로·모드 개념. **공식 예제**: [Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend). **이전 글**: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · **다음 글**: 06 · Binary grating과 diffraction order
 
 ## 1. 무엇을 알고 싶은가
 
@@ -81,6 +82,11 @@ $$
 | `sx = sy` | 16 | 코너 주변 방사가 PML에 닿기 전 퍼질 여유 | 좁히면 방사가 monitor에 되돌아옴 |
 | `src_x`, `refl_x` | −6.5, −5.5 | source는 PML 밖 0.5, 반사 단면은 source **하류** 1.0 | 반사 단면이 source 상류면 입사 성분 분리 실패 |
 | `span` | w + 2 | core 양쪽 1a씩 evanescent tail 포함 | core 폭만 잡으면 P_in 과소 → T 과대 |
+
+![source]({{ site.baseurl }}/assets/meep/05/00_source.png)
+*source의 시간 파형(왼쪽)과 power 스펙트럼(오른쪽). width = 1/fwidth = 10, 펄스 정점 t0 = 50. monitor 대역(1162–2325 nm) 가장자리의 source power는 중심의 0.005%다. 그래서 §5 스펙트럼의 양 끝 값은 0에 가까운 수를 0에 가까운 수로 나눈 것이고, 경향만 본다.*
+
+**강의 노트북과의 차이**: 강의 week 6은 n 3.4/1.44, 폭 0.6 µm의 곡선 bend에서 radius 0.6–3.0 µm를 훑는다. 이 글은 공식 sharp bend(ε = 12, w = 1a)를 기준값으로 두고, 같은 구조의 코너만 둥글려 radius를 훑는다.
 
 ## 4. 코드 따라가기
 
@@ -138,6 +144,24 @@ def make_geometry(bend: bool):
 - **무엇**: 같은 함수가 플래그 하나로 직선 기준 구조와 L자 bend 구조를 만든다. 두 `Block`은 코너에서 폭 w만큼 겹쳐 빈틈 없는 직각을 이룬다.
 - **왜**: 기준 run과 bend run은 구조만 다르고 나머지는 같아야 정규화가 성립한다. 함수로 묶으면 재료·폭·좌표가 어긋날 여지가 없다. 수평 암은 왼쪽 PML을, 수직 암은 위쪽 PML을 관통해야 끝면 반사가 없다.
 - **틀리면**: 수평 암을 코너에서 `xcen - w/2`까지만 그리면 코너에 빈 사각형이 생겨 R이 커진다. 수직 암이 cell 안에서 끝나면 끝면 반사가 T에 섞인다.
+
+### ②′ 둥근 코너 — 사분원 고리
+
+```python
+r = radius
+cx, cy = xcen - r, ycen + r                      # center of the quarter ring
+big = r + w / 2 + 1.0
+geom = [mp.Cylinder(radius=r + w / 2, center=mp.Vector3(cx, cy), material=wg),    # outer disk: waveguide
+        mp.Cylinder(radius=r - w / 2, center=mp.Vector3(cx, cy), material=air),   # inner disk: air -> ring
+        # keep only the lower-right quadrant (x > cx, y < cy): cover the other three with air
+        mp.Block(center=mp.Vector3(cx - big / 2, cy), size=mp.Vector3(big, 2 * big), material=air),
+        mp.Block(center=mp.Vector3(cx + big / 2, cy + big / 2), size=mp.Vector3(big, big), material=air)]
+# the two arms are appended AFTER this list, so they are drawn on top of the air blocks
+```
+
+- **무엇**: 반지름 r + w/2의 원판에서 r − w/2의 원판을 빼 고리를 만들고, 공기 블록으로 세 사분면을 덮어 오른쪽 아래 1/4만 남긴다. 수평 암은 x = xcen − r에서, 수직 암은 y = ycen + r에서 고리와 만난다.
+- **왜**: Meep의 geometry는 나중 객체가 앞 객체를 덮어쓴다. 그래서 "원판 → 공기 원판 → 공기 블록 → 암" 순서가 곧 차집합 연산이다. r = 0이면 고리가 없고 sharp 코너로 돌아간다.
+- **틀리면**: 암을 공기 블록보다 먼저 넣으면 블록이 암의 끝을 지운다. 공기 블록을 빠뜨리면 고리 전체가 남아 도파로가 원을 그린다.
 
 ### ③ Source — 빛을 어떻게 넣는가
 
@@ -247,6 +271,38 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 | L (방사, 잔여) | 0.5801 | — |
 | T + R | 0.4199 | ≤ 1 성립 |
 
+### 코너를 둥글리면: radius sweep
+
+![radius sweep]({{ site.baseurl }}/assets/meep/05/04_radius_sweep.png)
+*같은 구조에서 코너 반지름만 바꿨을 때의 T, R, 방사. 반지름 0이 위의 sharp bend다. 축은 a = 232.5 nm로 환산한 µm.*
+
+![round]({{ site.baseurl }}/assets/meep/05/05_field_round.png)
+*반지름 3a = 0.70 µm. 수평 암의 정상파 마디가 사라지고(반사 0.03%), 코너 밖으로 새는 빛이 거의 없다.*
+
+| 반지름 | µm | T | R | 방사 |
+|---|---|---|---|---|
+| 0 (sharp) | 0 | 0.200 | 0.220 | 0.580 |
+| 0.5a | 0.12 | 0.487 | 0.052 | 0.462 |
+| 1a | 0.23 | 0.746 | 0.001 | 0.253 |
+| 1.5a | 0.35 | 0.907 | 0.001 | 0.092 |
+| 2a | 0.47 | 0.964 | 0.000 | 0.036 |
+| 3a | 0.70 | 0.986 | 0.000 | 0.014 |
+| 4a | 0.93 | 1.003 | 0.000 | −0.003 |
+| 6a | 1.40 | 1.000 | 0.000 | 0.000 |
+
+반사는 반지름 1a(파장의 1/7)에서 이미 사라진다. 방사는 더 천천히 줄어 1.5a에서 10% 아래로, 3a에서 1% 대로 내려간다. 손실이 꺾이는 무릎(knee)은 1.5–2a, 즉 도파로 안 파장(1.92a)의 한 배 근처다. 그보다 큰 반지름은 면적만 늘린다. 4a에서 T가 1을 0.3% 넘는 것은 정규화 run과 bend run의 수치 오차이지 이득이 아니다.
+
+### 수렴성 (sharp bend)
+
+| resolution | dpml | T | R | 방사 | 비고 |
+|---|---|---|---|---|---|
+| 25 | 1.0 | 0.200 | 0.220 | 0.580 | 기준 |
+| 10 | 1.0 | 0.198 | 0.229 | 0.573 | 공식 예제 해상도 |
+| 40 | 1.0 | 0.189 | 0.224 | 0.587 | 해상도 1.6배 |
+| 25 | 1.5 | 0.170 | 0.217 | 0.612 | PML 두껍게. source·monitor 면이 0.5a 안쪽으로 |
+
+해상도 10에서 40까지 T는 5% 안에서 움직인다. 그런데 PML을 두껍게 하면서 source와 monitor 면을 0.5a 안쪽으로 옮기자 T가 15% 내려갔다. 코너에서 방사된 빛이 투과 단면과 PML 사이에서 어떻게 잡히느냐에 따라 값이 달라진다는 뜻이다. sharp bend의 T = 0.20은 첫째 자리까지만 의미가 있다. 둥근 bend(R ≥ 2a)는 방사가 거의 없어서 이 민감도가 사라진다.
+
 ### 예측과 비교
 
 | 물리량 | 내 예측 (§2) | 시뮬레이션 | 판정 |
@@ -260,6 +316,11 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 방향은 모두 맞았지만 T = 0.20이라는 값은 계산해 봐야 안다. T + R ≤ 1은 예측이 아니라 검산이다. 깨지면 물리가 아니라 코드가 틀린 것이다.
 
 **검증 체크**: T + R = 0.42 ≤ 1 · source(x = −6.5)·반사 단면(−5.5)·투과 단면(y = 6.5) 모두 PML(|x|, |y| > 7) 밖 · 두 run 모두 field decay 기준 종료.
+
+### 주장할 수 있는 것 / 없는 것
+
+- 할 수 있는 것: sharp bend는 power의 절반 이상을 방사로 잃는다. 반지름을 도파로 안 파장의 한 배(1.5–2a, 0.35–0.47 µm) 이상 주면 손실이 10% 아래로 떨어지고, 3a 이상에서는 더 얻을 것이 없다.
+- 할 수 없는 것: sharp bend의 T = 0.20의 둘째 자리. 해상도와 monitor 위치에 따라 0.17–0.20으로 움직인다. 3D 도파로나 다른 굴절률 대비에서의 knee 위치. 방사 monitor 없이 잔여로 추정한 방사량의 정확한 값.
 
 ## 6. 흔한 실수
 
@@ -276,7 +337,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
-| 코너를 반지름 R의 1/4 원호로 (`mp.Cylinder` 두 개 차집합) | R이 파장 몇 배만 되어도 T가 0.9 이상 | T, L |
+| `w` 1 → 0.6a (좁은 도파로) | 모드가 덜 갇혀 같은 반지름에서 손실이 커지고 knee가 큰 R로 이동 | sweep 곡선 |
 | `fcen` 0.15 → 0.10 (파장 10a = 2325 nm) | 모드가 덜 갇혀 T ↑, L ↓ | 스펙트럼 그림의 2325 nm 값과 비교 |
 | `resolution` 25 → 10 (공식 값) | 코너가 거칠어져 T·R이 수 % 흔들림 | T 차이 |
 | `eps_wg` 12 → 4 | confinement 약화. 코너에서 더 많이 새지만 모드 자체도 넓어짐 | T, L |
@@ -286,16 +347,18 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 <details>
 <summary>bend90.py (클릭해서 펼치기)</summary>
 {% highlight python %}
-"""Meep Example 02 - 90 degree Waveguide Bend (two-run flux normalization).
+"""Meep Example 05 - Bent waveguide and the radius trade-off (two-run flux normalization).
 
-A dielectric waveguide (eps = 12, width 1) turns a sharp 90 degree corner.
+A dielectric waveguide (eps = 12, width 1) turns a 90 degree corner.
 Run 1: straight waveguide  -> input power P_in and the "incident" flux data at the reflection plane.
 Run 2: bent waveguide      -> transmitted flux (vertical arm) and reflected flux (incident part subtracted).
 T = P_tran / P_in,  R = -P_refl / P_in,  radiation loss = 1 - T - R.
-Follows the official bend-flux tutorial (dimensionless units, a = 1).
+The sharp corner (radius 0) follows the official bend-flux tutorial; then the corner is rounded
+with a quarter-ring of radius R and T is swept over R to find where the loss disappears.
 
-Run:  python bend90.py            (~2 min on one core)
-Out:  01_layout.png, 02_field.png, 03_spectrum.png, result.json
+Run:  python bend90.py            (~3 min on one core: sharp + radius sweep + convergence)
+Out:  00_source.png, 01_layout.png, 02_field.png, 03_spectrum.png, 04_radius_sweep.png,
+      05_field_round.png, result.json   (-> ../assets/05/)
 """
 import json
 import os
@@ -308,7 +371,7 @@ matplotlib.use("Agg")
 import meep as mp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blogfig import Label, annotated_layout, field_figure, spectrum_figure   # noqa: E402
+from blogfig import Label, annotated_layout, field_figure, line_figure, source_figure, spectrum_figure   # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "05")
 os.makedirs(OUT, exist_ok=True)
@@ -325,122 +388,189 @@ nfreq = 11               # number of frequencies in the flux monitors
 a_nm = 1550 * fcen       # = 232.5 nm per unit  -> waveguide width 233 nm, cell 3.72 um
 a_um = a_nm / 1000
 
-resolution = 25          # pixels per unit -> width = 25 px, wavelength in the guide (1.92) = 48 px
-dpml = 1.0               # PML thickness
+RESOLUTION = 25          # pixels per unit -> width = 25 px, wavelength in the guide (1.92) = 48 px
+DPML = 1.0               # PML thickness
 sx = sy = 16.0           # square cell, PML included
 
 ycen = -4.0              # y of the input (horizontal) arm
 xcen = +4.0              # x of the output (vertical) arm  -> corner at (xcen, ycen)
-
-src_x = -6.5             # source: 0.5 outside the left PML (PML edge at x = -7)
-refl_x = -5.5            # reflection flux plane: downstream of the source
-tran_straight_x = +6.5   # transmission plane for the straight reference run
-tran_bend_y = +6.5       # transmission plane for the bend run (on the vertical arm)
 span = mp.Vector3(0, w + 2)   # source / monitor line: core + 1 unit on each side (evanescent tail)
 
 
+def positions(dpml):
+    """Source and monitor planes measured from the PML edge, so a thicker PML keeps them outside it."""
+    edge = sx / 2 - dpml
+    return {"src_x": -edge + 0.5,          # source: 0.5 outside the left PML
+            "refl_x": -edge + 1.5,         # reflection flux plane: downstream of the source
+            "tran_straight_x": edge - 0.5,  # transmission plane for the straight reference run
+            "tran_bend_y": edge - 0.5}      # transmission plane for the bend run (on the vertical arm)
+
+
 # ---------------------------------------------------------------- (2) materials & geometry
-def make_geometry(bend: bool):
-    """Straight reference (bend=False) or the L-shaped bend (bend=True). Same width and material."""
+def make_geometry(bend: bool, radius: float = 0.0):
+    """Straight reference (bend=False), sharp corner (radius=0) or rounded corner (radius>0).
+
+    The rounded corner is a quarter ring: outer cylinder (waveguide) minus inner cylinder (air),
+    cut down to one quadrant with air blocks; the two arms are drawn last so they stay intact.
+    """
     wg = mp.Medium(epsilon=eps_wg)
+    air = mp.Medium(epsilon=1.0)
     if not bend:
         return [mp.Block(center=mp.Vector3(0, ycen), size=mp.Vector3(mp.inf, w), material=wg)]
-    horizontal = mp.Block(center=mp.Vector3(0.5 * (-sx / 2 + xcen + w / 2), ycen),
-                          size=mp.Vector3(sx / 2 + xcen + w / 2, w), material=wg)   # left PML -> corner
-    vertical = mp.Block(center=mp.Vector3(xcen, 0.5 * (ycen - w / 2 + sy / 2)),
-                        size=mp.Vector3(w, sy / 2 - ycen + w / 2), material=wg)     # corner -> top PML
-    return [horizontal, vertical]
+    r = radius
+    cx, cy = xcen - r, ycen + r                      # center of the quarter ring
+    geom = []
+    if r > 0:
+        big = r + w / 2 + 1.0
+        geom += [mp.Cylinder(radius=r + w / 2, center=mp.Vector3(cx, cy), material=wg),
+                 mp.Cylinder(radius=r - w / 2, center=mp.Vector3(cx, cy), material=air)]
+        # keep only the lower-right quadrant (x > cx, y < cy)
+        geom += [mp.Block(center=mp.Vector3(cx - big / 2, cy), size=mp.Vector3(big, 2 * big), material=air),
+                 mp.Block(center=mp.Vector3(cx + big / 2, cy + big / 2), size=mp.Vector3(big, big), material=air)]
+    # sharp corner: the arms overlap by w x w so the outer corner is filled (official geometry);
+    # rounded corner: the arms stop where the ring begins
+    x_end = xcen + w / 2 if r == 0 else xcen - r     # horizontal arm: left PML -> corner / ring
+    horizontal = mp.Block(center=mp.Vector3(0.5 * (-sx / 2 + x_end), ycen),
+                          size=mp.Vector3(sx / 2 + x_end, w), material=wg)
+    y_start = ycen - w / 2 if r == 0 else ycen + r   # vertical arm: corner / ring -> top PML
+    vertical = mp.Block(center=mp.Vector3(xcen, 0.5 * (y_start + sy / 2)),
+                        size=mp.Vector3(w, sy / 2 - y_start), material=wg)
+    return geom + [horizontal, vertical]
 
 
 # ---------------------------------------------------------------- (3) source
-# A plain Ez line source (not an eigenmode source), as in the official tutorial.
-# It excites mostly the guided mode plus some radiation; the straight reference run
-# measures exactly what the source puts into the guide, so that part cancels out.
-sources = [mp.Source(mp.GaussianSource(fcen, fwidth=df), component=mp.Ez,
-                     center=mp.Vector3(src_x, ycen), size=span)]
+def make_sources(dpml):
+    """A plain Ez line source (not an eigenmode source), as in the official tutorial."""
+    p = positions(dpml)
+    return [mp.Source(mp.GaussianSource(fcen, fwidth=df), component=mp.Ez,
+                      center=mp.Vector3(p["src_x"], ycen), size=span)]
 
 
 # ---------------------------------------------------------------- (4) simulation & boundaries
-def make_sim(bend: bool):
+def make_sim(bend: bool, radius=0.0, resolution=RESOLUTION, dpml=DPML):
     return mp.Simulation(cell_size=mp.Vector3(sx, sy), resolution=resolution,
                          boundary_layers=[mp.PML(dpml)],
-                         geometry=make_geometry(bend), sources=sources)
+                         geometry=make_geometry(bend, radius), sources=make_sources(dpml))
 
 
-t0 = time.time()
+_reference = {}
 
-# ================================================================ RUN 1: straight reference
-sim = make_sim(bend=False)
-# ---------------------------------------------------------------- (5) monitors, run 1
-refl = sim.add_flux(fcen, df, nfreq, mp.FluxRegion(center=mp.Vector3(refl_x, ycen), size=span))
-tran0 = sim.add_flux(fcen, df, nfreq, mp.FluxRegion(center=mp.Vector3(tran_straight_x, ycen), size=span))
 
-# ---------------------------------------------------------------- (6) run 1 & stop condition
-sim.run(until_after_sources=mp.stop_when_fields_decayed(
-            25, mp.Ez, mp.Vector3(tran_straight_x, ycen), 1e-6))
+def reference_run(resolution, dpml):
+    """RUN 1 (cached per resolution/PML): straight guide -> P_in and the incident flux data."""
+    key = (resolution, dpml)
+    if key in _reference:
+        return _reference[key]
+    p = positions(dpml)
+    sim = make_sim(bend=False, resolution=resolution, dpml=dpml)
+    # ------------------------------------------------------------ (5) monitors, run 1
+    refl = sim.add_flux(fcen, df, nfreq, mp.FluxRegion(center=mp.Vector3(p["refl_x"], ycen), size=span))
+    tran0 = sim.add_flux(fcen, df, nfreq, mp.FluxRegion(center=mp.Vector3(p["tran_straight_x"], ycen), size=span))
+    # ------------------------------------------------------------ (6) run 1 & stop condition
+    sim.run(until_after_sources=mp.stop_when_fields_decayed(
+                25, mp.Ez, mp.Vector3(p["tran_straight_x"], ycen), 1e-6))
+    _reference[key] = {"P_in": np.array(mp.get_fluxes(tran0)),      # what actually travels down the guide
+                       "refl_data": sim.get_flux_data(refl),         # incident fields at the reflection plane
+                       "freqs": np.array(mp.get_flux_freqs(tran0))}
+    return _reference[key]
 
-P_in = np.array(mp.get_fluxes(tran0))     # what actually travels down the guide = input power
-refl_data = sim.get_flux_data(refl)       # incident fields at the reflection plane (to subtract later)
-freqs = np.array(mp.get_flux_freqs(tran0))
-t_run1 = time.time() - t0
 
-# ================================================================ RUN 2: bend
-sim = make_sim(bend=True)
-# ---------------------------------------------------------------- (5) monitors, run 2
-refl = sim.add_flux(fcen, df, nfreq, mp.FluxRegion(center=mp.Vector3(refl_x, ycen), size=span))
-sim.load_minus_flux_data(refl, refl_data)  # subtract the incident part -> this monitor now sees reflection only
-tran = sim.add_flux(fcen, df, nfreq,
-                    mp.FluxRegion(center=mp.Vector3(xcen, tran_bend_y), size=mp.Vector3(w + 2, 0)))
+def bend_run(radius=0.0, resolution=RESOLUTION, dpml=DPML, figures=False, field_png=None):
+    """RUN 2: the bend. Returns T, R, L spectra (fractions of P_in)."""
+    ref = reference_run(resolution, dpml)
+    p = positions(dpml)
+    sim = make_sim(bend=True, radius=radius, resolution=resolution, dpml=dpml)
+    # ------------------------------------------------------------ (5) monitors, run 2
+    refl = sim.add_flux(fcen, df, nfreq, mp.FluxRegion(center=mp.Vector3(p["refl_x"], ycen), size=span))
+    sim.load_minus_flux_data(refl, ref["refl_data"])  # subtract the incident part -> reflection only
+    tran = sim.add_flux(fcen, df, nfreq,
+                        mp.FluxRegion(center=mp.Vector3(xcen, p["tran_bend_y"]), size=mp.Vector3(w + 2, 0)))
+    decay_pt = (xcen, p["tran_bend_y"])
+    if figures:
+        annotated_layout(
+            sim, os.path.join(OUT, "01_layout.png"), dpml=dpml, unit="um", axis_scale=a_um, axis_step=0.5,
+            figsize=(7.5, 7.2), pml_xy=(-3.0, -sy / 2 + dpml / 2),
+            params_text=(f"a = {a_nm:.1f} nm  (1 Meep unit)\n"
+                         f"eps={eps_wg:g}  w={w:g}a={w*a_nm:.1f}nm  dpml={dpml:g}a\n"
+                         f"wl={1/fcen:.2f}a={a_nm/fcen:.0f}nm  res={resolution}/a  cell={sx:g}a"),
+            params_xy=(-6.6, 6.6), decay_point=decay_pt, decay_text_xy=(4.6, 5.6),
+            title="90-deg waveguide bend (eps = 12, w = 1): Ez line source, flux monitors, PML",
+            labels=[
+                Label("horizontal arm (geometry)", (-1.0, ycen), (-3.5, -1.8), step=2, color="black"),
+                Label("vertical arm (geometry)", (xcen - 0.5, 2.0), (-2.5, 3.5), step=2, color="black"),
+                Label("Ez line source", (p["src_x"], ycen - 1.6), (-6.3, -6.2), step=3, color="red"),
+                Label("flux: reflection (minus incident)", (p["refl_x"], ycen + 1.6), (-6.3, 0.2), step=5, color="blue"),
+                Label("flux: transmission", (xcen - 1.5, p["tran_bend_y"]), (0.0, 5.0), step=5, color="blue"),
+            ])
+    want_field = figures or field_png is not None
+    if want_field:
+        nonpml = mp.Volume(center=mp.Vector3(), size=mp.Vector3(sx - 2 * dpml, sy - 2 * dpml))
+        dft = sim.add_dft_fields([mp.Ez], fcen, 0, 1, where=nonpml)
+    # ------------------------------------------------------------ (6) run 2 & stop condition
+    sim.run(until_after_sources=mp.stop_when_fields_decayed(25, mp.Ez, mp.Vector3(*decay_pt), 1e-6))
+    # ------------------------------------------------------------ (7) post-processing
+    T = np.array(mp.get_fluxes(tran)) / ref["P_in"]      # transmitted fraction
+    R = -np.array(mp.get_fluxes(refl)) / ref["P_in"]     # backward flux is negative -> flip the sign
+    L = 1.0 - T - R                                      # what is left: radiated out at the corner
+    if want_field:
+        ez = sim.get_dft_array(dft, mp.Ez, 0)
+        eps = sim.get_array(vol=nonpml, component=mp.Dielectric)
+        extent_um = [v * a_um for v in (-(sx / 2 - dpml), sx / 2 - dpml, -(sy / 2 - dpml), sy / 2 - dpml)]
+        field_figure(ez, extent_um, os.path.join(OUT, field_png or "02_field.png"), core_halfwidth=None,
+                     eps=eps, wl=round(a_nm / fcen), wl_unit="nm", component="Ez",
+                     layout="row", aspect="equal", unit="um")
+    return {"T": T, "R": R, "L": L, "freqs": ref["freqs"]}
 
-decay_pt = (xcen, tran_bend_y)   # where stop_when_fields_decayed watches in the bend run (step 6)
-annotated_layout(
-    sim, os.path.join(OUT, "01_layout.png"), dpml=dpml, unit="um", axis_scale=a_um, axis_step=0.5,
-    figsize=(7.5, 7.2), pml_xy=(-3.0, -sy / 2 + dpml / 2),
-    params_text=(f"a = {a_nm:.1f} nm  (1 Meep unit)\n"
-                 f"eps={eps_wg:g}  w={w:g}a={w*a_nm:.1f}nm  dpml={dpml:g}a\n"
-                 f"wl={1/fcen:.2f}a={a_nm/fcen:.0f}nm  res={resolution}/a  cell={sx:g}a"),
-    params_xy=(-6.6, 6.6), decay_point=decay_pt, decay_text_xy=(4.6, 5.6),
-    title="90-deg waveguide bend (eps = 12, w = 1): Ez line source, flux monitors, PML",
-    labels=[
-        Label("horizontal arm (geometry)", (-1.0, ycen), (-3.5, -1.8), step=2, color="black"),
-        Label("vertical arm (geometry)", (xcen - 0.5, 2.0), (-2.5, 3.5), step=2, color="black"),
-        Label("Ez line source", (src_x, ycen - 1.6), (-6.3, -6.2), step=3, color="red"),
-        Label("flux: reflection (minus incident)", (refl_x, ycen + 1.6), (-6.3, 0.2), step=5, color="blue"),
-        Label("flux: transmission", (xcen - 1.5, tran_bend_y), (0.0, 5.0), step=5, color="blue"),
-    ])
 
-nonpml = mp.Volume(center=mp.Vector3(), size=mp.Vector3(sx - 2 * dpml, sy - 2 * dpml))
-dft = sim.add_dft_fields([mp.Ez], fcen, 0, 1, where=nonpml)
-
-# ---------------------------------------------------------------- (6) run 2 & stop condition
-sim.run(until_after_sources=mp.stop_when_fields_decayed(
-            25, mp.Ez, mp.Vector3(*decay_pt), 1e-6))
-wall = time.time() - t0
-
-# ---------------------------------------------------------------- (7) post-processing
-T = np.array(mp.get_fluxes(tran)) / P_in      # transmitted fraction
-R = -np.array(mp.get_fluxes(refl)) / P_in     # backward flux is negative -> flip the sign
-L = 1.0 - T - R                               # what is left: radiated out at the corner
+t_all = time.time()
 ic = nfreq // 2
-wl = 1 / freqs
-print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}  (run1 {t_run1:.0f} s, total {wall:.0f} s)")
-print(f"T over band {wl.min():.2f}-{wl.max():.2f}: {T.min():.3f} .. {T.max():.3f}")
 
-ez = sim.get_dft_array(dft, mp.Ez, 0)
-eps = sim.get_array(vol=nonpml, component=mp.Dielectric)   # structure outline for the figure
-extent_um = [v * a_um for v in (-(sx / 2 - dpml), sx / 2 - dpml, -(sy / 2 - dpml), sy / 2 - dpml)]
-field_figure(ez, extent_um, os.path.join(OUT, "02_field.png"), core_halfwidth=None, eps=eps,
-             wl=round(a_nm / fcen), wl_unit="nm", component="Ez", layout="row", aspect="equal", unit="um")
-spectrum_figure(wl * a_nm, {"T (transmitted)": T, "R (reflected)": R, "1 - T - R (radiated)": L},
+# source waveform and spectrum; the monitor band is fcen +- df/2
+src_info = source_figure(fcen, df, os.path.join(OUT, "00_source.png"), mon_fcen=fcen, mon_df=df,
+                         wl_scale=a_nm, wl_unit="nm", time_unit="a/c")
+
+# ================================================================ sharp corner (official example)
+t0 = time.time()
+sharp = bend_run(0.0, figures=True)
+wall_sharp = time.time() - t0
+wl = 1 / sharp["freqs"]
+print(f"sharp: T = {sharp['T'][ic]:.4f}, R = {sharp['R'][ic]:.4f}, radiation loss = {sharp['L'][ic]:.4f}  ({wall_sharp:.0f} s incl. reference)")
+print(f"T over band {wl.min():.2f}-{wl.max():.2f}: {sharp['T'].min():.3f} .. {sharp['T'].max():.3f}")
+spectrum_figure(wl * a_nm, {"T (transmitted)": sharp["T"], "R (reflected)": sharp["R"], "1 - T - R (radiated)": sharp["L"]},
                 os.path.join(OUT, "03_spectrum.png"), unit="nm", mark=1550, mark_label="1550 nm (fcen)")
+
+# ================================================================ radius sweep
+radii = [0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0]
+sweep = []
+for r in radii:
+    if r == 0.0:
+        res = sharp
+    else:
+        res = bend_run(r, field_png=("05_field_round.png" if r == 3.0 else None))
+    sweep.append({"radius_a": r, "radius_um": r * a_um, "radius_over_wl": r * fcen,
+                  "T": float(res["T"][ic]), "R": float(res["R"][ic]), "L": float(res["L"][ic])})
+    print(f"radius {r:.1f} a ({r*a_um:.2f} um): T={res['T'][ic]:.4f} R={res['R'][ic]:.4f} L={res['L'][ic]:.4f}")
+line_figure([s["radius_um"] for s in sweep],
+            {"T (transmitted)": [s["T"] for s in sweep], "R (reflected)": [s["R"] for s in sweep],
+             "1 - T - R (radiated)": [s["L"] for s in sweep]},
+            os.path.join(OUT, "04_radius_sweep.png"), xlabel=f"bend radius [um]  (a = {a_nm:.1f} nm, wl = 1550 nm)")
+
+# ================================================================ convergence (sharp corner)
+convergence = [{"resolution": RESOLUTION, "dpml": DPML, "T": sweep[0]["T"], "R": sweep[0]["R"], "L": sweep[0]["L"]}]
+for res_px, dpml in ((10, 1.0), (40, 1.0), (25, 1.5)):   # change one thing at a time
+    t0 = time.time()
+    r = bend_run(0.0, resolution=res_px, dpml=dpml)
+    convergence.append({"resolution": res_px, "dpml": dpml, "T": float(r["T"][ic]), "R": float(r["R"][ic]),
+                        "L": float(r["L"][ic]), "wall_s": time.time() - t0})
+    print(f"convergence res={res_px} dpml={dpml}: T={r['T'][ic]:.4f} R={r['R'][ic]:.4f} L={r['L'][ic]:.4f}")
 
 if mp.am_master():
     with open(os.path.join(OUT, "result.json"), "w") as f:
-        json.dump({"T": float(T[ic]), "R": float(R[ic]), "loss": float(L[ic]),
+        json.dump({"T": sweep[0]["T"], "R": sweep[0]["R"], "loss": sweep[0]["L"],
                    "a_nm": a_nm, "wavelengths_a": wl.tolist(), "wavelengths_nm": (wl * a_nm).tolist(),
-                   "T_spectrum": T.tolist(),
-                   "R_spectrum": R.tolist(), "P_in_spectrum": P_in.tolist(),
-                   "wall_s": wall, "run1_s": t_run1, "meep": mp.__version__},
+                   "T_spectrum": sharp["T"].tolist(), "R_spectrum": sharp["R"].tolist(),
+                   "radius_sweep": sweep, "convergence": convergence, "source": src_info,
+                   "wall_s_total": time.time() - t_all, "meep": mp.__version__},
                   f, indent=2)
 {% endhighlight %}
 </details>
@@ -449,14 +579,31 @@ if mp.am_master():
 
 **실행 결과 (2026-10-23 재실행)**:
 ```
-T = 0.1997, R = 0.2202, radiation loss = 0.5801  (run1 6 s, total 12 s)
+sharp: T = 0.1997, R = 0.2202, radiation loss = 0.5801  (10 s incl. reference)
 T over band 5.00-10.00: 0.169 .. 0.512
+radius 0.0 a (0.00 um): T=0.1997 R=0.2202 L=0.5801
+radius 0.5 a (0.12 um): T=0.4865 R=0.0518 L=0.4617
+radius 1.0 a (0.23 um): T=0.7458 R=0.0014 L=0.2528
+radius 1.5 a (0.35 um): T=0.9073 R=0.0009 L=0.0918
+radius 2.0 a (0.47 um): T=0.9638 R=0.0005 L=0.0358
+radius 3.0 a (0.70 um): T=0.9859 R=0.0003 L=0.0138
+radius 4.0 a (0.93 um): T=1.0031 R=0.0001 L=-0.0031
+radius 6.0 a (1.40 um): T=0.9995 R=0.0000 L=0.0005
+convergence res=10 dpml=1.0: T=0.1983 R=0.2287 L=0.5730
+convergence res=40 dpml=1.0: T=0.1894 R=0.2241 L=0.5865
+convergence res=25 dpml=1.5: T=0.1703 R=0.2173 L=0.6124
 ```
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python bend90.py` (약 12 s, 단일 코어)
 
+## 확인 질문
+
+1. `load_minus_flux_data` 줄을 지우면 R은 어느 방향으로 틀어지는가? T는 변하는가?
+2. radius sweep에서 반사는 1a에서 사라지는데 방사는 3a까지 남는다. 두 손실의 원인이 어떻게 다른가?
+3. 수렴성 표에서 PML을 두껍게 했을 때 T가 내려간 이유로 생각할 수 있는 것은 무엇인가? 어떻게 확인하겠는가?
+
 ## 9. 더 읽기
 
-- 공식 튜토리얼 (Transmittance Spectrum of a Waveguide Bend): https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend
-- `add_flux` / `load_minus_flux_data` 레퍼런스: https://meep.readthedocs.io/en/latest/Python_User_Interface/#flux-spectra
+- [공식 튜토리얼: Transmittance Spectrum of a Waveguide Bend](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend)
+- [`add_flux` / `load_minus_flux_data` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#flux-spectra) · [`Cylinder` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#cylinder)
 - 이전 글: [04 · Straight waveguide와 guided mode]({{ site.baseurl }}/straight-waveguide/) · 다음 글: 06 · Binary grating과 diffraction order

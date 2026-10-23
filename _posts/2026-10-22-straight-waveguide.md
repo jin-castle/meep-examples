@@ -1,13 +1,13 @@
 ---
 layout: post
 date: 2026-10-22
-title: "Meep Example 04 · Straight waveguide와 guided mode — EigenModeSource, mode monitor, modal transmission"
-title_en: "Meep Example 04 · Straight waveguide and guided modes — EigenModeSource, mode monitors, modal transmission"
+title: "Meep Example 04 · Straight waveguide와 guided mode — MPB n_eff, EigenModeSource, modal transmission"
+title_en: "Meep Example 04 · Straight waveguide and guided modes — MPB n_eff, EigenModeSource, modal transmission"
 lang: ko
 series: meep-examples
 part: 4
 level: beginner
-runtime: "35 s (single core)"
+runtime: "2.5 min (baseline 34 s + 3 convergence runs)"
 meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/"
 tags: [meep, fdtd, waveguide, eigenmode, mode-decomposition]
@@ -19,18 +19,20 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 ![hero]({{ site.baseurl }}/assets/meep/04/02_field.png)
 
 - **What**: a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the fundamental TE mode injected at one end and measured at the other.
-- **Result**: T = 1.0000, R = 8×10⁻⁶ at 1.55 µm. Everything that goes in comes out.
+- **Result**: T = 1.0000, R = 8×10⁻⁶ at 1.55 µm. Everything that goes in comes out. The 0.5 µm strip guides three TE modes (n_eff = 3.15, 2.59, 1.45); only mode 1 is injected and measured.
 - **Takeaway**: start with a problem whose answer you already know. If T ≠ 1 here, the measurement setup is wrong, not the device.
-- **Code**: full script at the bottom, ~35 s on one core.
+- **Code**: full script at the bottom, ~2.5 min on one core (the baseline run is 34 s; the rest is the convergence check).
 
 ## 0. 이 글에서 배우는 것
 
 - `EigenModeSource`로 도파로의 기본 모드(fundamental mode)를 주입하기
 - mode monitor와 `get_eigenmode_coefficients`로 투과율(transmission)·반사율(reflection) 구하기
 - 2D에서 TE 편광을 고르는 규칙 (`eig_parity=mp.ODD_Y`)
+- `sim.get_eigenmode`로 단면이 가두는 모드와 유효 굴절률 n_eff 구하기 (MPB)
+- 전체 flux와 modal power가 왜 다른 수인지, 분모를 왜 통일해야 하는지
 - 물리 교훈: 정답을 아는 문제로 측정 도구를 먼저 검증한다
 
-**전제 지식**: 굴절률이 높은 곳에 빛이 갇힌다는 것(전반사). **다음 글**: [05 · Bent waveguide와 radiation loss]({{ site.baseurl }}/waveguide-bend-90/)
+**전제 지식**: 굴절률이 높은 곳에 빛이 갇힌다는 것(전반사). **공식 예제**: [Mode Decomposition 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/). **다음 글**: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/)
 
 ## 1. 무엇을 알고 싶은가
 
@@ -53,7 +55,27 @@ $$
 | $a^{-}_{\mathrm{in}}$ | 입력 monitor에서 뒤로 가는(반사) TE0 진폭 | `ci.alpha[0, :, 1]` |
 | $a^{+}_{\mathrm{out}}$ | 출력 monitor에서 앞으로 가는 TE0 진폭 | `co.alpha[0, :, 0]` |
 
-**가정과 유효 범위**: 2D(z 방향 무한), lossless 재료, 폭 0.5 µm에서 TE 단일 모드.
+**가정과 유효 범위**: 2D(z 방향 무한), lossless 재료. 폭 0.5 µm 슬랩은 TE 모드를 세 개 가두지만(아래 표) 기본 모드만 넣고 기본 모드에만 투영한다.
+
+### 모드는 몇 개인가: n_eff 먼저
+
+빛을 넣기 전에 이 단면이 어떤 모드를 가두는지 MPB로 푼다. Meep 안에서 `sim.get_eigenmode`를 부르면 같은 계산이 된다. 유효 굴절률 n_eff = k/f가 n_clad와 n_core 사이에 있으면 guided다.
+
+```python
+sim.init_sim()
+where = mp.Volume(center=mp.Vector3(src_x, 0), size=cross)   # the source cross-section
+for band in (1, 2, 3):
+    em = sim.get_eigenmode(fcen, mp.X, where, band, mp.Vector3(0.8 * n_si * fcen, 0, 0), parity=mp.ODD_Y)
+    print(band, em.k.x / fcen)          # n_eff = k / f
+```
+
+| band | n_eff | guided? |
+|---|---|---|
+| 1 | 3.153 | 예 |
+| 2 | 2.592 | 예 |
+| 3 | 1.447 | 간신히 (n_clad = 1.44) |
+
+`EigenModeSource(eig_band=1)`은 이 중 band 1만 넣고, `get_eigenmode_coefficients(..., [1])`은 band 1에만 투영한다. 그래서 이 글의 T는 "mode 1 → mode 1" 투과율이다.
 
 ### 결과 보기 전에 맞춰보기
 
@@ -62,6 +84,7 @@ $$
 | T | 1.000 (오차 10⁻³ 이내) | 반사·산란을 일으킬 것이 없다 |
 | R | ≪ 10⁻³ | 불연속 없음. 격자 이산화 잔차만 남는다 |
 | 필드 모양 | core 안에서 폭을 유지하며 전파, 밖에서 급감 | guided mode의 정의 |
+| guided 모드 수 | 1개 | 폭 0.5 µm는 파장의 1/3이니 단일 모드일 것 |
 
 **판정 기준**: \|T − 1\| > 0.01 또는 R > 10⁻³이면 구조가 아니라 source/monitor 배치나 정규화를 의심한다.
 
@@ -78,6 +101,11 @@ $$
 | `dpml` | 1.0 µm | ≈ λ/1.5, 반사 억제 충분 | 얇으면 PML 반사로 R ↑ |
 | `sx, sy` | 14 × 6 µm | source·monitor·PML 사이 간격 확보 | 좁히면 monitor가 PML에 닿음 |
 | 선 폭 `cross` | 3.0 µm | core + 바깥으로 새는 꼬리(evanescent tail) 포함 | core 폭만 잡으면 T < 1 |
+
+![source]({{ site.baseurl }}/assets/meep/04/00_source.png)
+*source의 시간 파형(왼쪽)과 power 스펙트럼(오른쪽). `GaussianSource`는 width = 1/fwidth = 7.75, 펄스 정점 t0 = 5 × width = 38.8에 온다. 빨간 선이 monitor 대역(1476–1632 nm) 가장자리이고 그곳의 source power는 중심의 8.5%다. 이 정도면 대역 끝까지 믿을 수 있다. 05편에서는 이 값이 0.005%로 떨어진다.*
+
+**강의 노트북과의 차이**: 강의 week 5는 n_core 3.4, 세로(+y) 도파로, MPB `ModeSolver`를 직접 부른다. 이 글은 공식 값 3.48, 가로 도파로, 같은 MPB를 `sim.get_eigenmode`로 Meep 안에서 부른다.
 
 ## 4. 코드 따라가기
 
@@ -222,6 +250,29 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 | T + R | 1.0000 | 에너지 보존 |
 | T (1.48–1.63 µm) | 0.99999–1.00001 | 대역 전체에서 평탄 |
 
+### 전체 flux와 modal power
+
+`add_mode_monitor`는 flux monitor이기도 하다. 같은 단면에서 두 가지 수를 뽑을 수 있다.
+
+| 양 | 분모 | 값 @ 1.55 µm |
+|---|---|---|
+| T (modal) = \|a_out+\|² / \|a_in+\|² | 입사 mode-1 power | 1.0000 |
+| T_total = flux_out / flux_in | 입사면 전체 flux | 1.0000 |
+| 입사 flux 중 mode 1의 몫 = \|a_in+\|² / flux_in | 입사면 전체 flux | 0.9999 |
+
+직선에서는 셋이 같다. source가 넣은 power의 99.99%가 mode 1이고, 다른 모드로 새거나 방사되는 것이 없기 때문이다. 05편의 bend에서는 전체 flux와 mode-1 power가 갈라지고, 그 차이가 방사 손실이다. 분모가 다른 두 수를 서로 빼면 손실이 음수로 나오는 일이 생기므로, 손실을 계산할 때는 분모를 하나로 맞춘다.
+
+### 수렴성
+
+| resolution | dpml | T | R | 비고 |
+|---|---|---|---|---|
+| 50 | 1.0 | 1.000000 | 8.0 × 10⁻⁶ | 기준 |
+| 25 | 1.0 | 0.999996 | 2.1 × 10⁻⁴ | 해상도 절반 |
+| 70 | 1.0 | 1.000000 | 1.4 × 10⁻⁶ | 해상도 1.4배 |
+| 50 | 0.5 | 1.000000 | 8.1 × 10⁻⁶ | PML 절반 |
+
+T는 해상도 25에서도 1에 10⁻⁵ 안으로 붙는다. R은 해상도에 따라 10⁻⁴에서 10⁻⁶으로 내려가고 PML 두께에는 둔감하다. 이 구조에서 R은 PML 반사가 아니라 격자 이산화 잔차다.
+
 ### 예측과 비교
 
 | 물리량 | 내 예측 (§2) | 시뮬레이션 | 판정 |
@@ -229,10 +280,18 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 | T | 1.000 ± 0.001 | 1.0000 | ✅ |
 | R | ≪ 10⁻³ | 8 × 10⁻⁶ | ✅ |
 | 필드 모양 | core 안에 갇힘 | 그림 확인 | ✅ |
+| guided 모드 수 | 1개 | 3개 (n_eff 3.15, 2.59, 1.45) | ❌ |
 
-불일치 없음. 직선에는 반사원이 없으니 맞아야 하는 결과이고, 이 값은 source·monitor·PML·정규화 설정이 옳다는 증거로 쓴다.
+T·R·필드는 예측대로다. 직선에는 반사원이 없으니 맞아야 하는 결과이고, 이 값은 source·monitor·PML·정규화 설정이 옳다는 증거로 쓴다.
+
+모드 수는 틀렸다. 슬랩 도파로의 V수 $V = (\pi w/\lambda)\sqrt{n_{\mathrm{core}}^2 - n_{\mathrm{clad}}^2} = 3.2$는 π를 넘으므로 TE 모드가 세 개 갇히고, 셋째는 n_eff = 1.447로 cladding(1.44) 바로 위에 걸려 있다. 그런데도 T = 1이 나온 이유는 `EigenModeSource`가 band 1만 넣고 mode monitor가 band 1에만 투영하기 때문이다. 모드가 여럿인 도파로에서 투과율을 말할 때는 어느 모드의 투과율인지 같이 말해야 한다.
 
 **검증 체크**: T + R = 1.0000 · source(x = −5)와 monitor(x = −4, +5) 모두 PML(|x| > 6) 밖 · 종료는 field decay 기준.
+
+### 주장할 수 있는 것 / 없는 것
+
+- 할 수 있는 것: 이 설정에서 mode 1 → mode 1 투과율은 1이고, 설정(source, monitor, PML, 정규화)은 신뢰할 수 있다.
+- 할 수 없는 것: 3D SOI 도파로의 값. 2D 슬랩이라 유효 굴절률도 모드 수도 3D와 다르다. R의 둘째 자리 이하는 해상도에 따라 변한다.
 
 ## 6. 흔한 실수
 
@@ -249,7 +308,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
 | `resolution` 50 → 20 | T가 1에서 조금 벗어남 | \|T − 1\| |
-| `w_core` 0.5 → 1.2 µm | 고차 모드 등장, `eig_band=2`도 guided | MPB 모드 수 |
+| `w_core` 0.5 → 0.2 µm | band 2·3의 n_eff가 n_clad 아래로 내려가 단일 모드가 됨 | n_eff 표 |
 | `dpml` 1.0 → 0.2 µm | PML 반사로 R 증가 | R |
 
 ## 8. 전체 코드
@@ -257,13 +316,15 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 <details>
 <summary>straight_waveguide.py (클릭해서 펼치기)</summary>
 {% highlight python %}
-"""Meep Example 01 - Straight Waveguide.
+"""Meep Example 04 - Straight waveguide and guided modes.
 
-2D silicon strip waveguide in SiO2. Inject the fundamental TE mode at one end,
-measure transmission T and reflection R with mode monitors. Expected: T = 1, R = 0.
+2D silicon strip waveguide in SiO2. Find the guided mode(s) and their effective index with
+the eigenmode solver, inject the fundamental TE mode with EigenModeSource, and measure
+modal transmission T and reflection R with mode monitors. Expected: T = 1, R = 0.
+Then compare total flux with modal power, and check convergence in resolution and PML.
 
-Run:  python straight_waveguide.py            (~25 s on one core)
-Out:  01_layout.png, 02_field.png, result.json  (-> ../assets/04/)
+Run:  python straight_waveguide.py            (~3 min on one core: baseline + 2 convergence runs)
+Out:  00_source.png, 01_layout.png, 02_field.png, result.json  (-> ../assets/04/)
 """
 import json
 import os
@@ -273,11 +334,10 @@ import time
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import meep as mp
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blogfig import Label, annotated_layout, field_figure   # noqa: E402
+from blogfig import Label, annotated_layout, field_figure, source_figure   # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "04")
 os.makedirs(OUT, exist_ok=True)
@@ -287,13 +347,14 @@ os.makedirs(OUT, exist_ok=True)
 wl   = 1.55              # wavelength [um]
 fcen = 1 / wl            # center frequency [1/um]
 df   = 0.2 * fcen        # source bandwidth (Gaussian pulse)
+df_mon = 0.1 * fcen      # monitor bandwidth
 nfreq = 11               # number of frequencies the monitors record
 
 w_core = 0.5             # Si strip width [um]
 n_si, n_sio2 = 3.48, 1.44
 
-resolution = 50          # pixels per um  -> core = 25 px, lambda/n_si = 22 px
-dpml = 1.0               # PML thickness [um]
+RESOLUTION = 50          # pixels per um  -> core = 25 px, lambda/n_si = 22 px
+DPML = 1.0               # PML thickness [um]
 sx, sy = 14.0, 6.0       # cell size [um], PML included
 
 # ---------------------------------------------------------------- (2) materials & geometry
@@ -305,32 +366,70 @@ geometry = [mp.Block(center=mp.Vector3(0, 0),
 # ---------------------------------------------------------------- (3) source
 cross = mp.Vector3(0, 3.0)   # a vertical line 3 um tall: wider than the core to include the evanescent tail
 src_x, mon_in_x, mon_out_x = -5.0, -4.0, +5.0
+PARITY = mp.ODD_Y            # 2D TE polarization (Ey, Hx, Hz)
 
 sources = [mp.EigenModeSource(src=mp.GaussianSource(fcen, fwidth=df),
                               center=mp.Vector3(src_x, 0), size=cross,
                               eig_band=1,               # 1-indexed: the fundamental mode
-                              eig_parity=mp.ODD_Y)]     # 2D TE polarization (Ey, Hx, Hz)
+                              eig_parity=PARITY)]
+decay_pt = (mon_out_x + 0.5, 0)   # where stop_when_fields_decayed watches (step 6)
+
 
 # ---------------------------------------------------------------- (4) simulation & boundaries
-sim = mp.Simulation(cell_size=mp.Vector3(sx, sy),
-                    resolution=resolution,
-                    boundary_layers=[mp.PML(dpml)],        # absorbing layer on all four sides
-                    geometry=geometry,
-                    sources=sources,
-                    default_material=mp.Medium(index=n_sio2))
+def build(resolution=RESOLUTION, dpml=DPML):
+    """Simulation plus its two mode monitors. One function so every run is set up the same way."""
+    sim = mp.Simulation(cell_size=mp.Vector3(sx, sy),
+                        resolution=resolution,
+                        boundary_layers=[mp.PML(dpml)],        # absorbing layer on all four sides
+                        geometry=geometry,
+                        sources=sources,
+                        default_material=mp.Medium(index=n_sio2))
+    # ------------------------------------------------------------ (5) monitors
+    mon_in = sim.add_mode_monitor(fcen, df_mon, nfreq,
+                                  mp.ModeRegion(center=mp.Vector3(mon_in_x, 0), size=cross))
+    mon_out = sim.add_mode_monitor(fcen, df_mon, nfreq,
+                                   mp.ModeRegion(center=mp.Vector3(mon_out_x, 0), size=cross))
+    return sim, mon_in, mon_out
 
-# ---------------------------------------------------------------- (5) monitors
-mon_in  = sim.add_mode_monitor(fcen, 0.1 * fcen, nfreq,
-                               mp.ModeRegion(center=mp.Vector3(mon_in_x, 0), size=cross))
-mon_out = sim.add_mode_monitor(fcen, 0.1 * fcen, nfreq,
-                               mp.ModeRegion(center=mp.Vector3(mon_out_x, 0), size=cross))
 
-# ALWAYS look at the layout before running (drawn here so the mode monitors show up)
-decay_pt = (mon_out_x + 0.5, 0)   # where stop_when_fields_decayed watches (step 6)
+def run_and_measure(sim, mon_in, mon_out):
+    # ------------------------------------------------------------ (6) run & stop condition
+    sim.run(until_after_sources=mp.stop_when_fields_decayed(
+                25,                         # check every 25 time units
+                mp.Ey,                      # which field component to watch
+                mp.Vector3(*decay_pt),      # where to watch: just past the output monitor
+                1e-6))                      # stop when |Ey|^2 has decayed to 1e-6 of its peak
+    # ------------------------------------------------------------ (7) post-processing
+    ci = sim.get_eigenmode_coefficients(mon_in,  [1], eig_parity=PARITY)
+    co = sim.get_eigenmode_coefficients(mon_out, [1], eig_parity=PARITY)
+    p_in_fwd  = np.abs(ci.alpha[0, :, 0]) ** 2    # forward mode-1 power at the input monitor   (a_in+)
+    p_in_back = np.abs(ci.alpha[0, :, 1]) ** 2    # backward mode-1 power at the input monitor  (a_in-)
+    p_out_fwd = np.abs(co.alpha[0, :, 0]) ** 2    # forward mode-1 power at the output monitor  (a_out+)
+    flux_in  = np.array(mp.get_fluxes(mon_in))    # TOTAL power through the input plane (all modes, net)
+    flux_out = np.array(mp.get_fluxes(mon_out))   # TOTAL power through the output plane
+    return {
+        "T": p_out_fwd / p_in_fwd,                # modal transmission  (section 2, first formula)
+        "R": p_in_back / p_in_fwd,                # modal reflection    (section 2, second formula)
+        "T_total": flux_out / flux_in,            # total-flux transmission
+        "mode1_fraction_in": p_in_fwd / flux_in,  # how much of the injected power is really mode 1
+        "freqs": np.array(mp.get_flux_freqs(mon_in)),
+    }
+
+
+t_all = time.time()
+ic = nfreq // 2
+
+# ================================================================ baseline run with figures
+sim, mon_in, mon_out = build()
+
+# source waveform and spectrum (same GaussianSource the EigenModeSource wraps)
+src_info = source_figure(fcen, df, os.path.join(OUT, "00_source.png"), mon_fcen=fcen, mon_df=df_mon,
+                         wl_scale=1000.0, wl_unit="nm", time_unit="um/c")
+
 annotated_layout(
-    sim, os.path.join(OUT, "01_layout.png"), dpml=dpml,
+    sim, os.path.join(OUT, "01_layout.png"), dpml=DPML,
     title="2D Si strip waveguide (w = 0.5 um): TE0 EigenModeSource, mode monitors, PML",
-    params_text=f"wl={wl} um  res={resolution}/um\ncell={sx}x{sy}  dpml={dpml}\nn_si={n_si}  n_sio2={n_sio2}",
+    params_text=f"wl={wl} um  res={RESOLUTION}/um\ncell={sx}x{sy}  dpml={DPML}\nn_si={n_si}  n_sio2={n_sio2}",
     params_xy=(-2.2, 1.85), decay_point=decay_pt, decay_text_xy=(2.6, 1.0),
     labels=[
         Label("Si core (geometry)", (1.5, 0.0), (1.0, -1.2), step=2, color="black"),
@@ -339,45 +438,52 @@ annotated_layout(
         Label("mode monitor: out", (mon_out_x, -1.3), (mon_out_x - 0.6, -2.5), step=5, color="blue"),
     ])
 
-# steady-state field map of the whole non-PML region (for the figure in section 5)
-nonpml = mp.Volume(center=mp.Vector3(), size=mp.Vector3(sx - 2 * dpml, sy - 2 * dpml))
+# guided modes of the cross-section: effective index n_eff = k / f  (MPB, called through Meep)
+sim.init_sim()
+where = mp.Volume(center=mp.Vector3(src_x, 0), size=cross)
+neff = {}
+for band in (1, 2, 3):
+    em = sim.get_eigenmode(fcen, mp.X, where, band, mp.Vector3(0.8 * n_si * fcen, 0, 0), parity=PARITY)
+    neff[band] = float(em.k.x / fcen) if em is not None else None
+print("n_eff by band:", neff, f"(guided if {n_sio2} < n_eff < {n_si})")
+
+nonpml = mp.Volume(center=mp.Vector3(), size=mp.Vector3(sx - 2 * DPML, sy - 2 * DPML))
 dft = sim.add_dft_fields([mp.Ey], fcen, 0, 1, where=nonpml)
 
-# ---------------------------------------------------------------- (6) run & stop condition
 t0 = time.time()
-sim.run(until_after_sources=mp.stop_when_fields_decayed(
-            25,                         # check every 25 time units
-            mp.Ey,                      # which field component to watch
-            mp.Vector3(*decay_pt),      # where to watch: just past the output monitor
-            1e-6))                      # stop when |Ey|^2 has decayed to 1e-6 of its peak
-wall = time.time() - t0
-
-# ---------------------------------------------------------------- (7) post-processing
-ci = sim.get_eigenmode_coefficients(mon_in,  [1], eig_parity=mp.ODD_Y)
-co = sim.get_eigenmode_coefficients(mon_out, [1], eig_parity=mp.ODD_Y)
-
-p_in_fwd  = np.abs(ci.alpha[0, :, 0]) ** 2    # forward power at the input monitor   (a_in+)
-p_in_back = np.abs(ci.alpha[0, :, 1]) ** 2    # backward power at the input monitor  (a_in-)
-p_out_fwd = np.abs(co.alpha[0, :, 0]) ** 2    # forward power at the output monitor  (a_out+)
-
-T = p_out_fwd / p_in_fwd                      # section 2, first formula
-R = p_in_back / p_in_fwd                      # section 2, second formula
-freqs = np.array(mp.get_flux_freqs(mon_in))
-ic = nfreq // 2                               # index of the center frequency
-print(f"T = {T[ic]:.6f}, R = {R[ic]:.2e}, T+R = {T[ic] + R[ic]:.6f}  (wall {wall:.1f} s)")
-print(f"T over band {1/freqs.max():.3f}-{1/freqs.min():.3f} um: {T.min():.5f} .. {T.max():.5f}")
+base = run_and_measure(sim, mon_in, mon_out)
+wall_base = time.time() - t0
+print(f"T = {base['T'][ic]:.6f}, R = {base['R'][ic]:.2e}, T+R = {base['T'][ic] + base['R'][ic]:.6f}  (wall {wall_base:.1f} s)")
+print(f"T_total (flux) = {base['T_total'][ic]:.5f}, mode-1 fraction of input flux = {base['mode1_fraction_in'][ic]:.4f}")
+wls = 1 / base["freqs"]
+print(f"T over band {wls.min():.3f}-{wls.max():.3f} um: {base['T'].min():.5f} .. {base['T'].max():.5f}")
 
 ey = sim.get_dft_array(dft, mp.Ey, 0)
 eps = sim.get_array(vol=nonpml, component=mp.Dielectric)   # structure outline for the figure
-extent = [-(sx / 2 - dpml), sx / 2 - dpml, -(sy / 2 - dpml), sy / 2 - dpml]
+extent = [-(sx / 2 - DPML), sx / 2 - DPML, -(sy / 2 - DPML), sy / 2 - DPML]
 field_figure(ey, extent, os.path.join(OUT, "02_field.png"), core_halfwidth=None, wl=wl, eps=eps)
+
+# ================================================================ convergence: resolution x PML
+convergence = [{"resolution": RESOLUTION, "dpml": DPML, "T": float(base["T"][ic]), "R": float(base["R"][ic]),
+                "T_total": float(base["T_total"][ic]), "wall_s": wall_base}]
+for res, dpml in ((25, 1.0), (70, 1.0), (50, 0.5)):   # change one thing at a time
+    sim, mon_in, mon_out = build(res, dpml)
+    t0 = time.time()
+    r = run_and_measure(sim, mon_in, mon_out)
+    convergence.append({"resolution": res, "dpml": dpml, "T": float(r["T"][ic]), "R": float(r["R"][ic]),
+                        "T_total": float(r["T_total"][ic]), "wall_s": time.time() - t0})
+    print(f"convergence res={res} dpml={dpml}: T={r['T'][ic]:.6f} R={r['R'][ic]:.2e} T_total={r['T_total'][ic]:.5f}")
 
 if mp.am_master():
     with open(os.path.join(OUT, "result.json"), "w") as f:
-        json.dump({"T": float(T[ic]), "R": float(R[ic]), "T_plus_R": float(T[ic] + R[ic]),
-                   "T_band_min": float(T.min()), "T_band_max": float(T.max()),
-                   "wavelengths_um": (1 / freqs).tolist(), "T_spectrum": T.tolist(),
-                   "R_spectrum": R.tolist(), "wall_s": wall, "meep": mp.__version__},
+        json.dump({"T": float(base["T"][ic]), "R": float(base["R"][ic]), "T_plus_R": float(base["T"][ic] + base["R"][ic]),
+                   "T_total": float(base["T_total"][ic]), "mode1_fraction_in": float(base["mode1_fraction_in"][ic]),
+                   "neff": neff, "n_core": n_si, "n_clad": n_sio2,
+                   "T_band_min": float(base["T"].min()), "T_band_max": float(base["T"].max()),
+                   "wavelengths_um": wls.tolist(), "T_spectrum": base["T"].tolist(), "R_spectrum": base["R"].tolist(),
+                   "T_total_spectrum": base["T_total"].tolist(),
+                   "source": src_info, "convergence": convergence,
+                   "wall_s_total": time.time() - t_all, "meep": mp.__version__},
                   f, indent=2)
 {% endhighlight %}
 </details>
@@ -386,14 +492,25 @@ if mp.am_master():
 
 **실행 결과 (2026-10-23 재실행)**:
 ```
-T = 1.000000, R = 8.04e-06, T+R = 1.000008  (wall 34.9 s)
+n_eff by band: {1: 3.153, 2: 2.592, 3: 1.447} (guided if 1.44 < n_eff < 3.48)
+T = 1.000000, R = 8.04e-06, T+R = 1.000008  (wall 33.8 s)
+T_total (flux) = 1.00000, mode-1 fraction of input flux = 0.9999
 T over band 1.476-1.632 um: 0.99999 .. 1.00001
+convergence res=25 dpml=1.0: T=0.999996 R=2.13e-04 T_total=1.00000
+convergence res=70 dpml=1.0: T=1.000000 R=1.44e-06 T_total=1.00000
+convergence res=50 dpml=0.5: T=1.000000 R=8.08e-06 T_total=1.00000
 ```
 
 **재현 환경**: meep 1.33.0 · Python 3.11 · `conda install -c conda-forge pymeep` · 실행 `python straight_waveguide.py` (약 35 s, 단일 코어)
 
+## 확인 질문
+
+1. `cross`를 core 폭 0.5 µm로 줄이면 T가 1보다 작아진다. source 쪽과 monitor 쪽 중 어느 쪽 때문인가?
+2. n_eff 표에서 band 3은 1.447이다. `eig_band=3`으로 넣으면 PML에 닿기 전에 어떻게 될까?
+3. 05편의 bend에서는 전체 flux 투과율과 mode-1 투과율 중 어느 쪽이 더 클까? 그 차이는 무엇인가?
+
 ## 9. 더 읽기
 
-- 공식 Mode Decomposition 튜토리얼: https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/
-- `EigenModeSource` 레퍼런스: https://meep.readthedocs.io/en/latest/Python_User_Interface/#eigenmodesource
-- 다음 글: [05 · Bent waveguide와 radiation loss]({{ site.baseurl }}/waveguide-bend-90/)
+- [공식 Mode Decomposition 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/)
+- [`EigenModeSource` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#eigenmodesource) · [`get_eigenmode` / mode decomposition 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#mode-decomposition)
+- 다음 글: [05 · Bent waveguide와 radius trade-off]({{ site.baseurl }}/waveguide-bend-90/)
