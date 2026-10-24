@@ -1,4 +1,5 @@
 {% assign lang = page.lang | default: 'ko' %}
+{% assign asset_version = site.time | date: '%s' %}
 {% assign ui = site.data.ui[lang] %}
 {% assign home_path = '/' %}
 {% assign counterpart = page.url | remove_first: '/en' %}

@@ -16,12 +16,12 @@
   <link rel="canonical" href="{{ page.url | absolute_url }}">
   <link rel="alternate" type="application/atom+xml" title="Meep Examples" href="{{ '/feed.xml' | relative_url }}">
   <script>{% include theme-bootstrap.js %}</script>
-  <link rel="stylesheet" href="{{ '/assets/explorer.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/inverse-story.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/explorer.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/inverse-story.css' | relative_url }}?v={{ asset_version }}">
   {% include settings-head.html %}
   <script src="{{ '/assets/vendor/gsap-3.15.0.min.js' | relative_url }}" defer></script>
-  <script src="{{ '/assets/explorer.js' | relative_url }}" defer></script>
-  <script src="{{ '/assets/inverse-story.js' | relative_url }}" defer></script>
+  <script src="{{ '/assets/explorer.js' | relative_url }}?v={{ asset_version }}" defer></script>
+  <script src="{{ '/assets/inverse-story.js' | relative_url }}?v={{ asset_version }}" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">{{ copy.text_002 | escape }}</a>
