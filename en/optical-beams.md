@@ -116,6 +116,35 @@ The camera direction and sequential rotations follow the original, with its dist
 
 The original Mayavi script currently defaults to the sum of squared real and imaginary parts, and also provides a line that selects only the squared real part. This page’s main view uses Σ[Re E<sub>j</sub>]²; the alternative uses Σ&#124;E<sub>j</sub>&#124;². These are different physical quantities read from the same stored data, not competing versions of one correct answer.
 
+<h3 id="vortex-animation">3D wavefronts moving in time</h3>
+
+Animating the white isosurface and both sections together reveals the passing spiral phase pattern. The camera, medium block, and red direction lines remain fixed.
+
+<figure class="lesson-figure lesson-animation">
+  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/poster.png" data-animation-src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.gif" data-static-src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/poster.png" alt="Time-varying 3D vortex wavefronts and two sections reconstructed from the full-grid complex Meep field" loading="lazy"></a>
+  <figcaption>A phase cycle of the monochromatic steady state. The 24 frames represent one period of the instantaneous squared field, 0.1 a/c, played slowly as a 1.92-second loop. They do not include the transient arrival of the beam. The field isosurface and both sections are updated, while the medium is shown with translucent shading.</figcaption>
+  <button type="button" class="animation-toggle" hidden>Play animation</button>
+</figure>
+
+[WebP file]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.webp) · [Six phases side by side]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/contact_sheet.png) · [Animation validation record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/checks.json)
+
+The earlier 3D file stored only the sums of squared real and imaginary components, leaving out the cross term needed for time evolution. We reran Meep with the same conditions and resolution, saving A=Σ Re(E<sub>j</sub>)², B=Σ Im(E<sub>j</sub>)², and C=Σ Re(E<sub>j</sub>)Im(E<sub>j</sub>) at t₀=10 a/c. With the time factor exp(−iωτ), the reconstruction is **R(τ)=A cos²φ+B sin²φ+2C sinφ cosφ**, where φ=2πfτ. This is a monochromatic phase reconstruction from a complex-field snapshot, distinct from a movie of actual FDTD time frames or DFT accumulation.
+
+We then advanced Meep and compared the reconstruction with the instantaneous squared field at four later times. Relative L2 errors, calculated over every grid point in the displayed lower-half volume and both sections, were below 1% in all three regions, with a maximum of **0.09361%**. The [direct FDTD comparison record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/motion-validation.json) lists errors at each time. Every frame uses all 325×325×125 samples at stride=1. The isosurface level and section color limits are fixed at 2% of the maximum possible value over the full space and phase cycle. Brightness is not renormalized for each frame.
+
+<h3 id="vortex-material">Is the lower surface a mirror?</h3>
+
+The [original Mayavi code](https://github.com/danielkotik/Optical-beams-MEEP/blob/ca145119e5bd0f0804d846ea42e35e4c3daa91de/scripts/Laguerre_Gauss_3d/plot_3d_mayavi.py) draws this block as a **translucent representation of the higher-index medium**. It specifies an RGB color and an opacity of 0.5, without assigning a mirror material. This 0.5 is a display setting, not a light transmission of 50%.
+
+The white pattern inside the block is the same 3D field isosurface seen through the translucent block.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/medium_material_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/medium_material_comparison.png" alt="Comparison of translucent medium shading and a subtly glossy material using the same vortex field and camera" loading="lazy"></a>
+  <figcaption>Left: translucent shading close to the original. Right: a Blender display material with a subtle gloss. Both use the same field, isosurface, camera, and render sample count. The main animation uses the material on the left.</figcaption>
+</figure>
+
+Blender surface reflections can produce a similar gloss. The right-hand image changes only the visualization material; it does not replace Meep’s dielectric interface with a metal or perfectly reflecting boundary. The [material comparison record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/material-checks.json) stores the display settings and image hashes.
+
 <h2 id="airy">4. An Airy beam: why the bright pattern curves</h2>
 
 <figure class="lesson-figure">
@@ -234,6 +263,7 @@ python source/scripts/Airy_2d/Airy2d.py -n1 1 -n2 1 -M 0 -W 4
 - Curved-interface completion checks, finite-array checks, and agreement between the original HDF5 data and instantaneous squared fields are in [curved checks.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/checks.json). Sources and reuse records are in [curved provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/provenance.json).
 - Vortex and Airy execution checks, source-integral comparisons, and field-output checks are in [gallery checks.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/checks.json); conditions are in [gallery provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/provenance.json).
 - Full-grid isosurface field-value agreement, saved-data hashes, and direction-line coordinate checks are in the [3D rerender checks]({{ site.baseurl }}/assets/meep/optical-beams/gallery/native3d-checks.json). Sources for the original, earlier, and corrected comparison images are in the [comparison record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/comparison-provenance.json).
+- The monochromatic phase reconstruction of the 3D wavefronts is checked against [direct Meep time samples]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/motion-validation.json) and through [frame, normalization, and file checks]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/checks.json). It is not a movie of the beam’s arrival or a test of grid and PML convergence.
 - In the [planar phase diagnostics]({{ site.baseurl }}/assets/meep/optical-beams/checks.json), the local refracted wavefront direction for 30° incidence was 50.66°, approximately 0.31° from the Snell reference of 50.35°. This is not a direct measurement of the beam center or power.
 - The relative L2 residuals of harmonic fits over the final two Gaussian periods are 0.0822% for planar 30°, 0.0207% for planar 45°, 0.0216% for concave, and 0.1021% for convex. These check harmonic fits over a short interval; they do not establish grid convergence.
 - Numerical integration of the original Airy source produced SciPy warnings about subdivision limits and slow convergence. These are retained in the run logs. Finite fields and normal completion alone do not guarantee convergence of the source integral.
@@ -243,6 +273,8 @@ python source/scripts/Airy_2d/Airy2d.py -n1 1 -n2 1 -M 0 -W 4
 <summary>English summary</summary>
 
 Actual single-core Meep 1.33.0 runs compare planar, concave and convex Gaussian interfaces, a charge-two fully 3D Laguerre–Gaussian beam, and an M=0, W=4 free-space Airy beam. Main figures show instantaneous squared real electric fields on black, preserving phase fringes. The original grid and runtime are retained. An analytically equivalent Bessel reduction accelerates the 3D source and is checked against the original double integral. Native array export replaces Python output callbacks. These are field visualizations, not convergence-tested power efficiencies or pixel-identical reproductions of the upstream PNGs.
+
+The 3D animation reconstructs a monochromatic phase cycle from the complex Meep snapshot, including the real–imaginary cross term. Native wavefront contours and two measured cuts change together, with fixed camera and normalization. Direct subsequent Meep samples test the reconstruction; this is not a transient arrival movie. The lower block represents the dielectric medium. Its optional glossy Blender appearance changes only the display material.
 
 </details>
 

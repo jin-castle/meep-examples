@@ -114,6 +114,35 @@ Laguerre–Gaussian beam은 축 주위로 위상이 감기는 빔입니다. 이�
 
 원본 Mayavi 스크립트의 현재 기본값은 실수부·허수부 제곱의 합이고, 실수부 제곱만 선택하는 줄도 제공합니다. 이 글의 주 그림은 Σ[Re E<sub>j</sub>]², 대안은 Σ&#124;E<sub>j</sub>&#124;²입니다. 두 표현은 같은 저장 데이터를 다른 물리량으로 읽은 것이며, 하나를 다른 하나의 정답으로 취급하지 않습니다.
 
+<h3 id="vortex-animation">시간에 따라 움직이는 3D 파면</h3>
+
+흰 등위면과 두 단면을 함께 움직이면 나선형 위상 무늬가 지나가는 모습을 볼 수 있습니다. 카메라, 매질 블록과 빨간 방향선은 고정했습니다.
+
+<figure class="lesson-figure lesson-animation">
+  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/poster.png" data-animation-src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.gif" data-static-src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/poster.png" alt="전체 격자 Meep 복소장에서 재구성한 3D vortex 파면과 두 단면의 시간 변화" loading="lazy"></a>
+  <figcaption>단색파 정상상태의 위상 변화입니다. 24프레임이 순간장 제곱의 한 주기인 0.1 a/c를 나타내며, 화면에서는 1.92초로 느리게 반복합니다. 빔이 처음 도착하는 과도 과정은 포함하지 않습니다. 장의 등위면과 두 단면을 갱신하고 매질은 반투명 음영으로 표시했습니다.</figcaption>
+  <button type="button" class="animation-toggle" hidden>애니메이션 재생</button>
+</figure>
+
+[WebP 파일]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.webp) · [여섯 위상 나란히 보기]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/contact_sheet.png) · [애니메이션 검사 기록]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/checks.json)
+
+기존 3D 파일에는 실수부·허수부의 제곱 합만 있어 시간 변화에 필요한 교차항이 빠져 있었습니다. 같은 Meep 조건과 해상도로 다시 계산해 t₀=10 a/c의 A=Σ Re(E<sub>j</sub>)², B=Σ Im(E<sub>j</sub>)², C=Σ Re(E<sub>j</sub>)Im(E<sub>j</sub>)를 저장했습니다. 시간 인자 exp(−iωτ)에 따라 **R(τ)=A cos²φ+B sin²φ+2C sinφ cosφ**, φ=2πfτ로 재구성합니다. 이는 복소장 스냅샷의 단색파 위상 재구성이며, 실제 FDTD 시간 프레임이나 DFT 누적 과정을 재생한 영상과 구분합니다.
+
+이어 Meep을 실제로 더 진행한 네 시각에서 재구성값과 순간장 제곱을 비교했습니다. 표시하는 하반부 체적과 두 단면의 모든 격자점을 포함해 계산한 상대 L2 오차는 세 영역에서 모두 1% 미만이며, 최대값은 **0.09361%**였습니다. [직접 FDTD 비교 기록]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/motion-validation.json)에서 시각별 오차를 확인할 수 있습니다. 모든 프레임은 325×325×125 표본을 stride=1로 사용하며, 전체 공간·위상에서 가능한 최대값의 2%를 등위면과 단면 색상 상한으로 고정합니다. 프레임마다 밝기를 다시 맞추지 않습니다.
+
+<h3 id="vortex-material">아래쪽 면은 거울일까?</h3>
+
+[원본 Mayavi 코드](https://github.com/danielkotik/Optical-beams-MEEP/blob/ca145119e5bd0f0804d846ea42e35e4c3daa91de/scripts/Laguerre_Gauss_3d/plot_3d_mayavi.py)는 이 블록을 **굴절률이 높은 매질의 반투명 표시**로 그립니다. RGB 색과 불투명도 0.5를 지정하며 별도의 거울 재질은 설정하지 않습니다. 이 0.5는 화면 표시값이며 빛의 투과율 50%를 뜻하지 않습니다.
+
+블록 안쪽의 흰 무늬도 같은 3D 장의 등위면이 반투명 블록을 통해 보이는 것입니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/medium_material_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/medium_material_comparison.png" alt="같은 vortex 장과 카메라에서 반투명 매질 음영과 약한 광택 재질을 비교" loading="lazy"></a>
+  <figcaption>왼쪽은 원본에 가까운 반투명 음영, 오른쪽은 약한 광택을 더한 Blender 표시 재질입니다. 같은 장·등위면·카메라·렌더 샘플 수로 비교했습니다. 주 애니메이션에는 왼쪽 재질을 사용합니다.</figcaption>
+</figure>
+
+Blender의 표면 반사로 비슷한 광택을 줄 수 있습니다. 오른쪽은 시각화 재질만 바꾼 비교이며, Meep의 유전체 경계를 금속이나 완전 반사 경계로 바꾼 계산은 아닙니다. [재질 비교 기록]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/material-checks.json)에 표시 설정과 이미지 해시를 남겼습니다.
+
 <h2 id="airy">4. Airy beam: 밝은 무늬가 휘어 가는 이유</h2>
 
 <figure class="lesson-figure">
@@ -232,6 +261,7 @@ python source/scripts/Airy_2d/Airy2d.py -n1 1 -n2 1 -M 0 -W 4
 - 곡면의 종료·배열 유한성·원본 HDF5와 순간장 제곱 일치는 [곡면 checks.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/checks.json), 출처와 재사용 기록은 [곡면 provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/provenance.json)에 있습니다.
 - Vortex·Airy의 실행, 소스 적분 비교와 장 출력 검사는 [갤러리 checks.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/checks.json), 조건은 [갤러리 provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/provenance.json)에 있습니다.
 - 전체 격자 등위면의 장 값 일치, 저장 데이터 해시와 방향선 좌표 검사는 [3D 재렌더 검사]({{ site.baseurl }}/assets/meep/optical-beams/gallery/native3d-checks.json), 원본·이전·수정 비교 이미지의 출처는 [비교 기록]({{ site.baseurl }}/assets/meep/optical-beams/gallery/comparison-provenance.json)에 있습니다.
+- 3D 파면의 단색파 위상 재구성은 [직접 Meep 시간 비교]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/motion-validation.json)와 [프레임·정규화·파일 검사]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/checks.json)로 검증합니다. 실제 빔 도착 영상이나 격자·PML 수렴 검증은 아닙니다.
 - [평면 위상 진단]({{ site.baseurl }}/assets/meep/optical-beams/checks.json)에서 30°의 국소 굴절 파면 방향은 50.66°로 Snell 기준 50.35°와 약 0.31° 차이였습니다. 빔 중심이나 전력을 직접 잰 값은 아닙니다.
 - Gaussian 최종 두 주기의 조화 성분 적합 상대 L2 잔차는 평면 30° 0.0822%, 평면 45° 0.0207%, 오목 0.0216%, 볼록 0.1021%입니다. 짧은 구간의 조화파 적합 검사이며 격자 수렴을 증명하지 않습니다.
 - 원본 Airy 소스의 수치 적분에서 SciPy의 분할 한계·느린 수렴 경고가 발생했습니다. 실행 기록에 보존했으며, 유한한 장과 정상 종료만으로 소스 적분의 수렴을 보장하지 않습니다.
@@ -241,6 +271,8 @@ python source/scripts/Airy_2d/Airy2d.py -n1 1 -n2 1 -M 0 -W 4
 <summary>English summary</summary>
 
 Actual single-core Meep 1.33.0 runs compare planar, concave and convex Gaussian interfaces, a charge-two fully 3D Laguerre–Gaussian beam, and an M=0, W=4 free-space Airy beam. Main figures show instantaneous squared real electric fields on black, preserving phase fringes. The original grid and runtime are retained. An analytically equivalent Bessel reduction accelerates the 3D source and is checked against the original double integral. Native array export replaces Python output callbacks. These are field visualizations, not convergence-tested power efficiencies or pixel-identical reproductions of the upstream PNGs.
+
+The 3D animation reconstructs a monochromatic phase cycle from the complex Meep snapshot, including the real–imaginary cross term. Native wavefront contours and two measured cuts change together, with fixed camera and normalization. Direct subsequent Meep samples test the reconstruction; this is not a transient arrival movie. The lower block represents the dielectric medium. Its optional glossy Blender appearance changes only the display material.
 
 </details>
 

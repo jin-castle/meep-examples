@@ -58,7 +58,11 @@ def main():
     parser.add_argument("--upstream", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--beam", choices=("lg", "airy"), required=True)
+    parser.add_argument("--capture-motion", action="store_true",
+                        help="LG only: retain the phase cross term and verify later FDTD samples")
     args = parser.parse_args()
+    if args.capture_motion and args.beam != "lg":
+        parser.error("--capture-motion requires --beam lg")
     root, out = args.upstream.resolve(), args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
     sys.path.insert(0, str(root))
@@ -101,14 +105,21 @@ def main():
                     hf.create_dataset(name, data=coords)
                 r2 = hf.create_dataset("real2", shape=shape, dtype="f8", chunks=(1,shape[1],shape[2]), compression="lzf")
                 i2 = hf.create_dataset("imag2", shape=shape, dtype="f8", chunks=(1,shape[1],shape[2]), compression="lzf")
+                cross = hf.create_dataset("cross", shape=shape, dtype="f8", chunks=(1,shape[1],shape[2]), compression="lzf") if args.capture_motion else None
                 for ix, xx in enumerate(x):
                     real, imag = np.zeros(shape[1:]), np.zeros(shape[1:])
+                    mixed = np.zeros(shape[1:])
                     for component in (mp.Ex,mp.Ey,mp.Ez):
                         field = sim.get_array(center=mp.Vector3(xx,0,0),size=mp.Vector3(0,5,4),component=component,cmplx=True)
                         real += field.real**2
                         imag += field.imag**2
+                        if cross is not None:
+                            mixed += field.real * field.imag
                     finite &= bool(np.isfinite(real).all() and np.isfinite(imag).all())
                     r2[ix], i2[ix] = real, imag
+                    if cross is not None:
+                        finite &= bool(np.isfinite(mixed).all())
+                        cross[ix] = mixed
                     if ix % 50 == 0:
                         print("EXPORT",ix,shape[0],flush=True)
                 for name, center, size in (("longitudinal",mp.Vector3(),mp.Vector3(5,5,0)),("transverse",mp.Vector3(-1.5,0,0),mp.Vector3(0,5,4))):
@@ -120,8 +131,51 @@ def main():
         (out / "result.json").write_text(json.dumps(result, indent=2))
         print("RESULT",json.dumps(result),flush=True)
 
+    def validate_motion(sim):
+        now = float(sim.meep_time())
+        delta = now - result["final_time"]
+        if delta < .01:
+            return
+        phase = 2 * math.pi * result["numerical"]["frequency"] * delta
+        cosine, sine = math.cos(phase), math.sin(phase)
+        sums = {name: [0., 0.] for name in ("native_half_volume", "incident_cut", "reflected_cut")}
+        with h5py.File(out / "fields.h5", "r") as hf:
+            half_end = 30 + math.ceil((len(hf["z"]) - 60) / 2) + 1
+            for ix in range(30, len(hf["x"]) - 30):
+                actual = np.zeros((len(hf["y"]), len(hf["z"])))
+                for component in (mp.Ex, mp.Ey, mp.Ez):
+                    field = sim.get_array(center=mp.Vector3(float(hf["x"][ix]),0,0),
+                                          size=mp.Vector3(0,5,4),component=component,cmplx=True)
+                    actual += field.real**2
+                predicted = (hf["real2"][ix] * cosine**2 + hf["imag2"][ix] * sine**2
+                             + 2 * hf["cross"][ix] * sine * cosine)
+                selectors = [("native_half_volume", (slice(30,-30), slice(30,half_end))),
+                             ("reflected_cut", (-31, slice(30,-30)))]
+                if ix == 30:
+                    selectors.append(("incident_cut", (slice(30,-30), slice(30,-30))))
+                for name, selector in selectors:
+                    observed, expected = actual[selector], predicted[selector]
+                    sums[name][0] += float(np.sum((observed - expected)**2))
+                    sums[name][1] += float(np.sum(observed**2))
+        errors = {name: math.sqrt(error / norm) for name, (error, norm) in sums.items()}
+        sample = dict(time=now, delta=delta, phase_radians=phase, relative_l2=errors)
+        motion["samples"].append(sample)
+        (out / "motion-validation.json").write_text(json.dumps(motion, indent=2))
+        print("MOTION_SAMPLE", json.dumps(sample), flush=True)
+
     def wrapped_run(sim, *steps, **kwargs):
-        return original_run(sim, mp.at_every(1,checkpoint),mp.at_end(export),**kwargs)
+        value = original_run(sim, mp.at_every(1,checkpoint),mp.at_end(export),**kwargs)
+        if args.capture_motion:
+            original_run(sim, mp.at_every(.025,validate_motion), until=.11)
+            motion["passed"] = (len(motion["samples"]) >= 4 and
+                                all(error < .01 for sample in motion["samples"]
+                                    for error in sample["relative_l2"].values()))
+            motion["maximum_relative_l2"] = max(error for sample in motion["samples"]
+                                                for error in sample["relative_l2"].values())
+            (out / "motion-validation.json").write_text(json.dumps(motion, indent=2))
+            assert motion["passed"], motion
+            print("MOTION_VALIDATION_COMPLETE", json.dumps(motion), flush=True)
+        return value
 
     mp.Simulation.run = wrapped_run
     os.chdir(out)
@@ -132,6 +186,13 @@ def main():
         physical = dict(s_pol=True,n1=1.0,n2=1.0,ref_medium=0,kw_0=7,kr_w=0,M=0,W=4,chi_deg=45)
         result["numerical"] = dict(cell=[10,10],resolution=180,pml=.25,frequency=12,runtime=90,courant=.5,optical_periods=1080)
     result["physical"] = physical
+    motion = dict(method="monochromatic phase reconstruction, not transient frames or a DFT accumulator",
+                  formula="A*cos(omega*dt)^2+B*sin(omega*dt)^2+2*C*sin(omega*dt)*cos(omega*dt)",
+                  A="sum(Re(E_j(t0))^2)", B="sum(Im(E_j(t0))^2)",
+                  C="sum(Re(E_j(t0))*Im(E_j(t0)))", time_convention="exp(-i*omega*dt)",
+                  spatial_stride=1, crop_cells_each_face=30, relative_l2_tolerance=.01,
+                  comparison="directly evolved Meep samples on every native half-volume/cut grid point",
+                  samples=[], passed=False)
     (out / "started.json").write_text(json.dumps(result,indent=2))
     try:
         module.main(SimpleNamespace(**physical))

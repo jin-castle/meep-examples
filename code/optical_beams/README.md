@@ -129,6 +129,33 @@ LG의 x=−1.5a 횡단면에서 반경 0.6a 원을 따라 측정한 복소 Ez �
 
 Airy 소스 초기화에서는 원본 수치 적분의 세분화 한계·느린 수렴 경고 3개가 기록됐습니다. 유한한 장과 정상 종료만으로 소스 적분의 수렴이나 물리 정확도를 보장하지 않으며, 격자·PML 수렴과 flux 효율 검사는 하지 않았습니다. 원본 갤러리 이미지의 모든 생성 파라미터가 제공된 것은 아니므로 여기서는 보존한 기본값의 실행을 재현합니다.
 
+## LG 3D 위상 애니메이션 재현
+
+이 경로는 요청한 3D 등위면 애니메이션을 생성합니다. 위 정적 렌더 단계에서 만든 `output/gallery/vortex_3d.blend`, `output/gallery/native3d/scene.json`, `output/gallery/lg/fields.h5`가 먼저 필요합니다. 기존 3D 파일의 `real2`와 `imag2`만으로는 위상 변화에 필요한 교차항 C를 복원할 수 없으므로, 아래 `--capture-motion` 실행을 한 번 추가해야 합니다. 새 패키지를 설치하지 않고 앞서 사용한 Meep·VTK·Blender 환경을 재사용합니다.
+
+```bash
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+mkdir -p output/gallery/animation/data/lg
+python run_gallery.py --upstream source --beam lg --capture-motion --output output/gallery/animation/data/lg > output/gallery/animation/data/lg/run.log 2>&1
+python prepare_vortex_animation.py output/gallery --frames 24
+blender --background --factory-startup --threads 1 --python-exit-code 1 --python animate_vortex_blender.py -- output/gallery --material diffuse --samples 16 --resolution 720
+python package_vortex_animation.py output/gallery --duration-ms 80
+```
+
+물리 조건과 native 해상도 77 pixels/a, CPU 한 코어를 유지하고 t₀=10 a/c에서 A=Σ Re(Ej)², B=Σ Im(Ej)², C=Σ Re(Ej)Im(Ej)를 저장합니다. 이어 실제 FDTD를 0.11 a/c 더 진행해 최소 네 시각을 검사합니다. 표시 대상 하반부 체적과 두 단면의 모든 native 표본을 포함해 계산한 상대 L2 오차가 세 영역에서 각각 1% 미만이어야 전처리를 통과합니다. 이번 추가 실행은 정상 종료했고, 네 시각을 직접 비교한 최대 상대 L2 오차는 9.36116×10⁻⁴(0.09361%)로 통과했습니다.
+
+재구성식은 `F²(φ) = A cos²φ + B sin²φ + 2C sinφ cosφ`입니다. `exp(−iφ)` 시간 관례에서 교차항 부호는 양수입니다. t₀의 복소 순간장에 단색파 위상 변화를 적용한 결과이며, 실제 과도응답 영상을 저장한 것도 DFT 누적장을 사용한 것도 아닙니다. f=5 c/a에서 제곱장의 반복 주기는 T/2=0.1 a/c입니다. 24개 프레임은 끝점을 제외한 φ∈[0,π)를 표시하고, 80 ms는 프레임 재생시간입니다.
+
+전체 3D 영역의 각 voxel에서 위상 최대값 `(A+B+sqrt((A−B)²+4C²))/2`를 계산한 뒤 그 전역 최대값의 2%를 모든 프레임의 등위면과 단면 색상 상한으로 고정합니다. 정적 장면과 같은 가장자리 30칸 제외·하반부 범위에서 native voxel을 stride=1로 모두 사용하며 메시 축소나 형상 평활화는 하지 않습니다. 기존 장면의 두 측정 단면 위치, 매질 블록, 빨간 방향선과 카메라를 유지하고 장 등위면과 단면 텍스처를 위상에 맞춰 갱신합니다. 방향선은 측정한 에너지 궤적이 아닙니다.
+
+기본 `--material diffuse`는 원본 Mayavi의 색상 `(0.227, 0.188, 0.188)`과 opacity=0.5를 참고한 반투명 표시입니다. 원본 설정은 거울 재질이 아니며, 표시용 불투명도 0.5를 물리적 투과율 50%로 해석하지 않습니다. 아래 선택적 정적 미리보기로 약한 광택을 비교할 수 있습니다. 재질 변경은 Meep 장이나 유전율 경계를 바꾸지 않습니다.
+
+```bash
+blender --background --factory-startup --threads 1 --python-exit-code 1 --python animate_vortex_blender.py -- output/gallery --preview --material glossy --samples 16 --resolution 720
+```
+
+생성 대상은 `output/gallery/animation/vortex/`의 `vortex_wavefront.gif`, `vortex_wavefront.webp`, `poster.png`, `contact_sheet.png`입니다. 직접 FDTD 비교는 `animation/data/lg/motion-validation.json`, 전처리·고정 정규화는 `animation/vortex/animation.json`, 렌더 완료는 `animation/vortex/rendered/render.json`, 패키징 검사는 `animation/vortex/checks.json`에서 확인합니다. 이는 해당 격자에서의 위상 재구성 검사이며 격자·PML 수렴이나 투과효율 검증을 대체하지 않습니다. WSL에서 Windows Blender를 호출할 때의 절대 경로 규칙은 위 정적 렌더와 같습니다.
+
 ## 출처와 라이선스
 
 - 원본 설명: https://danielkotik.github.io/Optical-beams-MEEP/
@@ -139,4 +166,4 @@ Airy 소스 초기화에서는 원본 수치 적분의 세분화 한계·느린 
 - Zenodo는 이 레코드를 software로 분류합니다. 별도의 동료심사 논문이라고 표기하지 않습니다.
 - 원본 코드는 MIT License, Copyright (c) 2018 Daniel Kotik입니다. 배포 시 `source/LICENSE`를 함께 보존합니다.
 
-`source/`에는 사용한 원본 소스의 복사본, MIT 전문, CITATION.cff를 포함했습니다. `run_original.py`, `render_results.py`, `render_curved.py`, `run_gallery.py`, `prepare_vortex_scene.py`, `render_vortex_blender.py`, `render_gallery.py`는 이 교육용 재현을 위해 추가한 실행·관측·그림 코드입니다. 원본 소스 파일은 수정하지 않습니다.
+`source/`에는 사용한 원본 소스의 복사본, MIT 전문, CITATION.cff를 포함했습니다. `run_original.py`, `render_results.py`, `render_curved.py`, `run_gallery.py`, `prepare_vortex_scene.py`, `render_vortex_blender.py`, `render_gallery.py`, `prepare_vortex_animation.py`, `animate_vortex_blender.py`, `package_vortex_animation.py`는 이 교육용 재현을 위해 추가한 실행·관측·그림 코드입니다. 원본 소스 파일은 수정하지 않습니다.

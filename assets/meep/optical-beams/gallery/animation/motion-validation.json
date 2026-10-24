@@ -1,0 +1,56 @@
+{
+  "method": "monochromatic phase reconstruction, not transient frames or a DFT accumulator",
+  "formula": "A*cos(omega*dt)^2+B*sin(omega*dt)^2+2*C*sin(omega*dt)*cos(omega*dt)",
+  "A": "sum(Re(E_j(t0))^2)",
+  "B": "sum(Im(E_j(t0))^2)",
+  "C": "sum(Re(E_j(t0))*Im(E_j(t0)))",
+  "time_convention": "exp(-i*omega*dt)",
+  "spatial_stride": 1,
+  "crop_cells_each_face": 30,
+  "relative_l2_tolerance": 0.01,
+  "comparison": "directly evolved Meep samples on every native half-volume/cut grid point",
+  "samples": [
+    {
+      "time": 10.025974025974026,
+      "delta": 0.025974025974026205,
+      "phase_radians": 0.815998091841512,
+      "relative_l2": {
+        "native_half_volume": 2.5435012088613916e-05,
+        "incident_cut": 0.0002381488884155787,
+        "reflected_cut": 4.10755534577287e-05
+      }
+    },
+    {
+      "time": 10.051948051948052,
+      "delta": 0.05194805194805241,
+      "phase_radians": 1.631996183683024,
+      "relative_l2": {
+        "native_half_volume": 4.4241166370914494e-05,
+        "incident_cut": 0.0004853931112387933,
+        "reflected_cut": 1.8106917953114636e-05
+      }
+    },
+    {
+      "time": 10.077922077922079,
+      "delta": 0.07792207792207861,
+      "phase_radians": 2.447994275524536,
+      "relative_l2": {
+        "native_half_volume": 5.7938300773735514e-05,
+        "incident_cut": 0.0007668967590403398,
+        "reflected_cut": 3.6177213266452915e-05
+      }
+    },
+    {
+      "time": 10.103896103896103,
+      "delta": 0.10389610389610304,
+      "phase_radians": 3.263992367365992,
+      "relative_l2": {
+        "native_half_volume": 6.421320861632333e-05,
+        "incident_cut": 0.0009361160077991044,
+        "reflected_cut": 1.68474510165612e-05
+      }
+    }
+  ],
+  "passed": true,
+  "maximum_relative_l2": 0.0009361160077991044
+}
