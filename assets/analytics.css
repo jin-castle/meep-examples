@@ -1,0 +1,12 @@
+.analytics-settings { padding:0; border:0; background:none; color:inherit; font:inherit; text-decoration:underline; cursor:pointer; min-height:44px; }
+.analytics-consent { position:fixed; z-index:1100; bottom:16px; left:16px; right:16px; max-width:1000px; margin:auto; display:flex; align-items:center; gap:24px; padding:20px 24px; border:1px solid var(--settings-rule); border-radius:8px; background:var(--settings-surface); color:var(--settings-ink); box-shadow:0 8px 32px #0003; font:15px/1.65 system-ui,sans-serif; max-height:calc(100dvh - 32px); overflow:auto; }
+.analytics-consent[hidden], .analytics-settings[hidden] { display:none; }
+.analytics-consent h2 { margin:0 0 6px; font-size:17px; line-height:1.5; color:inherit; letter-spacing:normal; }
+.analytics-consent p { margin:0; }
+.analytics-consent a { color:var(--settings-action); text-decoration:underline; }
+.analytics-consent .analytics-status:empty { display:none; }
+.analytics-status { margin-top:8px !important; font-size:14px; color:var(--settings-muted); }
+.analytics-actions { display:flex; gap:8px; flex-shrink:0; }
+.analytics-actions button { min-height:44px; padding:10px 14px; border:1px solid var(--settings-rule); border-radius:5px; background:var(--settings-wash); color:var(--settings-ink); font:inherit; font-weight:600; cursor:pointer; }
+.analytics-consent :focus-visible,.analytics-settings:focus-visible { outline:3px solid var(--settings-action); outline-offset:3px; }
+@media(max-width:760px) { .analytics-consent { flex-direction:column; align-items:stretch; gap:14px; padding:16px; bottom:8px; left:8px; right:8px; max-height:calc(100dvh - 16px); } .analytics-actions { flex-wrap:wrap; } .analytics-actions button { flex:1 1 120px; } }

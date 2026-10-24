@@ -6,6 +6,10 @@ author: jin-castle
 github_username: jin-castle
 lang: ko
 
+analytics:
+  measurement_id: "G-4BL7PWF8YR"
+google_site_verification: "ZTgdMI-VxazYvc9Z4PoBJ5ZIHx3yBJkNLMqvZEREiOY"
+
 theme: minima
 plugins:
   - jekyll-feed
@@ -26,6 +30,7 @@ minima:
 exclude:
   - DESIGN.md
   - README.md
+  - ANALYTICS.md
   - Gemfile
   - Gemfile.lock
   - code/__pycache__

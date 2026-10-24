@@ -2,3 +2,8 @@
 <script src="{{ '/assets/site-settings.js' | relative_url }}?v={{ asset_version }}" defer></script>
 <link rel="alternate" hreflang="{{ lang }}" href="{{ page.url | absolute_url }}">
 <link rel="alternate" hreflang="{% if lang == 'en' %}ko{% else %}en{% endif %}" href="{{ counterpart | absolute_url }}">
+{% if site.google_site_verification %}<meta name="google-site-verification" content="{{ site.google_site_verification | escape }}">{% endif %}
+{% if site.analytics.measurement_id %}
+<link rel="stylesheet" href="{{ '/assets/analytics.css' | relative_url }}?v={{ asset_version }}">
+<script id="meep-analytics" src="{{ '/assets/analytics.js' | relative_url }}?v={{ asset_version }}" data-measurement-id="{{ site.analytics.measurement_id | escape }}" data-site-url="{{ '/' | absolute_url }}" data-privacy-url="{{ home_path | append: 'privacy/' | relative_url }}" defer></script>
+{% endif %}

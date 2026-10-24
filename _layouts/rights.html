@@ -17,13 +17,13 @@
     <div class="lesson-shell">
       <aside class="lesson-sidebar">
         <a class="lesson-back" href="{{ home_path | relative_url }}">← {{ ui.home }}</a>
-        <p class="lesson-eyebrow">RIGHTS &amp; LICENSES</p>
+        <p class="lesson-eyebrow">{{ page.eyebrow | default: 'RIGHTS &amp; LICENSES' }}</p>
         <nav aria-label="{{ ui.body_toc }}">{{ rights_toc }}</nav>
       </aside>
       <main id="lesson-content" class="lesson-main">
         <article>
           <header class="lesson-intro">
-            <p class="lesson-eyebrow">MEEP EXAMPLES <span aria-hidden="true">/</span> RIGHTS &amp; LICENSES</p>
+            <p class="lesson-eyebrow">MEEP EXAMPLES <span aria-hidden="true">/</span> {{ page.eyebrow | default: 'RIGHTS &amp; LICENSES' }}</p>
             <h1>{{ page.title | escape }}</h1>
             <p class="lesson-lead">{{ page.description | escape }}</p>
             <p class="lesson-meta">{% if lang == 'en' %}Maintained by{% else %}사이트 관리·편집{% endif %} <a href="https://github.com/{{ site.github_username | escape }}">{{ site.author | escape }}</a> · {% if lang == 'en' %}Updated{% else %}갱신일{% endif %} {{ page.updated | escape }}</p>

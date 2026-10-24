@@ -91,6 +91,10 @@ statutory exceptions, or assert exclusive copyright over entire AI outputs.
 
 ## Site configuration
 
+Private visitor and Google Search reports are described in [ANALYTICS.md](ANALYTICS.md).
+GA4 loads only after visitor consent; bilingual privacy pages and footer settings
+explain the choice. The public site does not publish dashboard data.
+
 Jekyll + minima, built by GitHub Pages. Math via MathJax. Korean posts are in `_posts/`; English lessons and topics are in `en/`. Use [한국어](https://jin-castle.github.io/meep-examples/) or [English](https://jin-castle.github.io/meep-examples/en/) and select System, Light or Dark in the header. Language switches preserve the corresponding page and section; theme choices persist when browser storage is available.
 
 Each of the 14 chapter concept illustrations has four explicit PNG exports in `assets/illustrations/`: `XX.ko.light.png`, `XX.ko.dark.png`, `XX.en.light.png`, and `XX.en.dark.png`. The catalog and “Understand the principle” sections share these assets. `manifest.json` records prompts, dimensions and hashes. Numerical figures remain in `assets/meep/NN/` with their original pixels and color scales; theme changes do not invert or generatively edit them.
