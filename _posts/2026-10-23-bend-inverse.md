@@ -81,14 +81,13 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 
 <h2 id="understand">3. 원리 이해하기: 두 계산에서 한 번의 갱신으로</h2>
 
+{% include chapter-illustration.html %}
+
 밀도 ρ는 설계 영역 안의 재료를 정하는 숫자입니다. **0은 SiO₂, 1은 Si**, 사이는 두 재료 사이의 보간 값입니다. 왼쪽과 위쪽의 폭 0.5 µm Si 도파관은 고정하고, 정사각형 안의 121개 값만 바꿉니다. 처음에는 모두 0.5이며, 바깥 배경은 공기입니다.
 
 <!-- concept-illustration:part-09:start -->
 
-<figure class="lesson-figure">
-<a href="{{ site.baseurl }}/assets/meep/09/00_concept.png" data-lightbox aria-label="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도 원본 확대"><img src="{{ site.baseurl }}/assets/meep/09/00_concept.png" alt="고정된 두 도파관과 중앙의 자유 설계 영역을 설명하는 개념도" loading="lazy"></a>
-<figcaption>왼쪽(+x) 입력과 위쪽(+y) 출력 도파관은 고정하고, 중앙 1 × 1 µm의 11 × 11개 밀도만 바꿉니다. 그림의 격자와 회색 농도는 설명용이며 실제 최적화 결과가 아닙니다.</figcaption>
-</figure>
+<p class="lesson-note">왼쪽(+x) 입력과 위쪽(+y) 출력 도파관은 고정하고, 중앙 1 × 1 µm의 11 × 11개 밀도만 바꿉니다. 그림의 격자와 회색 농도는 설명용이며 실제 최적화 결과가 아닙니다.</p>
 
 <!-- concept-illustration:part-09:end -->
 

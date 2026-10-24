@@ -70,14 +70,11 @@ excerpt: "a glass binary grating under a normally incident plane wave. One perio
 
 <h2 id="understand">3. 원리 이해하기 · 관찰을 설명하는 방법</h2>
 
+{% include chapter-illustration.html %}
+
 <!-- concept-illustration:part-06:start -->
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/06/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/06/00_concept.png" alt="왼쪽은 유리에서 공기로 돌출한 한 주기 격자와 y 주기 경계 및 x PML, 오른쪽은 +x 기준 0도와 ±36.6도의 공기 중 회절 방향을 보여준다." loading="lazy">
-  </a>
-  <figcaption>A 실험의 유리(n = 1.5)는 왼쪽에 있고, 유리 돌출부가 오른쪽 공기로 이어집니다. 빛은 유리에서 +x 방향으로 입사합니다. y 방향 주기 2.6 µm, 돌출 높이 0.5 µm, 폭 1.3 µm이며 한 주기 셀은 y 주기 경계와 x PML을 사용합니다. 파장 1.55 µm에서 공기로 전파하는 차수는 0, ±1이며 각도 ±36.6°는 +x 법선 기준입니다. 오른쪽 반복 배열은 방향 설명용이며 별도 유한 8개 격자의 계산 배치와 구분합니다.</figcaption>
-</figure>
+<p class="lesson-note">A 실험의 유리(n = 1.5)는 왼쪽에 있고, 유리 돌출부가 오른쪽 공기로 이어집니다. 빛은 유리에서 +x 방향으로 입사합니다. y 방향 주기 2.6 µm, 돌출 높이 0.5 µm, 폭 1.3 µm이며 한 주기 셀은 y 주기 경계와 x PML을 사용합니다. 파장 1.55 µm에서 공기로 전파하는 차수는 0, ±1이며 각도 ±36.6°는 +x 법선 기준입니다. 오른쪽 반복 배열은 방향 설명용이며 별도 유한 8개 격자의 계산 배치와 구분합니다.</p>
 
 <!-- concept-illustration:part-06:end -->
 

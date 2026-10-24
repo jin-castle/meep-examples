@@ -79,6 +79,8 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 
 <h2 id="understand">3. 원리 이해하기</h2>
 
+{% include chapter-illustration.html %}
+
 <figure class="lesson-figure">
 <svg viewBox="0 0 300 245" role="img" aria-labelledby="ring-principle-title ring-principle-desc" xmlns="http://www.w3.org/2000/svg">
   <title id="ring-principle-title">고리 공진의 원리</title>

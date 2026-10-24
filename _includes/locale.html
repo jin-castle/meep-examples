@@ -1,0 +1,6 @@
+{% assign lang = page.lang | default: 'ko' %}
+{% assign ui = site.data.ui[lang] %}
+{% assign home_path = '/' %}
+{% assign counterpart = page.url | remove_first: '/en' %}
+{% if lang == 'ko' %}{% assign counterpart = '/en' | append: page.url %}{% endif %}
+{% if lang == 'en' %}{% assign home_path = '/en/' %}{% endif %}

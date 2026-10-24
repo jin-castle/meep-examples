@@ -1,0 +1,4 @@
+<link rel="stylesheet" href="{{ '/assets/site-settings.css' | relative_url }}">
+<script src="{{ '/assets/site-settings.js' | relative_url }}" defer></script>
+<link rel="alternate" hreflang="{{ lang }}" href="{{ page.url | absolute_url }}">
+<link rel="alternate" hreflang="{% if lang == 'en' %}ko{% else %}en{% endif %}" href="{{ counterpart | absolute_url }}">

@@ -1,5 +1,7 @@
 (() => {
   "use strict";
+  const english = document.documentElement.lang === "en";
+  const tr = (ko, en) => english ? en : ko;
   const scene = document.querySelector(".inverse-figure");
   if (!scene) return;
   const $ = selector => scene.querySelector(selector);
@@ -16,10 +18,10 @@
   const phaseReady = { forward: false, adjoint: false };
   const names = ["FORWARD DFT", "ADJOINT DFT", "FIELD OVERLAP", "GEOMETRY UPDATE"];
   const descriptions = [
-    "Forward DFT의 정상상태 위상 전파 중간에 설계 영역을 촬영합니다. 저장된 이미지는 멈추고, 원래 장의 위상 전파는 계속됩니다.",
-    "입력 광원은 끄고 출력의 adjoint source로 계산한 DFT를 위상 재생합니다. 같은 설계 영역을 촬영한 뒤에도 전파는 이어집니다.",
-    "저장한 두 복소장을 후처리해 설계 변수에 대한 현재 gradient를 구합니다. 표시한 실수부 이미지의 단순한 곱이 아닙니다.",
-    "유한차분 검증을 통과한 gradient로 설계 영역을 갱신하고 다음 계산에 사용합니다. 실제 계산에서 출력이 증가한 61×61 밀도이며 포트는 고정됩니다."
+    tr("Forward DFT의 정상상태 위상 전파 중간에 설계 영역을 촬영합니다. 저장된 이미지는 멈추고, 원래 장의 위상 전파는 계속됩니다.", "Capture the design region during steady-state phase playback of the forward DFT. The saved image stays still while the original field continues its phase evolution."),
+    tr("입력 광원은 끄고 출력의 adjoint source로 계산한 DFT를 위상 재생합니다. 같은 설계 영역을 촬영한 뒤에도 전파는 이어집니다.", "Turn off the input source and replay the phase of the DFT computed using an adjoint source at the output. Phase evolution continues after capturing the same design region."),
+    tr("저장한 두 복소장을 후처리해 설계 변수에 대한 현재 gradient를 구합니다. 표시한 실수부 이미지의 단순한 곱이 아닙니다.", "Postprocess the two saved complex fields to obtain the current gradient with respect to the design variables. This is not simply the product of the displayed real-part images."),
+    tr("유한차분 검증을 통과한 gradient로 설계 영역을 갱신하고 다음 계산에 사용합니다. 실제 계산에서 출력이 증가한 61×61 밀도이며 포트는 고정됩니다.", "Update the design region using a gradient checked against finite differences, then use it in the next calculation. This 61×61 density increased the output in the actual calculation; the ports stay fixed.")
   ];
   const clamp = value => Math.min(1, Math.max(0, value));
   const ramp = (time, start, length) => clamp((time - start) / length);
@@ -39,7 +41,8 @@
   let records = [], iteration = 0, loading = false, finished = false, requestId = 0;
   let currentRecord, fallbackRecord, densityBlend = -1, pendingPosition = 0;
   const bundles = new Map();
-  const historyRoot = new URL("./assets/meep/09/iterations/", document.baseURI);
+  const assetRoot = new URL(`${(document.documentElement.dataset.baseurl || "").replace(/\/$/, "")}/assets/`, document.baseURI);
+  const historyRoot = new URL("meep/09/iterations/", assetRoot);
   Object.assign(scene.dataset, { iteration: "0", iterationCount: "1", historyReady: "false", loading: "false", finished: "false" });
   const densityCanvas = $("#current-density");
   const densityContext = densityCanvas.getContext("2d");
@@ -77,7 +80,7 @@
     loading = true;
     pendingPosition = position;
     scene.dataset.loading = "true";
-    text("#iteration-status", "다음 계산 데이터 준비 중 · 현재 장면 유지");
+    text("#iteration-status", tr("다음 계산 데이터 준비 중 · 현재 장면 유지", "Preparing the next calculation · Keeping the current scene"));
     syncPlayback();
     try {
       const images = await bundle(index);
@@ -109,7 +112,7 @@
       scene.dataset.loading = "false";
       desiredPlaying = false;
       $("#iteration-select").value = String(iteration);
-      text("#density-data-status", "다음 계산 데이터 로딩 실패 · 현재 기록 유지 · 선택기로 다시 시도");
+      text("#density-data-status", tr("다음 계산 데이터 로딩 실패 · 현재 기록 유지 · 선택기로 다시 시도", "Next calculation failed to load · Keeping the current record · Retry using the selector"));
       syncPlayback();
       console.warn("Meep iteration:", error.message);
     }
@@ -141,9 +144,9 @@
       await selectIteration(0, time);
 
     } catch (error) {
-      $("#iteration-select").replaceChildren(new Option("기존 1회", "0"));
-      text("#iteration-status", "반복 기록 없음 · 기존 1회 계산 표시");
-      text("#iteration-objective", "Unnormalized J · 반복 기록 로딩 실패");
+      $("#iteration-select").replaceChildren(new Option(tr("기존 1회", "Original single step"), "0"));
+      text("#iteration-status", tr("반복 기록 없음 · 기존 1회 계산 표시", "No iteration history · Showing the original single step"));
+      text("#iteration-objective", tr("Unnormalized J · 반복 기록 로딩 실패", "Unnormalized J · Iteration history failed to load"));
       console.warn("Meep history:", error.message);
     }
   }
@@ -207,7 +210,7 @@
     const adjointFrame = phaseField("adjoint", local, adjoint);
     const phaseKind = adjoint ? "adjoint" : "forward";
     const phaseAnimated = (forward || adjoint) && phaseReady[phaseKind] && !staticFrame;
-    text("#phase-label", phaseAnimated ? `DFT 위상 ${Math.round((adjoint ? adjointFrame : forwardFrame) * 360 / phaseFrames)}° · 정상상태` : "DFT 저장 위상 · 정상상태");
+    text("#phase-label", phaseAnimated ? `${tr("DFT 위상", "DFT phase")} ${Math.round((adjoint ? adjointFrame : forwardFrame) * 360 / phaseFrames)}° · ${tr("정상상태", "Steady state")}` : tr("DFT 저장 위상 · 정상상태", "Saved DFT phase · Steady state"));
     const updated = densityReady ? smooth(ramp(time, 21, 2.2)) : 0;
     opacity("#forward-field", forward ? ramp(time, .3, 2) : stage === 3 ? 1 : updating ? 1 - ramp(time, 18, .6) : 0);
     opacity("#adjoint-field", adjoint ? ramp(time, 6.3, 2) : 0);
@@ -218,7 +221,7 @@
     if (densityRecord) {
       drawDensity(densityRecord.x_before, densityRecord.x_after, updated);
       text("#iteration-objective", `Unnormalized J: ${densityRecord.objective_before.toPrecision(5)} → ${densityRecord.objective_after.toPrecision(5)}`);
-      text("#iteration-status", finished ? "저장된 반복 완료 · 마지막 갱신 구조 유지" : !currentRecord ? "반복 기록 없음 · 기존 1회 계산 표시" : `반복 ${iteration + 1}/${records.length} · 현재 밀도 ρ · ${updated > 0 ? "갱신 중" : "갱신 전"}`);
+      text("#iteration-status", finished ? tr("저장된 반복 완료 · 마지막 갱신 구조 유지", "Saved iterations complete · Keeping the final updated geometry") : !currentRecord ? tr("반복 기록 없음 · 기존 1회 계산 표시", "No iteration history · Showing the original single step") : `${tr("반복", "Iteration")} ${iteration + 1}/${records.length} · ${tr("현재 밀도", "Current density")} ρ · ${updated > 0 ? tr("갱신 중", "Updating") : tr("갱신 전", "Before update")}`);
     }
     $("#input-beacon").style.stroke = forward || evaluatedField > 0 ? "var(--field-positive)" : "var(--layout-black)";
     $("#output-beacon").style.stroke = adjoint ? "var(--field-negative)" : "var(--layout-black)";
@@ -234,8 +237,8 @@
     $("#capture-scan").setAttribute("transform", `translate(0 ${150 * ramp(local, 0, captureAt)})`);
     const flash = !staticFrame && (forward || adjoint) ? .28 * Math.max(0, 1 - Math.abs(time - captureStart) / .2) : 0;
     opacity("#capture-flash", flash);
-    text("#capture-caption", forward || adjoint ? beforeCapture ? "촬영 대기" : local < 3.28 ? "찰칵 · DFT" : "저장 완료" : "CAPTURED");
-    text("#geometry-caption", updating ? evaluatedField >= .99 ? "갱신 후 DFT · RES 60" : updated >= .99 ? `gradient ascent · ${iteration + 1}회` : "gradient → 밀도 갱신" : `ρ${iteration} · 현재 구조`);
+    text("#capture-caption", forward || adjoint ? beforeCapture ? tr("촬영 대기", "Waiting to capture") : local < 3.28 ? tr("찰칵 · DFT", "Captured · DFT") : tr("저장 완료", "Saved") : "CAPTURED");
+    text("#geometry-caption", updating ? evaluatedField >= .99 ? tr("갱신 후 DFT · RES 60", "Updated DFT · RES 60") : updated >= .99 ? `gradient ascent · ${tr(`${iteration + 1}회`, `step ${iteration + 1}`)}` : tr("gradient → 밀도 갱신", "gradient → density update") : `ρ${iteration} · ${tr("현재 구조", "Current geometry")}`);
     captured("#forward-snapshot", captureAt, 48, time);
     captured("#adjoint-snapshot", 6 + captureAt, 260, time);
     const overlap = smooth(ramp(time, 12.5, 2.2));
@@ -250,20 +253,20 @@
     opacity("#gradient-transfer", ramp(time, 18.8, .3) * (1 - ramp(time, 21, .6)) * .85);
     opacity("#gradient-return", updating ? .75 : 0);
     opacity("#optimizer-caption", updating ? 1 : 0);
-    text("#forward-status", time < .3 ? "촬영 대기" : time < 3 ? "위상 전파 중" : time < 5.08 ? "DFT 저장 중" : "저장 완료");
-    text("#adjoint-status", time < 6.3 ? "촬영 대기" : time < 9 ? "위상 전파 중" : time < 11.08 ? "DFT 저장 중" : "저장 완료");
-    text("#gradient-status", time < 12.5 ? "두 장 기다리는 중" : time < 16.2 ? "복소장 겹침·후처리" : "현재 ∂J/∂ρ · 61×61");
-    const summary = forward ? beforeCapture ? "Forward 장이 전파되는 중간에 촬영합니다." : "DFT 한 장을 저장해도 전파는 계속됩니다."
-      : adjoint ? beforeCapture ? "Adjoint 장이 전파되는 중간에 다시 촬영합니다." : "두 번째 DFT를 저장하며 전파를 이어갑니다."
-      : stage === 3 ? time < 16.2 ? "저장한 두 복소장을 겹쳐 민감도를 구합니다." : "픽셀마다 바꿀 방향이 gradient로 남습니다."
-      : densityReady ? time < 23.2 ? "Gradient를 받아 설계 영역의 밀도를 바꿉니다." : "갱신한 구조의 forward DFT를 다시 확인합니다." : "최종 밀도를 불러오지 못했습니다. 계산 결과 링크를 확인하세요.";
-    text("#scene-summary", finished ? "저장된 계산이 끝났습니다. 마지막 갱신 구조와 forward DFT를 유지합니다." : summary);
-    text("#scene-note", updating ? "현재 밀도 → 실제 갱신 밀도 · 다음 계산의 시작 구조" : "복소 DFT의 정상상태 위상 재생 · 촬영본은 위상 0°에 고정");
+    text("#forward-status", time < .3 ? tr("촬영 대기", "Waiting to capture") : time < 3 ? tr("위상 전파 중", "Phase evolving") : time < 5.08 ? tr("DFT 저장 중", "Saving DFT") : tr("저장 완료", "Saved"));
+    text("#adjoint-status", time < 6.3 ? tr("촬영 대기", "Waiting to capture") : time < 9 ? tr("위상 전파 중", "Phase evolving") : time < 11.08 ? tr("DFT 저장 중", "Saving DFT") : tr("저장 완료", "Saved"));
+    text("#gradient-status", time < 12.5 ? tr("두 장 기다리는 중", "Waiting for both fields") : time < 16.2 ? tr("복소장 겹침·후처리", "Complex-field overlap and postprocessing") : tr("현재 ∂J/∂ρ · 61×61", "Current ∂J/∂ρ · 61×61"));
+    const summary = forward ? beforeCapture ? tr("Forward 장이 전파되는 중간에 촬영합니다.", "Capture the forward field during phase evolution.") : tr("DFT 한 장을 저장해도 전파는 계속됩니다.", "Phase evolution continues after saving a DFT snapshot.")
+      : adjoint ? beforeCapture ? tr("Adjoint 장이 전파되는 중간에 다시 촬영합니다.", "Capture the adjoint field during its phase evolution.") : tr("두 번째 DFT를 저장하며 전파를 이어갑니다.", "Save the second DFT snapshot while phase evolution continues.")
+      : stage === 3 ? time < 16.2 ? tr("저장한 두 복소장을 겹쳐 민감도를 구합니다.", "Overlap the two saved complex fields to compute sensitivity.") : tr("픽셀마다 바꿀 방향이 gradient로 남습니다.", "The gradient gives an update direction for every pixel.")
+      : densityReady ? time < 23.2 ? tr("Gradient를 받아 설계 영역의 밀도를 바꿉니다.", "Use the gradient to update the density in the design region.") : tr("갱신한 구조의 forward DFT를 다시 확인합니다.", "Check the forward DFT of the updated geometry.") : tr("최종 밀도를 불러오지 못했습니다. 계산 결과 링크를 확인하세요.", "The final density could not be loaded. Check the calculation result links.");
+    text("#scene-summary", finished ? tr("저장된 계산이 끝났습니다. 마지막 갱신 구조와 forward DFT를 유지합니다.", "The saved calculations are complete. Keeping the final updated geometry and forward DFT.") : summary);
+    text("#scene-note", updating ? tr("현재 밀도 → 실제 갱신 밀도 · 다음 계산의 시작 구조", "Current density → computed updated density · Starting geometry for the next calculation") : tr("복소 DFT의 정상상태 위상 재생 · 촬영본은 위상 0°에 고정", "Steady-state phase playback of complex DFT · Snapshots fixed at phase 0°"));
     progress.min = staticFrame ? "1" : "0";
     progress.max = staticFrame ? "4" : String(duration);
     progress.step = staticFrame ? "1" : ".01";
     progress.value = String(staticFrame ? stage : time);
-    progress.setAttribute("aria-valuetext", `${names[stage - 1]} · ${time.toFixed(1)}초`);
+    progress.setAttribute("aria-valuetext", `${names[stage - 1]} · ${time.toFixed(1)}${tr("초", " seconds")}`);
     text("#sequence-time", `00:${String(Math.floor(time)).padStart(2, "0")} / 00:24`);
     scene.dataset.time = time.toFixed(2);
   }
@@ -271,11 +274,11 @@
     const running = desiredPlaying && !userPaused && !document.hidden && visible && !staticMode() && !loading && !finished;
     if (timeline) running ? timeline.play() : timeline.pause();
     scene.dataset.playing = String(running);
-    playButton.textContent = staticMode() ? "다음 단계 보기" : running ? "일시정지" : time >= 23.99 ? "다시 재생" : "전체 흐름 재생";
-    playButton.setAttribute("aria-label", staticMode() ? "다음 계산 단계 보기" : running ? "애니메이션 일시정지" : "전체 역설계 흐름 재생");
+    playButton.textContent = staticMode() ? tr("다음 단계 보기", "Next stage") : running ? tr("일시정지", "Pause") : time >= 23.99 ? tr("다시 재생", "Replay") : tr("전체 흐름 재생", "Play full sequence");
+    playButton.setAttribute("aria-label", staticMode() ? tr("다음 계산 단계 보기", "Show the next calculation stage") : running ? tr("애니메이션 일시정지", "Pause animation") : tr("전체 역설계 흐름 재생", "Play the full inverse-design sequence"));
     document.body.classList.toggle("motion-paused", userPaused || document.hidden);
     document.body.classList.toggle("motion-reduced", motion.matches);
-    toggle.textContent = userPaused ? "동작 재생하기" : "동작 멈추기";
+    toggle.textContent = userPaused ? tr("동작 재생하기", "Resume motion") : tr("동작 멈추기", "Pause motion");
     toggle.setAttribute("aria-pressed", String(userPaused));
   }
   function seek(value) {
@@ -296,7 +299,7 @@
   }
   async function loadDensity() {
     try {
-      const response = await fetch("./assets/meep/09/highres/result.json");
+      const response = await fetch(new URL("meep/09/highres/result.json", assetRoot));
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const result = await response.json();
       const { x_updated: values, grid_shape: shape } = result;
@@ -319,7 +322,7 @@
       render(time);
     } catch (error) {
       scene.dataset.densityError = "true";
-      text("#density-data-status", "밀도 데이터 로딩 실패 · 위 계산 결과 링크 참고");
+      text("#density-data-status", tr("밀도 데이터 로딩 실패 · 위 계산 결과 링크 참고", "Density data failed to load · See the calculation result links above"));
       render(time);
       console.warn("Meep density data:", error.message);
     }

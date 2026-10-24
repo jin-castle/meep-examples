@@ -1,0 +1,782 @@
+{
+  "createdAt": "2026-10-24T08:12:05.914895+00:00",
+  "tool": "Built-in imagegen; one edit invocation per generated variant",
+  "purpose": "Explanatory concept illustrations, not numerical simulation results",
+  "variantContract": "XX.{ko|en}.{light|dark}.png",
+  "chapters": 14,
+  "assetCount": 56,
+  "scientificResults": "Original numerical plots, GIFs, fields and densities were not generatively edited.",
+  "assets": [
+    {
+      "file": "01.en.dark.png",
+      "chapter": "01",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1449150,
+      "sha256": "09891c621110066e4b3502fdd796bae9ce1adc4c0fc713f3939999b5ad908429",
+      "generationPrompt": "Create English dark-mode variant of this exact scientific illustration. Preserve geometry, camera, wave paths, arrows, relative sizes and 5:3 canvas precisely. Change only text and theme. Title exactly \"Point and line sources\", bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 title/caption, gently brighter blue materials/teal lines with clear contrast, subtle dark shadow. No white panel/border, no glow effects. Clean large text with generous safe margins. Do not invent or move scientific elements.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "01.en.light.png",
+      "chapter": "01",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1353324,
+      "sha256": "a78cdf60306c2615ea8ae950e9fbe2801d88fe7c00e6870316fe990e0f18c9eb",
+      "generationPrompt": "Create English light-mode variant of this exact scientific illustration. Preserve geometry, camera, wave paths, arrows, relative sizes and 5:3 canvas precisely. Change only text and theme. Title exactly \"Point and line sources\", bottom caption exactly \"Concept illustration · not simulation data\". No other text. Pure white #ffffff background, slate #526579 title/caption, preserve material colors. Clean large text with generous safe margins. Do not invent or move scientific elements.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "01.ko.dark.png",
+      "chapter": "01",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1347465,
+      "sha256": "0a2226c9fbaf10ebde94320daea7c50482bfcfbaa9469c089893fbee59221bb9",
+      "generationPrompt": "Create Korean dark-mode variant of this exact scientific illustration. Preserve geometry, camera, wave paths, arrows, relative sizes and 5:3 canvas precisely. Change only text and theme. Title exactly \"점원과 선원\", bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 title/caption, gently brighter blue materials/teal lines with clear contrast, subtle dark shadow. No white panel/border, no glow effects. Clean large text with generous safe margins. Do not invent or move scientific elements.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "01.ko.light.png",
+      "chapter": "01",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1335110,
+      "sha256": "4aca45492bc75bc474a796bc715e98cb14265fb28d96cf2ea589a5c28eac2ee1",
+      "generationPrompt": "Master point/line source illustration, Korean light. See initial imagegen call.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "02.en.dark.png",
+      "chapter": "02",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1516411,
+      "sha256": "8e8300769df479d83863164aa70aa5e56ec1e9cded124a3314b3037bd4388c3e",
+      "generationPrompt": "Edit only language and theme of this exact scientific illustration, preserving flat computational plane, source sphere, wavefront circles, translucent PML band, amber arrow, camera and 5:3 canvas. Title exactly \"Boundaries and PML\", bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 backdrop edge-to-edge, light #e8eef4 type, bright blue/teal computational lines, subtle dark shadows. No white panel, no physical walls or added geometry. Keep large readable text in same positions and generous safe margins.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "02.en.light.png",
+      "chapter": "02",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1314783,
+      "sha256": "144bda7945960563767f2ea70a40d73a1e8fe7ed69e0bd31a357b6bc0cd64817",
+      "generationPrompt": "Edit only language and theme of this exact scientific illustration, preserving flat computational plane, source sphere, wavefront circles, translucent PML band, amber arrow, camera and 5:3 canvas. Title exactly \"Boundaries and PML\", bottom caption exactly \"Concept illustration · not simulation data\". No other text. White #ffffff backdrop, slate #526579 type, original blue/amber/teal materials. Keep large readable text in same positions and generous safe margins.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "02.ko.dark.png",
+      "chapter": "02",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1514603,
+      "sha256": "f2da6892bae2db85447a3a3aaec8e0a890149239b324d86ce2c32a855735c8d6",
+      "generationPrompt": "Edit only language and theme of this exact scientific illustration, preserving flat computational plane, source sphere, wavefront circles, translucent PML band, amber arrow, camera and 5:3 canvas. Title exactly \"경계와 PML\", bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 backdrop edge-to-edge, light #e8eef4 type, bright blue/teal computational lines, subtle dark shadows. No white panel, no physical walls or added geometry. Keep large readable text in same positions and generous safe margins.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "02.ko.light.png",
+      "chapter": "02",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1258764,
+      "sha256": "fd40e59a75aaa962f2b94d2942f734cb11ce43da46e7732b543c0d7d063f50cc",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render the attached geometry with polished restrained 3D orthographic engineering shading. Preserve exact geometry, camera direction and scientific meaning. PML perimeter is a flat translucent computational band of zero physical height: absolutely no walls, rails, tray or physical enclosure. Wave arcs fade smoothly inside band. Blue solid dielectric #76b6da, amber source/path #e3a331, teal wavefronts #0087ad. White #ffffff backdrop. Replace all attached text with only large clear Korean title \"경계와 PML\" top left, and bottom left caption \"개념도 · 계산 결과 아님\", slate #526579. No other text, logo or watermark. Large mobile-readable type, generous margins. This is schematic, not simulated numerical data.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "03.en.dark.png",
+      "chapter": "03",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1478866,
+      "sha256": "fd7ef55433cb36600a6f4140639ad3f28eb11abddec2c2f2ec4a4911a7012360",
+      "generationPrompt": "Edit only language and theme of this exact scientific illustration; preserve the one blue cylinder, all incident parallel fronts, scattered circular arcs, amber incident arrow, flat calculation plane, camera, composition, and 5:3 canvas. Title exactly \"Incident and scattered fields\", bottom caption exactly \"Concept illustration · not simulation data\". No other labels or equations. Uniform deep navy #0d1722 backdrop edge-to-edge, light #e8eef4 type, blue cylinder and teal wavefronts remain readable, subtle dark shadows. No white panel or extra glow. Large readable text, generous margins, identical geometry.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "03.en.light.png",
+      "chapter": "03",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1314714,
+      "sha256": "c6868e1c96dfbc212259b023a656917564d80f9d2706c8ffabcb0c57f865ab8f",
+      "generationPrompt": "Edit only language and theme of this exact scientific illustration; preserve the one blue cylinder, all incident parallel fronts, scattered circular arcs, amber incident arrow, flat calculation plane, camera, composition, and 5:3 canvas. Title exactly \"Incident and scattered fields\", bottom caption exactly \"Concept illustration · not simulation data\". No other labels or equations. Pure white #ffffff backdrop, slate #526579 type, preserve blue/amber/teal materials. Large readable text, generous margins, identical geometry.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "03.ko.dark.png",
+      "chapter": "03",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1506451,
+      "sha256": "bf2cf8c1b2ae8ee1bfb4f5c52bc1d0d2a708f40faff499299ecfb7a7ea7cf254",
+      "generationPrompt": "Edit only language and theme of this exact scientific illustration; preserve the one blue cylinder, all incident parallel fronts, scattered circular arcs, amber incident arrow, flat calculation plane, camera, composition, and 5:3 canvas. Title exactly \"입사장과 산란장\", bottom caption exactly \"개념도 · 계산 결과 아님\". No other labels or equations. Uniform deep navy #0d1722 backdrop edge-to-edge, light #e8eef4 type, blue cylinder and teal wavefronts remain readable, subtle dark shadows. No white panel or extra glow. Large readable text, generous margins, identical geometry.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "03.ko.light.png",
+      "chapter": "03",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1246909,
+      "sha256": "aa8befc18a4c00b9745ac8e3b0cc6cb2f386ec5bfbb83cfc3429f2e082b949cb",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render the attached geometry with polished restrained 3D orthographic engineering shading. Preserve exact geometry, camera direction and scientific meaning. Keep ONE plane and ONE blue solid cylinder; incident straight fronts and scattered circular arcs. No subtraction panels or equations. Blue solid dielectric #76b6da, amber source/path #e3a331, teal wavefronts #0087ad. White #ffffff backdrop. Replace all attached text with only large clear Korean title \"입사장과 산란장\" top left, and bottom left caption \"개념도 · 계산 결과 아님\", slate #526579. No other text, logo or watermark. Large mobile-readable type, generous margins. This is schematic, not simulated numerical data.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "04.en.dark.png",
+      "chapter": "04",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 972,
+      "bytes": 1475338,
+      "sha256": "6a0b73e5118ae267712e51694375f1147652367ae72ba0580c0efaf8242710a1",
+      "generationPrompt": "Edit only language/theme of this exact scientific waveguide illustration. Preserve straight solid blue core embedded in translucent cladding, amber input, teal direction and monitor, exact camera, composition and 5:3 canvas. Title \"Light in a waveguide\"; bottom caption \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 background edge-to-edge; light #e8eef4 type; blue core, pale transparent cladding, teal and amber clearly readable. No white backing panel or added glow. Keep readable large type and safe margins. Do not create hollow tubing or change geometry.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "04.en.light.png",
+      "chapter": "04",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1552429,
+      "sha256": "a3b9f8076d8ee07af445a1808a58a7b2ad704fcf0cb00d1c653690491b3deebb",
+      "generationPrompt": "Edit only language/theme of this exact scientific waveguide illustration. Preserve straight solid blue core embedded in translucent cladding, amber input, teal direction and monitor, exact camera, composition and 5:3 canvas. Title \"Light in a waveguide\"; bottom caption \"Concept illustration · not simulation data\". No other text. White #ffffff background and slate #526579 type; keep existing material colors. Keep readable large type and safe margins. Do not create hollow tubing or change geometry.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "04.ko.dark.png",
+      "chapter": "04",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1499946,
+      "sha256": "3acedcf7255f4de87409a671c35dfd1ac50741a69051cdf2ad2896dc847736e3",
+      "generationPrompt": "Edit only language/theme of this exact scientific waveguide illustration. Preserve straight solid blue core embedded in translucent cladding, amber input, teal direction and monitor, exact camera, composition and 5:3 canvas. Title \"빛을 가두는 도파로\"; bottom caption \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 background edge-to-edge; light #e8eef4 type; blue core, pale transparent cladding, teal and amber clearly readable. No white backing panel or added glow. Keep readable large type and safe margins. Do not create hollow tubing or change geometry.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "04.ko.light.png",
+      "chapter": "04",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 972,
+      "bytes": 1378836,
+      "sha256": "1cb2e337c369f72baa3cc12d142c36aa6c0ab53c5dadfdf60fee389c259a88a3",
+      "generationPrompt": "Use case: scientific-educational. Asset: Meep Examples chapter 04 Korean light-mode explanatory illustration, landscape 5:3. Blue straight rectangular dielectric core enclosed in pale translucent uniform cladding, amber input at left, a teal propagation arrow along the core, dashed teal transverse output monitor near right. Conceptual extrusion of a 2D core, not an actual fabricated finite-height 3D device. Style: beautiful clean orthographic three-quarter engineering 3D render, soft studio lighting, visible material thickness, matte blue #76b6da, amber source #e3a331, teal #0087ad direction arrows, white #ffffff backdrop, slate #526579 text, restrained shadows. Sparse large Korean title exactly '빛을 가두는 도파로'. Bottom disclaimer exactly '개념도 · 계산 결과 아님'. No other text, logos or watermark. Labels large and clear on mobile with generous margins. This is a conceptual apparatus illustration, not a numerical field plot. Keep physical geometry scientifically faithful.",
+      "review": "Visually reviewed by the generating agent"
+    },
+    {
+      "file": "05.en.dark.png",
+      "chapter": "05",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1423252,
+      "sha256": "324831c02aef1820bacf0ffb0fa17174eddccaedf8f7fd734120313fdce8a630",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"A 90-degree waveguide bend\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Connected planar L-shaped guide, amber guided path and teal leakage arrow preserved",
+        "text": "Exact requested title and disclaimer",
+        "theme": "Dark navy backdrop with clear light text"
+      }
+    },
+    {
+      "file": "05.en.light.png",
+      "chapter": "05",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1249907,
+      "sha256": "566b3ae342a276f68b99238f43d426504557a49d345bbdcf98bf67ef6c8a8cc8",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"A 90-degree waveguide bend\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Pure white #ffffff background, slate #526579 title and caption; preserve material colors and restrained soft shadows. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Connected planar L-shaped waveguide and arrows preserved",
+        "text": "Exact English title and disclaimer readable",
+        "theme": "White light backdrop, slate text"
+      }
+    },
+    {
+      "file": "05.ko.dark.png",
+      "chapter": "05",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1369509,
+      "sha256": "9ffe5f79d22c322190e1ff7afa6843c6b826ffb7fd902eaaf66e91d9d86f6d86",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"90도 도파로 굽힘\" at the same upper-left location. Bottom-left caption exactly \"개념도 · 계산 결과 아님\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Connected planar L-shaped guide, amber guided path and teal leakage arrow preserved",
+        "text": "Exact requested title and disclaimer",
+        "theme": "Dark navy backdrop with clear light text"
+      }
+    },
+    {
+      "file": "05.ko.light.png",
+      "chapter": "05",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1195594,
+      "sha256": "ebe091336e191ee3da7640177de27a08b6ce9850084cbedfb7a4f4bae0641b40",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render the attached geometry with polished restrained 3D orthographic engineering shading. Preserve exact geometry, camera direction and scientific meaning. Keep the planar solid L-shaped dielectric strip exactly as reference. The two arms lie in one horizontal plane; constant shallow rectangular thickness. No hollow tube, pipe, vertical arm or 3D plumbing. Blue solid dielectric #76b6da, amber source/path #e3a331, teal wavefronts #0087ad. White #ffffff backdrop. Replace all attached text with only large clear Korean title \"90도 도파로 굽힘\" top left, and bottom left caption \"개념도 · 계산 결과 아님\", slate #526579. No other text, logo or watermark. Large mobile-readable type, generous margins. This is schematic, not simulated numerical data.",
+      "review": {
+        "pass": true,
+        "text": "Korean title and disclaimer inspected",
+        "geometry": "Approved master copied without editing"
+      }
+    },
+    {
+      "file": "06.en.dark.png",
+      "chapter": "06",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1405963,
+      "sha256": "38bcdda2113d5c45709a0a0792edd027fa31a69f630593e941658c36dda6fea6",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Diffraction by a grating\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Parallel equal-width ridges, one amber incident arrow and three teal outgoing arrows preserved",
+        "text": "Requested localized title and disclaimer visually legible",
+        "theme": "Navy canvas and light text"
+      }
+    },
+    {
+      "file": "06.en.light.png",
+      "chapter": "06",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1270670,
+      "sha256": "f64595accf322609ec15c52af6ff764a95411a90c1647ddc9091bbd493ffaf1a",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Diffraction by a grating\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Pure white #ffffff background, slate #526579 title and caption; preserve material colors and restrained soft shadows. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Parallel equal-width ridges, one amber incident arrow and three teal outgoing arrows preserved",
+        "text": "Requested localized title and disclaimer visually legible",
+        "theme": "White canvas and slate text"
+      }
+    },
+    {
+      "file": "06.ko.dark.png",
+      "chapter": "06",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1299822,
+      "sha256": "a70f72acf7fe8d8d231e93a205c451bfe466f678e65c4f809c2f254298b30561",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"격자가 나누는 빛\" at the same upper-left location. Bottom-left caption exactly \"개념도 · 계산 결과 아님\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Parallel equal-width ridges, one amber incident arrow and three teal outgoing arrows preserved",
+        "text": "Requested localized title and disclaimer visually legible",
+        "theme": "Navy canvas and light text"
+      }
+    },
+    {
+      "file": "06.ko.light.png",
+      "chapter": "06",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1207326,
+      "sha256": "1e0d40f2356c24e42a1673e1c56fe30269089c2c8d70e4c0e79d6a414110c2ab",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; exact same camera and connected physical geometry. Several equal-width long parallel blue glass ridges on a pale glass half-space, invariant along ridge length. Amber incident arrow comes from below glass toward air; three teal outgoing schematic arrows spread above into negative, zero and positive diffraction orders. No finite nanopillars or fake efficiency. Keep long invariant ridges rather than pillars. Amber arrows and teal wavefronts are conceptual, not field data. Matte blue #76b6da, pale silica, amber #e3a331, teal #0087ad. Pure white #ffffff backdrop, slate #526579 text. Replace all reference labels with only title \"격자가 나누는 빛\" top left, caption \"개념도 · 계산 결과 아님\" bottom left. No other labels/numbers/logo/watermark. Large mobile-readable type and generous safe margins.",
+      "review": {
+        "pass": true,
+        "text": "Korean title and disclaimer inspected",
+        "geometry": "Approved master copied without editing"
+      }
+    },
+    {
+      "file": "07.en.dark.png",
+      "chapter": "07",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1371370,
+      "sha256": "4b151acb6d50c4cc89761074197b0128ffd7a1bad179375a57774213328d8b80",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Selecting phase by width\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data. CRITICAL caption layout correction: the English bottom-left disclaimer MUST use two lines, line 1 exactly 'Concept illustration', line 2 exactly '· not simulation data'. Confine both lines entirely within the bottom-left empty rectangle below the substrate and left of ALL amber arrows, about x=55 to x=510, y=865 to y=945 on the reference canvas. Use clear approximately 30px equivalent type. Do not let any caption letter overlap or touch any amber arrow. Do not move or shorten the arrows. Title and scientific geometry stay unchanged.",
+      "review": {
+        "pass": true,
+        "geometry": "Different-width ridges and all amber/teal arrows preserved",
+        "text": "English title clear; two-line disclaimer fits left of arrows without overlap",
+        "theme": "Navy canvas and light text"
+      }
+    },
+    {
+      "file": "07.en.light.png",
+      "chapter": "07",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1273053,
+      "sha256": "f51116cf8964638f69ad1c587408cebe44e72c85c9001be79885b4a26da93116",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Selecting phase by width\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Pure white #ffffff background, slate #526579 title and caption; preserve material colors and restrained soft shadows. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data. CRITICAL caption layout correction: the English bottom-left disclaimer MUST use two lines, line 1 exactly 'Concept illustration', line 2 exactly '· not simulation data'. Confine both lines entirely within the bottom-left empty rectangle below the substrate and left of ALL amber arrows, about x=55 to x=510, y=865 to y=945 on the reference canvas. Use clear approximately 30px equivalent type. Do not let any caption letter overlap or touch any amber arrow. Do not move or shorten the arrows. Title and scientific geometry stay unchanged.",
+      "review": {
+        "pass": true,
+        "geometry": "Different-width ridges and all amber/teal arrows preserved",
+        "text": "English title clear; two-line disclaimer fits left of arrows without overlap",
+        "theme": "White canvas and slate text"
+      }
+    },
+    {
+      "file": "07.ko.dark.png",
+      "chapter": "07",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1346213,
+      "sha256": "8d9f2aa91168faecc6af777c9f8451f28a45a1bbfb777ac1c5d2adf29093ebae",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"폭으로 고르는 위상\" at the same upper-left location. Bottom-left caption exactly \"개념도 · 계산 결과 아님\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Master's different-width ridges and incident/outgoing arrows preserved",
+        "text": "Korean title and caption clear",
+        "theme": "Navy canvas with light text"
+      }
+    },
+    {
+      "file": "07.ko.light.png",
+      "chapter": "07",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1234332,
+      "sha256": "df1310edb6fc8bbc88ca3bda6fcc266b606138a7c9542eb3b039cddd45c8e9ae",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; exact same camera and connected physical geometry. Four long parallel blue silicon ridges with differing widths, same height on pale silica. Ridge pattern repeats twice, not isolated nanopillars. Amber incident arrow from below and teal output arrows bend upward toward one side; arrows conceptual only. Show width difference clearly, no invented measured phase values. Keep long invariant ridges rather than pillars. Amber arrows and teal wavefronts are conceptual, not field data. Matte blue #76b6da, pale silica, amber #e3a331, teal #0087ad. Pure white #ffffff backdrop, slate #526579 text. Replace all reference labels with only title \"폭으로 고르는 위상\" top left, caption \"개념도 · 계산 결과 아님\" bottom left. No other labels/numbers/logo/watermark. Large mobile-readable type and generous safe margins.",
+      "review": {
+        "pass": true,
+        "text": "Korean title and disclaimer inspected",
+        "geometry": "Approved master copied without editing"
+      }
+    },
+    {
+      "file": "08.en.dark.png",
+      "chapter": "08",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1437229,
+      "sha256": "7bdc20e87ccdb2ceef74b191aa35986ed3a7f2cf601c7a74ab42fa898fb6d248",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Inverse design for a direction\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Master's coplanar design strips, dashed design outline, amber inputs and teal target arrow/wave arcs preserved",
+        "text": "Requested localized title and disclaimer visually legible, no overlap",
+        "theme": "Navy canvas and light text"
+      }
+    },
+    {
+      "file": "08.en.light.png",
+      "chapter": "08",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1309246,
+      "sha256": "2635587403943cf6ba7a5d557f429ee3270942fed66020180d27f9eb4e61023e",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Inverse design for a direction\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Pure white #ffffff background, slate #526579 title and caption; preserve material colors and restrained soft shadows. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Master's coplanar design strips, dashed design outline, amber inputs and teal target arrow/wave arcs preserved",
+        "text": "Requested localized title and disclaimer visually legible, no overlap",
+        "theme": "White canvas and slate text"
+      }
+    },
+    {
+      "file": "08.ko.dark.png",
+      "chapter": "08",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1392858,
+      "sha256": "4b7ab542f73cd4dac7b245a9cab491aa21d5ca04fe2cc632812df7c3513bbf0e",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"방향을 목표로 역설계\" at the same upper-left location. Bottom-left caption exactly \"개념도 · 계산 결과 아님\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Master's coplanar design strips, dashed design outline, amber inputs and teal target arrow/wave arcs preserved",
+        "text": "Requested localized title and disclaimer visually legible, no overlap",
+        "theme": "Navy canvas and light text"
+      }
+    },
+    {
+      "file": "08.ko.light.png",
+      "chapter": "08",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1256389,
+      "sha256": "dc1cc87dc38bd7d8f4283453e5a73bedfc499d7253e497815ea5bfe9bcc210c1",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; exact same camera and connected physical geometry. Long parallel gray-blue design strips on pale silica, same height; rectangular design region outlined by subtle dashed line. Amber input arrow below and one teal target-order arrow above to the side. Uniform initial conceptual density, not claimed optimized geometry. No pixel heat map, no fake numerical gradient. Keep long invariant ridges rather than pillars. Amber arrows and teal wavefronts are conceptual, not field data. Matte blue #76b6da, pale silica, amber #e3a331, teal #0087ad. Pure white #ffffff backdrop, slate #526579 text. Replace all reference labels with only title \"방향을 목표로 역설계\" top left, caption \"개념도 · 계산 결과 아님\" bottom left. No other labels/numbers/logo/watermark. Large mobile-readable type and generous safe margins.",
+      "review": {
+        "pass": true,
+        "text": "Korean title and disclaimer inspected",
+        "geometry": "Approved master copied without editing"
+      }
+    },
+    {
+      "file": "09.en.dark.png",
+      "chapter": "09",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1409549,
+      "sha256": "9241fb45128d9c5903fb7abfa4910f7c56150bd9abb1facd64133e1816237a9e",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Designing a path with pixels\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Uniform gray tiled square with connected blue input/output arms and correct amber/teal arrows preserved",
+        "text": "Requested localized title and disclaimer clear, no clipping",
+        "theme": "Navy canvas and light text",
+        "caveat": "Cell count and extrusion heights are schematic, as in the approved master; not the numerical 11×11 design grid."
+      }
+    },
+    {
+      "file": "09.en.light.png",
+      "chapter": "09",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1292865,
+      "sha256": "1fc55016f213528de0e1e7375186bcbb476b1a7494f205f83966480fe9a31572",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"Designing a path with pixels\" at the same upper-left location. Bottom-left caption exactly \"Concept illustration · not simulation data\". No other text, symbols, logos or watermark. Pure white #ffffff background, slate #526579 title and caption; preserve material colors and restrained soft shadows. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Uniform gray tiled square with connected blue input/output arms and correct amber/teal arrows preserved",
+        "text": "Requested localized title and disclaimer clear, no clipping",
+        "theme": "White canvas and slate text",
+        "caveat": "Cell count and extrusion heights are schematic, as in the approved master; not the numerical 11×11 design grid."
+      }
+    },
+    {
+      "file": "09.ko.dark.png",
+      "chapter": "09",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1404267,
+      "sha256": "4cc48ef62c0c441a543c168cef92dbac8f36215749e920cc583c6faa2a2fc0ec",
+      "generationPrompt": "Use case: text-localization. Edit the attached scientific educational illustration. This attached image is the edit target. Preserve its exact geometry, number and placement of objects, orthographic camera, arrows, relative sizes, layout and landscape 5:3 canvas. Change only text and theme. Title exactly \"픽셀로 바꾸는 빛의 길\" at the same upper-left location. Bottom-left caption exactly \"개념도 · 계산 결과 아님\". No other text, symbols, logos or watermark. Uniform deep navy #0d1722 background across the full canvas; light #e8eef4 title and caption. Preserve blue dielectric, teal directions and amber source arrows, adjusting their brightness only enough to read clearly against dark. No white background panel or border, no glow effects. Keep text large, clear and entirely inside safe margins. Keep all structures and arrows exactly as the attached target; do not add elements, change physics or invent calculated data.",
+      "review": {
+        "pass": true,
+        "geometry": "Uniform gray tiled square with connected blue input/output arms and correct amber/teal arrows preserved",
+        "text": "Requested localized title and disclaimer clear, no clipping",
+        "theme": "Navy canvas and light text",
+        "caveat": "Cell count and extrusion heights are schematic, as in the approved master; not the numerical 11×11 design grid."
+      }
+    },
+    {
+      "file": "09.ko.light.png",
+      "chapter": "09",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1207187,
+      "sha256": "cad26c573847913a2adb9b707cbe0c2325fe91665ffd289206b64ea69e2ed40a",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve camera and scientific structure. Fixed blue left input waveguide and fixed blue top output waveguide connect to a flat square design region with eleven by eleven uniform neutral gray tiles, all same height. Gold input arrow enters left and teal output arrow exits upward. Initial design variables schematic only, not an invented optimized density or field. Replace varied reference pixels by uniform neutral-gray square tiles: schematic initial variables, not a fabricated optimized mask. Fixed arms remain solid blue, connected and flat. Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"픽셀로 바꾸는 빛의 길\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
+      "review": {
+        "pass": true,
+        "text": "Korean title and disclaimer inspected",
+        "geometry": "Approved master copied without editing",
+        "caveat": "Tile count is schematic; parent will clarify in HTML caption."
+      }
+    },
+    {
+      "file": "10.en.dark.png",
+      "chapter": "10",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1407256,
+      "sha256": "b8164a59dab96078dd9cd889a5d39ede7188c6cf66bf3ad9eb83854ccaa382df",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 10 scientific illustration. Create its English dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Horizontal short amber electric dipole floating above a broad cropped PEC mirror plane. A few delicate teal wireframe lobes indicate schematic radiation directions. Show vertical separation with a thin bracket. Mirror planar, not a cavity; no numerical radiation values. Title exactly \"A dipole above a mirror\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, geometry retained, requested theme."
+    },
+    {
+      "file": "10.en.light.png",
+      "chapter": "10",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1323695,
+      "sha256": "22018a0096471f531dffc788b22af369596a1b4a8560925f9cc07299db6cce9a",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 10 scientific illustration. Create its English light-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Horizontal short amber electric dipole floating above a broad cropped PEC mirror plane. A few delicate teal wireframe lobes indicate schematic radiation directions. Show vertical separation with a thin bracket. Mirror planar, not a cavity; no numerical radiation values. Title exactly \"A dipole above a mirror\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Pure white #ffffff backdrop, slate #526579 title/caption; preserve existing blue/teal/amber material colors and shading. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, geometry retained, requested theme."
+    },
+    {
+      "file": "10.ko.dark.png",
+      "chapter": "10",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1464048,
+      "sha256": "294191e812ff3755f112844801dd9207926bc66bcb160c6b2902f7452c543428",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 10 scientific illustration. Create its Korean dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Horizontal short amber electric dipole floating above a broad cropped PEC mirror plane. A few delicate teal wireframe lobes indicate schematic radiation directions. Show vertical separation with a thin bracket. Mirror planar, not a cavity; no numerical radiation values. Title exactly \"거울 위 쌍극자\" at top left; bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, geometry retained, requested theme."
+    },
+    {
+      "file": "10.ko.light.png",
+      "chapter": "10",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1278143,
+      "sha256": "201053adb30ebd421b144f74448d1a5ad545175a412e3d64ff6a755fd5aa59ae",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve camera and scientific structure. Horizontal short amber electric dipole floating above a broad cropped PEC mirror plane. A few delicate teal wireframe lobes indicate schematic radiation directions. Show vertical separation with a thin bracket. Mirror planar, not a cavity; no numerical radiation values.  Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"거울 위 쌍극자\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
+      "review": "Inspected original master; retained exact PNG"
+    },
+    {
+      "file": "11.en.dark.png",
+      "chapter": "11",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 972,
+      "bytes": 1454657,
+      "sha256": "23010b9e8a8e74e7a85752cf5592b5c3a4c0fd795a6122437622adfa099f3515",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 11 scientific illustration. Create its English dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Two parallel broad cropped PEC mirror planes separated by dielectric gap, upper plane cut away to reveal horizontal amber dipole between mirrors. Teal schematic wave arcs inside gap, small separation bracket. No fabricated finite resonator sidewalls, no numeric Purcell result. Title exactly \"A source between mirrors\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, geometry retained, requested theme."
+    },
+    {
+      "file": "11.en.light.png",
+      "chapter": "11",
+      "locale": "en",
+      "theme": "light",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1302800,
+      "sha256": "aba8e7b364c00f2daa1d6954ab8128e5fbb22173be29ea4d5c8212e560a4ca32",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 11 scientific illustration. Create its English light-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Two parallel broad cropped PEC mirror planes separated by dielectric gap, upper plane cut away to reveal horizontal amber dipole between mirrors. Teal schematic wave arcs inside gap, small separation bracket. No fabricated finite resonator sidewalls, no numeric Purcell result. Title exactly \"A source between mirrors\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Pure white #ffffff backdrop, slate #526579 title/caption; preserve existing blue/teal/amber material colors and shading. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, geometry retained, requested theme."
+    },
+    {
+      "file": "11.ko.dark.png",
+      "chapter": "11",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1466000,
+      "sha256": "26e049271812bb68131b728e97fcc15c3cb476649e39a6c25ff127b6f03cd8a7",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 11 scientific illustration. Create its Korean dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Two parallel broad cropped PEC mirror planes separated by dielectric gap, upper plane cut away to reveal horizontal amber dipole between mirrors. Teal schematic wave arcs inside gap, small separation bracket. No fabricated finite resonator sidewalls, no numeric Purcell result. Title exactly \"두 거울 사이의 광원\" at top left; bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, geometry retained, requested theme."
+    },
+    {
+      "file": "11.ko.light.png",
+      "chapter": "11",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1242934,
+      "sha256": "78ae470da982bc98dee0dd0c82be74ed50c61a2d13f13706845f7387de006ce9",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve camera and scientific structure. Two parallel broad cropped PEC mirror planes separated by dielectric gap, upper plane cut away to reveal horizontal amber dipole between mirrors. Teal schematic wave arcs inside gap, small separation bracket. No fabricated finite resonator sidewalls, no numeric Purcell result.  Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"두 거울 사이의 광원\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
+      "review": "Inspected original master; retained exact PNG"
+    },
+    {
+      "file": "12.en.dark.png",
+      "chapter": "12",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1372156,
+      "sha256": "20f37a7fdfdbd066b1ac74885ed3a78a8231322104962508bf3ed5117d3a3b79",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 12 scientific illustration. Create its English dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: One isolated blue dielectric annulus on a vacuum calculation plane, no bus waveguide, no input/output leads. Small amber source inside ring near inner edge. Sparse teal and amber arcs along ring show conceptual resonant circulation, not measured intensity. Orthographic engineering view. Title exactly \"Light confined in a ring\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, ring and source retained, requested theme."
+    },
+    {
+      "file": "12.en.light.png",
+      "chapter": "12",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1169347,
+      "sha256": "79d9e4b1920ccbcda37008ae6cf7c8ba312a5312edef06222827ade57b42976b",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 12 scientific illustration. Create its English light-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: One isolated blue dielectric annulus on a vacuum calculation plane, no bus waveguide, no input/output leads. Small amber source inside ring near inner edge. Sparse teal and amber arcs along ring show conceptual resonant circulation, not measured intensity. Orthographic engineering view. Title exactly \"Light confined in a ring\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Pure white #ffffff backdrop, slate #526579 title/caption; preserve existing blue/teal/amber material colors and shading. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, ring and source retained, requested theme."
+    },
+    {
+      "file": "12.ko.dark.png",
+      "chapter": "12",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1353123,
+      "sha256": "20982dac27d9314f597b02d54f26648120ae592296274f69a9aadebf9d7d6c79",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 12 scientific illustration. Create its Korean dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: One isolated blue dielectric annulus on a vacuum calculation plane, no bus waveguide, no input/output leads. Small amber source inside ring near inner edge. Sparse teal and amber arcs along ring show conceptual resonant circulation, not measured intensity. Orthographic engineering view. Title exactly \"고리 안에 머무는 빛\" at top left; bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, ring and source retained, requested theme."
+    },
+    {
+      "file": "12.ko.light.png",
+      "chapter": "12",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1131468,
+      "sha256": "6280db8fcac1d9689c46d5f1c0e74873382100d4b7003d9deee7448e81eb9ff7",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve exact camera and scientific structure. One isolated blue dielectric annulus on a vacuum calculation plane, no bus waveguide, no input/output leads. Small amber source inside ring near inner edge. Sparse teal and amber arcs along ring show conceptual resonant circulation, not measured intensity. Orthographic engineering view. Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"고리 안에 머무는 빛\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
+      "review": "Inspected original master; retained exact PNG"
+    },
+    {
+      "file": "13.en.dark.png",
+      "chapter": "13",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1379543,
+      "sha256": "7e9457d80afe3cd62ed0a0c3a9edb70cdad0f1592323836168aa2d44d9104824",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 13 scientific illustration. Create its English dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Finite blue dielectric disc above a cropped PEC plane, vertical dashed rotation axis through center. A translucent radial-z half-plane extends from axis outward to show cylindrical computational slice. Off-axis amber marker denotes a source harmonic; curved teal rotation arrow. Not a full off-axis point source solution. Title exactly \"Rotational symmetry and a slice\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, disc, source, symmetry axis and calculation plane retained."
+    },
+    {
+      "file": "13.en.light.png",
+      "chapter": "13",
+      "locale": "en",
+      "theme": "light",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1262576,
+      "sha256": "e3924e8ead959f1a6b5ec720480ae61b3e39ed01352a486e0869068d93061ad8",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 13 scientific illustration. Create its English light-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Finite blue dielectric disc above a cropped PEC plane, vertical dashed rotation axis through center. A translucent radial-z half-plane extends from axis outward to show cylindrical computational slice. Off-axis amber marker denotes a source harmonic; curved teal rotation arrow. Not a full off-axis point source solution. Title exactly \"Rotational symmetry and a slice\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Pure white #ffffff backdrop, slate #526579 title/caption; preserve existing blue/teal/amber material colors and shading. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, disc, source, symmetry axis and calculation plane retained."
+    },
+    {
+      "file": "13.ko.dark.png",
+      "chapter": "13",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1308642,
+      "sha256": "bee3659cfaf26ed2eeef6a11004755e41cc887bc28b17d7a1db7b3f6889b9d3f",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 13 scientific illustration. Create its Korean dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Finite blue dielectric disc above a cropped PEC plane, vertical dashed rotation axis through center. A translucent radial-z half-plane extends from axis outward to show cylindrical computational slice. Off-axis amber marker denotes a source harmonic; curved teal rotation arrow. Not a full off-axis point source solution. Title exactly \"회전 대칭과 계산 단면\" at top left; bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, disc, source, symmetry axis and calculation plane retained."
+    },
+    {
+      "file": "13.ko.light.png",
+      "chapter": "13",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1221504,
+      "sha256": "6612794b6e3764f3530f3957fc64fe9b11a50cb58101db342c437824d90d4eda",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve exact camera and scientific structure. Finite blue dielectric disc above a cropped PEC plane, vertical dashed rotation axis through center. A translucent radial-z half-plane extends from axis outward to show cylindrical computational slice. Off-axis amber marker denotes a source harmonic; curved teal rotation arrow. Not a full off-axis point source solution. Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"회전 대칭과 계산 단면\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
+      "review": "Inspected original master; retained exact PNG"
+    },
+    {
+      "file": "14.en.dark.png",
+      "chapter": "14",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1392030,
+      "sha256": "4624235655375562d6cfab453ee3b2aac7112fe9f5bea16614d1e91f8cb02dcd",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 14 scientific illustration. Create its English dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Broad cropped infinite blue dielectric thin film on cropped PEC mirror, horizontal amber dipole inside film. Teal arrows leave upward into air; amber lateral arrows remain guided along film. No finite chip edges, no fabricated extraction texture or numerical efficiency. Title exactly \"Extracting light from a film\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, film, source and vertical/lateral arrow directions retained."
+    },
+    {
+      "file": "14.en.light.png",
+      "chapter": "14",
+      "locale": "en",
+      "theme": "light",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1520334,
+      "sha256": "eebb7841649428e349f1c4a91f2987e7cd5472d0c51f258fa6a2a424965a0e84",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 14 scientific illustration. Create its English light-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Broad cropped infinite blue dielectric thin film on cropped PEC mirror, horizontal amber dipole inside film. Teal arrows leave upward into air; amber lateral arrows remain guided along film. No finite chip edges, no fabricated extraction texture or numerical efficiency. Title exactly \"Extracting light from a film\" at top left; bottom caption exactly \"Concept illustration · not simulation data\". No other text. Pure white #ffffff backdrop, slate #526579 title/caption; preserve existing blue/teal/amber material colors and shading. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, film, source and vertical/lateral arrow directions retained."
+    },
+    {
+      "file": "14.ko.dark.png",
+      "chapter": "14",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1619,
+      "height": 971,
+      "bytes": 1367967,
+      "sha256": "5385b6e58320611af6cf3f7ccc87208c4b6577f85ec2e335bdcd3b4bfddea651",
+      "generationPrompt": "Use case: text-localization. Edit target: attached chapter 14 scientific illustration. Create its Korean dark-mode PNG variant. Change ONLY text and theme. Preserve exact scientific geometry, object count, camera, source position, wave paths, arrows, separation and 5:3 landscape canvas. Scientific invariants: Broad cropped infinite blue dielectric thin film on cropped PEC mirror, horizontal amber dipole inside film. Teal arrows leave upward into air; amber lateral arrows remain guided along film. No finite chip edges, no fabricated extraction texture or numerical efficiency. Title exactly \"박막 밖으로 나오는 빛\" at top left; bottom caption exactly \"개념도 · 계산 결과 아님\". No other text. Uniform deep navy #0d1722 backdrop across entire canvas, light #e8eef4 title/caption. Keep blue materials, teal lines and amber source clearly visible; subtle restrained shading, no white panel or border, no added glow. Large mobile-readable type with generous safe margins. Do not add features, numerical data, plots, logo or watermark. Keep all reference physical elements and composition unchanged.",
+      "review": "Inspected generated PNG: correct title/caption, film, source and vertical/lateral arrow directions retained."
+    },
+    {
+      "file": "14.ko.light.png",
+      "chapter": "14",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1620,
+      "height": 971,
+      "bytes": 1261498,
+      "sha256": "7cf178bed960f6a32baa430ef01dc19c1db411dada551f98a6deef075dd446b8",
+      "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve exact camera and scientific structure. Broad cropped infinite blue dielectric thin film on cropped PEC mirror, horizontal amber dipole inside film. Teal arrows leave upward into air; amber lateral arrows remain guided along film. No finite chip edges, no fabricated extraction texture or numerical efficiency. Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"박막 밖으로 나오는 빛\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
+      "review": "Inspected original master; retained exact PNG"
+    }
+  ]
+}

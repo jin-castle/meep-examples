@@ -87,14 +87,11 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 
 <h2 id="understand">3. 원리 이해하기 · 모양과 시각을 함께 읽기</h2>
 
+{% include chapter-illustration.html %}
+
 <!-- concept-illustration:part-01:start -->
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/01/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/01/00_concept.png" alt="점원의 동심원과 세로 선원의 좌우 파면 및 끝 회절을 비교하는 개념도. 생략한 z 방향은 무한히 이어진다." loading="lazy">
-  </a>
-  <figcaption>광원의 모양을 설명하는 개념도입니다. 선원 끝에서는 회절이 생겨 둥근 파면이 남습니다. 실제 flux 측정에는 아래 설계도의 PML과 상자를 사용합니다.</figcaption>
-</figure>
+<p class="lesson-note">광원의 모양을 설명하는 개념도입니다. 선원 끝에서는 회절이 생겨 둥근 파면이 남습니다. 실제 flux 측정에는 아래 설계도의 PML과 상자를 사용합니다.</p>
 
 <!-- concept-illustration:part-01:end -->
 

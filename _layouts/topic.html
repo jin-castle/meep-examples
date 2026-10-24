@@ -1,56 +1,58 @@
+{% include locale.html %}
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: 'ko' }}">
+<html lang="{{ lang }}" data-baseurl="{{ site.baseurl }}">
   {% include head.html %}
   <body class="lesson-page">
     <style>.lesson-content .MJXc-display{max-width:100%;overflow-x:auto;overflow-y:hidden}</style>
-    <a class="lesson-skip" href="#lesson-content">본문으로 건너뛰기</a>
+    <a class="lesson-skip" href="#lesson-content">{{ ui.skip }}</a>
     <header class="lesson-header">
-      <a class="lesson-brand" href="{{ '/' | relative_url }}" aria-label="Meep Examples 홈">
+      <a class="lesson-brand" href="{{ home_path | relative_url }}" aria-label="{{ ui.home }}">
         <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M3 24h10a7 7 0 0 0 7-7V3" fill="none" stroke="currentColor" stroke-width="5"/><path d="M3 24h10a7 7 0 0 0 7-7V3" fill="none" stroke="white" stroke-width="1.5"/></svg>
         <span>Meep <strong>Examples</strong></span>
       </a>
-      <a href="{{ '/#learning-path' | relative_url }}">학습 경로 <span aria-hidden="true">↗</span></a>
+      <a class="all-examples-link" href="{{ home_path | append: '#learning-path' | relative_url }}">{{ ui.topic_path }} <span aria-hidden="true">↗</span></a>
+      {% include site-controls.html %}
     </header>
     {% capture topic_toc %}<ol>{% for item in page.toc %}<li><a href="#{{ item.id }}">{{ item.label | escape }}</a></li>{% endfor %}</ol>{% endcapture %}
     <details class="mobile-toc">
-      <summary>이 글의 목차 <span aria-hidden="true">＋</span></summary>
-      <nav aria-label="모바일 본문 목차">{{ topic_toc }}</nav>
+      <summary>{{ ui.toc }} <span aria-hidden="true">＋</span></summary>
+      <nav aria-label="{{ ui.mobile_toc }}">{{ topic_toc }}</nav>
     </details>
     <div class="lesson-shell">
       <aside class="lesson-sidebar">
-        <a class="lesson-back" href="{{ '/#learning-path' | relative_url }}">← 학습 경로</a>
+        <a class="lesson-back" href="{{ home_path | append: '#learning-path' | relative_url }}">← {{ ui.topic_path }}</a>
         <p class="lesson-eyebrow">TOPIC · {{ page.topic_label }}</p>
-        <nav aria-label="본문 목차">{{ topic_toc }}</nav>
-        <p class="lesson-side-note">예제 글 사이를 잇는<br>주제 정리입니다.</p>
+        <nav aria-label="{{ ui.body_toc }}">{{ topic_toc }}</nav>
+        <p class="lesson-side-note">{{ ui.topic_note }}</p>
       </aside>
       <main id="lesson-content" class="lesson-main">
         <article>
           <header class="lesson-intro">
             <p class="lesson-eyebrow">MEEP EXAMPLES <span aria-hidden="true">/</span> TOPIC · {{ page.topic_label }}</p>
-            <h1>{{ page.lesson_title | escape }}</h1>
+            <h1>{{ page.lesson_title | default: page.title | escape }}</h1>
             <p class="lesson-lead">{{ page.lesson_summary | escape }}</p>
             <div class="lesson-goals">
-              <h2>이 글을 읽고 나면</h2>
+              <h2>{{ ui.goals }}</h2>
               <ul>{% for goal in page.lesson_goals %}<li>{{ goal | escape }}</li>{% endfor %}</ul>
             </div>
-            <p class="lesson-prerequisites"><strong>먼저 알면 좋은 것</strong> {{ page.lesson_prerequisites | escape }}</p>
+            <p class="lesson-prerequisites"><strong>{{ ui.prerequisites }}</strong> {{ page.lesson_prerequisites | escape }}</p>
             {% if page.calc_note %}<p class="lesson-meta">{{ page.calc_note | escape }}</p>{% endif %}
           </header>
           <div class="lesson-content">{{ content }}</div>
         </article>
         {% if page.related %}
-        <nav class="lesson-pagination" aria-label="관련 예제">
-          {% for item in page.related %}<a href="{{ item.url | relative_url }}"><span>관련 예제</span>{{ item.label | escape }}</a>{% endfor %}
+        <nav class="lesson-pagination" aria-label="{{ ui.related }}">
+          {% for item in page.related %}<a href="{{ item.url | relative_url }}"><span>{{ ui.related }}</span>{{ item.label | escape }}</a>{% endfor %}
         </nav>
         {% endif %}
-        <footer class="lesson-footer"><a href="{{ '/' | relative_url }}">Meep Examples</a> · 빛의 움직임을 보고, 코드로 확인합니다.</footer>
+        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }}</footer>
       </main>
     </div>
     <dialog class="lesson-lightbox" aria-labelledby="lightbox-title">
-      <div class="lightbox-toolbar"><h2 id="lightbox-title">그림 확대</h2><button type="button" class="lightbox-close" autofocus>닫기 <span aria-hidden="true">×</span></button></div>
+      <div class="lightbox-toolbar"><h2 id="lightbox-title">{{ ui.enlarge }}</h2><button type="button" class="lightbox-close" autofocus>{{ ui.close }} <span aria-hidden="true">×</span></button></div>
       <div class="lightbox-image-wrap"><img class="lightbox-image" alt=""></div>
       <p class="lightbox-caption"></p>
-      <a class="lightbox-original" href="#" target="_blank" rel="noopener">원본 크기로 열기 ↗</a>
+      <a class="lightbox-original" href="#" target="_blank" rel="noopener">{{ ui.original }} ↗</a>
     </dialog>
   </body>
 </html>

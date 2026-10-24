@@ -57,6 +57,8 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 
 <h2 id="understand">3. 원리 이해하기: 한 방향씩 계산하고, 거울은 image로 보기</h2>
 
+{% include chapter-illustration.html %}
+
 점광원의 field를 평면파 성분으로 나누면, 횡방향 파수 <code>k_point</code> 하나가 나가는 방향 하나에 대응합니다. 각 방향에서 z축을 따라 계산하고, 얻은 flux를 **S_r = S_z cos θ**로 환산한 뒤 모읍니다. θ는 +z축으로부터 잰 각도입니다.
 
 <figure class="lesson-figure">

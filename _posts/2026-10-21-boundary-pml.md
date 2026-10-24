@@ -70,13 +70,10 @@ PML 두께를 1 µm에서 2 µm로 늘리면, 이 실험에서 측정한 반사 
 
 <h2 id="understand">3. 원리 이해하기</h2>
 
+{% include chapter-illustration.html %}
+
 <!-- concept-illustration:part-02:start -->
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/02/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/02/00_concept.png" alt="같은 진공 셀에서 왼쪽은 흡수층 없이 경계에서 반사되는 파, 오른쪽은 사방 PML 안에서 감쇠하는 파를 비교한다." loading="lazy">
-  </a>
-  <figcaption>이 코드의 흡수층 없는 경계에서는 파가 되돌아옵니다. 같은 12 × 8 µm 진공 셀에서 네 변의 안쪽에 두께 1 µm PML을 두면 파가 흡수층을 지나며 감쇠합니다. 두 패널은 같은 위치의 Ez 점원과 같은 관측 시각을 비교합니다. PML은 실제 장치의 벽이나 센서가 아닌 계산용 흡수 영역입니다. 별도 B 실험의 장 RMS 반사 지표와 전력 반사율은 구분해야 합니다.</figcaption>
-</figure>
+<p class="lesson-note">이 코드의 흡수층 없는 경계에서는 파가 되돌아옵니다. 같은 12 × 8 µm 진공 셀에서 네 변의 안쪽에 두께 1 µm PML을 두면 파가 흡수층을 지나며 감쇠합니다. 두 패널은 같은 위치의 Ez 점원과 같은 관측 시각을 비교합니다. PML은 실제 장치의 벽이나 센서가 아닌 계산용 흡수 영역입니다. 별도 B 실험의 장 RMS 반사 지표와 전력 반사율은 구분해야 합니다.</p>
 <!-- concept-illustration:part-02:end -->
 
 ### 벽을 없애는 대신, 파가 사라질 구간을 둡니다

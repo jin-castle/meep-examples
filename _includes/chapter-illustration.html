@@ -1,0 +1,12 @@
+{% assign illustration_part = include.part | default: page.part %}
+{% assign illustration_id = illustration_part | prepend: '0' | slice: -2, 2 %}
+{% assign illustration_locale = page.lang | default: 'ko' %}
+{% assign illustration_title = site.data.illustrations[illustration_id][illustration_locale] %}
+{% assign illustration_base = '/assets/illustrations/' | append: illustration_id %}
+{% assign illustration_src = illustration_base | append: '.' | append: illustration_locale | append: '.light.png' %}
+<figure class="lesson-figure chapter-illustration">
+  <a href="{{ illustration_src | relative_url }}" data-lightbox class="illustration-link" aria-label="{% if illustration_locale == 'en' %}Enlarge: {% else %}확대: {% endif %}{{ illustration_title | escape }}">
+    <img src="{{ illustration_src | relative_url }}" data-variant-base="{{ illustration_base | relative_url }}" data-variant-locale="{{ illustration_locale }}" width="1620" height="972" alt="{{ illustration_title | escape }}" loading="lazy" decoding="async">
+  </a>
+  <figcaption>{% if illustration_locale == 'en' %}{{ illustration_title | escape }}. Concept illustration; follow the model dimensions and assumptions below. {% if illustration_id == '09' %}Tile count and height are schematic; the numerical results below use the actual 11 × 11 design variables.{% endif %}{% else %}{{ illustration_title | escape }}. 실제 모델의 차원과 가정은 아래 설명을 따릅니다. {% if illustration_id == '09' %}타일 개수와 높이는 개념 표현이며, 아래 계산 결과는 실제 11 × 11 설계 변수를 사용합니다.{% endif %}{% endif %}</figcaption>
+</figure>

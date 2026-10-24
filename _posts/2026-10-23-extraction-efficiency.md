@@ -1,5 +1,12 @@
 ---
-layout: post
+layout: lesson
+lesson_title: "박막 속 빛은 얼마나 공기로 빠져나올까요?"
+lesson_summary: "광원의 일에 대한 공기 쪽 flux의 비율로 추출 효율을 구하고, cylindrical과 3D 계산 및 m 급수·kz 적분의 종료 조건을 비교합니다."
+lesson_goals:
+  - "광원이 한 일과 좌표계에 맞는 부피로 추출 효율을 정규화한다."
+  - "m 급수의 조기 종료를 찾고 kz 적분이 필요한 이유를 설명한다."
+  - "추출 효율과 함께 해상도 및 열린 측정면의 한계를 보고한다."
+lesson_prerequisites: "11편 dft_ldos · 13편 cylindrical 좌표와 m 급수"
 date: 2026-10-23
 title: "Meep Example 14 · 박막 속 점광원, 공기로 나오는 몫 — 광추출 효율, LDOS 정규화, kz 적분, CYL 대 3D"
 title_en: "Meep Example 14 · A point source in a thin film and the share that reaches the air — extraction efficiency, LDOS normalization, the kz integral, cylindrical vs 3D"
@@ -14,7 +21,7 @@ tags: [meep, fdtd, extraction-efficiency, led, oled, ldos, cylindrical, kz, edge
 image: /assets/meep/14/04_m_series.png
 excerpt: "post 11 measured how much a dipole emits (LDOS); post 13 split a body of revolution into m runs. An LED asks for the ratio: of everything a dipole in the emitting layer puts out, how much reaches the air. Extraction efficiency = flux through an open surface in air ÷ the source's own work from `dft_ldos`. Three official examples: a dipole in a layer on a mirror (cylindrical vs 3D), the same slab with the dipole off the axis (an m series), and a dipole inside the cleaved facet of a laser stack (a 2D cross-section plus a kz integral)."
 ---
-## TL;DR (English)
+<h2 id="observe">관찰하기: 공기로 나오는 빛의 몫</h2>
 
 ![hero]({{ site.baseurl }}/assets/meep/14/04_m_series.png)
 
@@ -48,7 +55,9 @@ excerpt: "post 11 measured how much a dipole emits (LDOS); post 13 split a body 
 | 양자점·단일광자원 수집 효율 | 축 위/축 밖 쌍극자의 차이, m 급수 | 16편 far field로 모으기 |
 | 광추출 구조(텍스처, 렌즈, 광결정) 최적화 | 분자·분모 정의와 교차검증 절차 | 35편 near2far 역설계 |
 
-## 2. 물리 한 페이지
+<h2 id="understand">2. 원리 이해하기: 물리 한 페이지</h2>
+
+{% include chapter-illustration.html %}
 
 추출 효율은 두 power의 비다. 분자는 공기 쪽에 둔 열린 flux 면으로 잰다. 분모는 source 점에서 field가 전류에 한 일이고, `dft_ldos`가 저장한 $F$(field)와 $J$(전류)로 계산한다. source 하나가 차지하는 부피 $\Delta V$가 좌표계마다 다르다.
 
@@ -77,7 +86,7 @@ $$
 
 **가정과 유효 범위**: 파장 1 µm, 손실 없는 층과 완전도체 거울(A·B), 손실 없는 다층(C). 분자는 열린 면이라 "공기 쪽으로 나간 몫"이지 닫힌 에너지 수지가 아니다. 셀의 가로 크기 L(A: 6 µm, B: 20 µm)이 유한하므로 그 밖으로 가는 빛은 옆면에서 센다.
 
-### 결과 보기 전에 맞춰보기
+<h2 id="predict">예측하기: 결과 보기 전에 맞춰보기</h2>
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -116,7 +125,7 @@ $$
 
 **강의 노트북과의 차이**: 강의 범위 밖이다. 10_sources의 세 노트는 각각 공식 조건 전체(21 높이 × 2 좌표계 res 80, r 네 개 × m 수백, kz 76점)를 돌렸다. 이 글은 A의 3D를 세 높이·res 40으로 줄이고, B는 r 하나에서 공식 종료 규칙과 m = 60까지 합한 값을 같은 그림에 놓는다.
 
-## 4. 코드 따라가기
+<h2 id="run">4. 실행하기: 코드 따라가기</h2>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
 > 이번 글의 핵심은 ⑦의 분모다.
@@ -214,7 +223,7 @@ eff_edge = (a_kz[0] + 2 * a_kz[1:].sum()) / (d_kz[0] + 2 * d_kz[1:].sum())
 
 > **함정**: 11편의 Purcell 인자는 같은 좌표계 두 run의 비율이라 $\Delta V$가 상쇄됐다. 추출 효율은 flux(물리 단위)와 source 일의 비율이라 $\Delta V$가 상쇄되지 않는다. 좌표계를 바꾸면 이 인자를 같이 바꿔야 한다.
 
-## 5. 결과
+<h2 id="interpret">5. 결과 해석하기</h2>
 
 ![height]({{ site.baseurl }}/assets/meep/14/03_height.png)
 *파트 A. 왼쪽: 쌍극자 높이에 따른 추출 효율. cylindrical res 80(파랑), res 40(하늘색), 3D res 40(빨간 마름모). 오른쪽: h = 0.5의 log|Er|. 흰 사각형이 층이고, 층을 따라 멀리까지 가는 빛이 갇힌 몫이다.*
@@ -269,14 +278,14 @@ eff_edge = (a_kz[0] + 2 * a_kz[1:].sum()) / (d_kz[0] + 2 * d_kz[1:].sum())
 | C: 필요한 kz 수 | 70~80 | 76 | ✅ |
 | C: 추출 효율 | 22% 근처 | 22.375% | ✅ |
 
-여덟 예측 중 여섯이 맞았고, 틀린 두 개가 모두 해상도 문제였다. 층 두께 0.292 µm는 res 40에서 11.7칸이다. 쌍극자 높이를 층 두께의 비율로 주면 격자에 맞춰 반올림되고, 위쪽 공기 계면 근처(h ≥ 0.6)에서는 field가 급하게 변해 한두 칸의 차이가 효율을 크게 바꾼다. res 40에서 CYL과 3D가 h = 0.5에서 16% 다른 것도 같은 원인으로 본다. 노트의 res 80 값은 CYL 0.323, 3D 0.337로 차이가 1.4%까지 줄었다. 이 층에는 res 80이 필요하다. B는 노트와 소수 넷째 자리까지 같다. 공식 규칙은 m = 32에서 멈춰 0.632를 내지만, 그 뒤 m = 41 근처에서 항이 다시 커진다. 이 항들은 source의 일(분모)이 매우 크고 공기로 나간 몫(분자)은 작다. 층에 갇혀 반지름 방향으로 가는 빛은 쌍극자에서 r만큼 떨어진 곳에서 둘레 $2\pi r$에 $n_{\mathrm{eff}}$배의 파장이 들어가는 m, 즉 $m\approx2\pi n_{\mathrm{eff}}r$ 근처에 실린다. 이 m을 빼면 분모의 대부분이 빠지므로 효율이 두 배로 나온다. m = 60까지 더한 0.362는 축 위 쌍극자의 0.364와 0.5% 안에서 같다. 무한한 층에서는 쌍극자의 가로 위치가 효율을 바꾸지 않아야 하므로 이 일치가 급수를 맞게 끊었다는 검산이다. C에서 kz = 0 하나(2D 선전류)는 32.9%를 주지만 적분하면 22.4%다. kz가 공기의 빛선 k₀를 넘으면 공기로는 빛이 못 나가고(파랑이 0) 다층 안의 guided 방출만 남는다(회색 봉우리). 2D 계산 하나로 3D 소자의 추출 효율을 말하면 이 몫이 빠진다.
+여덟 예측 중 여섯이 맞았고, 틀린 두 개가 모두 해상도 문제였다. 층 두께 0.292 µm는 res 40에서 11.7칸이다. 쌍극자 높이를 층 두께의 비율로 주면 격자에 맞춰 반올림되고, 위쪽 공기 계면 근처(h ≥ 0.6)에서는 field가 급하게 변해 한두 칸의 차이가 효율을 크게 바꾼다. res 40에서 CYL과 3D가 h = 0.5에서 16% 다른 것도 같은 원인으로 본다. 노트의 res 80 값은 CYL 0.323, 3D 0.337로 절대 차이가 0.014, 즉 1.4%포인트다(상대 오차 1.4%가 아님). 이 층에는 res 40보다 높은 해상도가 필요하며, res 80에서도 정밀한 값을 주장하려면 수렴성을 확인해야 한다. B는 노트와 소수 넷째 자리까지 같다. 공식 규칙은 m = 32에서 멈춰 0.632를 내지만, 그 뒤 m = 41 근처에서 항이 다시 커진다. 이 항들은 source의 일(분모)이 매우 크고 공기로 나간 몫(분자)은 작다. 층에 갇혀 반지름 방향으로 가는 빛은 쌍극자에서 r만큼 떨어진 곳에서 둘레 $2\pi r$에 $n_{\mathrm{eff}}$배의 파장이 들어가는 m, 즉 $m\approx2\pi n_{\mathrm{eff}}r$ 근처에 실린다. 이 m을 빼면 분모의 대부분이 빠지므로 효율이 두 배로 나온다. m = 60까지 더한 0.362는 축 위 쌍극자의 0.364와 0.5% 안에서 같다. 무한한 층에서는 쌍극자의 가로 위치가 효율을 바꾸지 않아야 하므로 이 일치가 급수를 맞게 끊었다는 검산이다. C에서 kz = 0 하나(2D 선전류)는 32.9%를 주지만 적분하면 22.4%다. kz가 공기의 빛선 k₀를 넘으면 공기로는 빛이 못 나가고(파랑이 0) 다층 안의 guided 방출만 남는다(회색 봉우리). 2D 계산 하나로 3D 소자의 추출 효율을 말하면 이 몫이 빠진다.
 
 ### 수렴성
 
 | 변수 | 값 | 결과 | 비고 |
 |---|---|---|---|
 | A 해상도 | CYL 40 / 80 (노트 80) | h 0.5: 0.302 / 0.323 | 층이 12칸뿐인 res 40은 부족 |
-| A 좌표계 | CYL 40 vs 3D 40; 노트 CYL 80 vs 3D 80 | 16% / 1.4% (h 0.5) | 해상도를 올리면 두 좌표계가 만난다 |
+| A 좌표계 | CYL 40 vs 3D 40; 노트 CYL 80 vs 3D 80 | 상대 오차 16% / 절대 차이 1.4%포인트 (h 0.5) | 높은 해상도에서 일치가 개선되지만 두 값은 오차 표현 방식이 다르다 |
 | B m 범위 | 0…32 / 0…60 | 0.632 / 0.362 | 마지막 항 2e-8 |
 | C kz 범위 | 0 / 0…1.50 | 32.9% / 22.4% | tail 0.019 |
 
@@ -307,7 +316,7 @@ eff_edge = (a_kz[0] + 2 * a_kz[1:].sum()) / (d_kz[0] + 2 * d_kz[1:].sum())
 | C를 x·y 편광으로 | 편광마다 다른 효율 | η |
 | 11개 쌍극자 디스크(disc_extraction_efficiency.py) | 노트: 0.932, m 93개 run | η, 마지막 m의 몫 |
 
-## 8. 전체 코드
+<h2 id="reference">8. 전체 코드와 참고 자료</h2>
 
 <details>
 <summary>code/extraction_efficiency.py 전체 (클릭하여 펼치기)</summary>
@@ -627,7 +636,7 @@ total 4604 s on 4 process(es)
 
 **재현 환경**: meep 1.33.0 (MPI) · Python 3.11 · `conda install -c conda-forge pymeep=*=mpi_mpich_*` · 실행 `mpirun -np 4 python extraction_efficiency.py` (약 77 min (mpirun -np 4; B alone 58 min))
 
-## 확인 질문
+<h2 id="check">이해 확인하기</h2>
 
 1. 11편의 Purcell 인자에서는 $\Delta V$가 필요 없었는데 추출 효율에서는 왜 필요한가.
 2. 축에서 3.5 µm 떨어진 쌍극자의 m 급수가 m 30 근처에서 작아졌다가 다시 커지는 이유를 층에 갇힌 빛과 $m\approx2\pi n r$로 설명해 보라.

@@ -70,13 +70,10 @@ excerpt: "run the same cell twice, without and with the object. The difference o
 
 <h2 id="understand">3. 원리 이해하기</h2>
 
+{% include chapter-illustration.html %}
+
 <!-- concept-illustration:part-03:start -->
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/03/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/03/00_concept.png" alt="물체 없는 입사장, 원기둥이 포함된 전체장, 두 장의 차이인 산란장을 같은 좌표에서 세 패널로 비교한다. 원기둥은 z 방향으로 무한하다." loading="lazy">
-  </a>
-  <figcaption>B 실험은 진공에 놓인 굴절률 2, 반지름 0.75 µm의 z 방향 무한 원기둥에 +x 방향 Ez 평면파를 입사시킵니다. 물체 없는 기준 계산과 원기둥을 넣은 계산을 같은 위치에서 비교해 E_scat = E_total − E_inc를 구합니다. 전력을 먼저 빼는 과정이 아닙니다. A 실험에서는 별도로 공기–융합석영 단일 계면의 Fresnel 반사와 같은 방법을 비교합니다.</figcaption>
-</figure>
+<p class="lesson-note">B 실험은 진공에 놓인 굴절률 2, 반지름 0.75 µm의 z 방향 무한 원기둥에 +x 방향 Ez 평면파를 입사시킵니다. 물체 없는 기준 계산과 원기둥을 넣은 계산을 같은 위치에서 비교해 E_scat = E_total − E_inc를 구합니다. 전력을 먼저 빼는 과정이 아닙니다. A 실험에서는 별도로 공기–융합석영 단일 계면의 Fresnel 반사와 같은 방법을 비교합니다.</p>
 <!-- concept-illustration:part-03:end -->
 
 ### 같은 입사파를 두 번 계산합니다

@@ -78,14 +78,11 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 
 <h2 id="understand">3. 원리 이해하기 · 관찰을 설명하는 방법</h2>
 
+{% include chapter-illustration.html %}
+
 <!-- concept-illustration:part-05:start -->
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/05/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/05/00_concept.png" alt="직선 기준, 날카로운 L자 굽힘, 둥근 굽힘을 비교한다. 입력은 왼쪽, 출력은 위쪽이며 날카로운 코너의 반사와 바깥 방사 경로를 표시한다." loading="lazy">
-  </a>
-  <figcaption>공기 속 ε = 12 유전체 도파로에서 직선 기준과 날카로운 직각, 둥근 굽힘을 비교합니다. 유효 입사광은 왼쪽에서 +x 방향으로 들어오고 출력은 위쪽 +y 방향입니다. 코너에서는 투과·반사·바깥 방사가 나뉠 수 있습니다. 그림의 R ≈ 0.70 µm는 둥근 굽힘의 중심선 곡률반경 0.6975 µm를 반올림한 값입니다. 점선은 위치 안내선입니다. 화살표 굵기는 계산된 전력 비율을 나타내지 않습니다. 파장을 1550 nm로 읽는 이 글의 환산에서 폭은 232.5 nm입니다.</figcaption>
-</figure>
+<p class="lesson-note">공기 속 ε = 12 유전체 도파로에서 직선 기준과 날카로운 직각, 둥근 굽힘을 비교합니다. 유효 입사광은 왼쪽에서 +x 방향으로 들어오고 출력은 위쪽 +y 방향입니다. 코너에서는 투과·반사·바깥 방사가 나뉠 수 있습니다. 그림의 R ≈ 0.70 µm는 둥근 굽힘의 중심선 곡률반경 0.6975 µm를 반올림한 값입니다. 점선은 위치 안내선입니다. 화살표 굵기는 계산된 전력 비율을 나타내지 않습니다. 파장을 1550 nm로 읽는 이 글의 환산에서 폭은 232.5 nm입니다.</p>
 
 <!-- concept-illustration:part-05:end -->
 

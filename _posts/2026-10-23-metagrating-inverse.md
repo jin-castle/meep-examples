@@ -57,12 +57,11 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 
 <h2 id="understand">3. 원리 이해하기: 기울기를 검증한 뒤 재료를 바꾸기</h2>
 
+{% include chapter-illustration.html %}
+
 밀도 ρ = 0은 공기, 1은 Si이며 사이는 유전율을 보간한 값입니다. 73개 변수는 가로 x 방향의 세로 띠를 바꿉니다. 한 띠의 높이 0.9 µm 전체는 같은 밀도를 사용하고 SiO₂ 기판은 고정합니다.
 
-<figure class="lesson-figure">
-<a href="{{ site.baseurl }}/assets/meep/08/00_concept.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/08/00_concept.png" alt="정방향 계산과 수반 계산으로 얻은 민감도로 73개 밀도를 갱신하고 별도 검증하는 개념도" loading="lazy"></a>
-<figcaption>설명용 개념도입니다. 기판 아래에서 +y 방향으로 입사하고 오른쪽 위 +1차를 목표로 합니다. forward와 adjoint는 별도 계산이며 회색 띠는 실제 최적화 결과가 아닙니다.</figcaption>
-</figure>
+<p class="lesson-note">설명용 개념도입니다. 기판 아래에서 +y 방향으로 입사하고 오른쪽 위 +1차를 목표로 합니다. forward와 adjoint는 별도 계산이며 회색 띠는 실제 최적화 결과가 아닙니다.</p>
 
 1. **Forward:** 원래 광원으로 빛을 보내 +1차 모드 진폭을 구합니다.
 2. **Adjoint:** 목적함수에서 유도한 source를 출력 monitor에 놓고 별도 계산합니다.

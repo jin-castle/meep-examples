@@ -51,6 +51,8 @@ excerpt: "post 12's ring was a 2D cross-section; real discs, rings, lenses and L
 
 <h2 id="understand">3. 원리 이해하기: 방위각을 m으로 나누어 계산하기</h2>
 
+{% include chapter-illustration.html %}
+
 구조가 φ에 무관하면 field를 **E(r, φ, z) = Σ E_m(r, z) exp(imφ)**로 쓸 수 있습니다. m 하나를 고르면 φ 미분은 im을 곱하는 것으로 바뀌고, Meep은 남은 r–z 단면을 계산합니다. 3D 공간의 효과를 버리는 것이 아니라 방위각 의존성을 별도로 표현하는 방법입니다.
 
 <figure class="lesson-figure">

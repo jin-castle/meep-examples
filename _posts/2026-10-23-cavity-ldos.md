@@ -57,6 +57,8 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 
 <h2 id="understand">3. 원리 이해하기: 같은 source로 두 번 재는 이유</h2>
 
+{% include chapter-illustration.html %}
+
 쌍극자는 자신이 만든 field와 상호작용합니다. 거울에서 돌아온 field가 source 자리의 응답을 바꾸면, 같은 진폭의 전류가 내는 power도 달라집니다. <code>dft_ldos</code>는 source 자리의 field와 전류의 주파수 성분으로 이 응답을 구합니다.
 
 <figure class="lesson-figure">
