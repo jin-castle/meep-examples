@@ -67279,7 +67279,7 @@
   "adjoint_limit": 0.017941712180960218,
   "phase_convention": "Re(Ez * exp(-i * 2*pi*k/32)); saved steady-state complex DFT, not transient propagation",
   "density_indexing": "x*Ny+y; 61 by 61; no threshold or binarization",
-  "colormap": "bwr_r",
+  "colormap": "RdBu",
   "normalization": "Common symmetric forward scale across all before/after states; separate common symmetric adjoint scale",
   "full_extent_um": [
     -3,
@@ -67293,12 +67293,8 @@
     -0.5,
     0.5
   ],
-  "display_style": "approved wavefront + gray fixed geometry and continuous density; display-only change",
-  "geometry_background": "fixed guides and continuous design density, not sampled epsilon; no thresholding",
-  "opacity": "sqrt(abs(Re(Ez))/symmetric_limit); visual compositing only",
-  "gradient_colormap": "RdBu",
   "render_source_sha256": {
-    "render_iterations.py": "3b45d467f6224489673688451c31793d3653882392a19ce3f0eab2766217c2c5",
-    "render_scene.py": "467966b48cdb2a009744cae8e38f02342cb77a94b3c54b3f7bffb4dfd3113f2a"
+    "render_iterations.py": "1418215a2382dc5ca67173ec0a75f2dae3437fa6e8508183caa390ef7f218026",
+    "render_scene.py": "f2538bc9b6d9f9b3735f03282c5872b3039a31061499b69fab07632b06695ad9"
   }
 }

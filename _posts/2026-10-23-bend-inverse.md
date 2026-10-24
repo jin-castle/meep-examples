@@ -45,10 +45,10 @@ excerpt: "post 05 steered a 90° bend with one number, the radius. Here the corn
 
 ### 어디에 쓰이는가
 
-홈의 고해상도 DFT 예시는 **빨강·파랑 파면 + 회색 구조**로 표시합니다. 빨강은 음수, 파랑은 양수 Re(Ez)이며 약한 장은 투명하게 합성합니다. 회색은 고정 도파관과 연속 설계 밀도의 표시로, 저장된 실제 유전율 지도는 아닙니다. 원래의 복소장·위상·공통 색상 범위는 보존하고, gradient는 기존 RdBu로 구별합니다. 아래 저해상도 MMA 예제의 원본 그림과는 계산 이력이 다릅니다.
+홈의 고해상도 DFT 예시는 **RdBu 전기장 지도**로 표시합니다. 빨강은 음수, 흰색은 0, 파랑은 양수 Re(Ez)이며 투명도 합성 없이 같은 대칭 색상 범위를 사용합니다. 검은 윤곽선은 고정 도파관을 나타내고, 연속 설계 밀도는 별도의 회색조로 표시합니다. 원래의 복소장·위상·gradient는 보존합니다. 아래 저해상도 MMA 예제의 원본 그림과는 계산 이력이 다릅니다.
 
 <figure class="lesson-figure">
-<a href="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png" alt="여섯 번의 고해상도 밀도 갱신 후 회색 구조 위의 실제 DFT 파면" loading="lazy"></a>
+<a href="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png?v=rdbu-20261024" data-lightbox><img src="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png?v=rdbu-20261024" alt="여섯 번의 고해상도 밀도 갱신 후 실제 DFT 전기장, RdBu 색상" loading="lazy"></a>
 <figcaption>해상도 60, 61×61 연속 밀도, 6회 갱신 후의 저장된 정상상태 DFT입니다. 위상 재생은 시간에 따른 광원 켜짐이나 파면 도착을 뜻하지 않습니다.</figcaption>
 </figure>
 

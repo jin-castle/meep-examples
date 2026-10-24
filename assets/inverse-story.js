@@ -43,6 +43,12 @@
   const bundles = new Map();
   const assetRoot = new URL(`${(document.documentElement.dataset.baseurl || "").replace(/\/$/, "")}/assets/`, document.baseURI);
   const historyRoot = new URL("meep/09/iterations/", assetRoot);
+  const assetVersion = new URL(document.currentScript.src).searchParams.get("v");
+  function dataURL(path, root = assetRoot) {
+    const url = new URL(path, root);
+    if (assetVersion) url.searchParams.set("v", assetVersion);
+    return url;
+  }
   Object.assign(scene.dataset, { iteration: "0", iterationCount: "1", historyReady: "false", loading: "false", finished: "false" });
   const densityCanvas = $("#current-density");
   const densityContext = densityCanvas.getContext("2d");
@@ -68,7 +74,7 @@
   async function bundle(index) {
     if (!bundles.has(index)) bundles.set(index, Promise.all(Object.keys(imageTargets).map(async key => {
       const image = new Image();
-      image.src = new URL(records[index][key], historyRoot).href;
+      image.src = dataURL(records[index][key], historyRoot).href;
       await image.decode();
       if (key.endsWith("_phases") && (image.naturalWidth !== 2880 || image.naturalHeight !== 1200)) throw new Error("Invalid phase sheet");
       return [key, image];
@@ -102,7 +108,7 @@
       Object.assign(scene.dataset, { iteration: String(index), historyReady: "true", loading: "false", finished: "false", forwardPhaseReady: "true", adjointPhaseReady: "true" });
       $("#iteration-select").value = String(index);
       text("#density-data-status", "");
-      scene.querySelectorAll(".data-credit a").forEach((link, i) => { link.href = new URL(i < 3 ? currentRecord[["forward_scene", "adjoint_scene", "gradient_design"][i]] : "manifest.json", historyRoot).href; });
+      scene.querySelectorAll(".data-credit a").forEach((link, i) => { link.href = dataURL(i < 3 ? currentRecord[["forward_scene", "adjoint_scene", "gradient_design"][i]] : "manifest.json", historyRoot).href; });
       seek(pendingPosition);
       syncPlayback();
       if (index + 1 < records.length) bundle(index + 1).catch(() => {});
@@ -126,7 +132,7 @@
   }
   async function loadHistory() {
     try {
-      const response = await fetch(new URL("manifest.json", historyRoot));
+      const response = await fetch(dataURL("manifest.json", historyRoot));
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const manifest = await response.json();
       const validDensity = values => Array.isArray(values) && values.length === 3721 && values.every(v => Number.isFinite(v) && v >= 0 && v <= 1);
@@ -299,7 +305,7 @@
   }
   async function loadDensity() {
     try {
-      const response = await fetch(new URL("meep/09/highres/result.json", assetRoot));
+      const response = await fetch(dataURL("meep/09/highres/result.json"));
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const result = await response.json();
       const { x_updated: values, grid_shape: shape } = result;

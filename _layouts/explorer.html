@@ -33,13 +33,13 @@
     <linearGradient id="signed-scale"><stop stop-color="#67001f"/><stop offset=".25" stop-color="#d6604d"/><stop offset=".5" stop-color="#f7f7f7"/><stop offset=".75" stop-color="#4393c3"/><stop offset="1" stop-color="#053061"/></linearGradient>
     <symbol id="bend-guide" viewBox="0 0 660 460">
       <rect width="660" height="460" fill="#f7f7f7"/>
-      <image href="{{ '/assets/meep/09/highres/updated-forward-scene.png' | relative_url }}" x="80" y="-34" width="792" height="660" style="image-rendering:pixelated"/>
+      <image href="{{ '/assets/meep/09/highres/updated-forward-scene.png' | relative_url }}?v={{ asset_version }}" x="80" y="-34" width="792" height="660" style="image-rendering:pixelated"/>
       <path d="M80 263H410V230H443V0M80 329H410V362H542V230H509V0" fill="none" stroke="black" stroke-width="2"/>
       <rect x="410" y="230" width="132" height="132" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5 5"/>
     </symbol>
-    <symbol id="dft-forward-map" viewBox="0 0 720 720"><image href="{{ '/assets/meep/09/highres/forward-capture.png' | relative_url }}" width="720" height="720" style="image-rendering:pixelated"/></symbol>
-    <symbol id="dft-adjoint-map" viewBox="0 0 720 720"><image href="{{ '/assets/meep/09/highres/adjoint-capture.png' | relative_url }}" width="720" height="720" style="image-rendering:pixelated"/></symbol>
-    <symbol id="initial-gradient-map" viewBox="0 0 720 720"><image href="{{ '/assets/meep/09/highres/gradient-design.png' | relative_url }}" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="dft-forward-map" viewBox="0 0 720 720"><image href="{{ '/assets/meep/09/highres/forward-capture.png' | relative_url }}?v={{ asset_version }}" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="dft-adjoint-map" viewBox="0 0 720 720"><image href="{{ '/assets/meep/09/highres/adjoint-capture.png' | relative_url }}?v={{ asset_version }}" width="720" height="720" style="image-rendering:pixelated"/></symbol>
+    <symbol id="initial-gradient-map" viewBox="0 0 720 720"><image href="{{ '/assets/meep/09/highres/gradient-design.png' | relative_url }}?v={{ asset_version }}" width="720" height="720" style="image-rendering:pixelated"/></symbol>
   </defs>
 </svg>
 <header class="site-header">
@@ -76,9 +76,9 @@
             <rect x="430" y="100" width="150" height="150" class="uniform-density"/>
             <image id="density-before" x="430" y="100" width="150" height="150" style="image-rendering:pixelated"/><g id="density-grid" shape-rendering="crispEdges"></g>
             <g clip-path="url(#apparatus-clip)" class="apparatus-fields">
-              <g id="forward-field"><image class="field-base" href="{{ '/assets/meep/09/highres/forward-scene.png' | relative_url }}" x="55" y="-200" width="900" height="750"/><svg id="forward-phase" class="phase-viewport" x="55" y="-200" width="900" height="750" viewBox="0 0 360 300"><image id="forward-phase-sheet" href="{{ '/assets/meep/09/highres/forward-phases.png' | relative_url }}" width="2880" height="1200"/></svg></g>
-              <g id="adjoint-field"><image class="field-base" href="{{ '/assets/meep/09/highres/adjoint-scene.png' | relative_url }}" x="55" y="-200" width="900" height="750"/><svg id="adjoint-phase" class="phase-viewport" x="55" y="-200" width="900" height="750" viewBox="0 0 360 300"><image id="adjoint-phase-sheet" href="{{ '/assets/meep/09/highres/adjoint-phases.png' | relative_url }}" width="2880" height="1200"/></svg></g>
-              <image id="updated-field" href="{{ '/assets/meep/09/highres/updated-forward-scene.png' | relative_url }}" x="55" y="-200" width="900" height="750"/>
+              <g id="forward-field"><image class="field-base" href="{{ '/assets/meep/09/highres/forward-scene.png' | relative_url }}?v={{ asset_version }}" x="55" y="-200" width="900" height="750"/><svg id="forward-phase" class="phase-viewport" x="55" y="-200" width="900" height="750" viewBox="0 0 360 300"><image id="forward-phase-sheet" href="{{ '/assets/meep/09/highres/forward-phases.png' | relative_url }}?v={{ asset_version }}" width="2880" height="1200"/></svg></g>
+              <g id="adjoint-field"><image class="field-base" href="{{ '/assets/meep/09/highres/adjoint-scene.png' | relative_url }}?v={{ asset_version }}" x="55" y="-200" width="900" height="750"/><svg id="adjoint-phase" class="phase-viewport" x="55" y="-200" width="900" height="750" viewBox="0 0 360 300"><image id="adjoint-phase-sheet" href="{{ '/assets/meep/09/highres/adjoint-phases.png' | relative_url }}?v={{ asset_version }}" width="2880" height="1200"/></svg></g>
+              <image id="updated-field" href="{{ '/assets/meep/09/highres/updated-forward-scene.png' | relative_url }}?v={{ asset_version }}" x="55" y="-200" width="900" height="750"/>
             </g>
             <g id="fixed-ports"><path id="input-guide" d="M55 137.5H430V212.5H55Z"/><path id="output-guide" d="M467.5 25H542.5V100H467.5Z"/></g>
             <rect x="430" y="100" width="150" height="150" class="region-outline"/>

@@ -19,37 +19,6 @@ def field_rgba(values, limit):
     return matplotlib.colormaps["RdBu"]((values.T[::-1] / limit + 1) / 2, bytes=True)
 
 
-def wavefront_renderer(density):
-    """Approved pilot style: continuous density background and signed DFT overlay.
-
-    Gray is a geometry/density illustration, not sampled dielectric permittivity.
-    Bilinear display resampling never thresholds or changes the saved density.
-    """
-    background = np.ones((300, 360, 3), dtype=float)
-    background[135:165, :150] = np.array([200, 203, 208]) / 255
-    background[:120, 165:195] = np.array([200, 203, 208]) / 255
-    grid = np.asarray(density).reshape(61, 61).T[::-1]
-    resized = np.asarray(Image.fromarray(grid.astype(np.float32)).resize((60, 60), Image.Resampling.BILINEAR))
-    background[120:180, 150:210] = (1 - resized)[..., None]
-
-    def render(values, limit):
-        normalized = values.T[::-1] / limit
-        color = matplotlib.colormaps["bwr_r"]((normalized + 1) / 2)[..., :3]
-        alpha = np.sqrt(np.clip(np.abs(normalized), 0, 1))[..., None]
-        rgb = np.rint(255 * (alpha * color + (1 - alpha) * background)).astype(np.uint8)
-        image = Image.fromarray(rgb).convert("RGBA")
-        draw = ImageDraw.Draw(image)
-        for points in (((0,165),(150,165)), ((0,135),(150,135)), ((165,0),(165,120)), ((195,0),(195,120))):
-            draw.line(points, fill="#48515a", width=1)
-        for pos in range(0, 60, 6):
-            for yy in (120, 179):
-                draw.line((150 + pos, yy, min(153 + pos, 209), yy), fill="#48515a")
-            for xx in (150, 209):
-                draw.line((xx, 120 + pos, xx, min(123 + pos, 179)), fill="#48515a")
-        return np.asarray(image)
-    return render
-
-
 def save_phase_sprite(field, limit, path, render=field_rgba):
     phases = np.arange(PHASE_FRAME_COUNT) * 2 * np.pi / PHASE_FRAME_COUNT
     fields = np.real(field[None, :, :] * np.exp(-1j * phases[:, None, None]))
@@ -93,10 +62,7 @@ def main():
         "source": "saved complex128 full-cell Ez DFT, fields.npz",
         "source_sha256": source_hash,
         "quantity": "Re(Ez * exp(-i phase)); saved complex DFT phasor",
-        "colormap": "bwr_r",
-        "display_style": "approved wavefront + gray fixed geometry and continuous density; display-only change",
-        "geometry_background": "fixed guides and continuous design density, not sampled epsilon; no thresholding",
-        "opacity": "sqrt(abs(Re(Ez))/symmetric_limit); visual compositing only",
+        "colormap": "RdBu",
         "sign": "negative red; zero white; positive blue",
         "full_extent_um": FULL_EXTENT,
         "design_extent_um": DESIGN_EXTENT,
@@ -104,7 +70,7 @@ def main():
         "capture_pixels": [720, 720],
         "native_design_pixels": [60, 60],
         "native_spacing_um": 1 / 60,
-        "orientation": "field[col,Ny-1-row]; top is +y; bwr_r overlay on density background",
+        "orientation": "RGBA[row,col] = RdBu(normalize(real(Ez[col,Ny-1-row] * exp(-i phase)))); top is +y",
         "capture_rendering": "exact full-scene design crop, nearest enlargement, black boundary and centered port markers",
         "phase_frame_count": PHASE_FRAME_COUNT,
         "phase_columns": PHASE_COLUMNS,
@@ -122,20 +88,19 @@ def main():
         assert values.shape == (360, 300)
         assert np.allclose(np.diff(x), 1 / 60) and np.allclose(np.diff(y), 1 / 60)
         limit = float(np.max(np.abs(field)))
-        render = wavefront_renderer(raw["density_updated" if prefix == "updated_forward" else "density_initial"])
-        rgba = render(values, limit)
+        rgba = field_rgba(values, limit)
         scene_name = f"{stem}-scene.png"
         Image.fromarray(rgba).save(args.out / scene_name)
         entry = {"scene": scene_name, "symmetric_limit": limit, "vmin": -limit, "vmax": limit}
         if prefix != "updated_forward":
-            entry.update(save_phase_sprite(field, limit, args.out / f"{stem}-phases.png", render=render))
+            entry.update(save_phase_sprite(field, limit, args.out / f"{stem}-phases.png"))
             assert np.array_equal(np.asarray(Image.open(args.out / entry["sprite"]).crop((0, 0, 360, 300))), rgba)
             ix = np.flatnonzero((x >= -.5) & (x <= .5))
             iy = np.flatnonzero((y >= -.5) & (y <= .5))
             assert len(ix) == len(iy) == 60
             left, top = int(ix[0]), int(len(y) - 1 - iy[-1])
             crop = rgba[top:top + 60, left:left + 60]
-            expected = rgba[np.ix_(len(y) - 1 - iy[::-1], ix)]
+            expected = field_rgba(values[np.ix_(ix, iy)], limit)
             assert np.array_equal(crop, expected)
             capture = Image.fromarray(crop).resize((720, 720), Image.Resampling.NEAREST)
             outline = ImageDraw.Draw(capture)

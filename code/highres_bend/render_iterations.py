@@ -7,7 +7,15 @@ import matplotlib
 import numpy as np
 from PIL import Image, ImageDraw
 
-from render_scene import save_phase_sprite, wavefront_renderer
+from render_scene import field_rgba, save_phase_sprite
+
+
+def outlined_field(values, limit):
+    image = Image.fromarray(field_rgba(values, limit))
+    draw = ImageDraw.Draw(image)
+    for points in (((0,165),(150,165)), ((0,135),(150,135)), ((165,0),(165,120)), ((195,0),(195,120))):
+        draw.line(points, fill="black", width=1)
+    return np.asarray(image)
 
 
 def save_design(values, path, signed=False):
@@ -34,7 +42,6 @@ def main():
     adjoint_limit = max(float(np.max(np.abs(d["adjoint_full_Ez"]))) for d in datasets)
     manifest = {**result, "records": [], "grid_shape": [61,61], "gradient_shape": [61,61], "phase_frame_count":32, "phase_columns":8, "phase_rows":4, "scene_pixels":[360,300], "forward_limit":forward_limit, "adjoint_limit":adjoint_limit, "phase_convention":"Re(Ez * exp(-i * 2*pi*k/32)); saved steady-state complex DFT, not transient propagation", "density_indexing":"x*Ny+y; 61 by 61; no threshold or binarization", "colormap":"RdBu", "normalization":"Common symmetric forward scale across all before/after states; separate common symmetric adjoint scale", "full_extent_um":[-3,3,-2.5,2.5], "design_extent_um":[-.5,.5,-.5,.5]}
     checks=[]
-    manifest.update({"colormap": "bwr_r", "display_style": "approved wavefront + gray fixed geometry and continuous density; display-only change", "geometry_background": "fixed guides and continuous design density, not sampled epsilon; no thresholding", "opacity": "sqrt(abs(Re(Ez))/symmetric_limit); visual compositing only", "gradient_colormap": "RdBu"})
     previous=None
     previous_field=None
     for record, raw in zip(result["records"],datasets):
@@ -67,15 +74,14 @@ def main():
             assert np.allclose(np.diff(x),1/60) and np.allclose(np.diff(y),1/60)
             assert np.isclose(x[0],-3+1/120) and np.isclose(y[0],-2.5+1/120)
             limit=adjoint_limit if prefix=="adjoint" else forward_limit
-            render=wavefront_renderer(after if prefix=="updated_forward" else before)
-            rgba=render(field.real,limit)
+            rgba=outlined_field(field.real,limit)
             scene=f"{stem}-scene.png"
             Image.fromarray(rgba).save(dest/scene)
             row[f"{prefix}_scene"]=f"{i:03d}/{scene}"
             scene_check={"complex_finite":True,"coordinates_verified":True,"symmetric_limit":limit}
             if prefix != "updated_forward":
                 sprite=f"{stem}-phases.png"
-                scene_check.update(save_phase_sprite(field,limit,dest/sprite,render=render))
+                scene_check.update(save_phase_sprite(field,limit,dest/sprite,render=outlined_field))
                 row[f"{prefix}_phases"]=f"{i:03d}/{sprite}"
                 assert np.array_equal(np.asarray(Image.open(dest/sprite).crop((0,0,360,300))),rgba)
                 ix=np.flatnonzero((x>=-.5)&(x<=.5)); iy=np.flatnonzero((y>=-.5)&(y<=.5))

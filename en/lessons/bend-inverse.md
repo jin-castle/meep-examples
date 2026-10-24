@@ -46,10 +46,10 @@ The input is on the left; the desired output is above. If only the central 1 × 
 
 ### Applications
 
-The high-resolution DFT example on the homepage shows **red and blue wavefronts over a gray structure**. Red is negative and blue is positive Re(Ez); weak fields are composited transparently. Gray depicts the fixed waveguides and continuous design densities, rather than a saved map of the actual permittivity. The original complex fields, phases and shared color range are preserved, while the gradient retains its RdBu scale. This calculation history differs from the original low-resolution MMA example below.
+The high-resolution DFT example on the homepage shows an **RdBu electric-field map**. Red is negative, white is zero and blue is positive Re(Ez), using a shared symmetric color range without transparency compositing. Black outlines identify the fixed waveguides, while continuous design densities appear separately in grayscale. The original complex fields, phases and gradient are preserved. This calculation history differs from the original low-resolution MMA example below.
 
 <figure class="lesson-figure">
-<a href="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png" alt="Actual DFT wavefronts over the gray structure after six high-resolution density updates" loading="lazy"></a>
+<a href="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png?v=rdbu-20261024" data-lightbox><img src="{{ site.baseurl }}/assets/meep/09/iterations/005/updated-forward-scene.png?v=rdbu-20261024" alt="Actual DFT electric field in RdBu after six high-resolution density updates" loading="lazy"></a>
 <figcaption>Saved steady-state DFT at resolution 60 with 61×61 continuous densities after six updates. Phase playback does not represent the source switching on or the arrival of a wavefront.</figcaption>
 </figure>
 

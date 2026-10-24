@@ -45,8 +45,8 @@ Source, license, single-core reproduction commands and wrappers are in
 Software citation: Optical-beams-MEEP v2.1.2,
 [doi:10.5281/zenodo.5211251](https://doi.org/10.5281/zenodo.5211251).
 
-The inverse-bend DFT scene uses signed red/blue wavefronts over fixed gray guides
-and continuous design weights. Metalens intensity panels use a black-to-hot map;
+The inverse-bend DFT scene, phase playback and captures use opaque RdBu fields
+with black waveguide outlines. Metalens intensity panels use a black-to-hot map;
 its model remains the original 1D scalar angular-spectrum calculation.
 
 ## Run a script

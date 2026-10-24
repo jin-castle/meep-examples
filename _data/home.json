@@ -168,7 +168,7 @@
     "text_166": "Forward, adjoint, gradient. 스크롤하며 이해하는 빛의 설계와 직접 실행하는 Meep 예제.",
     "text_167": "Meep Examples 홈",
     "text_168": "주 메뉴",
-    "text_169": "갱신한 구조의 실제 forward DFT 장. 빨강·파랑 파면과 회색 연속 밀도 구조",
+    "text_169": "갱신한 구조의 실제 forward DFT 장. RdBu: 빨강 음수, 흰색 0, 파랑 양수",
     "text_170": "현재 설계 밀도: 흰색 0, 검정 1",
     "text_171": "RdBu: 빨강 음수, 파랑 양수",
     "text_172": "처음부터 다시 보기",
@@ -209,7 +209,7 @@
     "text_207": "실제 Meep으로 계산한 3D vortex와 Airy beam의 검은 배경 hot 제곱장 갤러리",
     "text_208": "빔은 왜 휘고, 나선으로 돌까요?",
     "text_209": "평면·오목·볼록 Gaussian, 3D vortex와 자유공간 Airy beam을 직접 계산하고 밝은 위상 무늬를 비교합니다.",
-    "text_210": "Re Ẽz · 파면 + 회색 구조 · RES 60"
+    "text_210": "Re Ẽz · RdBu · RES 60"
   },
   "en": {
     "text_001": "Meep Examples · Design the paths light takes",
@@ -380,7 +380,7 @@
     "text_166": "Forward, adjoint, gradient. Understand light-path design as you scroll, then run the Meep examples yourself.",
     "text_167": "Meep Examples home",
     "text_168": "Main navigation",
-    "text_169": "Actual forward DFT field of the updated structure, with red and blue wavefronts over gray continuous design densities.",
+    "text_169": "Actual forward DFT field of the updated structure. RdBu: negative red, zero white, positive blue.",
     "text_170": "Current design density: white 0, black 1",
     "text_171": "RdBu: red is negative, blue is positive",
     "text_172": "Restart from the beginning",
@@ -421,6 +421,6 @@
     "text_207": "Actual Meep 3D vortex and Airy beam squared-field gallery with a black background and hot colormap",
     "text_208": "Why do beams bend and twist?",
     "text_209": "Run planar, concave and convex Gaussian cases, a 3D vortex and a free-space Airy beam, then compare their bright phase patterns.",
-    "text_210": "Re Ẽz · wavefronts + gray structure · RES 60"
+    "text_210": "Re Ẽz · RdBu · RES 60"
   }
 }
