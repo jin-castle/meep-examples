@@ -3,7 +3,7 @@
 {% for source in site.data.sources %}
   <section class="source-record" aria-labelledby="source-{{ source.id }}">
     <h3 id="source-{{ source.id }}"><a href="{{ home_path | append: source.url | replace: '//', '/' | relative_url }}">{% if source.part %}{{ source.id }} · {% endif %}{{ source.title[lang] | escape }}</a></h3>
-    <p class="source-label">{% if lang == 'en' %}Upstream references{% else %}원본 출처{% endif %}</p>
+    <p class="source-label">{% if source.id == 'optical-beams' %}{% if lang == 'en' %}References and archive{% else %}참고 자료와 보관 기록{% endif %}{% else %}{% if lang == 'en' %}Upstream references{% else %}원본 출처{% endif %}{% endif %}</p>
     <ul>{% for reference in source.references %}<li><a href="{{ reference.url | escape }}">{{ reference.label | escape }}</a></li>{% endfor %}</ul>
     <p><strong>{% if lang == 'en' %}Project additions{% else %}프로젝트에서 추가한 부분{% endif %}</strong><br>{{ source.contribution[lang] | escape }}</p>
     <p class="source-label">{% if lang == 'en' %}Implementation and reproduction records{% else %}구현 코드·실행 기록{% endif %}</p>

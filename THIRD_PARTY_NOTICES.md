@@ -12,7 +12,7 @@ This mixed educational repository does not grant a new repository-wide software 
 
 This inventory records references and project additions found in the current sources, not a line-by-line comparison with every historical upstream revision. The top-level scientific Python programs have descriptive headers and cite official examples, but their original files do not consistently carry per-file copyright/license notices. Several explicitly adapt official example cases. Their independent-versus-derived status has not been established for every statement; they must not all be described as independently authored Python controls.
 
-Meep links using `master` and documentation links using `latest` are moving references. The published calculations identify Meep 1.33.0, but that does not pin each example's historical source. Optical-beams provenance is separately commit-pinned below. Citations to papers and documentation identify references; they do not relicense their text or figures.
+Meep links using `master` and documentation links using `latest` are moving references. The published calculations identify Meep 1.33.0, but that does not pin each example's historical source. The archived Optical-beams reproduction is separately commit-pinned below. Citations to papers and documentation identify references; they do not relicense their text or figures.
 
 Project additions include bilingual educational explanations, a guided learning sequence, additional parameter sweeps and checks, `code/blogfig.py` figure/animation helpers, execution and rendering records, website layouts, themes and interactions. A description of added work is not a claim of sole human authorship of all resulting material.
 
@@ -49,7 +49,11 @@ The official clarification distinguishes user-written Python/Scheme control file
 
 The chapter inventory below identifies the examples and tutorials referenced by this project. Its qualification above remains applicable to local implementations and embedded code listings.
 
-## 3. Optical-beams-MEEP
+## 3. Beam Lab and the Optical-beams-MEEP reproduction archive
+
+The current [Beam Lab](https://jin-castle.github.io/meep-examples/optical-beams/) ([English](https://jin-castle.github.io/meep-examples/en/optical-beams/)) uses newly written source-profile, Meep-control and analysis programs in `code/beam_lab/`. These programs do not import the vendored `optbeam` package or the earlier execution wrappers. Their new parameter studies compare curvature 0 and ±0.1, LG charges ±2, and finite-energy Airy apodization 0.08 and 0.2. Optical-beams-MEEP supplies visual and topic inspiration; the [Meep Python interface](https://meep.readthedocs.io/en/latest/Python_User_Interface/) supplies API documentation. This describes the implementation boundary, not a claim of clean-room development or sole human authorship.
+
+Earlier upstream-code executions, their figures and the 3D vortex animation remain in the [reproduction archive](https://jin-castle.github.io/meep-examples/optical-beams/archive/) ([English](https://jin-castle.github.io/meep-examples/en/optical-beams/archive/)). The following upstream notices apply to that retained source and reproduction material. Those historical calculations are not relabeled as new Beam Lab results.
 
 - Project authors: Daniel Kotik and Jörg Götte.
 - [Project documentation](https://danielkotik.github.io/Optical-beams-MEEP/).
@@ -64,9 +68,9 @@ The upstream source files are preserved without modification. Seven documented p
 
 [Reproduction notes](code/optical_beams/README.md) document actual conditions and limitations. Source/release comparisons recorded there cover the identified files, not a blanket assertion that every vendored file equals the software release. Provenance, checks and results are under `assets/meep/optical-beams/`.
 
-### Reused upstream image in a comparison
+### Reused upstream image in an archived comparison
 
-`assets/meep/optical-beams/gallery/vortex_3d_comparison.png` includes an original upstream image in its left panel:
+The reproduction archive's `assets/meep/optical-beams/gallery/vortex_3d_comparison.png` includes an original upstream image in its left panel:
 
 - Original: [scripts/Laguerre_Gauss_3d/img/vortex_beam_m_2_3d_half_resized.png](https://github.com/DanielKotik/Optical-beams-MEEP/blob/ca145119e5bd0f0804d846ea42e35e4c3daa91de/scripts/Laguerre_Gauss_3d/img/vortex_beam_m_2_3d_half_resized.png).
 - Attribution: Daniel Kotik's Optical-beams-MEEP project, with upstream project MIT notice retained above. This panel is not claimed as a newly generated project result.
@@ -238,13 +242,14 @@ The site inventory is maintained in [`_data/sources.json`](_data/sources.json). 
 - Project additions: Phase derivation, wrapping, sampling and fin-rotation illustrations, plus a 1D scalar angular-spectrum check. Illustrative dimensions and the diameter-to-phase model do not reproduce the paper's device and are not FDTD results.
 - 프로젝트 추가 작업: 위상 유도·접기·샘플링·fin 회전 도해와 1D 스칼라 각 스펙트럼 검사를 구성했습니다. 예시 치수와 직경–위상 모형은 논문 소자의 재현이나 FDTD 결과가 아닙니다.
 
-### Topic · Optical-beam reproduction and visualization
+### Topic · Beam Lab: curvature, phase and Airy apodization
 
 - Local page: [한국어](https://jin-castle.github.io/meep-examples/optical-beams/) / [English](https://jin-castle.github.io/meep-examples/en/optical-beams/).
-- Local implementation: `code/optical_beams/README.md`, `code/optical_beams/run_original.py`, `code/optical_beams/run_gallery.py`, `code/optical_beams/render_results.py`, `code/optical_beams/render_curved.py`, `code/optical_beams/prepare_vortex_scene.py`, `code/optical_beams/render_vortex_blender.py`, `code/optical_beams/render_gallery.py`.
-- Upstream references: [Daniel Kotik & Jörg Götte · Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/); [Optical-beams-MEEP · pinned source ca145119](https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de); [Optical-beams-MEEP v2.1.2 · software citation](https://doi.org/10.5281/zenodo.5211251).
-- Project additions: Preserved upstream sources and MIT notice; added execution/observation wrappers, source-integral equivalence checks, native-grid field export and Blender rendering. The comparison figure's left panel reuses an upstream image.
-- 프로젝트 추가 작업: 원본 소스·MIT 고지를 보존하고 실행·관측 wrapper, 소스 적분 동등성 검사, native-grid 장 내보내기와 Blender 렌더링을 추가했습니다. 비교 그림의 왼쪽 패널은 원본 프로젝트 이미지입니다.
+- Local implementation: `code/beam_lab/profiles.py`, `code/beam_lab/run.py`, `code/beam_lab/render.py`, `code/beam_lab/test_profiles.py`; commands and scope in `code/beam_lab/README.md`.
+- References: [Meep · Python interface](https://meep.readthedocs.io/en/latest/Python_User_Interface/); [Daniel Kotik & Jörg Götte · visual and topic inspiration](https://danielkotik.github.io/Optical-beams-MEEP/).
+- Project work: Newly written source profiles, simulation controls and analysis compare curvature 0 and ±0.1, LG charges ±2, and Airy apodization 0.08 and 0.2, with new experiment data and figures.
+- 프로젝트 작업: 광원 프로파일·시뮬레이션 제어·분석 코드를 새로 작성하여 곡률 0·±0.1, LG 위상 전하 ±2, Airy 감쇠 0.08·0.2를 비교하고 새 실험 데이터와 그림을 제작합니다.
+- Historical reproduction: [한국어](https://jin-castle.github.io/meep-examples/optical-beams/archive/) / [English](https://jin-castle.github.io/meep-examples/en/optical-beams/archive/), with source and wrappers in `code/optical_beams/`. The [pinned source ca145119](https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de), [software citation](https://doi.org/10.5281/zenodo.5211251), MIT notice, measured fields and original-image comparison remain attributed to their actual origins as detailed in section 3.
 
 ## 7. Attribution corrections and permission requests
 

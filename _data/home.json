@@ -205,10 +205,10 @@
     "text_203": "시즌2 광추출 추출효율 LED OLED 박막 extraction efficiency ldos kz edge emitter cylindrical",
     "text_204": "거울 위 박막 광원에서 공기로 빠져나가는 빛과 옆으로 갇히는 빛을 보여 주는 입체 개념도",
     "text_205": "외부 자료",
-    "text_206": "gaussian beam 가우시안 빔 optical beams meep 반사 굴절 전반사 임계각 snell 곡면 오목 볼록 vortex laguerre gaussian lg airy 나선",
-    "text_207": "실제 Meep으로 계산한 3D vortex와 Airy beam의 검은 배경 hot 제곱장 갤러리",
+    "text_206": "beam lab gaussian beam 가우시안 빔 optical beams meep 자체 코드 곡률 vortex laguerre gaussian lg airy 나선 전하 위상",
+    "text_207": "Beam Lab 자체 코드로 계산한 경계 곡률과 양·음 vortex 전하 비교",
     "text_208": "가우시안·와류·에어리 빔은 어떻게 다를까요?",
-    "text_209": "평면·오목·볼록 Gaussian, 3D vortex와 자유공간 Airy beam을 직접 계산하고 밝은 위상 무늬를 비교합니다.",
+    "text_209": "직접 정의한 소스 함수로 경계 곡률, vortex 전하 +2/−2, Airy 감쇠값을 바꾸며 비교합니다.",
     "text_210": "Re Ẽz · RdBu · RES 60"
   },
   "en": {
@@ -417,10 +417,10 @@
     "text_203": "season 2 light extraction efficiency LED OLED thin film ldos kz edge emitter cylindrical",
     "text_204": "3D conceptual view of light escaping into air or trapped laterally from a thin-film source above a mirror",
     "text_205": "External resources",
-    "text_206": "gaussian beam optical beams meep reflection refraction total internal critical angle snell curved concave convex vortex laguerre gaussian lg airy helical",
-    "text_207": "Actual Meep 3D vortex and Airy beam squared-field gallery with a black background and hot colormap",
+    "text_206": "beam lab gaussian beam optical beams meep independent source curvature vortex laguerre gaussian lg airy signed charge phase",
+    "text_207": "Boundary curvature and opposite vortex charges calculated with Beam Lab's own code",
     "text_208": "Why do beams bend and twist?",
-    "text_209": "Run planar, concave and convex Gaussian cases, a 3D vortex and a free-space Airy beam, then compare their bright phase patterns.",
+    "text_209": "Define current apertures, then compare boundary curvature, vortex charges +2/−2 and Airy attenuation.",
     "text_210": "Re Ẽz · RdBu · RES 60"
   }
 }

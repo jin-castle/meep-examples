@@ -163,13 +163,14 @@
   },
   {
     "id": "optical-beams", "url": "/optical-beams/",
-    "title": {"ko": "Optical beams 실행과 시각화", "en": "Optical-beam reproduction and visualization"},
-    "files": ["code/optical_beams/README.md", "code/optical_beams/run_original.py", "code/optical_beams/run_gallery.py", "code/optical_beams/render_results.py", "code/optical_beams/render_curved.py", "code/optical_beams/prepare_vortex_scene.py", "code/optical_beams/render_vortex_blender.py", "code/optical_beams/render_gallery.py"],
+    "title": {"ko": "Beam Lab · 곡률·위상·Airy 감쇠 실험", "en": "Beam Lab · Curvature, phase and Airy apodization"},
+    "files": ["code/beam_lab/README.md", "code/beam_lab/profiles.py", "code/beam_lab/run.py", "code/beam_lab/render.py", "code/beam_lab/test_profiles.py", "code/optical_beams/README.md"],
     "references": [
-      {"label": "Daniel Kotik & Jörg Götte · Optical-beams-MEEP", "url": "https://danielkotik.github.io/Optical-beams-MEEP/"},
-      {"label": "Optical-beams-MEEP · pinned source ca145119", "url": "https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de"},
-      {"label": "Optical-beams-MEEP v2.1.2 · software citation", "url": "https://doi.org/10.5281/zenodo.5211251"}
+      {"label": "Meep · Python interface", "url": "https://meep.readthedocs.io/en/latest/Python_User_Interface/"},
+      {"label": "Daniel Kotik & Jörg Götte · visual and topic inspiration", "url": "https://danielkotik.github.io/Optical-beams-MEEP/"},
+      {"label": "Archived reproduction · pinned source ca145119", "url": "https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de"},
+      {"label": "Archived reproduction · software citation", "url": "https://doi.org/10.5281/zenodo.5211251"}
     ],
-    "contribution": {"ko": "원본 소스·MIT 고지를 보존하고 실행·관측 wrapper, 소스 적분 동등성 검사, native-grid 장 내보내기와 Blender 렌더링을 추가했습니다. 비교 그림의 왼쪽 패널은 원본 프로젝트 이미지입니다.", "en": "Preserved upstream sources and MIT notice; added execution/observation wrappers, source-integral equivalence checks, native-grid field export and Blender rendering. The comparison figure's left panel reuses an upstream image."}
+    "contribution": {"ko": "Beam Lab은 광원 프로파일·Meep 제어·분석 코드를 새로 작성하여 곡률 0·±0.1, LG 위상 전하 ±2, Airy 감쇠 0.08·0.2를 비교합니다. Optical-beams-MEEP는 시각화와 주제의 참고 자료입니다. 기존 원본 실행 결과와 MIT 고지는 별도 재현 기록에 보존합니다.", "en": "Beam Lab uses newly written source profiles, Meep controls and analysis to compare curvature 0 and ±0.1, LG charges ±2, and Airy apodization 0.08 and 0.2. Optical-beams-MEEP is a visual and topic reference. Earlier upstream executions and their MIT notice remain in a separate reproduction archive."}
   }
 ]

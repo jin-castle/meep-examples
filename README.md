@@ -23,26 +23,29 @@ Full Korean and English editions, with shared scientific results and English cod
 | 14 | 박막 속 점광원, 공기로 나오는 몫 — 광추출 효율, LDOS 정규화, kz 적분, CYL 대 3D | `code/extraction_efficiency.py` | layer on a mirror: 0.323 at mid-height (cyl, res 80), 0.52 → 0.09 with height; off-axis m series: official stop 0.632 vs 0.362 summed to m = 60; cleaved facet: 22.4 % from 76 kz runs |
 | topic | Metalens 위상 지도와 PB 위상 — 이상적 렌즈 위상, 2π 접기, 격자 샘플링 (`/metalens/`) | `code/metalens_*.py` (numpy, no Meep) | 1D scalar check: sampled PB phase focuses with FWHM 499 nm vs 493 nm for the continuous ideal phase (peak 0.95); the opposite circular polarization diverges |
 
-## Optical-beams-MEEP lab
+## Beam Lab
 
-The [Optical beams lesson](https://jin-castle.github.io/meep-examples/optical-beams/)
-executes Daniel Kotik and Jörg Götte's MIT-licensed examples at their original
-grid resolutions and durations: planar Gaussian incidence at 30°/45°, concave and
-convex Gaussian interfaces at 45°, a fully 3D charge-two Laguerre–Gaussian vortex,
-and a free-space Airy beam (M=0, W=4, n1=n2=1). Main figures use instantaneous
-squared real fields on black; a common-scale curved comparison and the earlier
-signed/averaged planar views explain the display choices. These are field
-visualizations, not measured R/T. The 3D source uses an analytically equivalent
-Bessel reduction checked at 23 points against the original double integral;
-native array export replaces Python output callbacks.
-The 3D scene extracts a native-grid 2% contour with VTK and renders it in Blender,
-including two measured cuts, a translucent medium block and geometric direction
-arrows. An attributed original/previous/native comparison documents the correction
-of the earlier undersampled display.
-Source, license, single-core reproduction commands and wrappers are in
-[`code/optical_beams/`](code/optical_beams/). Execution checks and provenance are in
-`assets/meep/optical-beams/`, including the `curved/` and `gallery/` subfolders.
-Software citation: Optical-beams-MEEP v2.1.2,
+The [Beam Lab lesson](https://jin-castle.github.io/meep-examples/optical-beams/)
+uses newly written source profiles, Meep controls and analysis in
+[`code/beam_lab/`](code/beam_lab/). Its parameter studies compare Gaussian beams
+at interfaces with curvature 0 and ±0.1, Laguerre–Gaussian charges +2 and −2,
+and finite-energy Airy profiles with apodization 0.08 and 0.2. The new experiment
+data and figures come from this implementation, which does not import the
+vendored `optbeam` package or the earlier reproduction wrappers.
+Daniel Kotik and Jörg Götte's
+[Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/) is a
+reference for visual presentation and beam topics; the
+[Meep Python interface](https://meep.readthedocs.io/en/latest/Python_User_Interface/)
+documents the simulation API.
+
+The earlier original-code runs, native-grid Blender scene and moving 3D vortex
+remain available in the [reproduction archive](https://jin-castle.github.io/meep-examples/optical-beams/archive/)
+([English](https://jin-castle.github.io/meep-examples/en/optical-beams/archive/)).
+Those results retain their original provenance and are not relabeled as Beam Lab
+calculations. Their sources, MIT notice, execution commands and wrappers remain in
+[`code/optical_beams/`](code/optical_beams/), with results and provenance under
+`assets/meep/optical-beams/`. The archive comparison's left panel is an attributed
+upstream image. Archived software citation: Optical-beams-MEEP v2.1.2,
 [doi:10.5281/zenodo.5211251](https://doi.org/10.5281/zenodo.5211251).
 
 The inverse-bend DFT scene, phase playback and captures use opaque RdBu fields

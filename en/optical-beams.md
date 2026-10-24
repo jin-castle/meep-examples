@@ -1,286 +1,132 @@
 ---
 layout: topic
 permalink: /en/optical-beams/
-title: "Optical-beams-MEEP lab — curved interfaces, 3D vortex and Airy beams"
-title_en: "Optical-beams-MEEP lab — curved interfaces, 3D vortex and Airy beams"
+title: "Beam Lab — curvature, signed vortex and finite-energy Airy"
+title_en: "Beam Lab — curvature, signed vortex and finite-energy Airy"
 lang: en
 translation_key: optical-beams
 series: meep-examples
-topic_label: OPTICAL BEAMS
-lesson_title: "Why do beam wavefronts curve and twist?"
-lesson_summary: "Compare Gaussian beams at planar, concave, and convex interfaces, then calculate a 3D vortex and an Airy beam. Follow bright fringes on a black background to read wavefronts and interference."
+topic_label: BEAM LAB
+lesson_title: "What changes when you control the boundary and source phase?"
+lesson_summary: "Change interface curvature, vortex charge sign and Airy apodization one at a time in a newly written Meep experiment. Distinguish the imposed source from the computed field."
 lesson_goals:
-  - "Compare the same Gaussian beam at planar, concave, and convex interfaces."
-  - "Distinguish vortex phase winding from the curving bright pattern of an Airy beam."
-  - "Distinguish instantaneous squared electric fields, time-averaged squared fields, and power transmission."
+  - "Compare field distributions while changing only the interface curvature."
+  - "Distinguish source charges ±2 from measured complex-field winding."
+  - "Observe how Airy apodization changes the beam and explain the calculation limits."
 lesson_prerequisites: "Chapter 01: sources · Chapter 02: PML · Chapter 03: reference calculations"
-calc_note: "Actual Meep 1.33.0 runs · one CPU core. 4 Gaussian cases, a 3D Laguerre–Gaussian beam, and a free-space Airy beam. Original grids and end times retained."
+calc_note: "New Meep control code · one CPU core · 3 Gaussian, 2 three-dimensional vortex and 2 Airy cases. Complex DFT fields are saved directly."
 toc:
-  - { id: observe, label: "Start with the illustrated beams" }
-  - { id: curved, label: "Planar, concave, and convex" }
-  - { id: vortex, label: "Read the 3D vortex" }
-  - { id: airy, label: "Read the Airy beam" }
-  - { id: understand, label: "What the bright fringes mean" }
-  - { id: predict, label: "Snell’s law and planar interfaces" }
-  - { id: setup, label: "Actual simulation conditions" }
-  - { id: run, label: "Run it yourself" }
-  - { id: verify, label: "Validation and limitations" }
-  - { id: reference, label: "Sources and license" }
+  - { id: observe, label: "Start with three questions" }
+  - { id: curved, label: "Change boundary curvature" }
+  - { id: vortex, label: "Reverse the charge sign" }
+  - { id: vortex-animation, label: "Moving 3D wavefronts" }
+  - { id: vortex-material, label: "The earlier medium block" }
+  - { id: airy, label: "Change Airy apodization" }
+  - { id: run, label: "Model and reproduction" }
+  - { id: verify, label: "Checks and interpretation" }
+  - { id: reference, label: "References and archive" }
 related:
   - { url: "/en/point-line-source/", label: "01 · Point and line sources" }
-  - { url: "/en/reference-subtraction/", label: "03 · Quantitative reflection and transmission measurements" }
+  - { url: "/en/reference-subtraction/", label: "03 · Reflection and transmission measurements" }
   - { url: "/en/metalens/", label: "Metalens · Focus light with phase" }
 date: 2026-10-24
-tags: [meep, gaussian-beam, optical-beams, vortex, airy, curved-interface, fdtd]
-image: /assets/meep/optical-beams/gallery/reference_gallery.png
-excerpt: "Real single-core Meep runs of curved Gaussian interfaces, a 3D charge-two vortex and a free-space Airy beam, rendered as instantaneous squared real fields."
+tags: [meep, beam-lab, gaussian-beam, vortex, airy, fdtd]
+image: /assets/meep/beam-lab/overview.png
+excerpt: "Seven experiments comparing curvature, vortex charge sign and Airy apodization with newly written current profiles and Meep controls."
 ---
 
-<h2 id="observe">1. Start with the illustrated beams</h2>
+<h2 id="observe">1. Start with three questions</h2>
 
-Spiral-looking bright patterns, a cross section with an empty center, and a beam that seems to bend by itself. We ran the [Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/) code in Meep and rendered new figures. The top three images show a **3D Laguerre–Gaussian vortex**; the bottom image shows a **free-space Airy beam**.
-
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/reference_gallery.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/reference_gallery.png" alt="Longitudinal, transverse, and 3D sections of a charge 2 vortex, and a free-space Airy beam, calculated in Meep" loading="eager"></a>
-  <figcaption>Black→red→yellow→white represents the instantaneous squared real electric field. For LG, this is the sum of the squares of all three components; for Airy, it is E<sub>z</sub>². The separate 2D LG plots use 20% of the global maximum as the color limit; the two sections in the 3D view use 2%. Airy uses its own maximum. These scales do not compare the beams’ powers.</figcaption>
-</figure>
-
-**Look first:** Why does the vortex cross section have four bright lobes? Why does the Airy beam’s bright line curve instead of traveling straight? How does the same Gaussian beam change when it encounters a curved interface?
-
-These results are not PNGs copied from the original website. We calculated the same types of beams and displayed their **instantaneous squared fields**, preserving rapid fringes like those in the reference images. The original PNGs do not document every run condition, so we do not claim pixel-by-pixel reproduction.
-
-<h2 id="curved">2. The same beam at planar, concave, and convex interfaces</h2>
-
-Keep the beam unchanged and vary only the interface shape. All three cases use an incidence angle of 45° relative to the interface normal at the origin, an incident-medium refractive index of 1.54, and an opposite-medium index of 1.00.
+Beam Lab is a **newly written experiment covering source profiles, Meep execution and field analysis**. Its questions guide the comparisons: What happens when only the interface curvature changes? What happens when the vortex charge changes sign? What happens when the Airy source tail is more strongly suppressed?
 
 <figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/curved/curved_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/curved/curved_comparison.png" alt="Instantaneous squared electric fields of the same Gaussian beam at planar, concave, and convex interfaces with 45-degree central incidence" loading="lazy"></a>
-  <figcaption>E<sub>z</sub>(t)² at the common end time t=10 a/c. Each panel is normalized by its own maximum so that weak patterns remain visible. Expand the figure below for annotations and a shared brightness scale.</figcaption>
+  <a href="{{ site.baseurl }}/assets/meep/beam-lab/overview.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/beam-lab/overview.png" alt="New Beam Lab calculations comparing interface curvature, vortex charge sign and Airy apodization" loading="eager"></a>
+  <figcaption>Seven cases calculated with the new implementation. Gaussian and Airy panels show the sum of squared complex DFT electric-field magnitudes; vortex sections show the phase of complex E<sub>z</sub>. Colors representing different quantities should not be compared directly.</figcaption>
 </figure>
 
-| Interface | What to compare |
-|---|---|
-| Planar | The normal is constant. Fringes formed by overlapping incident and reflected waves provide the reference. |
-| Concave | The normal varies with position. Observe the curvature of the reflected wave and the spacing and direction of the overlapping fringes. |
-| Convex | The curvature has the opposite sign. Compare the spreading direction and near-interface field distribution with the concave case. |
+[Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/) inspired the beam topics and visual presentation. This implementation constructs finite current apertures from standard analytical expressions and uses different geometry, parameters and measurements. Earlier upstream-code executions and the Blender 3D vortex remain in the [reproduction archive]({{ '/en/optical-beams/archive/' | relative_url }}).
 
-At a curved interface, **45° is the value at the origin**. It does not mean that light arrives at the same angle everywhere. The circular interface radius is approximately 1.9894a. Different components of the beam reach different positions and normals, so the planar-interface critical angle alone cannot characterize the entire curved-interface result.
+<h2 id="curved">2. Same source, different curvature</h2>
 
-<details>
-<summary>Check interface and source positions on a shared brightness scale</summary>
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/curved/curved_common_scale.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/curved/curved_common_scale.png" alt="Planar, concave, and convex results compared with a common maximum and linear hot color scale, with interface and source positions marked" loading="lazy"></a>
-  <figcaption>This linear scale uses one shared maximum. Gray marks the interface obtained from the actual permittivity; teal marks the source interval. Distinguish this scale from the brightness of the individually normalized panels.</figcaption>
-</figure>
-</details>
-
-Compare actual time samples in the [planar GIF]({{ site.baseurl }}/assets/meep/optical-beams/curved/planar45_hot.gif), [concave GIF]({{ site.baseurl }}/assets/meep/optical-beams/curved/concave45_hot.gif), and [convex GIF]({{ site.baseurl }}/assets/meep/optical-beams/curved/convex45_hot.gif). They contain 62 actual FDTD frames from the last two periods, played slowly.
-
-In the concave case, the original source center lies inside n=1.54, but its weak tails overlap the other medium. A 401-point check found that this interval accounts for **approximately 0.0273% of the source’s squared-amplitude weight**. This diagnoses the source distribution; it is not transmission. The geometry was left unchanged to compare with the original.
-
-<h2 id="vortex">3. A 3D vortex: where do the four lobes come from?</h2>
-
-A Laguerre–Gaussian beam has phase that winds around its axis. This source has topological charge m=2. Its azimuthal phase factor exp(imφ) changes phase by 4π over one full turn. The source amplitude is 0 on the axis.
-
-<div class="figure-pair">
-  <figure class="lesson-figure">
-    <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_longitudinal.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_longitudinal.png" alt="Instantaneous squared real electric field in a longitudinal section containing the propagation axis of a 3D Meep vortex beam" loading="lazy"></a>
-    <figcaption>Longitudinal section: a plane containing the propagation axis. It shows both wavefronts and interference at the interface.</figcaption>
-  </figure>
-  <figure class="lesson-figure">
-    <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_transverse.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_transverse.png" alt="Four bright lobes in a transverse section of a charge 2 vortex beam" loading="lazy"></a>
-    <figcaption>Transverse section: a plane perpendicular to the propagation axis. For m=2, the instantaneous squared real field can produce a bright pattern that repeats four times around the azimuth.</figcaption>
-  </figure>
-</div>
-
-The four lobes are not four independent beams. They arise from taking the real part of the complex field at one instant and squaring it. Time averaging changes this rapid phase pattern. Shapes in the reflected and refracted regions can also differ from the source’s ideal ring.
+The Gaussian source has a central incidence angle of 20°, with refractive index changing from 1 to 1.5. The interface is **x = κy²**. κ=0 is flat, +0.10/a opens toward +x, and −0.10/a opens toward −x. The source and color scale stay the same across the three cases.
 
 <figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_3d.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_3d.png" alt="Spatial sections and an isosurface of the instantaneous squared real field from actual 3D Meep vortex data" loading="lazy"></a>
-  <figcaption>A 2% isosurface of the instantaneous squared real field, extracted at full resolution. Also shown are two sections on the incident side at x=−2.09740a and reflected side at y=2.11039a, the tilted material block, and red lines indicating geometrical-optics directions. The white surface is not the material interface. Following the original method, the lower-half endpoint includes the first positive z sample, +0.00649a.</figcaption>
+  <a href="{{ site.baseurl }}/assets/meep/beam-lab/gaussian_curvature.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/beam-lab/gaussian_curvature.png" alt="Measured DFT fields for a 20-degree Gaussian source at flat, positive-curvature and negative-curvature parabolic interfaces" loading="lazy"></a>
+  <figcaption>Brightness is Σ|DFT E<sub>j</sub>|² divided by the common maximum of the three cases. Follow the interface outline and the bright region beyond it. Equal peak current does not make this a transmission measurement normalized by incident power.</figcaption>
 </figure>
 
-This view uses **all 325×325×125 samples without striding**, excluding 30 edge cells from the stored 385×385×308 field. The 1,308,590 triangles obtained with VTK 9.5.2’s `vtkContourFilter` are rendered in Blender 4.5.14 without mesh decimation or shape-changing smoothing. The actual cell height of 4a is retained; coordinates are not compressed to the obsolete height of 3.5a left in the original visualization script.
+Compare the width and direction of the bright region beyond the boundary. With curvature, the surface normal changes with position. The source's central 20° angle is relative to the normal at the origin, not every point on the interface. Plane-wave Snell refraction provides a reference for the central direction at a flat interface, but does not determine the complete interference pattern of a finite beam.
 
-The camera direction and sequential rotations follow the original, with its distance adjusted to leave a 5% margin so that the actual cell and annotations are not clipped. The 1200×1200 image uses Cycles with 64 samples and denoising. These are display settings and do not change the stored field or isosurface geometry.
+<h2 id="vortex">3. Charges +2 and −2</h2>
+
+The source uses the p=0 LG aperture shape. Its radial amplitude is the same in both cases; only the **sign of m** in exp(imθ) changes. One circuit around the source produces a phase change of +4π or −4π.
 
 <figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_3d_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_3d_comparison.png" alt="Comparison of the original project’s 3D image, the earlier strided visualization, and the full-resolution rerender" loading="lazy"></a>
-  <figcaption>Left: an enlarged reference from the original project’s 200-pixel image. Center: the earlier incorrect display using a stride of 6 cells. Right: the full-resolution rerender. Undersampling the wavefronts made the earlier isosurface look rough and differently shaped. Not all original run and camera settings are known, so pixel-by-pixel identity is not claimed.</figcaption>
+  <a href="{{ site.baseurl }}/assets/meep/beam-lab/vortex_charge.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/beam-lab/vortex_charge.png" alt="Actual Meep DFT Ez phase sections and winding-measurement loops for source charges +2 and -2" loading="lazy"></a>
+  <figcaption>Colors show the computed complex E<sub>z</sub> phase, not a drawing of the imposed source. Winding is measured around the circle. Pixels below 5% of the section's maximum field magnitude are masked. Compare the measured value in each title with the source charge.</figcaption>
 </figure>
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_3d_modulus.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/vortex_3d_modulus.png" alt="Alternative 3D isosurface using the sum of squared complex electric-field magnitudes from the same stored field" loading="lazy"></a>
-  <figcaption>An alternative view of the same field using Σ|E<sub>j</sub>|². Both the isosurface and section colors use 2% of this scalar’s own global maximum as their reference. Distinguish it from the rapid phase fringes in the instantaneous squared real part.</figcaption>
-</figure>
+Phase is poorly defined where the field vanishes near the center. Inspect its change around a closed path with sufficient amplitude rather than interpreting a central pixel. This source is a **finite E<sub>z</sub> current sheet with an LG-shaped aperture**, not an injection of an exact nonparaxial vector LG solution.
 
-The original Mayavi script currently defaults to the sum of squared real and imaginary parts, and also provides a line that selects only the squared real part. This page’s main view uses Σ[Re E<sub>j</sub>]²; the alternative uses Σ&#124;E<sub>j</sub>&#124;². These are different physical quantities read from the same stored data, not competing versions of one correct answer.
+<h2 id="vortex-animation">4. A 3D cycle of the signed field</h2>
 
-<h3 id="vortex-animation">3D wavefronts moving in time</h3>
-
-Animating the white isosurface and both sections together reveals the passing spiral phase pattern. The camera, medium block, and red direction lines remain fixed.
+Reconstruct Re(Ẽ<sub>z</sub> exp(−iφ)) from the complex DFT field. Positive isosurfaces are teal and negative ones coral. Compare how the two charge cases evolve side by side.
 
 <figure class="lesson-figure lesson-animation">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/poster.png" data-animation-src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.gif" data-static-src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/poster.png" alt="Time-varying 3D vortex wavefronts and two sections reconstructed from the full-grid complex Meep field" loading="lazy"></a>
-  <figcaption>A phase cycle of the monochromatic steady state. The 24 frames represent one period of the instantaneous squared field, 0.1 a/c, played slowly as a 1.92-second loop. They do not include the transient arrival of the beam. The field isosurface and both sections are updated, while the medium is shown with translucent shading.</figcaption>
+  <a href="{{ site.baseurl }}/assets/meep/beam-lab/vortex_phase.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/beam-lab/vortex_poster.png" data-animation-src="{{ site.baseurl }}/assets/meep/beam-lab/vortex_phase.gif" data-static-src="{{ site.baseurl }}/assets/meep/beam-lab/vortex_poster.png" alt="Positive and negative 3D isosurfaces reconstructed from actual DFT fields for charges +2 and -2" loading="lazy"></a>
+  <figcaption>Signed E<sub>z</sub> isosurfaces extracted on the native grid. Their levels remain fixed at ±25% of the maximum |Ẽ<sub>z</sub>| across both cases. The 24 frames span a full 2π phase cycle, playing at 80ms per frame in a 1.92-second loop.</figcaption>
   <button type="button" class="animation-toggle" hidden>Play animation</button>
 </figure>
 
-[WebP file]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/vortex_wavefront.webp) · [Six phases side by side]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/contact_sheet.png) · [Animation validation record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/checks.json)
+At f=1 c/a, one phase cycle corresponds to 1 a/c. This is a single-frequency complex-field phase reconstruction, not a series of transient time samples showing the source turning on or the beam arriving.
 
-The earlier 3D file stored only the sums of squared real and imaginary components, leaving out the cross term needed for time evolution. We reran Meep with the same conditions and resolution, saving A=Σ Re(E<sub>j</sub>)², B=Σ Im(E<sub>j</sub>)², and C=Σ Re(E<sub>j</sub>)Im(E<sub>j</sub>) at t₀=10 a/c. With the time factor exp(−iωτ), the reconstruction is **R(τ)=A cos²φ+B sin²φ+2C sinφ cosφ**, where φ=2πfτ. This is a monochromatic phase reconstruction from a complex-field snapshot, distinct from a movie of actual FDTD time frames or DFT accumulation.
+[Six phases side by side]({{ '/assets/meep/beam-lab/contact_sheet.png' | relative_url }}) · [Calculation and rendering checks]({{ '/assets/meep/beam-lab/checks.json' | relative_url }})
 
-We then advanced Meep and compared the reconstruction with the instantaneous squared field at four later times. Relative L2 errors, calculated over every grid point in the displayed lower-half volume and both sections, were below 1% in all three regions, with a maximum of **0.09361%**. The [direct FDTD comparison record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/motion-validation.json) lists errors at each time. Every frame uses all 325×325×125 samples at stride=1. The isosurface level and section color limits are fixed at 2% of the maximum possible value over the full space and phase cycle. Brightness is not renormalized for each frame.
+<h2 id="vortex-material">5. Where did the medium block go?</h2>
 
-<h3 id="vortex-material">Is the lower surface a mirror?</h3>
+This charge comparison changes only the source phase **in vacuum**, so there is no medium block. The earlier white vortex at a dielectric boundary, two measured sections and translucent block belong to a different experiment. They remain in the [earlier 3D animation]({{ '/en/optical-beams/archive/#vortex-animation' | relative_url }}) and [translucent/glossy material comparison]({{ '/en/optical-beams/archive/#vortex-material' | relative_url }}). Adding surface gloss to a rendering and adding a physical mirror boundary to FDTD are different changes.
 
-The [original Mayavi code](https://github.com/danielkotik/Optical-beams-MEEP/blob/ca145119e5bd0f0804d846ea42e35e4c3daa91de/scripts/Laguerre_Gauss_3d/plot_3d_mayavi.py) draws this block as a **translucent representation of the higher-index medium**. It specifies an RGB color and an opacity of 0.5, without assigning a mirror material. This 0.5 is a display setting, not a light transmission of 50%.
+<h2 id="airy">6. What if the Airy source tail is suppressed?</h2>
 
-The white pattern inside the block is the same 3D field isosurface seen through the translucent block.
-
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/medium_material_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/medium_material_comparison.png" alt="Comparison of translucent medium shading and a subtly glossy material using the same vortex field and camera" loading="lazy"></a>
-  <figcaption>Left: translucent shading close to the original. Right: a Blender display material with a subtle gloss. Both use the same field, isosurface, camera, and render sample count. The main animation uses the material on the left.</figcaption>
-</figure>
-
-Blender surface reflections can produce a similar gloss. The right-hand image changes only the visualization material; it does not replace Meep’s dielectric interface with a metal or perfectly reflecting boundary. The [material comparison record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/material-checks.json) stores the display settings and image hashes.
-
-<h2 id="airy">4. An Airy beam: why the bright pattern curves</h2>
+The aperture is Ai(y/s) exp(αy/s), truncated at a finite width. Compare α=0.08 and 0.20. Increasing α suppresses the oscillating tail toward negative y more strongly. Both cases are in vacuum, so no refracting interface contributes to the changing bright pattern.
 
 <figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/airy_free_space.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/airy_free_space.png" alt="Curving bright pattern of an M 0 W 4 Airy beam calculated by actual FDTD in free space" loading="lazy"></a>
-  <figcaption>M=0, W=4, n₁=n₂=1. E<sub>z</sub>(t)² at the final time t=90 a/c.</figcaption>
+  <a href="{{ site.baseurl }}/assets/meep/beam-lab/airy_apodization.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/beam-lab/airy_apodization.png" alt="Actual DFT fields in vacuum for Airy current apertures with apodization 0.08 and 0.20" loading="lazy"></a>
+  <figcaption>Σ|DFT E<sub>j</sub>|² on a common scale. Inspect the main lobe's trajectory, neighboring fringes and spreading. The finite aperture and exponential apodization distinguish this source from an infinite ideal Airy beam.</figcaption>
 </figure>
 
-An Airy beam is a wave in which multiple plane-wave components interfere so that the bright main lobe moves along a curved trajectory. A curving bright trace does not mean that light particles accelerate without an external force, or that all the energy follows only that curve.
+<h2 id="run">7. Model and reproduction</h2>
 
-Both refractive indices were set to 1 to observe **the beam’s own interference without a refracting interface**. This differs from the original Airy example’s default interface-scattering run with n₂=0.65. Unlike an ideal infinite Airy function, this calculation has a finite source interval and grid.
+Lengths use the arbitrary unit a, with vacuum wavelength a. No physical micrometre dimensions are assigned. The finite E<sub>z</sub> current sheet radiates in both directions; the saved monitoring region covers its forward side.
 
-<h2 id="understand">5. What the bright fringes mean</h2>
+| Study | Changed parameter | Fixed conditions |
+|---|---|---|
+| Gaussian | κ = 0, +0.10/a, −0.10/a | Central angle 20°, n=1→1.5, waist 0.9a |
+| Vortex | m = +2, −2 | Vacuum, p=0 aperture shape, waist 1a |
+| Airy | α = 0.08, 0.20 | Vacuum, same finite aperture and length scale |
 
-The main figures show **the squared real electric field at that instant**. Crests and troughs pass even within one period, so the bright fringes move. Time averaging removes these rapid fringes from the reference-style images.
-
-| Representation | What it shows |
-|---|---|
-| Instantaneous real field E<sub>z</sub>(t) | Signed wavefronts. A red–blue scale is appropriate. |
-| Instantaneous squared real field | E<sub>z</sub>(t)² in 2D; Σ<sub>j=x,y,z</sub>[Re E<sub>j</sub>(t)]² in 3D. Preserves rapid phase fringes and interference. |
-| Single-frequency time average ⟨E<sub>z</sub>²⟩ | ∣Ẽ∣²/2 when Ẽ denotes the real-field amplitude. The distribution averages over rapid temporal oscillations. |
-| Normalized Poynting flux | Reflected and transmitted powers measured using a separate reference calculation and monitors. |
-
-The 3D example computes complex fields. **Σ<sub>j</sub>[Re E<sub>j</sub>]²** and **Σ<sub>j</sub>∣E<sub>j</sub>∣²** give different images. Here, the first retains the bright phase pattern. It does not include the magnetic field or material-dependent coefficients, so it is not the full energy density or device efficiency.
-
-<h2 id="predict">6. Snell’s law and planar interfaces</h2>
-
-The 30° and 45° planar Gaussian results are also retained as a reference for understanding curved interfaces and special beams. Incidence angles are measured from the interface normal.
-
-$$n_1\sin\chi_i=n_2\sin\chi_t,\qquad\chi_c=\arcsin(1/1.54)\approx40.49^\circ.$$
-
-| Central incidence angle | Plane-wave prediction |
-|---|---|
-| 30° | Refraction angle approximately 50.35°. Reflection and refraction occur together. |
-| 45° | Above the critical angle. A single plane wave undergoes total internal reflection, with an evanescent field in the lower-index medium. |
-
-<details>
-<summary>Expand signed wavefronts and time-averaged plots at 30° and 45°</summary>
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/wavefront_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/wavefront_comparison.png" alt="Signed instantaneous electric fields for planar Gaussian incidence at 30 and 45 degrees" loading="lazy"></a>
-  <figcaption>Red and blue show the sign of E<sub>z</sub>. Both actual runs are compared on the same scale.</figcaption>
-</figure>
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/optical-beams/intensity_comparison.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/intensity_comparison.png" alt="Mean squared electric fields estimated over the last two periods of the two planar Gaussian runs" loading="lazy"></a>
-  <figcaption>(A²+B²)/2 from a cos/sin/DC fit over the last two periods. Unlike the instantaneous squared field, this distribution averages over rapid temporal oscillations.</figcaption>
-</figure>
-<div class="figure-pair">
-  <figure class="lesson-figure lesson-animation">
-    <a href="{{ site.baseurl }}/assets/meep/optical-beams/planar30.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/planar30_wavefront.png" data-animation-src="{{ site.baseurl }}/assets/meep/optical-beams/planar30.gif" data-static-src="{{ site.baseurl }}/assets/meep/optical-beams/planar30_wavefront.png" alt="Actual FDTD wavefronts over the final two periods of the 30-degree Gaussian run" loading="lazy"></a>
-    <figcaption>30° · Actual time samples from the final two periods.</figcaption>
-    <button type="button" class="animation-toggle" hidden>Play animation</button>
-  </figure>
-  <figure class="lesson-figure lesson-animation">
-    <a href="{{ site.baseurl }}/assets/meep/optical-beams/planar45.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/planar45_wavefront.png" data-animation-src="{{ site.baseurl }}/assets/meep/optical-beams/planar45.gif" data-static-src="{{ site.baseurl }}/assets/meep/optical-beams/planar45_wavefront.png" alt="Actual FDTD wavefronts over the final two periods of the 45-degree Gaussian run" loading="lazy"></a>
-    <figcaption>45° · This does not show the initial arrival transient.</figcaption>
-    <button type="button" class="animation-toggle" hidden>Play animation</button>
-  </figure>
-</div>
-</details>
-
-An evanescent field can remain near the interface even under total internal reflection. A finite-width Gaussian beam also contains multiple incident directions, so its central angle of 45° alone does not establish that the total transmitted power is exactly 0.
-
-<h2 id="setup">7. Actual simulation conditions</h2>
-
-The source is pinned to commit `ca145119e5bd0f0804d846ea42e35e4c3daa91de`, corresponding to v2.1.2. We used Meep 1.33.0 on one CPU core. Here a is an arbitrary length unit, not specifically μm.
-
-| Parameter | Gaussian | 3D Laguerre–Gaussian | Free-space Airy |
-|---|---|---|---|
-| Source | 2D E<sub>z</sub> | 3D E<sub>z</sub>, m=2 | 2D E<sub>z</sub>, M=0, W=4 |
-| n₁ → n₂ | 1.54 → 1.00 | 1.00 → 1.54 | 1.00 → 1.00 |
-| Interface | Planar 30°/45°, concave/convex 45° | Planar 45° | No refractive-index contrast |
-| Cell | 5a × 5a | 5a × 5a × 4a | 10a × 10a |
-| PML | 0.25a | 0.25a | 0.25a |
-| f (c/a) | 12 | 5 | 12 |
-| Resolution (pixels/a) | 184.8 | 77 | 180 |
-| End time (a/c) | 10 | 10 | 90 |
-| Vacuum optical periods | 120 | 50 | 1080 |
-
-Gaussian uses `kw_0=8, kr_w=60`, LG uses `kw_0=8, kr_w=0`, and Airy uses `kw_0=7, kr_w=0`. The original grid-setting formulas and end times are retained. The Courant factor is 0.5 for Gaussian and 1/3 for LG. Airy follows the original medium-dependent formula, giving 0.5 in free space at n₂=1 (and 0.325 at the default n₂=0.65). For planar 45°, data from an earlier run with identical conditions were reused after checking their hash and provenance.
-
-To accelerate 3D source initialization, we used an **equivalent 1D integral that evaluates the azimuthal integral exactly with a Bessel function**. A comparison with the original double integral at 23 points gave a maximum absolute error of 4.52×10⁻¹⁰ and a maximum relative error of 2.50×10⁻⁹ for meaningful amplitudes. Field outputs were saved using Meep array reads rather than per-grid-point Python callbacks. The original source files are also preserved.
-
-<h2 id="run">8. Run it yourself</h2>
-
-Use the [reproduction directory](https://github.com/jin-castle/meep-examples/tree/main/code/optical_beams) in a Meep environment. `source/` contains the original Python and Scheme examples, optbeam, and the MIT license.
+Resolution is 20/a in 2D and 12/a in 3D; PML thickness is 0.8a. The simulation runs for 24 a/c before accumulating complex DFT fields for another 8 a/c. Actual monitor start and end times are saved in each execution record. A finite settling interval does not establish steady-state convergence.
 
 ```bash
-cd code/optical_beams
-export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-python run_original.py --upstream source --output planar45 --chi 45 --interface planar
-python run_original.py --upstream source --output concave45 --chi 45 --interface concave
-python run_original.py --upstream source --output convex45 --chi 45 --interface convex
-python render_curved.py --data-dir .
-mkdir -p output/gallery/lg output/gallery/airy
-python run_gallery.py --upstream source --output output/gallery/lg --beam lg > output/gallery/lg/run.log 2>&1
-python run_gallery.py --upstream source --output output/gallery/airy --beam airy > output/gallery/airy/run.log 2>&1
-python -m pip install vtk==9.5.2
-python prepare_vortex_scene.py output/gallery
-blender --background --factory-startup --threads 1 --python render_vortex_blender.py -- output/gallery
-python render_gallery.py output/gallery
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VTK_SMP_MAX_THREADS=1
+python -m unittest discover -s code/beam_lab -p 'test_*.py'
+python code/beam_lab/run.py --suite --output output/beam-lab
+python code/beam_lab/render.py --data output/beam-lab --output assets/meep/beam-lab
 ```
 
-Each run writes to its own output folder. Preprocessing uses scientific Python in WSL; rendering uses Blender’s own Python and NumPy with one Cycles CPU thread. Replace `blender` with your installed executable path if needed. When calling Windows Blender from WSL, pass Windows absolute paths for the script and output folder. The default 3D grid has approximately 45.65 million cells and requires more memory and time than 2D. If fields have already been saved, skip both `run_gallery.py` commands and start again from preprocessing. Display coordinates, normalization, and detailed execution instructions are in the [reproduction README](https://github.com/jin-castle/meep-examples/blob/main/code/optical_beams/README.md).
+See the [run instructions](https://github.com/jin-castle/meep-examples/tree/main/code/beam_lab) for the environment and single-case commands. `profiles.py` defines the source expressions, `run.py` controls Meep and saves fields, and `render.py` analyzes the measurements and produces the figures.
 
-You can also run the original examples. The 3D command below uses the original double integral, so initialization can be slow. Use a different working directory for each run to avoid overwriting outputs.
+<h2 id="verify">8. Checks and interpretation</h2>
 
-```bash
-export PYTHONPATH="$PWD/source"
-python source/scripts/Gauss_2d/Gauss2d.py -interface concave -chi_deg 45
-python source/scripts/Gauss_2d/Gauss2d.py -interface convex -chi_deg 45
-python source/scripts/Laguerre_Gauss_3d/LaguerreGauss3d.py
-python source/scripts/Airy_2d/Airy2d.py -n1 1 -n2 1 -M 0 -W 4
-```
+[checks.json]({{ '/assets/meep/beam-lab/checks.json' | relative_url }}) records case settings, actual monitoring times, code/data hashes, measured winding and animation checks. Winding is recomputed from saved DFT fields rather than copied from the source setting. The 3D isosurfaces use spatial stride 1 without mesh decimation.
 
-<h2 id="verify">9. Run evidence and limits of interpretation</h2>
+These calculations visualize fields on finite grids. They do not establish resolution, PML or steady-state convergence, normalize incident power, or measure transmission efficiency. Equal peak current does not establish equal injected power. Do not interpret brightness comparisons as efficiency measurements.
 
-- Curved-interface completion checks, finite-array checks, and agreement between the original HDF5 data and instantaneous squared fields are in [curved checks.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/checks.json). Sources and reuse records are in [curved provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/provenance.json).
-- Vortex and Airy execution checks, source-integral comparisons, and field-output checks are in [gallery checks.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/checks.json); conditions are in [gallery provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/provenance.json).
-- Full-grid isosurface field-value agreement, saved-data hashes, and direction-line coordinate checks are in the [3D rerender checks]({{ site.baseurl }}/assets/meep/optical-beams/gallery/native3d-checks.json). Sources for the original, earlier, and corrected comparison images are in the [comparison record]({{ site.baseurl }}/assets/meep/optical-beams/gallery/comparison-provenance.json).
-- The monochromatic phase reconstruction of the 3D wavefronts is checked against [direct Meep time samples]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/motion-validation.json) and through [frame, normalization, and file checks]({{ site.baseurl }}/assets/meep/optical-beams/gallery/animation/checks.json). It is not a movie of the beam’s arrival or a test of grid and PML convergence.
-- In the [planar phase diagnostics]({{ site.baseurl }}/assets/meep/optical-beams/checks.json), the local refracted wavefront direction for 30° incidence was 50.66°, approximately 0.31° from the Snell reference of 50.35°. This is not a direct measurement of the beam center or power.
-- The relative L2 residuals of harmonic fits over the final two Gaussian periods are 0.0822% for planar 30°, 0.0207% for planar 45°, 0.0216% for concave, and 0.1021% for convex. These check harmonic fits over a short interval; they do not establish grid convergence.
-- Numerical integration of the original Airy source produced SciPy warnings about subdivision limits and slow convergence. These are retained in the run logs. Finite fields and normal completion alone do not guarantee convergence of the source integral.
-- Grid and PML convergence, normalized R and T, curved-interface focal distances and beam widths, and vortex orbital angular momentum were not measured. This lab observes and compares actual fields.
+<h2 id="reference">9. References and earlier reproductions</h2>
 
-<details markdown="1">
-<summary>English summary</summary>
+- [Meep Python API](https://meep.readthedocs.io/en/latest/Python_User_Interface/): simulator and complex DFT monitoring.
+- [SciPy Airy function](https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.airy.html): evaluation of Ai.
+- [Optical-beams-MEEP · Daniel Kotik and Jörg Götte](https://danielkotik.github.io/Optical-beams-MEEP/): reference for beam topics and visual exploration.
+- [Earlier upstream-code reproduction archive]({{ '/en/optical-beams/archive/' | relative_url }}): historical measurements, Blender renderings, original-image comparison and their MIT notices.
 
-Actual single-core Meep 1.33.0 runs compare planar, concave and convex Gaussian interfaces, a charge-two fully 3D Laguerre–Gaussian beam, and an M=0, W=4 free-space Airy beam. Main figures show instantaneous squared real electric fields on black, preserving phase fringes. The original grid and runtime are retained. An analytically equivalent Bessel reduction accelerates the 3D source and is checked against the original double integral. Native array export replaces Python output callbacks. These are field visualizations, not convergence-tested power efficiencies or pixel-identical reproductions of the upstream PNGs.
-
-The 3D animation reconstructs a monochromatic phase cycle from the complex Meep snapshot, including the real–imaginary cross term. Native wavefront contours and two measured cuts change together, with fixed camera and normalization. Direct subsequent Meep samples test the reconstruction; this is not a transient arrival movie. The lower block represents the dielectric medium. Its optional glossy Blender appearance changes only the display material.
-
-</details>
-
-<h2 id="reference">10. Sources and license</h2>
-
-- **Original:** Daniel Kotik and Jörg Götte’s [Optical-beams-MEEP documentation](https://danielkotik.github.io/Optical-beams-MEEP/) · [pinned source version](https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de)
-- **Software citation:** v2.1.2, [DOI: 10.5281/zenodo.5211251](https://doi.org/10.5281/zenodo.5211251). This DOI identifies the software version.
-- **License:** MIT, Copyright (c) 2018 Daniel Kotik. [Permission notice retained with the distributed source](https://github.com/jin-castle/meep-examples/tree/main/code/optical_beams/source).
-- **Additional work:** Run and validation records, the equivalent integral and observation wrappers, new result rendering, and the Korean explanation translated here.
+The new Beam Lab does not import `optbeam` or execute the preserved upstream code. Historical data retain their actual provenance in the archive, separate from the new experiments here. AI tools assisted implementation, translation and editing; file-specific reuse conditions are described in [Rights & Licenses]({{ '/en/rights-and-licenses/#source-optical-beams' | relative_url }}).
