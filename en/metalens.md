@@ -163,7 +163,7 @@ We checked the stepped phase using 1D scalar angular-spectrum propagation. No ph
 
 <figure class="lesson-figure">
 <a href="{{ '/assets/meep/metalens/04_ideal_pb.png' | relative_url }}" data-lightbox aria-label="Enlarge the derivation, mapping, and focus check of an ideal PB metalens phase"><img src="{{ '/assets/meep/metalens/04_ideal_pb.png' | relative_url }}" alt="Equal optical paths, phase before and after wrapping, fin mapping, propagation for two circular polarizations, and focal-plane profiles" loading="lazy"></a>
-<figcaption>In (E), the converted circular polarization focuses at z ≈ 10 µm; in (F), the opposite incident handedness diverges. In (G), the stepped-phase focus (red dashed line) has nearly the same width as the continuous ideal-phase focus (grey).</figcaption>
+<figcaption>In (E), the converted circular polarization focuses at z ≈ 10 µm; in (F), the opposite incident handedness diverges. The black→red→yellow→white hot colors show |E|² on a linear scale, normalized by each panel’s own maximum. Do not compare the brightness of (E) and (F) as absolute intensities. The common-scale cross section in (G) and the calculation data are unchanged. This is a 1D scalar angular-spectrum model, not an FDTD result.</figcaption>
 </figure>
 
 | Quantity (λ = 532 nm, f = 10 µm, aperture ±5.12 µm, U = 250 nm) | Value |

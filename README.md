@@ -3,7 +3,7 @@
 Meep (FDTD) 공식 예제 해설 시리즈 — 입문자용. 사이트: https://jin-castle.github.io/meep-examples/
 
 A beginner-friendly walkthrough of the official [Meep](https://meep.readthedocs.io/) examples, ordered like a 10-week applied-electromagnetics course (post number = week − 1; weeks 2–10 → posts 01–09), followed by season 2 (posts 10–16: the journey of a point source, from a mirror to light extraction and the far field).
-Korean body, English TL;DR, English code comments. Every script in `code/` was re-run before publishing.
+Full Korean and English editions, with shared scientific results and English code comments. Every script in `code/` was re-run before publishing.
 
 | # | Post | Script | Key numbers (Meep 1.33.0) |
 |---|------|--------|---------------------------|
@@ -74,4 +74,6 @@ mpirun -np 4 python extraction_efficiency.py   # ~77 min (m series to 60 dominat
 
 ## Site
 
-Jekyll + minima, built by GitHub Pages. Math via MathJax. Posts are in `_posts/`, figures in `assets/meep/NN/`.
+Jekyll + minima, built by GitHub Pages. Math via MathJax. Korean posts are in `_posts/`; English lessons and topics are in `en/`. Use [한국어](https://jin-castle.github.io/meep-examples/) or [English](https://jin-castle.github.io/meep-examples/en/) and select System, Light or Dark in the header. Language switches preserve the corresponding page and section; theme choices persist when browser storage is available.
+
+Each of the 14 chapter concept illustrations has four explicit PNG exports in `assets/illustrations/`: `XX.ko.light.png`, `XX.ko.dark.png`, `XX.en.light.png`, and `XX.en.dark.png`. The catalog and “Understand the principle” sections share these assets. `manifest.json` records prompts, dimensions and hashes. Numerical figures remain in `assets/meep/NN/` with their original pixels and color scales; theme changes do not invert or generatively edit them.
