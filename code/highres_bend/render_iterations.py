@@ -39,8 +39,8 @@ def main():
     result = json.loads((args.raw/"result.json").read_text())
     datasets = [dict(np.load(args.raw/r["raw"])) for r in result["records"]]
     forward_limit = max(float(np.max(np.abs(d[f"{p}_full_Ez"]))) for d in datasets for p in ("forward","updated_forward"))
-    adjoint_limit = max(float(np.max(np.abs(d["adjoint_full_Ez"]))) for d in datasets)
-    manifest = {**result, "records": [], "grid_shape": [61,61], "gradient_shape": [61,61], "phase_frame_count":32, "phase_columns":8, "phase_rows":4, "scene_pixels":[360,300], "forward_limit":forward_limit, "adjoint_limit":adjoint_limit, "phase_convention":"Re(Ez * exp(-i * 2*pi*k/32)); saved steady-state complex DFT, not transient propagation", "density_indexing":"x*Ny+y; 61 by 61; no threshold or binarization", "colormap":"RdBu", "normalization":"Common symmetric forward scale across all before/after states; separate common symmetric adjoint scale", "full_extent_um":[-3,3,-2.5,2.5], "design_extent_um":[-.5,.5,-.5,.5]}
+    adjoint_global_peak = max(float(np.max(np.abs(d["adjoint_full_Ez"]))) for d in datasets)
+    manifest = {**result, "records": [], "grid_shape": [61,61], "gradient_shape": [61,61], "phase_frame_count":32, "phase_columns":8, "phase_rows":4, "scene_pixels":[360,300], "forward_limit":forward_limit, "adjoint_global_peak":adjoint_global_peak, "phase_convention":"Re(Ez * exp(-i * 2*pi*k/32)); saved steady-state complex DFT, not transient propagation", "density_indexing":"x*Ny+y; 61 by 61; no threshold or binarization", "colormap":"RdBu", "normalization":"Common symmetric forward scale across all before/after states; adjoint uses its own complex peak per iteration, fixed across every phase, scene and capture", "full_extent_um":[-3,3,-2.5,2.5], "design_extent_um":[-.5,.5,-.5,.5]}
     checks=[]
     previous=None
     previous_field=None
@@ -65,7 +65,9 @@ def main():
             assert field_repeat_error < 1e-8
         previous_field=raw["updated_forward_full_Ez"]
         previous=after
-        row={**record,"x_before":before.tolist(),"x_after":after.tolist(),"gradient":raw["gradient"].tolist(),"gradient_shape":[61,61],"grid_shape":[61,61],"raw_sha256":hashlib.sha256((args.raw/record["raw"]).read_bytes()).hexdigest()}
+        adjoint_limit = float(np.max(np.abs(raw["adjoint_full_Ez"])))
+        assert np.isfinite(adjoint_limit) and adjoint_limit > 0
+        row={**record,"x_before":before.tolist(),"x_after":after.tolist(),"gradient":raw["gradient"].tolist(),"gradient_shape":[61,61],"grid_shape":[61,61],"raw_sha256":hashlib.sha256((args.raw/record["raw"]).read_bytes()).hexdigest(),"adjoint_limit":adjoint_limit}
         check={"iteration":i,"monotonic":True,"density_chain_exact":True,"projected_gradient_update_exact":True,"repeated_geometry_forward_field_matches":True,"field_repeat_relative_linf_error":field_repeat_error,"scenes":{}}
         for prefix,stem in (("forward","forward"),("adjoint","adjoint"),("updated_forward","updated-forward")):
             field=raw[f"{prefix}_full_Ez"]
@@ -113,7 +115,7 @@ def main():
     (args.out/"manifest.json").write_text(json.dumps(manifest,indent=2))
     validation={"passed":True,"iterations":len(checks),"checks":checks,"finite_difference_gate":result["records"][1]["finite_difference_gate"],"all_physical_runs_before_time_cap":all(all(t<1000 for t in r["simulation_times"].values()) for r in result["records"])}
     (args.out/"validation.json").write_text(json.dumps(validation,indent=2))
-    print(json.dumps({"passed":True,"iterations":len(checks),"manifest":str(args.out/"manifest.json"),"forward_limit":forward_limit,"adjoint_limit":adjoint_limit}))
+    print(json.dumps({"passed":True,"iterations":len(checks),"manifest":str(args.out/"manifest.json"),"forward_limit":forward_limit,"adjoint_limits":[r["adjoint_limit"] for r in manifest["records"]]}))
 
 
 if __name__ == "__main__":

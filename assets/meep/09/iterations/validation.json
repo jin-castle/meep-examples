@@ -29,12 +29,12 @@
           "saved_all_frames_match": true,
           "animated_content": true,
           "phase0_capture_exact_scene_crop": true,
-          "input_phase_slope_rad_per_um": 13.125825966783962
+          "input_phase_slope_rad_per_um": 13.125825966783967
         },
         "adjoint": {
           "complex_finite": true,
           "coordinates_verified": true,
-          "symmetric_limit": 0.017941712180960218,
+          "symmetric_limit": 0.0030279939741658535,
           "sprite": "adjoint-phases.png",
           "sprite_pixels": [
             2880,
@@ -85,12 +85,12 @@
           "saved_all_frames_match": true,
           "animated_content": true,
           "phase0_capture_exact_scene_crop": true,
-          "input_phase_slope_rad_per_um": 13.106637603327336
+          "input_phase_slope_rad_per_um": 13.106637603327332
         },
         "adjoint": {
           "complex_finite": true,
           "coordinates_verified": true,
-          "symmetric_limit": 0.017941712180960218,
+          "symmetric_limit": 0.010048574700474221,
           "sprite": "adjoint-phases.png",
           "sprite_pixels": [
             2880,
@@ -146,7 +146,7 @@
         "adjoint": {
           "complex_finite": true,
           "coordinates_verified": true,
-          "symmetric_limit": 0.017941712180960218,
+          "symmetric_limit": 0.012774924318384047,
           "sprite": "adjoint-phases.png",
           "sprite_pixels": [
             2880,
@@ -197,12 +197,12 @@
           "saved_all_frames_match": true,
           "animated_content": true,
           "phase0_capture_exact_scene_crop": true,
-          "input_phase_slope_rad_per_um": 12.96534171924596
+          "input_phase_slope_rad_per_um": 12.965341719245954
         },
         "adjoint": {
           "complex_finite": true,
           "coordinates_verified": true,
-          "symmetric_limit": 0.017941712180960218,
+          "symmetric_limit": 0.015330386706600039,
           "sprite": "adjoint-phases.png",
           "sprite_pixels": [
             2880,
@@ -258,7 +258,7 @@
         "adjoint": {
           "complex_finite": true,
           "coordinates_verified": true,
-          "symmetric_limit": 0.017941712180960218,
+          "symmetric_limit": 0.016893788246170095,
           "sprite": "adjoint-phases.png",
           "sprite_pixels": [
             2880,
@@ -309,7 +309,7 @@
           "saved_all_frames_match": true,
           "animated_content": true,
           "phase0_capture_exact_scene_crop": true,
-          "input_phase_slope_rad_per_um": 13.037438265383344
+          "input_phase_slope_rad_per_um": 13.037438265383338
         },
         "adjoint": {
           "complex_finite": true,

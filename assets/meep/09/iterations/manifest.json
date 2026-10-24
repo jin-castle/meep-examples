@@ -11196,6 +11196,7 @@
         61
       ],
       "raw_sha256": "fad41cb79f2812e8172acabc5fdd074557c501b31614a77c7f5a5af53ace5aed",
+      "adjoint_limit": 0.0030279939741658535,
       "forward_scene": "000/forward-scene.png",
       "forward_phases": "000/forward-phases.png",
       "forward_capture": "000/forward-capture.png",
@@ -22409,6 +22410,7 @@
         61
       ],
       "raw_sha256": "95a2e3f03d8fa472fe42283e3abbe4114b9bd3e228622243c552ad3cd31a0683",
+      "adjoint_limit": 0.010048574700474221,
       "forward_scene": "001/forward-scene.png",
       "forward_phases": "001/forward-phases.png",
       "forward_capture": "001/forward-capture.png",
@@ -33616,6 +33618,7 @@
         61
       ],
       "raw_sha256": "43671669fa5fea107b57f7c1020e223afbd483f1dd26984f667b8b2e5d029053",
+      "adjoint_limit": 0.012774924318384047,
       "forward_scene": "002/forward-scene.png",
       "forward_phases": "002/forward-phases.png",
       "forward_capture": "002/forward-capture.png",
@@ -44823,6 +44826,7 @@
         61
       ],
       "raw_sha256": "17daa44cf2b33d1e570e96b95b6b2572e52b23ce63f6d2f620fde405e31a748a",
+      "adjoint_limit": 0.015330386706600039,
       "forward_scene": "003/forward-scene.png",
       "forward_phases": "003/forward-phases.png",
       "forward_capture": "003/forward-capture.png",
@@ -56030,6 +56034,7 @@
         61
       ],
       "raw_sha256": "b9c83ef1bea1f10b582d3d1af238d327eefc23a93fc2e860b9d4090052e82ca1",
+      "adjoint_limit": 0.016893788246170095,
       "forward_scene": "004/forward-scene.png",
       "forward_phases": "004/forward-phases.png",
       "forward_capture": "004/forward-capture.png",
@@ -67237,6 +67242,7 @@
         61
       ],
       "raw_sha256": "28e8aeb31382657c0db8277888b3afd432b3a6cd68c1f9c5797c3eff20a6df27",
+      "adjoint_limit": 0.017941712180960218,
       "forward_scene": "005/forward-scene.png",
       "forward_phases": "005/forward-phases.png",
       "forward_capture": "005/forward-capture.png",
@@ -67276,11 +67282,11 @@
     300
   ],
   "forward_limit": 20.31869826702306,
-  "adjoint_limit": 0.017941712180960218,
+  "adjoint_global_peak": 0.017941712180960218,
   "phase_convention": "Re(Ez * exp(-i * 2*pi*k/32)); saved steady-state complex DFT, not transient propagation",
   "density_indexing": "x*Ny+y; 61 by 61; no threshold or binarization",
   "colormap": "RdBu",
-  "normalization": "Common symmetric forward scale across all before/after states; separate common symmetric adjoint scale",
+  "normalization": "Common symmetric forward scale across all before/after states; adjoint uses its own complex peak per iteration, fixed across every phase, scene and capture",
   "full_extent_um": [
     -3,
     3,
@@ -67294,7 +67300,7 @@
     0.5
   ],
   "render_source_sha256": {
-    "render_iterations.py": "1418215a2382dc5ca67173ec0a75f2dae3437fa6e8508183caa390ef7f218026",
+    "render_iterations.py": "ef39f6ee3a4fa140f4286f59888b50c134f5cb4f5e1d6672395f2940cd4cff9c",
     "render_scene.py": "f2538bc9b6d9f9b3735f03282c5872b3039a31061499b69fab07632b06695ad9"
   }
 }

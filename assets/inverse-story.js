@@ -267,7 +267,7 @@
       : stage === 3 ? time < 16.2 ? tr("저장한 두 복소장을 겹쳐 민감도를 구합니다.", "Overlap the two saved complex fields to compute sensitivity.") : tr("픽셀마다 바꿀 방향이 gradient로 남습니다.", "The gradient gives an update direction for every pixel.")
       : densityReady ? time < 23.2 ? tr("Gradient를 받아 설계 영역의 밀도를 바꿉니다.", "Use the gradient to update the density in the design region.") : tr("갱신한 구조의 forward DFT를 다시 확인합니다.", "Check the forward DFT of the updated geometry.") : tr("최종 밀도를 불러오지 못했습니다. 계산 결과 링크를 확인하세요.", "The final density could not be loaded. Check the calculation result links.");
     text("#scene-summary", finished ? tr("저장된 계산이 끝났습니다. 마지막 갱신 구조와 forward DFT를 유지합니다.", "The saved calculations are complete. Keeping the final updated geometry and forward DFT.") : summary);
-    text("#scene-note", updating ? tr("현재 밀도 → 실제 갱신 밀도 · 다음 계산의 시작 구조", "Current density → computed updated density · Starting geometry for the next calculation") : tr("복소 DFT의 정상상태 위상 재생 · 촬영본은 위상 0°에 고정", "Steady-state phase playback of complex DFT · Snapshots fixed at phase 0°"));
+    text("#scene-note", updating ? tr("현재 밀도 → 실제 갱신 밀도 · 다음 계산의 시작 구조", "Current density → computed updated density · Starting geometry for the next calculation") : adjoint ? tr("Adjoint는 반복별 최대 진폭으로 정규화 · 촬영본은 위상 0°에 고정", "Adjoint normalized to each iteration's peak · Snapshots fixed at phase 0°") : tr("복소 DFT의 정상상태 위상 재생 · 촬영본은 위상 0°에 고정", "Steady-state phase playback of complex DFT · Snapshots fixed at phase 0°"));
     progress.min = staticFrame ? "1" : "0";
     progress.max = staticFrame ? "4" : String(duration);
     progress.step = staticFrame ? "1" : ".01";
