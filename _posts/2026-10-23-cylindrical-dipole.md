@@ -1,12 +1,12 @@
 ---
 layout: lesson
 permalink: /cylindrical-dipole/
-lesson_title: "회전 대칭으로 3D 빛을 어떻게 계산할까?"
-lesson_summary: "방위 차수 m으로 계산을 나누고 쌍극자 field를 합칩니다. 고리의 좌표계 비교와 열린 near2far 면의 한계를 함께 확인합니다."
+lesson_title: "회전 대칭 구조의 3D 전자기장은 어떻게 계산할까요?"
+lesson_summary: "방위 차수 m별로 계산한 쌍극자의 전자기장을 합칩니다. 고리의 공진을 서로 다른 좌표계로 비교하고, 열린 near2far 면의 한계도 확인합니다."
 lesson_goals:
   - "source 방향과 위치에 맞는 방위 차수 m을 선택한다."
   - "field 합산과 m별 power 기준의 역할을 구별한다."
-  - "고리의 차원과 디스크 near–far 차이의 한계를 해석한다."
+  - "고리 모델의 차원을 구별하고 디스크의 near–far 차이를 해석한다."
 lesson_prerequisites: "10편 near2far와 방사 패턴 · 12편 고리의 방위 차수 m"
 date: 2026-10-23
 title: "Meep Example 13 · 회전 대칭으로 3D를 계산하기 — cylindrical 좌표, m 급수, on/off-axis 쌍극자, 디스크 방사"
@@ -95,7 +95,7 @@ excerpt: "post 12's ring was a 2D cross-section; real discs, rings, lenses and L
 
 파트 D의 디스크는 굴절률 2.4, 반지름 1.2 µm이고 아래에 손실 없는 PEC ground plane이 있습니다. m = −1 하나의 ring source를 계산하며, 임의의 off-axis 점광원 전체를 계산한 결과는 아닙니다. ground plane 때문에 near2far 면은 위와 바깥 r만 포함하고 아래는 열려 있습니다.
 
-<h2 id="run">4. 직접 실행하기: m 급수의 중단 기준만 엄격하게 하기</h2>
+<h2 id="run">4. 직접 실행하기: m 급수의 종료 기준 낮추기</h2>
 
 저장소를 내려받아 <code>code/</code> 폴더에서 실행합니다. <code>cylindrical_dipole.py</code>와 같은 폴더의 <code>blogfig.py</code>가 모두 필요합니다. Meep 1.33.0 MPI 환경과 Python·NumPy·Matplotlib을 사용한 원본 기록은 MPI 4개 프로세스에서 약 7.6분입니다.
 
@@ -107,7 +107,7 @@ OMP_NUM_THREADS=1 mpirun -np 4 python cylindrical_dipole.py
 
 파트 B 로그의 마지막 m, 마지막 항의 power 비율, 최종 패턴 오차를 비교합니다. 원본 m = 8의 비율은 이미 **9.49e-6**이므로 이 한 단계의 기준 변경만으로 마지막 m이 늘지 않을 수도 있습니다. 이를 미리 실패로 판단하지 말고 실제 종료 기록을 확인하세요. 새 측정값은 원본 0.63%와 구별해 기록합니다.
 
-<h2 id="interpret">5. 결과 해석하기: 무엇이 일치했고 무엇이 남았을까?</h2>
+<h2 id="interpret">5. 결과 해석하기: 해석해와 좌표계별 계산 비교하기</h2>
 
 | 원본 비교 | 실제 결과 | 해석 범위 |
 |---|---|---|
@@ -145,7 +145,7 @@ near flux는 거의 유지되고 far flux가 증가했습니다. 이는 열린 �
 
 <h2 id="reference">7. 참고 자료와 전체 코드</h2>
 
-원본의 상세 물리식, m별 수치, 좌표계별 설정과 전체 실행 기록을 아래에 보관했습니다.
+상세 물리식, m별 수치, 좌표계별 설정과 전체 실행 기록을 아래에서 확인할 수 있습니다.
 
 
 <details markdown="1">
@@ -194,7 +194,7 @@ near flux는 거의 유지되고 far flux가 증가했습니다. 이는 열린 �
 | 광섬유 단면, 원형 격자 결합기 | 원통 도파 모드(m), r 방향 PML | — |
 
 
-### 원본 §2 · 물리 한 페이지
+### 원본 §2 · 방위 차수별 전자기장 계산
 
 구조가 φ에 무관하면 Maxwell 방정식의 φ 미분은 field에 $im$을 곱하는 것으로 바뀐다. field를 $\mathbf E(r,\phi,z)=\sum_m \mathbf E_m(r,z)\,e^{im\phi}$로 쓰면 m마다 독립된 (r, z) 문제가 된다. Meep은 m 하나를 받아 그 문제 하나를 푼다.
 
@@ -217,7 +217,7 @@ $$
 
 **가정과 유효 범위**: 파트 A·B는 진공, 파장 1 µm, 해상도 50. 파트 C는 12편의 고리(n 3.4, a = 1 µm)를 2D 대신 축 대칭 3D로 본 것이 아니라 같은 2D 문제를 다른 좌표로 푼 것이다. ring-cyl의 셀은 z 방향 크기가 0이라 z로 무한한 원기둥이다. 파트 D는 n 2.4 디스크, 바닥은 완전도체 ground plane이고 m = −1 하나(ring source)만 계산한다.
 
-### 결과 보기 전에 맞춰보기
+### 결과를 보기 전에 예측하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -254,9 +254,9 @@ $$
 | A x 쌍극자 | Er + Ep(±1j), m = ±1, r = 1.5/res | 원편광 둘의 합. r = 0의 Er은 버그(meep #2704) | m = 0으로 두면 x 쌍극자가 아니다 |
 | B source | Er at r₀ = 0.5, +f와 −f 두 source | +f가 +m, −f의 켤레가 −m 항 | −f를 빼면 −m 항이 없다 |
 | B 종료 기준 | m 항 power / 최대 < 10⁻⁴ | 공식 값 | 너무 느슨하면 14편의 함정(되튐) |
-| C 고리 | n 3.4, R 1, w 1, PML 32, res 20 | 공식 ring-cyl.py | 셀이 r 한 줄이라 PML이 두꺼워도 싸다 |
+| C 고리 | n 3.4, R 1, w 1, PML 32, res 20 | 공식 ring-cyl.py | 셀이 r 방향 한 줄이므로 두꺼운 PML의 계산 부담이 작다 |
 | D 디스크 | n 2.4, R 1.2, t = 0.7λ/n, res 100 | 공식 값 | t를 바꾸면 패턴의 lobe가 바뀐다 |
-| D 반지름 셀 | 6 µm(공식), 8 µm | truncation 확인 | 셀이 클수록 열린 면이 덜 잃는다 |
+| D 반지름 셀 | 6 µm(공식), 8 µm | truncation 확인 | 셀이 클수록 열린 면 밖에서 누락되는 등가 전류가 줄어든다 |
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/13/00_source.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/00_source.png" alt="source 파형과 스펙트럼(1000 nm, fwidth 0.1 fcen). 모든 파트가 같은 상대 대역폭을 쓴다." loading="lazy"></a>
@@ -451,7 +451,7 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: 진공에서 축 위 쌍극자의 패턴은 m = 0(z) 또는 m = ±1(x)로 0.5% 안에서 맞는다. 축에서 0.5 µm 떨어진 x 쌍극자는 m = 0…8의 합으로 0.6% 안에서 맞는다. 12편 고리의 주파수는 cylindrical 좌표와 2D Cartesian이 0.1% 안에서 같다. ground plane 위 디스크의 near–far 차이는 반지름 셀을 키우면 줄어드는 truncation이다.
-- 할 수 없는 것: 축에서 먼 점광원이나 구조가 있는 셀에서 "power가 처음 10⁻⁴ 아래로 내려간 m"이 급수의 끝이라는 것(14편의 반례). 디스크의 진짜 far-field 총 power(열린 면 때문에 모른다). 2D Cartesian의 Q가 해상도마다 다른 이유를 staircase 하나로 확정하는 것(이 글은 일치하는 쪽을 보였을 뿐이다).
+- 확인되지 않은 것: 축에서 먼 점광원이나 구조가 있는 셀에서 "power가 처음 10⁻⁴ 아래로 내려간 m"을 급수의 마지막 항으로 삼아도 되는지 여부(14편에 반례가 있다). 열린 면을 사용한 디스크의 far-field 총 power도 수렴이 확인되지 않았다. 2D Cartesian의 Q가 해상도마다 다른 원인을 staircase만으로 확정할 수도 없다(이 글의 결과는 그 해석과 일치할 뿐이다).
 
 
 ### 원본 §6 · 흔한 실수

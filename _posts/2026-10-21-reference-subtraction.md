@@ -1,8 +1,8 @@
 ---
 layout: lesson
 permalink: /reference-subtraction/
-lesson_title: "물체가 흩뜨린 빛만 어떻게 골라낼까?"
-lesson_summary: "물체 없는 계산과 물체 있는 계산을 비교합니다. 장을 뺀 뒤의 산란 power와 전력 차이가 답하는 질문을 구분합니다."
+lesson_title: "물체의 산란장은 어떻게 분리할까요?"
+lesson_summary: "물체가 없을 때와 있을 때의 장을 비교합니다. 두 장의 차이로 구한 산란 전력과 두 계산의 전력 차이가 어떻게 다른지 확인합니다."
 lesson_goals:
   - "incident·total·scattered field의 관계를 설명한다."
   - "전력 수지와 산란 단면적에 맞는 monitor를 구분한다."
@@ -32,7 +32,7 @@ excerpt: "run the same cell twice, without and with the object. The difference o
 
 </details>
 
-<h2 id="observe">1. 관찰 · 세 장의 차이 보기</h2>
+<h2 id="observe">1. 관찰 · 입사장·전체장·산란장 비교</h2>
 
 왼쪽은 원기둥 없는 입사장, 가운데는 원기둥이 있는 전체장, 오른쪽은 두 장의 차이입니다. **가운데의 줄무늬 중 무엇이 원래 들어온 파이고, 무엇이 물체가 만든 변화일까요?** 오른쪽 산란장은 그 변화를 따로 보여줍니다.
 
@@ -84,9 +84,9 @@ $$E_{\mathrm{scat}} = E_{\mathrm{total}} - E_{\mathrm{inc}}$$
 
 `get_flux_data`는 monitor의 DFT 장을 저장하고, `load_minus_flux_data`는 새 계산에서 그 입사장을 뺍니다. 이렇게 얻은 monitor의 출력은 **산란장만의 power**입니다.
 
-### 전력 수지와 산란 단면적은 서로 다른 질문입니다
+### 전력 수지와 산란 단면적은 계산 방법이 다릅니다
 
-R·T·S는 들어온 power가 뒤·앞·옆으로 얼마나 나갔는지 묻습니다. 이 수지는 total field의 flux와 reference flux를 사용합니다. 반면 산란 단면적은 물체가 만든 산란 power를 입사 세기로 나눈 값이므로, 입사장을 뺀 monitor를 사용합니다.
+R·T·S는 입사 전력이 뒤·앞·옆으로 나간 비율을 나타냅니다. 이 전력 수지는 total field의 flux와 reference flux로 계산합니다. 산란 단면적은 물체가 만든 산란 전력을 입사 세기로 나눈 값이므로, 입사장을 뺀 monitor를 사용합니다.
 
 $$\sigma_{\mathrm{sc}} = P_{\mathrm{sc}}/I_{\mathrm{inc}},\qquad Q_{\mathrm{sca}} = \sigma_{\mathrm{sc}}/(2r)$$
 
@@ -101,7 +101,7 @@ $$\sigma_{\mathrm{sc}} = P_{\mathrm{sc}}/I_{\mathrm{inc}},\qquad Q_{\mathrm{sca}
 
 입사파 E_inc는 물체 없이도 존재하는 field다. 물체를 넣으면 E_total = E_inc + E_scat이 되고, E_scat은 물체가 새로 만든 field다. 두 run의 source·셀·격자가 같으면 E_inc를 그대로 빼서 E_scat을 얻는다.
 
-power는 field의 제곱이라 빼기가 그대로 옮겨가지 않는다. 어떤 면을 지나는 total field의 flux는 입사 flux + 산란 flux + 둘의 간섭항이다. 입사파와 산란파가 서로 반대 방향으로 지나는 면(왼쪽 면)에서는 간섭항이 거의 사라져 "flux의 차"와 "field 차의 flux"가 같지만, 입사파가 면과 나란히 지나는 면(위·아래)에서는 간섭항이 남는다. 그래서 두 수지를 구분한다.
+power는 field의 제곱에 비례하므로, 장을 빼고 power를 구한 결과는 각각의 power를 뺀 결과와 다르다. 어떤 면을 지나는 total field의 flux는 입사 flux + 산란 flux + 둘의 간섭항이다. 입사파와 산란파가 서로 반대 방향으로 지나는 면(왼쪽 면)에서는 간섭항이 거의 사라져 "flux의 차"와 "field 차의 flux"가 같지만, 입사파가 면과 나란히 지나는 면(위·아래)에서는 간섭항이 남는다. 따라서 두 계산을 구분해야 한다.
 
 $$
 R=\frac{-(P_{\mathrm{left}}^{\mathrm{tot}}-P_{\mathrm{left}}^{\mathrm{inc}})}{P_{\mathrm{inc}}},\quad
@@ -127,7 +127,7 @@ $$
 
 **가정과 유효 범위**: 2D, Ez 편광, 손실 없는 원기둥(n = 2), 유한 폭(8 µm)의 평면파. 1D 문제는 수직 입사·단일 계면이며 n(λ)은 Meep materials library의 fused_quartz 분산 모델이다.
 
-#### 결과 보기 전에 맞춰보기
+#### 결과를 보기 전에 예상하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -192,7 +192,7 @@ OMP_NUM_THREADS=1 python reference_subtraction.py
 <summary>코드 따라가기 · 일곱 단계의 역할</summary>
 
 > 읽는 순서: 단위·파라미터 → 재료·구조 → source → Simulation·경계 → monitor → 실행·종료 → 후처리.
-> 1D(Fresnel)와 2D(원기둥)가 같은 절차를 두 번 밟는다. 아래는 2D 기준이고, 1D는 전체 코드 전체 코드에 있다.
+> 1D(Fresnel)와 2D(원기둥) 실험에 같은 절차를 적용한다. 아래는 2D 기준이며, 1D 실험은 전체 코드에서 볼 수 있다.
 
 #### ① 단위와 파라미터 — 어떤 숫자를 고정하는가
 
@@ -299,12 +299,12 @@ Q_sca = sigma / (2 * r_cyl)
 ```
 
 - **무엇**: total field의 flux 차로 R, T, S를 만들고(합 1), 산란장 flux의 합으로 산란 단면적을 만든다.
-- **왜**: 수지는 total field의 보존에서 나온다. 산란 단면적은 정의가 "산란된 power / 입사 세기"라 산란장만의 flux가 필요하다. 둘은 다른 질문에 답하는 다른 수다.
+- **왜**: 전력 수지는 total field의 에너지 보존을 확인하는 데 쓴다. 산란 단면적의 정의는 "산란된 power / 입사 세기"이므로 산란장만의 flux가 필요하다. 측정 목적에 맞게 두 값을 구분해야 한다.
 - **틀리면**: `outward`에서 왼쪽 면 부호를 안 뒤집으면 P_sc에 왼쪽 산란이 음수로 들어가 σ가 작아진다. 입사 세기를 box 폭으로 안 나누면 σ의 단위가 틀린다.
 
 </details>
 
-<h2 id="interpret">5. 해석 · 숫자로 확인하고 한계 읽기</h2>
+<h2 id="interpret">5. 해석 · 전력 수지와 산란 단면적 검증</h2>
 
 먼저 공기–석영 단일 계면으로 절차를 확인했습니다. 533 nm에서 **R = 0.03513**, Fresnel 해석값은 **0.03505**이며, 400–800 nm의 최대 차이는 **1.6 × 10⁻⁴**입니다.
 
@@ -332,7 +332,7 @@ Q_sca = sigma / (2 * r_cyl)
 | max \|R − R_Fresnel\| (400–800 nm) | 1.6 × 10⁻⁴ | — |
 | R + T @ 533 nm | 1.00000 | 1 |
 
-#### 2D: 원기둥의 세 field와 수지
+#### 2D: 원기둥의 입사장·전체장·산란장과 전력 수지
 
 
 
@@ -414,7 +414,7 @@ S는 total flux와 incident flux의 차이로 계산해야 합니다. 산란장 
 
 #### 어디에 쓰이는가
 
-반사·투과·산란 스펙트럼은 광학 소자의 사양서 그 자체다. 이 글의 세 측정은 코팅, 필터, 나노입자, 레이더 단면적의 공통 기초다.
+반사·투과·산란 스펙트럼은 광학 소자의 성능을 나타내는 기본 지표입니다. 이 글에서 다룬 측정 방법은 코팅과 필터의 성능 평가, 나노입자 산란, 레이더 단면적 계산에 활용됩니다.
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|

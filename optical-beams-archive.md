@@ -6,16 +6,16 @@ title_en: "Optical-beams-MEEP lab — curved interfaces, 3D vortex and Airy beam
 lang: ko
 source_contribution: "과거 재현 기록: MIT 원본 스크립트를 보존하고 실행 wrapper·native-grid 출력·검증·렌더링을 추가했습니다. 이 보관 페이지의 결과는 외부 코드를 실행한 당시의 자료입니다."
 topic_label: OPTICAL BEAMS
-lesson_title: "빔의 파면은 왜 휘고, 나선으로 돌까?"
-lesson_summary: "평면·오목·볼록 경계의 Gaussian beam을 비교하고, 3D vortex와 Airy beam을 직접 계산합니다. 검은 배경의 밝은 줄무늬를 따라 파면과 간섭을 읽어 봅니다."
+lesson_title: "Gaussian·vortex·Airy 빔의 장 분포는 어떻게 다를까요?"
+lesson_summary: "평면·오목·볼록 경계에서 계산한 Gaussian beam과 3D vortex·Airy beam의 재현 결과를 살펴봅니다. 순간 전기장 제곱으로 표시한 줄무늬에서 파면과 간섭을 구분합니다."
 lesson_goals:
   - "같은 Gaussian beam의 평면·오목·볼록 경계 결과를 비교합니다."
   - "Vortex의 위상 감김과 Airy beam의 휘는 밝은 무늬를 구분합니다."
   - "순간 전기장 제곱, 시간평균 제곱장, 전력 투과율을 구분합니다."
 lesson_prerequisites: "01편 광원 · 02편 PML · 03편 참조 계산"
-calc_note: "실제 Meep 1.33.0 · CPU 한 코어. Gaussian 4조건, 3D Laguerre–Gaussian, 자유공간 Airy. 원본 격자·종료 시간 유지."
+calc_note: "Meep 1.33.0 · CPU 한 코어. Gaussian 4조건, 3D Laguerre–Gaussian, 자유공간 Airy. 원본의 격자와 종료 시간을 유지한 계산입니다."
 toc:
-  - { id: observe, label: "첨부 그림의 빔부터 보기" }
+  - { id: observe, label: "파면과 간섭 무늬 관찰" }
   - { id: curved, label: "평면·오목·볼록 비교" }
   - { id: vortex, label: "3D vortex 읽기" }
   - { id: airy, label: "Airy beam 읽기" }
@@ -38,9 +38,9 @@ excerpt: "Real single-core Meep runs of curved Gaussian interfaces, a 3D charge-
 > **과거 재현 기록입니다.** 외부 코드를 실행했던 결과와 당시 출처를 보존합니다. 새 [Beam Lab]({{ site.baseurl }}/optical-beams/)은 별도로 작성한 제어 코드·소스 함수와 새 매개변수 실험을 사용합니다. 아래 그림을 새 프로그램의 계산 결과로 바꾸어 표시하지 않습니다.
 
 
-<h2 id="observe">1. 첨부 그림의 빔부터 보기</h2>
+<h2 id="observe">1. 계산 결과의 파면과 간섭 무늬 관찰하기</h2>
 
-나선처럼 보이는 밝은 무늬, 가운데가 빈 횡단면, 그리고 스스로 휘는 듯한 빔. [Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/)의 코드를 실제 Meep으로 실행해 새로 그렸습니다. 위쪽 세 장은 **3D Laguerre–Gaussian vortex**, 아래쪽은 **자유공간 Airy beam**입니다.
+Vortex의 나선형 무늬와 가운데가 빈 횡단면, Airy beam의 곡선 형태를 비교합니다. [Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/)의 코드를 Meep으로 실행해 그린 결과입니다. 위쪽 세 장은 **3D Laguerre–Gaussian vortex**, 아래쪽은 **자유공간 Airy beam**입니다.
 
 <figure class="lesson-figure">
   <a href="{{ site.baseurl }}/assets/meep/optical-beams/gallery/reference_gallery.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/optical-beams/gallery/reference_gallery.png" alt="실제 Meep으로 계산한 charge 2 vortex의 종단면·횡단면·3D 단면과 자유공간 Airy beam" loading="eager"></a>
@@ -80,7 +80,7 @@ excerpt: "Real single-core Meep runs of curved Gaussian interfaces, a 3D charge-
 
 오목 조건에서는 원본 소스 중심이 n=1.54 안에 있지만 약한 끝부분은 다른 매질과 겹칩니다. 401점 검사에서 그 구간의 **소스 진폭 제곱 가중 비율은 약 0.0273%**였습니다. 이는 소스 분포 진단이며 투과율이 아닙니다. 원본을 비교하기 위해 구조는 수정하지 않았습니다.
 
-<h2 id="vortex">3. 3D vortex: 네 날개는 어디서 생길까?</h2>
+<h2 id="vortex">3. 3D vortex: 횡단면에 네 갈래 무늬가 나타나는 이유</h2>
 
 Laguerre–Gaussian beam은 축 주위로 위상이 감기는 빔입니다. 이번 소스의 위상 전하는 m=2입니다. 소스의 방위각 위상 인자 exp(imφ)는 한 바퀴에서 위상이 4π만큼 변합니다. 축에서는 소스 진폭이 0이 됩니다.
 
@@ -169,7 +169,7 @@ Airy beam은 여러 평면파 성분이 간섭하며 밝은 주엽의 위치가 
 | 단일 주파수 시간평균 ⟨E<sub>z</sub>²⟩ | 실수장 진폭을 Ẽ라 정의하면 ∣Ẽ∣²/2. 빠른 시간 진동을 평균한 분포입니다. |
 | 정규화한 Poynting flux | 별도의 참조 계산과 모니터로 측정하는 반사·투과 전력입니다. |
 
-3D 예제는 복소장을 계산합니다. **Σ<sub>j</sub>[Re E<sub>j</sub>]²**와 **Σ<sub>j</sub>∣E<sub>j</sub>∣²**는 서로 다른 그림입니다. 이번에는 첫 번째로 밝은 위상 무늬를 살렸습니다. 자기장이나 매질에 따른 계수를 포함하지 않으므로 에너지 밀도 전체나 소자 효율로 부르지 않습니다.
+3D 예제는 복소장을 계산합니다. **Σ<sub>j</sub>[Re E<sub>j</sub>]²**와 **Σ<sub>j</sub>∣E<sub>j</sub>∣²**는 서로 다른 물리량을 표시합니다. 주 그림은 첫 번째 값을 사용해 순간 위상 무늬를 보여 줍니다. 자기장이나 매질에 따른 계수를 포함하지 않으므로 에너지 밀도 전체나 소자 효율로 해석할 수 없습니다.
 
 <h2 id="predict">6. Snell 법칙과 평면 경계</h2>
 
@@ -260,7 +260,7 @@ python source/scripts/Laguerre_Gauss_3d/LaguerreGauss3d.py
 python source/scripts/Airy_2d/Airy2d.py -n1 1 -n2 1 -M 0 -W 4
 ```
 
-<h2 id="verify">9. 실행 증거와 해석의 범위</h2>
+<h2 id="verify">9. 실행 기록과 결과의 해석 범위</h2>
 
 - 곡면의 종료·배열 유한성·원본 HDF5와 순간장 제곱 일치는 [곡면 checks.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/checks.json), 출처와 재사용 기록은 [곡면 provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/curved/provenance.json)에 있습니다.
 - Vortex·Airy의 실행, 소스 적분 비교와 장 출력 검사는 [갤러리 checks.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/checks.json), 조건은 [갤러리 provenance.json]({{ site.baseurl }}/assets/meep/optical-beams/gallery/provenance.json)에 있습니다.

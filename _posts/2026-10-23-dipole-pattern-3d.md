@@ -1,10 +1,10 @@
 ---
 layout: lesson
 permalink: /dipole-pattern-3d/
-lesson_title: "점광원의 빛은 어느 방향으로 나갈까?"
-lesson_summary: "방향별 1D 계산으로 3D 방사 패턴을 구성하고, 거울의 image가 만드는 밝고 어두운 방향을 해석합니다."
+lesson_title: "점광원의 빛은 어느 방향으로 나갈까요?"
+lesson_summary: "방향별 1D 계산으로 3D 방사 패턴을 구하고, 거울에 의한 상 쌍극자(image dipole)와의 간섭이 방사 방향을 어떻게 바꾸는지 해석합니다."
 lesson_goals:
-  - "Bloch 1D run 묶음으로 3D 패턴을 구하는 원리를 설명한다."
+  - "여러 Bloch 1D 계산으로 3D 방사 패턴을 구하는 원리를 설명한다."
   - "flux 환산과 계산하지 않은 큰 각도의 의미를 구별한다."
   - "2D 거울 모형과 3D 패턴의 비교 범위를 판단한다."
 lesson_prerequisites: "01편 점원과 flux box · 03편 reference run"
@@ -25,7 +25,7 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 
 <h2 id="observe">1. 먼저 보기: 점광원은 모든 방향으로 똑같이 빛날까?</h2>
 
-01편의 2D 점원에서 한 걸음 나아가, **진동하는 축이 있는 3D 쌍극자**를 봅니다. x 방향으로 진동하면 x축 방향은 어둡고, 그 축에 수직인 면에서는 고르게 빛납니다. 이를 큰 3D 셀 대신 방향별 1D 계산을 모아 재현할 수 있습니다.
+01편의 2D 점원에 이어, **정해진 축을 따라 진동하는 3D 쌍극자**를 살펴봅니다. x 방향으로 진동하면 x축 방향은 어둡고, 그 축에 수직인 면에서는 고르게 빛납니다. 큰 3D 셀을 구성하지 않고도 방향별 1D 계산을 모아 이 패턴을 재현할 수 있습니다.
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/03_vacuum_pattern.png" alt="240개 Bloch 1D 계산으로 재구성한 진공 x 쌍극자의 3D 방사 패턴과 해석해 비교"></a>
@@ -55,7 +55,7 @@ excerpt: "post 01 left the point source radiating equally in all directions, in 
 
 </details>
 
-<h2 id="understand">3. 원리 이해하기: 한 방향씩 계산하고, 거울은 image로 보기</h2>
+<h2 id="understand">3. 원리 이해하기: 방향별 계산과 상 쌍극자 모형</h2>
 
 {% include chapter-illustration.html %}
 
@@ -120,7 +120,7 @@ OMP_NUM_THREADS=1 python dipole_pattern_3d.py
 
 <code>05_pec_pattern.png</code>에서 밝은 봉우리(lobe)의 개수와 각도를 원본과 비교하세요. h가 작아지면 위상차의 변화 폭도 작아져 봉우리가 줄어들 것으로 예상할 수 있습니다. 새 봉우리 위치와 오차는 실행 결과에서 읽고, 진공인 파트 A의 0.22%와 거울 계산의 오차를 섞지 마세요.
 
-<h2 id="interpret">5. 결과 해석하기: 정확한 패턴에도 적용 범위가 있다</h2>
+<h2 id="interpret">5. 결과 해석하기: 모델과 각도에 따른 오차 비교하기</h2>
 
 | 원본에서 비교한 것 | 상대 L2 오차 |
 |---|---:|
@@ -136,7 +136,7 @@ OMP_NUM_THREADS=1 python dipole_pattern_3d.py
 
 거울이 없는 경우의 0.22%를 거울 문제 전체의 정확도로 가져오면 안 됩니다. 거울 계산은 72° 아래에서도 두 방법이 6.4% 다릅니다. 원문은 거울 위치의 격자 반 칸 오차와 각도 표본 간격을 가능한 원인으로 해석하며, 여기서 두 효과를 독립적으로 검증한 것은 아닙니다.
 
-<p class="lesson-note"><strong>말할 수 없는 범위.</strong> 72° 이상의 1D 방사 세기, 절대 power와 directivity, 손실 금속 거울의 응답은 검증하지 않았습니다. 2D near2far도 그 큰 각도 영역의 수렴성을 별도로 확인하지 않았습니다.</p>
+<p class="lesson-note"><strong>검증하지 않은 범위.</strong> 72° 이상의 1D 방사 세기, 절대 power와 directivity, 손실 금속 거울의 응답은 검증하지 않았습니다. 2D near2far도 그 큰 각도 영역의 수렴성을 별도로 확인하지 않았습니다.</p>
 
 <h2 id="check">6. 이해 확인하기</h2>
 
@@ -153,7 +153,7 @@ OMP_NUM_THREADS=1 python dipole_pattern_3d.py
 
 <h2 id="reference">7. 참고 자료와 전체 코드</h2>
 
-방향별 계산 설정, 원본의 실패 사례와 상세 수치, 전체 프로그램을 아래에 보관했습니다.
+방향별 계산 설정, 잘못된 설정의 사례와 상세 수치, 전체 프로그램을 아래에서 확인할 수 있습니다.
 
 
 <details markdown="1">
@@ -182,7 +182,7 @@ OMP_NUM_THREADS=1 python dipole_pattern_3d.py
 - glancing angle(72° 이상)을 공식 예제가 계산하지 않는 이유. 0으로 남은 표본은 방사 null이 아니다
 - 무한 PEC 거울을 near2far box 안에 넣을 수 없을 때: 부호가 반대인 image dipole과 `Mirror(Y, phase=-1)`
 - `Near2FarRegion` 네 조각의 `weight`가 닫힌 면의 바깥 법선이라는 것
-- 두 방법(2D near2far, 1D Bloch)이 같은 array factor를 내는지, 어디서 갈라지는지
+- 두 방법(2D near2far, 1D Bloch)의 array factor가 어느 각도 범위에서 일치하는지
 
 **전제 지식**: 01편의 점원과 flux box, 03편의 reference run. **공식 예제**: [Near-to-far field spectra 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/)의 [antenna above a PEC ground plane](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-above-a-perfect-electric-conductor-ground-plane)과 [dipole_in_vacuum_1D.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py). **이전 글**: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/) · **다음 글**: [11 · 두 거울 사이의 점광원]({{ site.baseurl }}/cavity-ldos/)
 
@@ -204,7 +204,7 @@ OMP_NUM_THREADS=1 python dipole_pattern_3d.py
 
 
 
-### 원본 §2 · 물리 한 페이지
+### 원본 §2 · 방향별 성분과 거울 반사의 원리
 
 점광원의 field는 평면파의 합이다. 횡방향 파수 $\mathbf k_\perp=(k_x,k_y)$를 하나 고정하면 Maxwell 방정식은 z만 남은 1D 문제가 되고, 그 1D 해는 $e^{i\mathbf k_\perp\cdot\mathbf r_\perp}$를 곱한 평면파다. Meep에서 이것이 `k_point`다. 방향 $(\theta,\phi)$로 나가는 평면파는 $\mathbf k_\perp=f\sin\theta\,(\cos\phi,\sin\phi)$를 가지므로, 1D 셀에 쌍극자를 두고 `k_point`를 바꿔 가며 돌리면 run 하나가 방향 하나의 표본이 된다. 1D run이 주는 것은 그 평면파 성분의 z 방향 flux $S_z$다. 입체각당 power로 바꾸려면 $d^2k_\perp=f^2\cos\theta\,d\Omega$의 Jacobian이 들어가 $S_r=S_z\cos\theta$가 된다.
 
@@ -413,7 +413,7 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/10/03b_vacuum_pattern_wrong_setup.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/10/03b_vacuum_pattern_wrong_setup.png" alt="같은 스크립트의 첫 실행. `dimensions=1`을 명시하고 `k_point`에 z 성분이 없었다. Meep 지도(왼쪽 아래)가 에 전혀 의존하지 않고 =0 행만 어둡다. 두 증상이 각각 &quot;횡방향 k가 무시됨&quot;과" loading="lazy"></a>
-<figcaption markdown="span">같은 스크립트의 첫 실행. `dimensions=1`을 명시하고 `k_point`에 z 성분이 없었다. Meep 지도(왼쪽 아래)가 $\phi$에 전혀 의존하지 않고 $\theta=0$ 행만 어둡다. 두 증상이 각각 "횡방향 k가 무시됨"과 "k = 0이라 실수 field"의 지문이다. L2 0.35. 그림은 틀렸지만 어디가 틀렸는지를 말해 주기 때문에 남겨 둔다.</figcaption>
+<figcaption markdown="span">같은 스크립트를 처음 실행했을 때의 결과다. `dimensions=1`을 명시했고 `k_point`에 z 성분이 없었다. Meep 지도(왼쪽 아래)는 $\phi$에 전혀 의존하지 않고 $\theta=0$ 행만 어둡다. 이는 각각 횡방향 k가 무시된 것과 k = 0에서 실수 field를 사용한 결과다. L2는 0.35다. 설정 오류를 진단하는 예로 이 그림을 남겼다.</figcaption>
 </figure>
 
 
@@ -465,7 +465,7 @@ array_factor = np.sin(K_B * H * np.cos(THETA_B)) ** 2
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: x 쌍극자의 3D 패턴은 72° 아래에서 1D run 묶음으로 0.22% 안에 재현된다. $S_z\cos\theta$가 맞는 환산이다. 거울 위 쌍극자의 패턴은 image 이론의 array factor와 0.66% 안에서 같고, 1D 방법도 72° 아래에서는 같은 답을 준다.
-- 할 수 없는 것: 72° 위의 방사 세기. 1D 방법은 그 영역을 계산하지 못하고, 이 글의 2D near2far도 그 영역의 수렴성을 따로 보지 않았다. 절대 power와 directivity. 손실 있는 금속 거울. y 편광과 다른 해상도로의 일반화.
+- 확인되지 않은 것: 72° 위의 방사 세기. 이 설정의 1D 방법은 그 영역에서 신뢰할 만한 결과를 얻지 못했고, 2D near2far의 수렴성도 따로 확인하지 않았다. 절대 power와 directivity, 손실 있는 금속 거울의 응답, y 편광과 다른 해상도의 결과는 별도 검증이 필요하다.
 
 
 ### 원본 §6 · 흔한 실수
