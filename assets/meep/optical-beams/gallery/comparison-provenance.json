@@ -1,0 +1,28 @@
+{
+  "Original": {
+    "file": "vortex_beam_m_2_3d_half_resized.png",
+    "source_size": [
+      200,
+      200
+    ],
+    "sha256": "645dc1652aca5bf7ee1ffcaf5165a9518ca0e2c210eafb2200a69147e21f7fe5"
+  },
+  "Previous": {
+    "file": "vortex_3d.png",
+    "source_size": [
+      983,
+      990
+    ],
+    "sha256": "660806879620058bb68478bb4e765d649056d993e5e838c6ac63371be464c43f"
+  },
+  "Native grid + Blender": {
+    "file": "vortex_3d.png",
+    "source_size": [
+      1200,
+      1200
+    ],
+    "sha256": "526cee648a85f5d6a65b48e8a4c09aff304906cc5039bcf2624e17f37457a2f2"
+  },
+  "comparison_sha256": "2fd87f4c7273122e4bb188f2d0cb0491d2a25490f07cab2a31d4c00a29ccc848",
+  "source_url": "https://github.com/danielkotik/Optical-beams-MEEP/blob/ca145119e5bd0f0804d846ea42e35e4c3daa91de/scripts/Laguerre_Gauss_3d/img/vortex_beam_m_2_3d_half_resized.png"
+}

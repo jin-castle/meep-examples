@@ -24,8 +24,11 @@ import numpy as np
 import scipy
 
 
-def sha256(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def sha256(path, *, normalize_lf=False):
+    data = Path(path).read_bytes()
+    if normalize_lf:
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def main():
@@ -33,6 +36,8 @@ def main():
     parser.add_argument("--upstream", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--chi", type=float, required=True)
+    parser.add_argument("--interface", choices=("planar", "concave", "convex"),
+                        default="planar")
     args = parser.parse_args()
     upstream = args.upstream.resolve()
     output = args.output.resolve()
@@ -75,7 +80,7 @@ def main():
 
     mp.Simulation.run = sampled_run
     os.chdir(output)
-    original_args = SimpleNamespace(interface="planar", s_pol=True, ref_medium=0,
+    original_args = SimpleNamespace(interface=args.interface, s_pol=True, ref_medium=0,
                                     n1=1.54, n2=1.0, kw_0=8, kr_w=60,
                                     kr_c=150, chi_deg=args.chi)
     try:
@@ -92,20 +97,41 @@ def main():
     x, y, z, weights = final_sim.get_array_metadata()
     epsilon = final_sim.get_array(component=mp.Dielectric)
     ez_final = final_sim.get_array(component=mp.Ez)
+    source_y = np.linspace(-1, 1, 401)
+    source_eps = np.array([final_sim.get_epsilon_point(mp.Vector3(-2.15, yy, 0)).real
+                           for yy in source_y])
+    source_profile = optbeam.Gauss2d(
+        -2.15 + 60 / (2 * np.pi * 12),
+        {"W_y": 8 / (2 * np.pi * 12), "k": 1.54 * 2 * np.pi * 12})
+    source_j2 = np.array([abs(source_profile.profile(mp.Vector3(0, yy, 0)))**2
+                           for yy in source_y])
+    outside_n1 = ~np.isclose(source_eps, 1.54**2, rtol=0, atol=1e-8)
+    source_geometry = dict(
+        center_epsilon=float(final_sim.get_epsilon_point(mp.Vector3(-2.15, 0, 0)).real),
+        source_x=-2.15, source_y_extent=[-1, 1],
+        epsilon_min=float(source_eps.min()), epsilon_max=float(source_eps.max()),
+        all_sampled_source_in_n1=bool(not outside_n1.any()),
+        aperture_point_fraction_outside_n1=float(outside_n1.mean()),
+        source_j2_weight_fraction_outside_n1=float(source_j2[outside_n1].sum()/source_j2.sum()),
+        caveat="J squared weighting describes the imposed source envelope, not transmitted power",
+        curvature_radius=150/(2*np.pi*12) if args.interface != "planar" else None)
     np.savez_compressed(output / "fields.npz", x=x, y=y, epsilon=epsilon,
                         ez=ez_final, phasor=phasor, dc=coefficients[2],
                         mean_ez2=abs(phasor) ** 2 / 2,
                         preview=np.stack(preview), times=sampled_times,
-                        preview_x=x[::3], preview_y=y[::3])
+                        preview_x=x[::3], preview_y=y[::3],
+                        source_y=source_y, source_epsilon=source_eps, source_j2=source_j2)
     metadata = dict(
         passed=bool(np.isfinite(phasor).all() and np.isfinite(epsilon).all()
                     and relative_residual < 0.05),
         source_sha256=sha256(source),
+        source_sha256_lf_normalized=sha256(source, normalize_lf=True),
         upstream_commit="ca145119e5bd0f0804d846ea42e35e4c3daa91de",
         unchanged_original_script=True,
         changes="Wrapper adds read-only final-two-period field samples only",
         scheme_unavailable="No meep, meep-mpi or guile executable in the existing environment",
         physical=vars(original_args),
+        source_geometry=source_geometry,
         numerical=dict(cell=[5, 5], pml=0.25, vacuum_frequency=12,
                        resolution=10 * 1.54 * 12, pixels_per_dense_wavelength=10,
                        courant=0.5, runtime=10, optical_periods=120,

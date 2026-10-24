@@ -1,0 +1,34 @@
+{
+  "source_h5_sha256": "feddc0b5a32d0357531d845b420bfbf332300c5c545669c46bd4a812fc1a7746",
+  "saved_fields_unchanged": true,
+  "spatial_stride": 1,
+  "mesh_decimation": false,
+  "scalars": {
+    "real2": {
+      "vertices": 661303,
+      "triangles": 1308590,
+      "max_contour_residual_fraction_global_maximum": 7.188140058266691e-07,
+      "maximum_annotation_endpoint_error": 4.4855528995995726e-07,
+      "render_resolution": 1200,
+      "samples": 64,
+      "camera_distance_scale": 1.2800845441963566,
+      "denoising": true,
+      "image_sha256": "526cee648a85f5d6a65b48e8a4c09aff304906cc5039bcf2624e17f37457a2f2",
+      "blend_sha256": "49e42f047bad784e251d2a8e899d7680e958005ec269e6fcbec5e1e31acc278e"
+    },
+    "modulus2": {
+      "vertices": 127049,
+      "triangles": 251292,
+      "max_contour_residual_fraction_global_maximum": 5.730351115139516e-08,
+      "maximum_annotation_endpoint_error": 4.4855528995995726e-07,
+      "render_resolution": 1200,
+      "samples": 64,
+      "camera_distance_scale": 1.2800845441963566,
+      "denoising": true,
+      "image_sha256": "761e500241b2b0da7d9f004de2401711bb007caa9859f04bfe0feb8652b102fb",
+      "blend_sha256": "53376d730d869484700a8932f48e363a247d2f6274359f823e72ebf7a4a8d900"
+    }
+  },
+  "minimum_native_samples_per_real_squared_carrier_period": 5.0,
+  "passed": true
+}

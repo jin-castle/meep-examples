@@ -1,0 +1,157 @@
+{
+  "passed": true,
+  "cases": {
+    "planar": {
+      "passed": true,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "execution_exit_code": 0,
+      "reused": true,
+      "source_geometry": {
+        "center_epsilon": 2.3716,
+        "epsilon_min": 2.3716,
+        "epsilon_max": 2.3716,
+        "all_sampled_source_in_n1": true,
+        "source_j2_weight_fraction_outside_n1": 0,
+        "method": "Stored epsilon at nearest source-x grid column"
+      },
+      "original_hdf5_e2_max_absolute_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "panel_peak": 220.94872678201904,
+      "grid_shape": [
+        924,
+        924
+      ],
+      "frames": 62,
+      "end_time": 10.0,
+      "harmonic_fit_relative_l2_residual": 0.00020694190276210927,
+      "files": {
+        "fields_sha256": "81b87d6b54aa0ba49f5bee38197befd3894ea3f65c44b4b8affc4ccb14b96951",
+        "raw_instantaneous_e2_sha256": "4cc6660f812ad48c54f8635a552fd688e816e574ebab0fbe8558be9aea6ae2f7",
+        "run_json_sha256": "bebfc00229e2f345c68a978599887ec35b0a5717045e006779921f4abf52b4a5"
+      },
+      "reuse_origin": "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/outputs/optical-beams-run/planar45",
+      "reuse_hash_match": true
+    },
+    "concave": {
+      "passed": true,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "execution_exit_code": 0,
+      "reused": false,
+      "source_geometry": {
+        "center_epsilon": 2.3716,
+        "source_x": -2.15,
+        "source_y_extent": [
+          -1,
+          1
+        ],
+        "epsilon_min": 0.9999999999999961,
+        "epsilon_max": 2.3716000000000075,
+        "all_sampled_source_in_n1": false,
+        "aperture_point_fraction_outside_n1": 0.28428927680798005,
+        "source_j2_weight_fraction_outside_n1": 0.0002728476885344273,
+        "caveat": "J squared weighting describes the imposed source envelope, not transmitted power",
+        "curvature_radius": 1.9894367886486917
+      },
+      "original_hdf5_e2_max_absolute_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "panel_peak": 222.36955747672343,
+      "grid_shape": [
+        924,
+        924
+      ],
+      "frames": 62,
+      "end_time": 10.0,
+      "harmonic_fit_relative_l2_residual": 0.00021593905694543834,
+      "files": {
+        "fields_sha256": "3ad1c7d21ded0edf096dbe8d75ce41f90f1d0df367aae5d82488e7479ecc0814",
+        "raw_instantaneous_e2_sha256": "c70383dcde59c5f2c886a8e09685d3f470eb3669ba490be80ffd239ca272f1bd",
+        "run_json_sha256": "1eccfbce0b2c054c1167dffbdac8e4a9eec9404b40a59970355d24c3d1884503"
+      }
+    },
+    "convex": {
+      "passed": true,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "execution_exit_code": 0,
+      "reused": false,
+      "source_geometry": {
+        "center_epsilon": 2.3716,
+        "source_x": -2.15,
+        "source_y_extent": [
+          -1,
+          1
+        ],
+        "epsilon_min": 2.371599999999991,
+        "epsilon_max": 2.3716000000000075,
+        "all_sampled_source_in_n1": true,
+        "aperture_point_fraction_outside_n1": 0.0,
+        "source_j2_weight_fraction_outside_n1": 0.0,
+        "caveat": "J squared weighting describes the imposed source envelope, not transmitted power",
+        "curvature_radius": 1.9894367886486917
+      },
+      "original_hdf5_e2_max_absolute_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "panel_peak": 218.85016836937288,
+      "grid_shape": [
+        924,
+        924
+      ],
+      "frames": 62,
+      "end_time": 10.0,
+      "harmonic_fit_relative_l2_residual": 0.0010207850953097377,
+      "files": {
+        "fields_sha256": "997b58253cfba9b11da491c5ccd376cea292f1fe9faed64526039cbd59bc6230",
+        "raw_instantaneous_e2_sha256": "df9caa7719bcfe5f6269b7e3d3385346174a42db1988c388d4921ac2d42f7a3a",
+        "run_json_sha256": "0ffb3490b15fcfabfec970c8a90c26f0b0ea4de3f68b434cbbe78335b2d29414"
+      }
+    }
+  },
+  "physics": {
+    "n1": 1.54,
+    "n2": 1,
+    "chi_at_origin_deg": 45,
+    "r_c": 1.9894367886486917,
+    "cell": [
+      5,
+      5
+    ],
+    "pml": 0.25,
+    "frequency": 12,
+    "runtime": 10,
+    "optical_periods": 120,
+    "resolution": 184.8,
+    "s_polarization": "Ez",
+    "concave": "n1 cylinder centered at (-r_c*cos(chi), +r_c*sin(chi)), n2 exterior",
+    "convex": "n2 cylinder centered at (+r_c*cos(chi), -r_c*sin(chi)), n1 exterior"
+  },
+  "visualization": {
+    "quantity": "real instantaneous Ez(t)^2, never cycle averaged",
+    "hero": "linear hot, per-panel peak normalization, no geometry overlay",
+    "comparison": "linear hot, common maximum, geometry and source overlaid",
+    "common_peak": 222.36955747672343,
+    "extent": [
+      -2.2,
+      2.2,
+      -2.2,
+      2.2
+    ],
+    "animation": "actual final-two-period Ez samples squared; fixed peak per animation"
+  },
+  "limitations": [
+    "10 pixels per denser-medium wavelength; no mesh or PML convergence sweep",
+    "Concave source center is in n1, but a weak source-aperture tail intersects n2",
+    "Source J-squared weighting is not an energy flux or efficiency measurement",
+    "45-degree incidence is relative to the tangent normal at the origin only",
+    "No focus width, focusing efficiency, beam centroid or R/T flux performance is claimed",
+    "Instantaneous fringes depend on optical phase; the three panels use the same t=10",
+    "Panel normalization compares morphology, not absolute amplitudes"
+  ],
+  "retries": [
+    {
+      "case": "concave",
+      "count": 1,
+      "category": "metadata_collection",
+      "reason": "get_epsilon_point returned a complex scalar with zero imaginary part; collector explicitly records its real part",
+      "log": "concave45.collector-failed.log"
+    }
+  ]
+}

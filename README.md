@@ -26,12 +26,22 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 ## Optical-beams-MEEP lab
 
 The [Optical beams lesson](https://jin-castle.github.io/meep-examples/optical-beams/)
-executes Daniel Kotik and Jörg Götte's MIT-licensed `Gauss2d.py` at its original
-resolution and duration. Two planar, s-polarized runs compare 30° and 45° incidence
-from n=1.54 into n=1.00. Field snapshots and cycle-averaged squared fields are
-visualizations, not measured R/T. Source, license, single-core reproduction commands,
-and observation wrappers are in [`code/optical_beams/`](code/optical_beams/).
-Execution checks and provenance are in `assets/meep/optical-beams/`.
+executes Daniel Kotik and Jörg Götte's MIT-licensed examples at their original
+grid resolutions and durations: planar Gaussian incidence at 30°/45°, concave and
+convex Gaussian interfaces at 45°, a fully 3D charge-two Laguerre–Gaussian vortex,
+and a free-space Airy beam (M=0, W=4, n1=n2=1). Main figures use instantaneous
+squared real fields on black; a common-scale curved comparison and the earlier
+signed/averaged planar views explain the display choices. These are field
+visualizations, not measured R/T. The 3D source uses an analytically equivalent
+Bessel reduction checked at 23 points against the original double integral;
+native array export replaces Python output callbacks.
+The 3D scene extracts a native-grid 2% contour with VTK and renders it in Blender,
+including two measured cuts, a translucent medium block and geometric direction
+arrows. An attributed original/previous/native comparison documents the correction
+of the earlier undersampled display.
+Source, license, single-core reproduction commands and wrappers are in
+[`code/optical_beams/`](code/optical_beams/). Execution checks and provenance are in
+`assets/meep/optical-beams/`, including the `curved/` and `gallery/` subfolders.
 Software citation: Optical-beams-MEEP v2.1.2,
 [doi:10.5281/zenodo.5211251](https://doi.org/10.5281/zenodo.5211251).
 
