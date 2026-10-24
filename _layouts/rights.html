@@ -1,0 +1,37 @@
+{% include locale.html %}
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-baseurl="{{ site.baseurl }}">
+  {% include head.html %}
+  <body class="lesson-page rights-page">
+    <a class="lesson-skip" href="#lesson-content">{{ ui.skip }}</a>
+    <header class="lesson-header">
+      <a class="lesson-brand" href="{{ home_path | relative_url }}" aria-label="{{ ui.home }}"><span>Meep <strong>Examples</strong></span></a>
+      <a class="all-examples-link" href="{{ home_path | append: '#examples' | relative_url }}">{{ ui.all_examples }} <span aria-hidden="true">↗</span></a>
+      {% include site-controls.html %}
+    </header>
+    {% capture rights_toc %}<ol>{% for item in page.toc %}<li><a href="#{{ item.id }}">{{ item.label | escape }}</a></li>{% endfor %}</ol>{% endcapture %}
+    <details class="mobile-toc">
+      <summary>{{ ui.toc }} <span aria-hidden="true">＋</span></summary>
+      <nav aria-label="{{ ui.mobile_toc }}">{{ rights_toc }}</nav>
+    </details>
+    <div class="lesson-shell">
+      <aside class="lesson-sidebar">
+        <a class="lesson-back" href="{{ home_path | relative_url }}">← {{ ui.home }}</a>
+        <p class="lesson-eyebrow">RIGHTS &amp; LICENSES</p>
+        <nav aria-label="{{ ui.body_toc }}">{{ rights_toc }}</nav>
+      </aside>
+      <main id="lesson-content" class="lesson-main">
+        <article>
+          <header class="lesson-intro">
+            <p class="lesson-eyebrow">MEEP EXAMPLES <span aria-hidden="true">/</span> RIGHTS &amp; LICENSES</p>
+            <h1>{{ page.title | escape }}</h1>
+            <p class="lesson-lead">{{ page.description | escape }}</p>
+            <p class="lesson-meta">{% if lang == 'en' %}Maintained by{% else %}사이트 관리·편집{% endif %} <a href="https://github.com/{{ site.github_username | escape }}">{{ site.author | escape }}</a> · {% if lang == 'en' %}Updated{% else %}갱신일{% endif %} {{ page.updated | escape }}</p>
+          </header>
+          <div class="lesson-content">{{ content }}</div>
+        </article>
+        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }} · {% include rights-link.html %}</footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -72,7 +72,24 @@ mpirun -np 4 python extraction_efficiency.py   # ~77 min (m series to 60 dominat
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).
 
-## Site
+## Sources, contributions and reuse
+
+Maintained and edited by [jin-castle](https://github.com/jin-castle), with AI-assisted
+code, translation and illustration workflows. The bilingual
+[권리 및 라이선스](https://jin-castle.github.io/meep-examples/rights-and-licenses/) /
+[Rights & Licenses](https://jin-castle.github.io/meep-examples/en/rights-and-licenses/)
+pages distinguish upstream examples, project additions, computed figures and AI
+illustrations. Each lesson/topic also links its sources and added experiments.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for upstream notices and the
+chapter-to-source inventory; `_data/sources.json` drives the bilingual site inventory.
+No new repository-wide code license is granted. Upstream/file-specific licenses
+take precedence. Reorganizing or modifying upstream code does not remove its
+license obligations. Original protectable editorial contributions are reserved
+unless separately licensed; this does not restrict third-party permissions or
+statutory exceptions, or assert exclusive copyright over entire AI outputs.
+
+## Site configuration
 
 Jekyll + minima, built by GitHub Pages. Math via MathJax. Korean posts are in `_posts/`; English lessons and topics are in `en/`. Use [한국어](https://jin-castle.github.io/meep-examples/) or [English](https://jin-castle.github.io/meep-examples/en/) and select System, Light or Dark in the header. Language switches preserve the corresponding page and section; theme choices persist when browser storage is available.
 

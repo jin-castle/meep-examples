@@ -1,0 +1,14 @@
+{% assign credit = nil %}
+{% for source in site.data.sources %}
+  {% if page.part and source.part == page.part %}{% assign credit = source %}{% endif %}
+  {% if page.layout == 'topic' and page.url contains source.url %}{% assign credit = source %}{% endif %}
+{% endfor %}
+{% if credit %}
+<aside class="lesson-note source-credit" aria-label="{% if lang == 'en' %}Sources and project contributions{% else %}출처와 프로젝트 기여{% endif %}">
+  <p><strong>{% if lang == 'en' %}Sources and project contributions{% else %}출처와 프로젝트 기여{% endif %}</strong></p>
+  <p>{% if lang == 'en' %}Maintained and edited by{% else %}사이트 관리·편집:{% endif %} <a href="https://github.com/{{ site.github_username | escape }}">{{ site.author | escape }}</a> · {% if lang == 'en' %}AI-assisted workflow{% else %}AI 도구를 활용한 제작{% endif %}</p>
+  <p>{% if lang == 'en' %}Upstream references:{% else %}참고한 원본:{% endif %} {% for reference in credit.references %}<a href="{{ reference.url | escape }}">{{ reference.label | escape }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}</p>
+  <p><strong>{% if lang == 'en' %}Project additions:{% else %}프로젝트에서 추가한 부분:{% endif %}</strong> {{ credit.contribution[lang] | escape }}</p>
+  <p><a href="{{ home_path | append: 'rights-and-licenses/#source-' | append: credit.id | relative_url }}">{% if lang == 'en' %}Code, attribution and reuse conditions{% else %}코드·출처·이용 조건 확인{% endif %} →</a></p>
+</aside>
+{% endif %}

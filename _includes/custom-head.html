@@ -13,7 +13,8 @@
   .post-content table { font-size: 0.9em; }
   details { margin: 1em 0; } details summary { cursor: pointer; font-weight: 600; }
 </style>
-{% if page.layout == 'lesson' or page.layout == 'topic' %}
+{% if page.layout == 'lesson' or page.layout == 'topic' or page.layout == 'rights' %}
 <link rel="stylesheet" href="{{ '/assets/lesson.css' | relative_url }}?v={{ asset_version }}">
+<link rel="stylesheet" href="{{ '/assets/rights.css' | relative_url }}?v={{ asset_version }}">
 <script defer src="{{ '/assets/lesson.js' | relative_url }}?v={{ asset_version }}"></script>
 {% endif %}

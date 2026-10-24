@@ -38,6 +38,7 @@
           </header>
           <div class="lesson-content">{{ content }}</div>
         </article>
+        {% include source-credit.html %}
         <nav class="lesson-pagination" aria-label="{{ ui.pagination }}">
           {% assign before_part = page.part | minus: 1 %}{% assign after_part = page.part | plus: 1 %}
           {% assign ordered_posts = site.posts | concat: site.pages | sort: 'part' %}
@@ -49,7 +50,7 @@
             {% endif %}
           {% endfor %}
         </nav>
-        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }}</footer>
+        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }} · {% include rights-link.html %}</footer>
       </main>
     </div>
     <dialog class="lesson-lightbox" aria-labelledby="lightbox-title">

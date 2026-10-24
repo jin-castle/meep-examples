@@ -40,12 +40,13 @@
           </header>
           <div class="lesson-content">{{ content }}</div>
         </article>
+        {% include source-credit.html %}
         {% if page.related %}
         <nav class="lesson-pagination" aria-label="{{ ui.related }}">
           {% for item in page.related %}<a href="{{ item.url | relative_url }}"><span>{{ ui.related }}</span>{{ item.label | escape }}</a>{% endfor %}
         </nav>
         {% endif %}
-        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }}</footer>
+        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }} · {% include rights-link.html %}</footer>
       </main>
     </div>
     <dialog class="lesson-lightbox" aria-labelledby="lightbox-title">
