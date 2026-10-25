@@ -14,6 +14,8 @@ tags: [meep, fdtd, extraction-efficiency, led, oled, ldos, cylindrical, kz, edge
 image: /assets/meep/14/04_m_series.png
 excerpt: "post 11 measured how much a dipole emits (LDOS); post 13 split a body of revolution into m runs. An LED asks for the ratio: of everything a dipole in the emitting layer puts out, how much reaches the air. Extraction efficiency = flux through an open surface in air ÷ the source's own work from `dft_ldos`. Three official examples: a dipole in a layer on a mirror (cylindrical vs 3D), the same slab with the dipole off the axis (an m series), and a dipole inside the cleaved facet of a laser stack (a 2D cross-section plus a kz integral)."
 ---
+{% include intro-video.html %}
+
 ## TL;DR (English)
 
 ![hero]({{ site.baseurl }}/assets/meep/14/04_m_series.png)

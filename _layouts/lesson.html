@@ -24,6 +24,7 @@
       <main id="lesson-content" class="lesson-main">
         <article>
           <header class="lesson-intro">
+            {% include intro-video.html %}
             <p class="lesson-eyebrow">MEEP EXAMPLES <span aria-hidden="true">/</span> {{ page.part | prepend: '0' | slice: -2, 2 }}</p>
             <h1>{{ page.lesson_title | escape }}</h1>
             <p class="lesson-lead">{{ page.lesson_summary | escape }}</p>
