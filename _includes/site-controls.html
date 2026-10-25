@@ -1,0 +1,7 @@
+<div class="site-controls">
+  <nav class="locale-switch" aria-label="{{ ui.language }}">
+    <a href="{% if lang == 'ko' %}{{ page.url | relative_url }}{% else %}{{ counterpart | relative_url }}{% endif %}" lang="ko" hreflang="ko"{% if lang == 'ko' %} aria-current="page"{% else %} data-locale-link{% endif %}>한국어</a>
+    <a href="{% if lang == 'en' %}{{ page.url | relative_url }}{% else %}{{ counterpart | relative_url }}{% endif %}" lang="en" hreflang="en"{% if lang == 'en' %} aria-current="page"{% else %} data-locale-link{% endif %}>English</a>
+  </nav>
+  <label class="theme-control" hidden><span>{{ ui.theme }}</span><select id="theme-select" aria-label="{{ ui.theme }}"><option value="system">{{ ui.system }}</option><option value="light">{{ ui.light }}</option><option value="dark">{{ ui.dark }}</option></select></label>
+</div>

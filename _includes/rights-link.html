@@ -1,0 +1,3 @@
+<a href="{{ home_path | append: 'rights-and-licenses/' | relative_url }}"{% if page.url contains '/rights-and-licenses/' %} aria-current="page"{% endif %}>{% if lang == 'en' %}Rights &amp; Licenses{% else %}권리 및 라이선스{% endif %}</a>
+ · <a href="{{ home_path | append: 'privacy/' | relative_url }}">{% if lang == 'en' %}Privacy{% else %}개인정보 안내{% endif %}</a>
+{% if site.analytics.measurement_id %} · <button type="button" class="analytics-settings" hidden>{% if lang == 'en' %}Analytics settings{% else %}통계 수집 설정{% endif %}</button>{% endif %}

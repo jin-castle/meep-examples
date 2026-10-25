@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/work/meep-examples/code/optical_beams/run_original.py", line 156, in <module>
+    main()
+  File "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/work/meep-examples/code/optical_beams/run_original.py", line 107, in main
+    center_epsilon=float(final_sim.get_epsilon_point(mp.Vector3(-2.15, 0, 0))),
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'complex'
+2.3716,2.3716)
+time for set_epsilon = 1.38602 s
+-----------
+Calculating inital field configuration. This will take some time...
+Meep: using output directory 'concave'
+creating output file "concave/run_original-eps-000000000.h5"...
+Meep progress: 1.5936147186147185/10.0 = 15.9% done in 4.0s, 21.1s to go
+on time step 946 (time=2.55952), 0.00423189 s/step
+Meep progress: 4.128787878787879/10.0 = 41.3% done in 8.0s, 11.4s to go
+on time step 1890 (time=5.11364), 0.00424426 s/step
+Meep progress: 6.958874458874458/10.0 = 69.6% done in 12.0s, 5.2s to go
+on time step 2962 (time=8.01407), 0.00373158 s/step
+Meep progress: 9.837662337662337/10.0 = 98.4% done in 16.0s, 0.3s to go
+on time step 3672 (time=9.93506), 0.00569167 s/step
+creating output file "concave/run_original-ez-000003696.h5"...
+creating output file "concave/run_original-e2_s-000003696.h5"...
+run 0 finished at t = 10.0 (3696 timesteps)
+
+end time: 2026-10-24 00:08:05.507057
+Calculating inital field configuration. This will take some time...
+
+Elapsed run time = 22.6234 s

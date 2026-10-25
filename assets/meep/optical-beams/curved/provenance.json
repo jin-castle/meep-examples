@@ -1,0 +1,124 @@
+{
+  "upstream_commit": "ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+  "version": "2.1.2",
+  "version_doi": "10.5281/zenodo.5211251",
+  "license": "MIT",
+  "original_source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+  "source_sha256_lf_normalized": "477184e390cd400bfdc90f629284fd1f36b76648e6422da2ec793cba4f66445c",
+  "line_endings_note": "execution files CRLF, repository Git text may normalize LF; canonical hash replaces CRLF with LF",
+  "source_unchanged": true,
+  "geometry_and_numerical_defaults_unchanged": true,
+  "fresh_executions": [
+    "concave45",
+    "convex45"
+  ],
+  "reused_execution": "planar45",
+  "artifacts": {
+    "planar": {
+      "passed": true,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "execution_exit_code": 0,
+      "reused": true,
+      "source_geometry": {
+        "center_epsilon": 2.3716,
+        "epsilon_min": 2.3716,
+        "epsilon_max": 2.3716,
+        "all_sampled_source_in_n1": true,
+        "source_j2_weight_fraction_outside_n1": 0,
+        "method": "Stored epsilon at nearest source-x grid column"
+      },
+      "original_hdf5_e2_max_absolute_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "panel_peak": 220.94872678201904,
+      "grid_shape": [
+        924,
+        924
+      ],
+      "frames": 62,
+      "end_time": 10.0,
+      "harmonic_fit_relative_l2_residual": 0.00020694190276210927,
+      "files": {
+        "fields_sha256": "81b87d6b54aa0ba49f5bee38197befd3894ea3f65c44b4b8affc4ccb14b96951",
+        "raw_instantaneous_e2_sha256": "4cc6660f812ad48c54f8635a552fd688e816e574ebab0fbe8558be9aea6ae2f7",
+        "run_json_sha256": "bebfc00229e2f345c68a978599887ec35b0a5717045e006779921f4abf52b4a5"
+      },
+      "reuse_origin": "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/outputs/optical-beams-run/planar45",
+      "reuse_hash_match": true
+    },
+    "concave": {
+      "passed": true,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "execution_exit_code": 0,
+      "reused": false,
+      "source_geometry": {
+        "center_epsilon": 2.3716,
+        "source_x": -2.15,
+        "source_y_extent": [
+          -1,
+          1
+        ],
+        "epsilon_min": 0.9999999999999961,
+        "epsilon_max": 2.3716000000000075,
+        "all_sampled_source_in_n1": false,
+        "aperture_point_fraction_outside_n1": 0.28428927680798005,
+        "source_j2_weight_fraction_outside_n1": 0.0002728476885344273,
+        "caveat": "J squared weighting describes the imposed source envelope, not transmitted power",
+        "curvature_radius": 1.9894367886486917
+      },
+      "original_hdf5_e2_max_absolute_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "panel_peak": 222.36955747672343,
+      "grid_shape": [
+        924,
+        924
+      ],
+      "frames": 62,
+      "end_time": 10.0,
+      "harmonic_fit_relative_l2_residual": 0.00021593905694543834,
+      "files": {
+        "fields_sha256": "3ad1c7d21ded0edf096dbe8d75ce41f90f1d0df367aae5d82488e7479ecc0814",
+        "raw_instantaneous_e2_sha256": "c70383dcde59c5f2c886a8e09685d3f470eb3669ba490be80ffd239ca272f1bd",
+        "run_json_sha256": "1eccfbce0b2c054c1167dffbdac8e4a9eec9404b40a59970355d24c3d1884503"
+      }
+    },
+    "convex": {
+      "passed": true,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "execution_exit_code": 0,
+      "reused": false,
+      "source_geometry": {
+        "center_epsilon": 2.3716,
+        "source_x": -2.15,
+        "source_y_extent": [
+          -1,
+          1
+        ],
+        "epsilon_min": 2.371599999999991,
+        "epsilon_max": 2.3716000000000075,
+        "all_sampled_source_in_n1": true,
+        "aperture_point_fraction_outside_n1": 0.0,
+        "source_j2_weight_fraction_outside_n1": 0.0,
+        "caveat": "J squared weighting describes the imposed source envelope, not transmitted power",
+        "curvature_radius": 1.9894367886486917
+      },
+      "original_hdf5_e2_max_absolute_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "panel_peak": 218.85016836937288,
+      "grid_shape": [
+        924,
+        924
+      ],
+      "frames": 62,
+      "end_time": 10.0,
+      "harmonic_fit_relative_l2_residual": 0.0010207850953097377,
+      "files": {
+        "fields_sha256": "997b58253cfba9b11da491c5ccd376cea292f1fe9faed64526039cbd59bc6230",
+        "raw_instantaneous_e2_sha256": "df9caa7719bcfe5f6269b7e3d3385346174a42db1988c388d4921ac2d42f7a3a",
+        "run_json_sha256": "0ffb3490b15fcfabfec970c8a90c26f0b0ea4de3f68b434cbbe78335b2d29414"
+      }
+    }
+  },
+  "wrapper_added_only": "Interface selection and read-only sampling/source-medium diagnostics",
+  "day_local": "2026-10-24",
+  "timezone": "Asia/Seoul"
+}

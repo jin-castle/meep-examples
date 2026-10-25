@@ -1,10 +1,14 @@
 title: Meep Examples
-description: Meep(FDTD) 공식 예제를 처음 보는 사람도 따라갈 수 있게 풀어 쓴 시리즈. Korean body, English TL;DR, English code comments.
+description: 그림과 실행 코드로 배우는 Meep(FDTD) 예제 백과. Korean and English lessons, from light sources to inverse design and optical beams.
 url: "https://jin-castle.github.io"
 baseurl: "/meep-examples"
 author: jin-castle
 github_username: jin-castle
 lang: ko
+
+analytics:
+  measurement_id: "G-4BL7PWF8YR"
+google_site_verification: "ZTgdMI-VxazYvc9Z4PoBJ5ZIHx3yBJkNLMqvZEREiOY"
 
 theme: minima
 plugins:
@@ -26,6 +30,7 @@ minima:
 exclude:
   - DESIGN.md
   - README.md
+  - ANALYTICS.md
   - Gemfile
   - Gemfile.lock
   - code/__pycache__

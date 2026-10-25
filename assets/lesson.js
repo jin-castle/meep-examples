@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const english = document.documentElement.lang === 'en';
   const content = document.querySelector('.lesson-content');
   if (!content) return;
 
@@ -8,13 +9,13 @@
     wrapper.className = 'table-scroll';
     wrapper.tabIndex = 0;
     wrapper.setAttribute('role', 'region');
-    wrapper.setAttribute('aria-label', `표 ${index + 1}, 가로로 스크롤할 수 있습니다`);
+    wrapper.setAttribute('aria-label', english ? `Table ${index + 1}, scroll horizontally` : `표 ${index + 1}, 가로로 스크롤할 수 있습니다`);
     table.before(wrapper);
     wrapper.append(table);
   });
   content.querySelectorAll('pre').forEach((pre, index) => {
     pre.tabIndex = 0;
-    pre.setAttribute('aria-label', `코드 또는 실행 기록 ${index + 1}, 가로로 스크롤할 수 있습니다`);
+    pre.setAttribute('aria-label', english ? `Code or execution log ${index + 1}, scroll horizontally` : `코드 또는 실행 기록 ${index + 1}, 가로로 스크롤할 수 있습니다`);
   });
 
   const mobileToc = document.querySelector('.mobile-toc');
@@ -41,7 +42,7 @@
     const render = () => {
       const playing = requestedPlaying && !document.hidden;
       img.src = playing ? img.dataset.animationSrc : img.dataset.staticSrc;
-      button.textContent = playing ? '애니메이션 정지' : '애니메이션 재생';
+      button.textContent = english ? (playing ? 'Pause animation' : 'Play animation') : (playing ? '애니메이션 정지' : '애니메이션 재생');
       button.setAttribute('aria-pressed', String(playing));
     };
     render();
@@ -68,7 +69,7 @@
     const staticSrc = thumbnail?.dataset.staticSrc;
     const isAnimated = /\.gif(?:$|\?)/i.test(link.href);
     image.src = reducedMotion.matches && isAnimated && staticSrc ? staticSrc : link.href;
-    image.alt = thumbnail?.alt || link.getAttribute('aria-label') || '시뮬레이션 결과 확대';
+    image.alt = thumbnail?.alt || link.getAttribute('aria-label') || (english ? 'Enlarge simulation result' : '시뮬레이션 결과 확대');
     caption.textContent = figure?.querySelector('figcaption')?.textContent || image.alt;
     original.href = link.href;
     opener = link;

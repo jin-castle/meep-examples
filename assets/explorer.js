@@ -1,10 +1,11 @@
 (() => {
   "use strict";
+  const english = document.documentElement.lang === "en";
   const cards = [...document.querySelectorAll(".example-card")];
   const search = document.querySelector("#search");
   const filters = [...document.querySelectorAll("[data-filter]")];
   let category = "all";
-  const normalize = value => value.normalize("NFKC").toLocaleLowerCase("ko").trim();
+  const normalize = value => value.normalize("NFKC").toLocaleLowerCase(english ? "en" : "ko").trim();
   function filterCards() {
     const terms = normalize(search.value).split(/\s+/).filter(Boolean);
     let visible = 0;
@@ -14,7 +15,9 @@
       card.hidden = !match;
       if (match) visible += 1;
     });
-    document.querySelector("#result-count").textContent = `${visible}개의 예제${terms.length ? ` · “${search.value.trim()}” 검색 결과` : " · 질문에서 시작해 보세요"}`;
+    document.querySelector("#result-count").textContent = english
+      ? `${visible} example${visible === 1 ? "" : "s"}${terms.length ? ` · Results for “${search.value.trim()}”` : " · Start with a question"}`
+      : `${visible}개의 예제${terms.length ? ` · “${search.value.trim()}” 검색 결과` : " · 질문에서 시작해 보세요"}`;
     document.querySelector("#no-results").hidden = visible !== 0;
     filters.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.filter === category)));
   }

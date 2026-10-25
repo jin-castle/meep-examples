@@ -6,12 +6,12 @@ title_en: "Metalens phase maps and the PB phase — the ideal lens phase, 2π wr
 lang: ko
 series: meep-examples
 topic_label: METALENS
-lesson_title: "메타렌즈의 fin은 왜 위치마다 다르게 돌아가 있을까?"
-lesson_summary: "같은 크기의 직사각 fin이 렌즈 위치마다 다른 각도로 놓이는 이유를 이상적 렌즈 위상에서 출발해 따라갑니다. 위상을 2π로 접고, 격자로 샘플링하고, 회전각으로 옮기는 세 단계입니다."
+lesson_title: "메타렌즈의 fin 회전각은 어떻게 정할까요?"
+lesson_summary: "이상적 렌즈 위상으로부터 각 위치의 직사각 fin 회전각을 구합니다. 위상을 2π 범위로 접은 뒤 격자로 샘플링하고, 이를 회전각으로 변환하는 과정을 살펴봅니다."
 lesson_goals:
-  - "등광로 조건에서 이상적 렌즈 위상을 유도하고, 근축 2차 위상이 어디서 틀리는지 설명한다."
-  - "2π 접기와 격자 샘플링이 위상 그림의 톱니, 계단, 중앙의 0을 만드는 과정을 설명한다."
-  - "PB 위상과 전파 위상의 차이, 그리고 렌즈 가장자리 fin 무늬가 생기는 이유를 설명한다."
+  - "등광로 조건에서 이상적 렌즈 위상을 유도하고, 근축 2차 위상 근사의 적용 범위를 설명합니다."
+  - "2π 접기와 격자 샘플링으로 위상 그래프에 톱니 모양·계단·중앙의 0이 나타나는 이유를 설명합니다."
+  - "PB 위상과 전파 위상의 차이, 렌즈 가장자리에서 fin 배열에 반복 무늬가 생기는 이유를 설명합니다."
 lesson_prerequisites: "06편 회절 차수 · 07편 meta-atom과 phase library"
 calc_note: "그림은 numpy 위상 모델과 1D 스칼라 각스펙트럼 전파로 계산했습니다. Meep(FDTD) 계산이 아닙니다."
 toc:
@@ -20,14 +20,14 @@ toc:
   - { id: wrap, label: "2π 접기와 샘플링" }
   - { id: pb, label: "PB 위상" }
   - { id: edge, label: "가장자리 무늬" }
-  - { id: animation, label: "한 번에 보기" }
+  - { id: animation, label: "위상에서 fin 배열로" }
   - { id: verify, label: "초점 확인" }
   - { id: check, label: "이해 확인하기" }
   - { id: reference, label: "코드와 참고 자료" }
 related:
   - { url: "/binary-grating/", label: "06 · 회절 격자: 위상 차이가 방향을 정한다" }
   - { url: "/meta-atom/", label: "07 · meta-atom: 폭으로 위상을 고르는 전파 위상" }
-  - { url: "/metagrating-inverse/", label: "08 · 역설계: 국소 주기 근사가 틀리는 곳을 adjoint로" }
+  - { url: "/metagrating-inverse/", label: "08 · 국소 주기 근사와 adjoint 역설계" }
 date: 2026-10-23
 tags: [metalens, metasurface, geometric-phase, pancharatnam-berry, phase-wrapping]
 image: /assets/meep/metalens/04_ideal_pb.png
@@ -53,13 +53,13 @@ PB(Pancharatnam–Berry) 위상을 쓰는 메타렌즈의 SEM 사진을 보면 �
 <figcaption>왼쪽 육방 격자(이웃 각도 차 60°/칸)에서는 세로 fin 둘레를 비스듬한 fin들이 감싸는 고리 무늬가 반복됩니다. 아래 줄의 색을 보면 각도가 몇 개만 돌아가며 쓰입니다.</figcaption>
 </figure>
 
-이 무늬는 따로 설계한 단위 구조가 아닙니다. 렌즈에 필요한 위상을 회전각으로 옮겨 격자점마다 찍은 결과이고, 다음 절부터 그 과정을 순서대로 따라갑니다.
+이 무늬는 렌즈에 필요한 위상을 fin 회전각으로 변환하고, 격자점마다 배치하면서 나타납니다. 다음 절부터 위상을 구하고 fin을 배치하는 과정을 살펴봅니다.
 
 ### 어디에 쓰이는가
 
 메타렌즈는 렌즈 곡면 대신 수백 nm 두께의 평면 구조로 초점을 만듭니다. 위상 지도를 만드는 방법은 소자 종류와 관계없이 같고, 어떤 meta-atom으로 그 위상을 구현하느냐가 달라집니다.
 
-| 응용 | 이 페이지의 어떤 것을 쓰는가 | 그다음에 필요한 것 |
+| 응용 | 이 페이지에서 다루는 원리 | 추가로 확인할 사항 |
 |------|------------------------------|--------------------|
 | 스마트폰·내시경용 평면 렌즈 | 이상적 렌즈 위상, 2π 접기, 격자 샘플링 | 편광 무관 meta-atom(07편 전파 위상), 색수차 보정 |
 | 원편광 분리·스핀 다중화 소자 | PB 위상의 부호가 원편광에 따라 바뀌는 성질 | 반파장판 조건을 만족하는 fin 높이·폭의 FDTD 확인 |
@@ -83,7 +83,7 @@ $$\varphi(r) = -\frac{k r^2}{2f} + \frac{k r^4}{8 f^3} - \cdots$$
 
 | 비교 | 조건 | 값 |
 |------|------|----|
-| 2차 위상이 쓸 만한 NA 상한 | f = 1 mm, λ = 0.5 µm | NA ≈ 0.18 |
+| 2차 위상 근사를 적용할 수 있는 NA 상한 | f = 1 mm, λ = 0.5 µm | NA ≈ 0.18 |
 | 가장자리 위상, 쌍곡 | NA 0.8, f = 50 µm, λ = 532 nm | 62.7 파장 |
 | 가장자리 위상, 2차 | 같은 렌즈 | 83.5 파장 (쌍곡보다 20.9 파장 많음) |
 
@@ -95,7 +95,7 @@ $$\varphi(r) = -\frac{k r^2}{2f} + \frac{k r^4}{8 f^3} - \cdots$$
 
 위상은 2π 차이를 구별하지 않으므로 메타표면은 $\varphi \bmod 2\pi$만 구현하면 됩니다. 매끄러운 쌍곡선을 0~2π 범위로 접으면 톱니가 되고, 톱니 폭은 위상 기울기($k\sin\theta$)가 커지는 바깥으로 갈수록 좁아집니다. 중심은 $\varphi = 0$이고 바로 옆은 $-0.04$ rad 정도라 접으면 $2\pi - 0.04$가 됩니다. 그래서 위상 그래프에서는 중앙 한 칸만 0으로 떨어져 보이지만, 0과 2π는 같은 위상이므로 구조나 빛에는 차이가 없습니다. 렌즈 전체에 상수 위상을 더해도 초점은 그대로라, 접히는 위치는 이 상수에 따라 옮겨 갈 뿐입니다.
 
-메타표면은 격자 칸마다 위상 하나만 줄 수 있어 접은 위상을 계단으로 샘플링합니다. 칸 사이 위상 변화가 π보다 작아야 위상이 되살아나므로(Nyquist) 격자 주기 $U$는 $U < \lambda/(2\,\mathrm{NA})$를 만족해야 하고, 넘으면 고차 회절로 빛이 새어 나갑니다. PB 렌즈에서 칸당 fin 각도 변화는
+메타표면은 격자 칸마다 하나의 위상을 구현하므로, 접은 위상을 계단 형태로 샘플링합니다. 샘플링한 값에서 원래 위상 변화를 구분하려면 칸 사이 위상 변화가 π보다 작아야 합니다(Nyquist 조건). 따라서 격자 주기 $U$는 $U < \lambda/(2\,\mathrm{NA})$를 만족해야 하며, 이를 넘으면 고차 회절로 빛이 새어 나갑니다. PB 렌즈에서 칸당 fin 각도 변화는
 
 $$\Delta\theta \approx 180^\circ \times \frac{U\sin\theta}{\lambda}$$
 
@@ -113,7 +113,7 @@ $$\Delta\theta \approx 180^\circ \times \frac{U\sin\theta}{\lambda}$$
 | 세 각도만 반복 | 36.6 µm | 60° |
 | 가장자리 | 66.7 µm | 81° (위상 162°, Nyquist 한계에 가까움) |
 
-<h2 id="pb">4. PB 위상: 회전각이 곧 위상</h2>
+<h2 id="pb">4. PB 위상: fin 회전각과 위상의 관계</h2>
 
 직사각 fin은 긴 축과 짧은 축의 유효 굴절률이 달라서 높이를 맞추면 반파장판으로 동작합니다. 원편광이 들어오면 반대 원편광으로 바뀐 성분이 $\exp(\pm i\,2\theta)$의 위상을 얻습니다. 그래서 위상 $\varphi$가 필요한 자리에는 fin을 $\theta = \varphi/2$만큼 돌려 놓고, 0~180° 회전으로 0~2π를 덮습니다. 부호는 입사 원편광에 따라 바뀌므로 한쪽 원편광에 렌즈인 배열은 반대 원편광에 $-\varphi$를 주어 발산 렌즈가 됩니다. 반파장판 조건에서 벗어난 만큼은 편광이 바뀌지 않은 채 위상 없이 지나가 배경광이 됩니다.
 
@@ -141,7 +141,7 @@ $$\Delta\theta \approx 180^\circ \times \frac{U\sin\theta}{\lambda}$$
 
 무늬의 모양은 반경 방향이 격자 축과 이루는 각도와 칸당 각도 변화가 정수 비에 얼마나 가까운지에 따라 달라지고, 정수 비에서 벗어나면 천천히 변하는 모아레가 됩니다. 원형 렌즈에서는 방위각에 따라 반경 방향이 계속 바뀌므로, 같은 반지름에서도 위치마다 무늬가 다르게 보입니다.
 
-<h2 id="animation">6. 단면에서 fin 배치까지 한 번에 보기</h2>
+<h2 id="animation">6. 위상 단면에서 fin 배열을 만드는 과정</h2>
 
 <figure class="lesson-figure lesson-animation">
 <a href="{{ site.baseurl }}/assets/meep/metalens/05_phase_anim.gif" data-lightbox aria-label="위상 단면을 접고 샘플링하고 회전시켜 fin 배치까지 만드는 애니메이션 원본 확대"><img src="{{ site.baseurl }}/assets/meep/metalens/05_phase_anim.gif" data-animation-src="{{ site.baseurl }}/assets/meep/metalens/05_phase_anim.gif" data-static-src="{{ site.baseurl }}/assets/meep/metalens/05_phase_anim_end.png" alt="이상적 위상 단면을 2π씩 접고, 격자로 샘플링하고, 축 둘레로 돌려 원형 위상 지도와 fin 배치를 만드는 애니메이션" loading="lazy"></a>
@@ -162,7 +162,7 @@ $$\Delta\theta \approx 180^\circ \times \frac{U\sin\theta}{\lambda}$$
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/metalens/04_ideal_pb.png" data-lightbox aria-label="이상적 PB metalens 위상의 유도, 매핑, 초점 확인 원본 확대"><img src="{{ site.baseurl }}/assets/meep/metalens/04_ideal_pb.png" alt="등광로 조건, 접기 전후 위상, fin 매핑, 두 원편광의 전파, 초점면 단면" loading="lazy"></a>
-<figcaption>(E)에서 변환된 원편광은 z ≈ 10 µm에 모이고, (F)에서 반대 원편광은 퍼집니다. (G)에서 계단 위상(빨간 점선)의 초점 단면은 연속 이상 위상(회색)과 폭이 같습니다.</figcaption>
+<figcaption>(E)에서 변환된 원편광은 z ≈ 10 µm에 모이고, (F)에서 반대 원편광은 퍼집니다. 검정→빨강→노랑→흰색의 hot 색상은 각 패널의 최대값으로 정규화한 |E|²이며 선형 척도입니다. (E)와 (F)의 밝기를 절대 세기로 비교하지 않습니다. (G)의 공통 척도 단면과 계산 데이터는 그대로 유지했습니다. 1D 스칼라 각스펙트럼 모델이며 FDTD 결과가 아닙니다.</figcaption>
 </figure>
 
 | 항목 (λ = 532 nm, f = 10 µm, 구경 ±5.12 µm, U = 250 nm) | 값 |
@@ -177,28 +177,28 @@ $$\Delta\theta \approx 180^\circ \times \frac{U\sin\theta}{\lambda}$$
 
 초점이 10 µm보다 조금 당겨진 것은 구경이 작아 생기는 회절 효과로, 계단 없는 연속 위상에서도 같은 위치가 나옵니다.
 
-| 주장할 수 있는 것 | 주장할 수 없는 것 |
+| 이 모델로 확인한 것 | 추가 계산이 필요한 것 |
 |-------------------|-------------------|
 | 쌍곡 위상을 2π로 접고 250 nm로 샘플링해 θ = φ/2로 옮긴 배열은 한쪽 원편광을 회절 한계 폭으로 모으고, 반대 원편광은 퍼뜨린다 (이상적 fin, 1D 스칼라). | 실제 fin의 변환 효율, 동편광 누설, 이웃 셀 결합, 파장 의존성. 이것들은 3D FDTD로 fin 구조를 넣어 계산해야 알 수 있다. |
 
 <h2 id="check">8. 이해 확인하기</h2>
 
 <details markdown="1">
-<summary>질문 1. 위상 그래프 중앙에 한 칸만 0으로 떨어진 부분이 있다. 이 자리의 fin은 옆 fin과 크게 다른가?</summary>
+<summary>질문 1. 위상 그래프 중앙의 한 칸만 0으로 표시됩니다. 이 위치의 fin은 이웃 fin과 크게 다른가요?</summary>
 
 다르지 않습니다. 중앙은 φ = 0, 옆은 φ ≈ 2π − 0.04 rad이고 0과 2π는 같은 위상입니다. fin 각도로는 0°와 178.9°인데, 직사각 fin은 180° 돌려도 같은 모양이라 두 fin은 약 1° 차이로 거의 나란합니다.
 
 </details>
 
 <details markdown="1">
-<summary>질문 2. 같은 unit cell만 규칙적으로 반복한 메타표면은 렌즈가 될 수 있는가?</summary>
+<summary>질문 2. 같은 unit cell만 규칙적으로 반복한 메타표면은 렌즈가 될 수 있나요?</summary>
 
 될 수 없습니다. 모든 칸이 같은 위상을 주므로 파면이 평평하게 나가고 초점이 생기지 않습니다. 렌즈는 반경에 따라 위상이 달라야 하므로 칸마다 직경(전파 위상)이나 회전각(PB 위상)을 바꿉니다.
 
 </details>
 
 <details markdown="1">
-<summary>질문 3. 같은 PB 렌즈에 반대 원편광을 넣으면 어떻게 되는가?</summary>
+<summary>질문 3. 같은 PB 렌즈에 반대 원편광을 넣으면 어떻게 되나요?</summary>
 
 PB 위상의 부호가 바뀌어 $-\varphi$를 받으므로 발산 렌즈(오목 렌즈)처럼 퍼집니다. 7절 그림 (F)가 이 경우입니다.
 

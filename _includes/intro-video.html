@@ -1,18 +1,22 @@
 {%- comment -%}
 Intro video at the top of an example: the device in 3D with the post's own recorded Meep field.
 Shown when _data/intros.yml has an entry for the post's part (two digits). Files: assets/meep/NN/00_intro.mp4 + .jpg.
-Self-contained CSS/JS so it works in both the lesson layout and the minima post layout.
+Self-contained CSS/JS so it works in both the lesson layout and the minima post layout; caption/button follow page.lang
+(label_en/note_en in the data file) and the theme tokens (dark mode keeps the video's own pale surface).
 {%- endcomment -%}
 {%- assign intro_key = page.part | prepend: '0' | slice: -2, 2 -%}
 {%- assign intro = site.data.intros[intro_key] -%}
 {%- if intro -%}
+{%- assign intro_en = false -%}{%- if page.lang == 'en' -%}{%- assign intro_en = true -%}{%- endif -%}
+{%- if intro_en -%}{%- assign intro_label = intro.label_en -%}{%- assign intro_note = intro.note_en -%}{%- assign intro_stop = 'Pause' -%}{%- assign intro_play = 'Play' -%}
+{%- else -%}{%- assign intro_label = intro.label -%}{%- assign intro_note = intro.note -%}{%- assign intro_stop = '정지' -%}{%- assign intro_play = '재생' -%}{%- endif -%}
 {%- assign intro_base = '/assets/meep/' | append: intro_key | append: '/00_intro' -%}
 <figure class="intro-video">
   <video autoplay muted loop playsinline preload="auto" width="1280" height="720"
-         poster="{{ intro_base | append: '.jpg' | relative_url }}" aria-label="{{ intro.label | escape }}">
+         poster="{{ intro_base | append: '.jpg' | relative_url }}" aria-label="{{ intro_label | escape }}">
     <source src="{{ intro_base | append: '.mp4' | relative_url }}" type="video/mp4">
   </video>
-  <figcaption><span>{{ intro.note | escape }}</span><button type="button" class="intro-video-toggle" hidden aria-pressed="true">정지</button></figcaption>
+  <figcaption><span>{{ intro_note | escape }}</span><button type="button" class="intro-video-toggle" hidden aria-pressed="true" data-stop="{{ intro_stop }}" data-play="{{ intro_play }}">{{ intro_stop }}</button></figcaption>
   <script>
   (() => {
     const figure = document.currentScript.parentElement;
@@ -23,7 +27,7 @@ Self-contained CSS/JS so it works in both the lesson layout and the minima post 
     const render = () => {
       const play = wanted && visible && !document.hidden;
       if (play) video.play().catch(() => {}); else video.pause();
-      button.textContent = wanted ? '정지' : '재생';
+      button.textContent = wanted ? button.dataset.stop : button.dataset.play;
       button.setAttribute('aria-pressed', String(wanted));
     };
     button.hidden = false;
@@ -38,8 +42,8 @@ Self-contained CSS/JS so it works in both the lesson layout and the minima post 
 <style>
   .intro-video { margin: 0 0 32px; }
   .intro-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 8px; background: #dff3f9; }
-  .intro-video figcaption { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; margin-top: 8px; color: #526579; font-size: 13px; line-height: 1.6; }
-  .intro-video-toggle { flex: none; min-height: 32px; padding: 0 12px; border: 1px solid #dce5eb; border-radius: 4px; background: #fff; color: #0d1b2a; font: inherit; cursor: pointer; }
-  .intro-video-toggle:focus-visible { outline: 3px solid #0087ad; outline-offset: 3px; }
+  .intro-video figcaption { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; margin-top: 8px; color: var(--ink-secondary, #526579); font-size: 13px; line-height: 1.6; }
+  .intro-video-toggle { flex: none; min-height: 32px; padding: 0 12px; border: 1px solid var(--rule, #dce5eb); border-radius: 4px; background: var(--paper, #fff); color: var(--ink, #0d1b2a); font: inherit; cursor: pointer; }
+  .intro-video-toggle:focus-visible { outline: 3px solid var(--cyan, #0087ad); outline-offset: 3px; }
 </style>
 {%- endif -%}

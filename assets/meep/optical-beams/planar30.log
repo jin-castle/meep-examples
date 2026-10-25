@@ -1,0 +1,116 @@
+Using MPI version 4.1, 1 processes
+Meep version: 1.33.0
+
+start time: 2026-10-23 23:41:56.113741
+
+Specified variables and derived values:
+n1: 1.54
+n2: 1.0
+chi:   30.0  [degree]
+incl.: 60.0  [degree]
+kw_0:  8
+kr_w:  60
+k_vac: 75.39822368615503
+polarisation: s
+interface: planar
+
+-----------
+Initializing structure...
+time for choose_chunkdivision = 0.00062007 s
+Working in 2D dimensions.
+Computational cell is 5 x 5 x 0 with resolution 184.8
+     block, center = (2.63911,-2.5,0)
+          size (1e+20,7.07107,1e+20)
+          axes (0.5,0.866025,0), (-0.866025,0.5,0), (0,0,1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 1.79692 s
+-----------
+Calculating inital field configuration. This will take some time...
+Meep: using output directory 'planar'
+creating output file "planar/run_original-eps-000000000.h5"...
+Meep progress: 2.029220779220779/10.0 = 20.3% done in 4.0s, 15.7s to go
+on time step 875 (time=2.36742), 0.0045718 s/step
+Meep progress: 4.691558441558441/10.0 = 46.9% done in 8.0s, 9.1s to go
+on time step 1893 (time=5.12175), 0.00393036 s/step
+Meep progress: 7.932900432900433/10.0 = 79.3% done in 12.0s, 3.1s to go
+on time step 3089 (time=8.35768), 0.00334606 s/step
+Meep progress: 9.937770562770563/10.0 = 99.4% done in 16.0s, 0.1s to go
+on time step 3685 (time=9.97024), 0.00674433 s/step
+creating output file "planar/run_original-ez-000003696.h5"...
+creating output file "planar/run_original-e2_s-000003696.h5"...
+run 0 finished at t = 10.0 (3696 timesteps)
+
+end time: 2026-10-23 23:42:16.885135
+RESULT {
+  "passed": true,
+  "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+  "upstream_commit": "ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+  "unchanged_original_script": true,
+  "changes": "Wrapper adds read-only final-two-period field samples only",
+  "scheme_unavailable": "No meep, meep-mpi or guile executable in the existing environment",
+  "physical": {
+    "interface": "planar",
+    "s_pol": true,
+    "ref_medium": 0,
+    "n1": 1.54,
+    "n2": 1.0,
+    "kw_0": 8,
+    "kr_w": 60,
+    "kr_c": 150,
+    "chi_deg": 30.0
+  },
+  "numerical": {
+    "cell": [
+      5,
+      5
+    ],
+    "pml": 0.25,
+    "vacuum_frequency": 12,
+    "resolution": 184.8,
+    "pixels_per_dense_wavelength": 10,
+    "courant": 0.5,
+    "runtime": 10,
+    "optical_periods": 120,
+    "unchanged_default_numerics": true,
+    "grid_shape": [
+      924,
+      924
+    ]
+  },
+  "sampling": {
+    "count": 62,
+    "start": 9.83495670995671,
+    "end": 10.0,
+    "harmonic_fit_relative_l2_residual": 0.0008222789318154763,
+    "formula": "Ez(t)=Re(phasor*exp(-i*2*pi*12*t))+dc",
+    "intensity": "mean(Ez^2)=abs(phasor)^2/2, fitted over final two periods; not Poynting flux",
+    "animation": "actual FDTD snapshots; every third grid point for display only"
+  },
+  "environment": {
+    "python": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:34:02) [GCC 14.3.0]",
+    "meep": "1.33.0",
+    "optbeam": "2.1.2",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "h5py": "3.16.0",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "mpi_processes": 1,
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    }
+  },
+  "elapsed_seconds": 22.879783203999978,
+  "command": [
+    "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/outputs/optical-beams-run/run_original.py",
+    "--upstream",
+    "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/work/optical-beams-upstream",
+    "--output",
+    "/mnt/c/Users/bgs43/Documents/Codex/2026-10-23/https-jin-castle-github-io-meep-4/outputs/optical-beams-run/planar30",
+    "--chi",
+    "30"
+  ]
+}
+
+Elapsed run time = 23.6185 s

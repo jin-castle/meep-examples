@@ -1,0 +1,23 @@
+{
+  "upstream_project": "Optical-beams-MEEP",
+  "upstream_authors": ["Daniel Kotik", "Jörg Götte"],
+  "upstream_repository": "https://github.com/DanielKotik/Optical-beams-MEEP",
+  "upstream_documentation": "https://danielkotik.github.io/Optical-beams-MEEP/",
+  "commit": "ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+  "release_tag": "v2.1.2",
+  "release_commit": "e612957659ab13431c80cc48cd5f263f129ac74c",
+  "release_code_equivalent": true,
+  "release_code_equivalence_check": "git diff v2.1.2 HEAD -- scripts/Gauss_2d/Gauss2d.py optbeam returned no changes",
+  "version_doi": "10.5281/zenodo.5211251",
+  "concept_doi": "10.5281/zenodo.2631828",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2018 Daniel Kotik",
+  "script": "scripts/Gauss_2d/Gauss2d.py",
+  "executed_script_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+  "unmodified_original_source": true,
+  "image_data_origin": "New local FDTD executions; no upstream example image reused",
+  "extra_observations": "Final two periods sampled; monochromatic cos/sin/DC fit; original HDF5 callbacks retained",
+  "external_environment_changes": false,
+  "run_date_local": "2026-10-23",
+  "timezone": "Asia/Seoul"
+}

@@ -1,0 +1,673 @@
+{
+  "passed": true,
+  "implementation": "Beam Lab direct analytic-current Meep controls; no optbeam dependency",
+  "cases": {
+    "gaussian_flat": {
+      "schema_version": 1,
+      "case": "gaussian_flat",
+      "params": {
+        "kind": "gaussian",
+        "curvature": 0.0,
+        "cell": [
+          12.0,
+          8.0,
+          0.0
+        ],
+        "resolution": 20,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -4.5,
+        "aperture_half_width": 3.1,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.5,
+        "waist": 0.9,
+        "angle_deg": 20.0,
+        "boundary": "x = curvature*y^2; n2 for x >= boundary"
+      },
+      "field_shape": [
+        188,
+        126,
+        1
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "2D Ez polarization; Ex=Ey=0 by symmetry",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -4.2250000000000005,
+        "x_max": 5.124999999999999,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 1.803466825552429,
+      "winding": null,
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 0.7979440160124796,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "6f1ae03b56f76caa37427015afeff68f389d989b33e7cf5c7d854a7760d7e232",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    },
+    "gaussian_concave": {
+      "schema_version": 1,
+      "case": "gaussian_concave",
+      "params": {
+        "kind": "gaussian",
+        "curvature": 0.1,
+        "cell": [
+          12.0,
+          8.0,
+          0.0
+        ],
+        "resolution": 20,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -4.5,
+        "aperture_half_width": 3.1,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.5,
+        "waist": 0.9,
+        "angle_deg": 20.0,
+        "boundary": "x = curvature*y^2; n2 for x >= boundary"
+      },
+      "field_shape": [
+        188,
+        126,
+        1
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "2D Ez polarization; Ex=Ey=0 by symmetry",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -4.2250000000000005,
+        "x_max": 5.124999999999999,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 1.8140078047899124,
+      "winding": null,
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 0.7830525930039585,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "e5a4d97b7a90eabe8a9171900e100a8bb3d0b270efa5fb7154ed88ad3cf22f50",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    },
+    "gaussian_convex": {
+      "schema_version": 1,
+      "case": "gaussian_convex",
+      "params": {
+        "kind": "gaussian",
+        "curvature": -0.1,
+        "cell": [
+          12.0,
+          8.0,
+          0.0
+        ],
+        "resolution": 20,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -4.5,
+        "aperture_half_width": 3.1,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.5,
+        "waist": 0.9,
+        "angle_deg": 20.0,
+        "boundary": "x = curvature*y^2; n2 for x >= boundary"
+      },
+      "field_shape": [
+        188,
+        126,
+        1
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "2D Ez polarization; Ex=Ey=0 by symmetry",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -4.2250000000000005,
+        "x_max": 5.124999999999999,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 2.014560563084234,
+      "winding": null,
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 0.7853148870053701,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "8a47cb1370a843dc4b0f436d4b4311d3dedf422c0820245f472f797cd7d91314",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    },
+    "lg_plus2": {
+      "schema_version": 1,
+      "case": "lg_plus2",
+      "params": {
+        "kind": "lg",
+        "charge": 2,
+        "cell": [
+          9.0,
+          7.0,
+          7.0
+        ],
+        "resolution": 12,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -3.3,
+        "aperture_half_width": 2.6,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.0,
+        "waist": 1.0,
+        "radial_order": 0
+      },
+      "field_shape": [
+        81,
+        64,
+        64
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "vector 3D",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -3.0416666666666665,
+        "x_max": 3.6249999999999996,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 1.5801472100523635,
+      "winding": {
+        "component": "Ez DFT field",
+        "plane_x": -2.625,
+        "radius": 1.0,
+        "samples": 512,
+        "orientation": "theta=atan2(z,y), increasing theta",
+        "source_charge": 2,
+        "measured": 2.0000000000000004,
+        "minimum_to_maximum_amplitude": 0.9319933018508787,
+        "matches_source_charge": true
+      },
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 21.290637536003487,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "491e4256a28dffc1c9ec2ca6453914313bdfe7ef95504cb032dd5817ca7bd29c",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    },
+    "lg_minus2": {
+      "schema_version": 1,
+      "case": "lg_minus2",
+      "params": {
+        "kind": "lg",
+        "charge": -2,
+        "cell": [
+          9.0,
+          7.0,
+          7.0
+        ],
+        "resolution": 12,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -3.3,
+        "aperture_half_width": 2.6,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.0,
+        "waist": 1.0,
+        "radial_order": 0
+      },
+      "field_shape": [
+        81,
+        64,
+        64
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "vector 3D",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -3.0416666666666665,
+        "x_max": 3.6249999999999996,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 1.580147210052364,
+      "winding": {
+        "component": "Ez DFT field",
+        "plane_x": -2.625,
+        "radius": 1.0,
+        "samples": 512,
+        "orientation": "theta=atan2(z,y), increasing theta",
+        "source_charge": -2,
+        "measured": -2.0,
+        "minimum_to_maximum_amplitude": 0.9319933018508788,
+        "matches_source_charge": true
+      },
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 21.873903702988173,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "db760c160ba4670d485fafcd5b4ce4c93ab8f89e72a32aa2f093b639fe891a0d",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    },
+    "airy_alpha008": {
+      "schema_version": 1,
+      "case": "airy_alpha008",
+      "params": {
+        "kind": "airy",
+        "alpha": 0.08,
+        "cell": [
+          12.0,
+          10.0,
+          0.0
+        ],
+        "resolution": 20,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -4.5,
+        "aperture_half_width": 4.1000000000000005,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.0,
+        "scale": 0.6
+      },
+      "field_shape": [
+        188,
+        166,
+        1
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "2D Ez polarization; Ex=Ey=0 by symmetry",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -4.2250000000000005,
+        "x_max": 5.124999999999999,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 1.7920859028993212,
+      "winding": null,
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 0.43516137200640514,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "c48f93c5b7a2bd468ff011f77cce6fb7e0c801fdbe6f3156a62935003f57e8f5",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    },
+    "airy_alpha020": {
+      "schema_version": 1,
+      "case": "airy_alpha020",
+      "params": {
+        "kind": "airy",
+        "alpha": 0.2,
+        "cell": [
+          12.0,
+          10.0,
+          0.0
+        ],
+        "resolution": 20,
+        "pml": 0.8,
+        "frequency": 1.0,
+        "source_x": -4.5,
+        "aperture_half_width": 4.1000000000000005,
+        "settle_time": 24.0,
+        "integration_time": 8.0,
+        "source_type": "Ez electric-current sheet; bidirectional emission",
+        "n1": 1.0,
+        "n2": 1.0,
+        "scale": 0.6
+      },
+      "field_shape": [
+        188,
+        166,
+        1
+      ],
+      "axis_order": "x,y,z",
+      "field_kind": "complex single-frequency DFT; centered grid; unnormalized amplitude",
+      "polarization": "2D Ez polarization; Ex=Ey=0 by symmetry",
+      "monitor": {
+        "start_time": 24.0,
+        "end_time": 32.0,
+        "x_min": -4.2250000000000005,
+        "x_max": 5.124999999999999,
+        "yee_grid": false
+      },
+      "finite": true,
+      "ez_peak": 1.6773657960573782,
+      "winding": null,
+      "meep_version": "1.33.0",
+      "cpu_threads": 1,
+      "elapsed_seconds": 0.4259797299891943,
+      "source_hashes": {
+        "run.py": "fd7255009460bce51d19e83186b811efa6f2e91c7efb3f9d3b031e96f5caa152",
+        "profiles.py": "966ea6ca09dfff2c7c15649cfff16dc7300c87151e4110e6dcfa930ee1e8c56a"
+      },
+      "fields_sha256": "86342e2ffb2d385d89b000d6e5ee1ccd541642eb9212e524db903acc8105a24b",
+      "provenance": "Beam Lab analytic electric-current apertures and independently specified Meep experiment",
+      "limitations": [
+        "visualization grid; no resolution/PML convergence study",
+        "no normalized power or efficiency claim",
+        "electric-current sheet emits in both directions",
+        "finite settling time; no steady-state convergence claim"
+      ],
+      "passed": true
+    }
+  },
+  "phase_winding": {
+    "lg_plus2": {
+      "source_charge": 2,
+      "recomputed_winding": 2.0000000000000004,
+      "weak_phase_mask_fraction": 0.05,
+      "circle_radius": 1.0
+    },
+    "lg_minus2": {
+      "source_charge": -2,
+      "recomputed_winding": -2.0,
+      "weak_phase_mask_fraction": 0.05,
+      "circle_radius": 1.0
+    }
+  },
+  "animation": {
+    "frames": 24,
+    "frame_duration_ms": 80,
+    "loop_ms": 1920,
+    "phase_convention": "Re(Ez_tilde exp(-i*phase))",
+    "phase_radians": [
+      0.0,
+      0.2617993877991494,
+      0.5235987755982988,
+      0.7853981633974483,
+      1.0471975511965976,
+      1.308996938995747,
+      1.5707963267948966,
+      1.832595714594046,
+      2.0943951023931953,
+      2.356194490192345,
+      2.617993877991494,
+      2.8797932657906435,
+      3.141592653589793,
+      3.4033920413889422,
+      3.665191429188092,
+      3.926990816987241,
+      4.1887902047863905,
+      4.45058959258554,
+      4.71238898038469,
+      4.974188368183839,
+      5.235987755982988,
+      5.497787143782138,
+      5.759586531581287,
+      6.021385919380436
+    ],
+    "fixed_isovalue": 0.395036802513091,
+    "isovalue_fraction_ez_group_peak": 0.25,
+    "spatial_stride": 1,
+    "mesh_decimation": false,
+    "triangle_counts": [
+      [
+        106660,
+        106852,
+        106660,
+        106852
+      ],
+      [
+        106652,
+        106920,
+        106652,
+        106920
+      ],
+      [
+        106464,
+        106840,
+        106464,
+        106840
+      ],
+      [
+        106652,
+        106672,
+        106652,
+        106672
+      ],
+      [
+        106664,
+        106844,
+        106664,
+        106844
+      ],
+      [
+        106840,
+        106648,
+        106840,
+        106648
+      ],
+      [
+        106772,
+        106612,
+        106772,
+        106612
+      ],
+      [
+        106816,
+        106640,
+        106816,
+        106640
+      ],
+      [
+        106672,
+        106636,
+        106672,
+        106636
+      ],
+      [
+        106682,
+        106416,
+        106682,
+        106416
+      ],
+      [
+        106794,
+        106654,
+        106794,
+        106654
+      ],
+      [
+        106794,
+        106472,
+        106794,
+        106472
+      ],
+      [
+        106852,
+        106660,
+        106852,
+        106660
+      ],
+      [
+        106920,
+        106652,
+        106920,
+        106652
+      ],
+      [
+        106840,
+        106464,
+        106840,
+        106464
+      ],
+      [
+        106672,
+        106652,
+        106672,
+        106652
+      ],
+      [
+        106848,
+        106660,
+        106848,
+        106660
+      ],
+      [
+        106648,
+        106840,
+        106648,
+        106840
+      ],
+      [
+        106612,
+        106772,
+        106612,
+        106772
+      ],
+      [
+        106640,
+        106816,
+        106640,
+        106816
+      ],
+      [
+        106636,
+        106668,
+        106636,
+        106668
+      ],
+      [
+        106420,
+        106686,
+        106420,
+        106686
+      ],
+      [
+        106654,
+        106794,
+        106654,
+        106794
+      ],
+      [
+        106472,
+        106794,
+        106472,
+        106794
+      ]
+    ],
+    "minimum_raw_scene_changed_fraction": 0.41617715617715617,
+    "vtk_version": "9.5.2"
+  },
+  "renderer_sha256": "459d32d4ae8608b3757da33e2a7b2dd47756e9560180aa1155a2811626550497",
+  "assets": {
+    "airy_apodization.png": {
+      "sha256": "f56d04ea656d3b50e4fcc2e7654a784fff0cd47c22c2464136bd77ee87278d53",
+      "bytes": 108869
+    },
+    "contact_sheet.png": {
+      "sha256": "a8c33b13c9f2563b9a78395496efbb9a537e860bc32e8d91e0e09e6f74e42dc6",
+      "bytes": 760265
+    },
+    "gaussian_curvature.png": {
+      "sha256": "3c350cb8c50f0c138cc31577401c2e2a9d1fb150a394d792cf3ce97af7c0c3ea",
+      "bytes": 156162
+    },
+    "overview.png": {
+      "sha256": "e9de3d8fad18d59c6688da42a2a5924578eaabf959a301d789b271fa96c56ee1",
+      "bytes": 419658
+    },
+    "vortex_charge.png": {
+      "sha256": "9543df7653b7a94bfee297680a9b30a5c7524f8e00247dad57f9480d22811720",
+      "bytes": 102383
+    },
+    "vortex_phase.gif": {
+      "sha256": "770302c9c94666c026e946765e957b01a719867a70ad10d67894e17730b161a1",
+      "bytes": 6050231
+    },
+    "vortex_phase.webp": {
+      "sha256": "b7a46f53df97a77ec1527dc5927ad0af1488302e1b77dc604d321a633ee21500",
+      "bytes": 1685376
+    },
+    "vortex_poster.png": {
+      "sha256": "ce8717ec557be930d7015383a794fea6e90d3347a54a53fea309673dd8d0bbe8",
+      "bytes": 316804
+    }
+  }
+}

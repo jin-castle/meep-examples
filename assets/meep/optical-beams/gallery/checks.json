@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "lg_finite": true,
+  "lg_complex_squared_identity_relative_errors": {
+    "longitudinal": 4.2496981244476614e-16,
+    "transverse": 5.574463151814106e-16
+  },
+  "lg_epsilon_ranges": {
+    "longitudinal": [
+      1.0,
+      2.3716
+    ],
+    "transverse": [
+      1.0,
+      2.3716
+    ]
+  },
+  "airy_instantaneous_identity_exact": true,
+  "airy_uniform_epsilon": true,
+  "lg_phase_winding": 2.0,
+  "source_reduction_passed": true,
+  "figures": {
+    "vortex_longitudinal.png": "a5d4985721f59110691cb8889c5b677f273c37050f65179a06f7201954abffe1",
+    "vortex_transverse.png": "41a960f55b8b17c6897ea09ca6abd7f335660fd9ce29507e6b7c4efbf5e944ce",
+    "vortex_3d.png": "526cee648a85f5d6a65b48e8a4c09aff304906cc5039bcf2624e17f37457a2f2",
+    "vortex_3d_modulus.png": "761e500241b2b0da7d9f004de2401711bb007caa9859f04bfe0feb8652b102fb",
+    "airy_free_space.png": "c522db86ec2a17d3614df48a1755ba81e1f2f9b2fa1ff39a4f5e38ffd32e0c85"
+  }
+}

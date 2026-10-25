@@ -1,0 +1,8 @@
+{
+  "score": 94,
+  "verdict": "pass",
+  "category_match": true,
+  "differences": ["The reference shows LG/Airy beam scenes; this comparison applies its black-background linear hot fringe style to the three requested Gaussian interfaces"],
+  "suggestions": [],
+  "reasoning": "The final instantaneous squared-field images preserve visible bright fringes on black backgrounds. Labels, normalization statements and colorbars are fully visible without clipping, and a separate common-scale plot makes the comparison interpretable."
+}

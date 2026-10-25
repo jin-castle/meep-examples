@@ -3,7 +3,7 @@
 Meep (FDTD) 공식 예제 해설 시리즈 — 입문자용. 사이트: https://jin-castle.github.io/meep-examples/
 
 A beginner-friendly walkthrough of the official [Meep](https://meep.readthedocs.io/) examples, ordered like a 10-week applied-electromagnetics course (post number = week − 1; weeks 2–10 → posts 01–09), followed by season 2 (posts 10–16: the journey of a point source, from a mirror to light extraction and the far field).
-Korean body, English TL;DR, English code comments. Every script in `code/` was re-run before publishing.
+Full Korean and English editions, with shared scientific results and English code comments. Every script in `code/` was re-run before publishing.
 
 | # | Post | Script | Key numbers (Meep 1.33.0) |
 |---|------|--------|---------------------------|
@@ -22,6 +22,35 @@ Korean body, English TL;DR, English code comments. Every script in `code/` was r
 | 13 | 회전 대칭으로 3D를 계산하기 — cylindrical 좌표, m 급수, on/off-axis 쌍극자, 디스크 방사 | `code/cylindrical_dipole.py` | on-axis dipoles 0.43 / 0.46 % vs sin² / cos²; off-axis dipole as m = 0..8, 0.63 %; post-12 ring per m within 0.1 % in f; disc near/far gap 7.43 % → 6.41 % with a larger cell |
 | 14 | 박막 속 점광원, 공기로 나오는 몫 — 광추출 효율, LDOS 정규화, kz 적분, CYL 대 3D | `code/extraction_efficiency.py` | layer on a mirror: 0.323 at mid-height (cyl, res 80), 0.52 → 0.09 with height; off-axis m series: official stop 0.632 vs 0.362 summed to m = 60; cleaved facet: 22.4 % from 76 kz runs |
 | topic | Metalens 위상 지도와 PB 위상 — 이상적 렌즈 위상, 2π 접기, 격자 샘플링 (`/metalens/`) | `code/metalens_*.py` (numpy, no Meep) | 1D scalar check: sampled PB phase focuses with FWHM 499 nm vs 493 nm for the continuous ideal phase (peak 0.95); the opposite circular polarization diverges |
+
+## Beam Lab
+
+The [Beam Lab lesson](https://jin-castle.github.io/meep-examples/optical-beams/)
+uses newly written source profiles, Meep controls and analysis in
+[`code/beam_lab/`](code/beam_lab/). Its parameter studies compare Gaussian beams
+at interfaces with curvature 0 and ±0.1, Laguerre–Gaussian charges +2 and −2,
+and finite-energy Airy profiles with apodization 0.08 and 0.2. The new experiment
+data and figures come from this implementation, which does not import the
+vendored `optbeam` package or the earlier reproduction wrappers.
+Daniel Kotik and Jörg Götte's
+[Optical-beams-MEEP](https://danielkotik.github.io/Optical-beams-MEEP/) is a
+reference for visual presentation and beam topics; the
+[Meep Python interface](https://meep.readthedocs.io/en/latest/Python_User_Interface/)
+documents the simulation API.
+
+The earlier original-code runs, native-grid Blender scene and moving 3D vortex
+remain available in the [reproduction archive](https://jin-castle.github.io/meep-examples/optical-beams/archive/)
+([English](https://jin-castle.github.io/meep-examples/en/optical-beams/archive/)).
+Those results retain their original provenance and are not relabeled as Beam Lab
+calculations. Their sources, MIT notice, execution commands and wrappers remain in
+[`code/optical_beams/`](code/optical_beams/), with results and provenance under
+`assets/meep/optical-beams/`. The archive comparison's left panel is an attributed
+upstream image. Archived software citation: Optical-beams-MEEP v2.1.2,
+[doi:10.5281/zenodo.5211251](https://doi.org/10.5281/zenodo.5211251).
+
+The inverse-bend DFT scene, phase playback and captures use opaque RdBu fields
+with black waveguide outlines. Metalens intensity panels use a black-to-hot map;
+its model remains the original 1D scalar angular-spectrum calculation.
 
 ## Run a script
 
@@ -46,6 +75,29 @@ mpirun -np 4 python extraction_efficiency.py   # ~77 min (m series to 60 dominat
 
 `code/blogfig.py` holds the shared figure helpers (annotated layout with code-step badges, field maps with the structure outlined, source waveform/spectrum, spectra in nm, snapshot grids, and GIF animations via `record_frames` + `animate_fields`).
 
-## Site
+## Sources, contributions and reuse
 
-Jekyll + minima, built by GitHub Pages. Math via MathJax. Posts are in `_posts/`, figures in `assets/meep/NN/`.
+Maintained and edited by [jin-castle](https://github.com/jin-castle), with AI-assisted
+code, translation and illustration workflows. The bilingual
+[권리 및 라이선스](https://jin-castle.github.io/meep-examples/rights-and-licenses/) /
+[Rights & Licenses](https://jin-castle.github.io/meep-examples/en/rights-and-licenses/)
+pages distinguish upstream examples, project additions, computed figures and AI
+illustrations. Each lesson/topic also links its sources and added experiments.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for upstream notices and the
+chapter-to-source inventory; `_data/sources.json` drives the bilingual site inventory.
+No new repository-wide code license is granted. Upstream/file-specific licenses
+take precedence. Reorganizing or modifying upstream code does not remove its
+license obligations. Original protectable editorial contributions are reserved
+unless separately licensed; this does not restrict third-party permissions or
+statutory exceptions, or assert exclusive copyright over entire AI outputs.
+
+## Site configuration
+
+Private visitor and Google Search reports are described in [ANALYTICS.md](ANALYTICS.md).
+GA4 loads only after visitor consent; bilingual privacy pages and footer settings
+explain the choice. The public site does not publish dashboard data.
+
+Jekyll + minima, built by GitHub Pages. Math via MathJax. Korean posts are in `_posts/`; English lessons and topics are in `en/`. Use [한국어](https://jin-castle.github.io/meep-examples/) or [English](https://jin-castle.github.io/meep-examples/en/) and select System, Light or Dark in the header. Language switches preserve the corresponding page and section; theme choices persist when browser storage is available.
+
+Each of the 14 chapter concept illustrations has four explicit PNG exports in `assets/illustrations/`: `XX.ko.light.png`, `XX.ko.dark.png`, `XX.en.light.png`, and `XX.en.dark.png`. The catalog and “Understand the principle” sections share these assets. `manifest.json` records prompts, dimensions and hashes. Numerical figures remain in `assets/meep/NN/` with their original pixels and color scales; theme changes do not invert or generatively edit them.

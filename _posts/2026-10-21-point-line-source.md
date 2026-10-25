@@ -1,12 +1,12 @@
 ---
 layout: lesson
 permalink: /point-line-source/
-lesson_title: "점과 선, 빛은 어떻게 퍼질까?"
-lesson_summary: "광원의 모양만 바꾸면 빛이 퍼지는 방향도 달라질까? 파면을 먼저 관찰하고, 촬영 시각과 네 면의 power로 그 차이를 확인합니다."
+lesson_title: "점원과 선원에서 빛은 어떻게 퍼질까요?"
+lesson_summary: "점원과 선원의 파면을 비교하고, 관측 시각과 네 면을 통과하는 전력으로 빛의 진행 방향을 확인합니다."
 lesson_goals:
   - "점원과 선원의 파면을 보고 빛이 강하게 나가는 방향을 설명한다."
   - "펄스 정점 시각 t0로부터 스냅샷의 파면 위치를 계산한다."
-  - "flux box 네 면의 비율을 읽고 측정의 한계를 구분한다."
+  - "flux box 네 면의 전력 비율을 비교하고 측정의 한계를 설명한다."
 lesson_prerequisites: "파장과 파동의 속도를 알면 시작할 수 있습니다. 코드 실행에는 Meep와 Python 환경이 필요합니다."
 date: 2026-10-21
 title: "Meep Example 01 · Point source와 line source — 파원 배치, 펄스 시각 t0, flux box로 보는 방향 분포"
@@ -32,7 +32,7 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 
 </details>
 
-<h2 id="observe">1. 관찰 · 광원의 모양이 바꾸는 것</h2>
+<h2 id="observe">1. 관찰 · 광원의 모양에 따른 파면 비교</h2>
 
 빈 공간에 빛을 넣는 **source(광원)** 하나만 둡니다. 왼쪽은 점 하나, 오른쪽은 세로로 놓인 길이 3 µm의 선입니다. 두 그림은 같은 시각에 찍었습니다. 색이 강한 부분이 어느 방향으로 뻗는지 먼저 살펴보세요.
 
@@ -58,7 +58,7 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 
 ### 어디에 쓰이는가
 
-점원과 선원은 소자가 아니라 모든 시뮬레이션의 입력이다. 어떤 source를 어디에 두느냐가 뒤의 모든 수치를 정하므로, 이 글의 세 실험은 그대로 다음 문제들의 첫 단계가 된다.
+점원과 선원은 시뮬레이션에 빛을 넣는 입력 조건입니다. 광원의 종류와 위치는 계산 결과에 영향을 줍니다. 이 글의 세 실험에서 익힌 광원 설정과 측정 방법을 다음 문제에도 적용할 수 있습니다.
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|
@@ -85,16 +85,13 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 
 </details>
 
-<h2 id="understand">3. 원리 이해하기 · 모양과 시각을 함께 읽기</h2>
+<h2 id="understand">3. 원리 이해하기 · 파면의 모양과 관측 시각</h2>
+
+{% include chapter-illustration.html %}
 
 <!-- concept-illustration:part-01:start -->
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/01/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/01/00_concept.png" alt="점원의 동심원과 세로 선원의 좌우 파면 및 끝 회절을 비교하는 개념도. 생략한 z 방향은 무한히 이어진다." loading="lazy">
-  </a>
-  <figcaption>광원의 모양을 설명하는 개념도입니다. 선원 끝에서는 회절이 생겨 둥근 파면이 남습니다. 실제 flux 측정에는 아래 설계도의 PML과 상자를 사용합니다.</figcaption>
-</figure>
+<p class="lesson-note">광원의 모양을 설명하는 개념도입니다. 선원 끝에서는 회절이 생겨 둥근 파면이 남습니다. 실제 flux 측정에는 아래 설계도의 PML과 상자를 사용합니다.</p>
 
 <!-- concept-illustration:part-01:end -->
 
@@ -112,11 +109,11 @@ $$r_{\mathrm{peak}} = c\,(t-t_0)$$
   <a href="{{ site.baseurl }}/assets/meep/01/00_source.png" data-lightbox>
     <img src="{{ site.baseurl }}/assets/meep/01/00_source.png" alt="가우시안 광원의 시간 파형과 스펙트럼. 펄스 폭은 3.1, 정점 시각은 15.5다." loading="lazy">
   </a>
-  <figcaption>펄스 폭은 3.1, 정점은 t0 = 15.5입니다. 정점보다 먼저 나간 약한 앞머리는 벽에 먼저 도착합니다.</figcaption>
+  <figcaption>펄스 폭은 3.1, 정점은 t0 = 15.5입니다. 정점보다 먼저 방출된 약한 파동은 벽에 먼저 도착합니다.</figcaption>
 </figure>
 
 <aside class="lesson-note" markdown="1">
-**정점이 벽에 닿기 전에도 반사는 보일 수 있습니다.** 정점보다 약 2 × width = 6.2 앞선 약한 앞머리가 먼저 벽에 도착하기 때문입니다. 파면 사진을 찍는 A/B 실험에는 PML이 없고, power를 재는 C 실험에는 PML이 있습니다.
+**정점이 벽에 닿기 전에도 반사는 보일 수 있습니다.** 정점보다 약 2 × width = 6.2 앞서 방출된 약한 파동이 먼저 벽에 도착하기 때문입니다. 파면을 기록하는 A/B 실험에는 PML이 없고, 전력을 재는 C 실험에는 PML이 있습니다.
 </aside>
 
 <details markdown="1">
@@ -206,7 +203,7 @@ d_wall = min(sx_a / 2 - abs(src_a.x), sy_a / 2 - abs(src_a.y))
 - **왜**: `GaussianSource`는 t = 0에 켜지지 않는다. 포락선이 t0 = 5/fwidth에서 최대이고 그 앞뒤 2·width 동안 서서히 켜지고 꺼진다. 이 시각을 모르면 "언제 찍을지"를 정할 수 없다.
 - **틀리면**: fwidth를 좁게 잡으면 width가 길어져 고리가 여러 겹 겹치고, t0도 늦어져 같은 `until`로는 source가 켜지기 전에 끝난다.
 
-> **함정**: `until`이 작아 source가 켜지기 전에 멈추면 필드는 수치 잡음뿐이다. 그 상태에서 정규화해 그리면 화면 가득 무늬가 나온다. 계산이 틀린 게 아니라 시각이 틀린 것이다.
+> **주의**: `until`이 작아 source가 켜지기 전에 멈추면 필드는 수치 잡음뿐이다. 그 상태에서 정규화해 그리면 잡음이 크게 확대된다. 광원 파형을 확인해 관측 시각을 정해야 한다.
 
 ### ② 재료와 구조 — 무엇이 어디에 있는가
 
@@ -239,7 +236,7 @@ def make_sim(cell, sources, dpml=0.0, resolution=RESOLUTION):
 ```
 
 - **무엇**: 셀 크기와 source, 그리고 PML 유무만 다른 `Simulation`.
-- **왜**: 스냅샷 실험은 일부러 PML 없이 돌린다. 경계가 무엇을 하는지 보기 위해서다. flux 실험은 PML을 둔다. 되돌아온 파가 섞이면 네 면의 power가 source의 것이 아니게 된다.
+- **왜**: 스냅샷 실험은 경계 반사를 관찰하려고 PML 없이 실행한다. flux 실험에는 PML을 둔다. 되돌아온 파가 섞이면 네 면의 power에 광원에서 직접 나온 성분과 경계에서 반사된 성분이 함께 포함된다.
 - **틀리면**: PML 없이 오래 돌리면 파가 벽 사이를 수십 번 왕복해 정상파로 가득 찬다. 02편의 주제다.
 
 ### ⑤ Monitor — 무엇을 재는가 (flux box)
@@ -274,7 +271,7 @@ sim.run(until_after_sources=mp.stop_when_fields_decayed(25, mp.Ez, mp.Vector3(ha
 ```
 
 - **무엇**: 스냅샷은 정점 t0부터 0.8씩 늘려 가며 멈추고 필드를 꺼낸다. flux는 펄스가 완전히 빠져나갈 때까지 돌린다.
-- **왜**: `get_array`는 멈춘 그 순간의 필드다. 언제 멈추느냐가 그림의 전부를 정한다. `until`은 절대 시각이 아니라 "지금부터 얼마"라서 차이를 넘긴다.
+- **왜**: `get_array`는 시뮬레이션을 멈춘 순간의 필드를 반환한다. 따라서 관측하려는 시각에 멈춰야 한다. `until`에는 절대 시각이 아니라 현재 시각부터 추가로 실행할 시간을 전달한다.
 - **틀리면**: `until=t0 + off`를 매번 넘기면 두 번째 스냅샷부터 시각이 두 배씩 늘어난다. flux를 고정 시간에 끊으면 펄스 꼬리가 빠져 합이 작아진다.
 
 ### ⑦ 후처리 — 숫자로 바꾸기
@@ -296,7 +293,7 @@ everywhere = np.abs(ez_last).mean()
 
 </details>
 
-<h2 id="interpret">5. 해석 · 사진을 숫자로 확인하기</h2>
+<h2 id="interpret">5. 해석 · 파면과 방향별 전력 비교</h2>
 
 **선원의 좌우 두 면을 지나는 power는 전체의 약 92%입니다.** 점원은 네 면에 25%씩 나누어집니다. 처음 보았던 파면의 차이가 flux 측정에서도 드러납니다.
 
@@ -363,7 +360,7 @@ PML 없는 12 × 8 µm 셀에서 정점 파면은 커지며 옅어집니다. 가
 | 선원 ±x 비율 | 0.8 이상 | 0.919 | ✅ |
 | PML 없는 셀 | 벽 반사가 보임 | 앞머리의 반사가 가장자리에 보임 | ✅ |
 
-예측은 모두 맞았지만 한 가지는 예상보다 일찍 나타났다. "정점이 벽에 닿기 전"이라는 조건은 정점에만 해당하고, 정점보다 2·width 앞선 앞머리는 t0 전에 이미 벽에 닿아 있다. 짧은 펄스일수록 앞머리와 정점의 거리가 짧으니 넓은 대역을 고른 것이 그나마 도움이 됐다. 벽을 없애려면 PML이 필요하다.
+예측과 결과는 일치했지만 경계 반사는 예상보다 일찍 나타났다. "정점이 벽에 닿기 전"이라는 조건은 정점에만 해당하고, 정점보다 2·width 앞서 방출된 약한 파동은 t0 전에 이미 벽에 닿아 있다. 짧은 펄스일수록 이 파동과 정점 사이의 거리가 짧으므로 넓은 대역을 사용하면 두 성분의 시간 간격도 줄어든다. 경계 반사를 줄이려면 PML이 필요하다.
 
 ### 수렴성
 
@@ -405,7 +402,7 @@ PML 없는 12 × 8 µm 셀에서 정점 파면은 커지며 옅어집니다. 가
 
 </details>
 
-이제 광원의 모양과 촬영 시각을 함께 읽을 수 있습니다. 다음에는 광원이 아니라 **상자의 경계**를 바꿔 반사가 어떻게 달라지는지 확인합니다: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/).
+파면을 해석할 때는 광원의 모양과 관측 시각을 함께 확인해야 합니다. 다음 글에서는 **계산 영역의 경계**를 바꾸고 반사를 비교합니다: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/).
 
 <h2 id="reference">7. 참고 · 전체 코드와 재현 기록</h2>
 

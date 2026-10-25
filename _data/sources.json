@@ -1,0 +1,176 @@
+[
+  {
+    "id": "01", "part": 1, "url": "/point-line-source/",
+    "title": {"ko": "점원과 선원", "en": "Point and line sources"},
+    "files": ["code/point_line_source.py"],
+    "references": [
+      {"label": "Meep Basics · Fields in a Waveguide", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#fields-in-a-waveguide"},
+      {"label": "Meep · Radiation Pattern of an Antenna", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna"}
+    ],
+    "contribution": {"ko": "빈 공간의 점원·선원 비교, 파면과 펄스 시각 설명, 네 면의 flux 비교, 그림과 GIF를 교육용 실험으로 구성했습니다.", "en": "An educational comparison of point and line sources in an empty cell, wavefront and pulse-timing explanations, four-sided flux accounting, figures and GIFs."}
+  },
+  {
+    "id": "02", "part": 2, "url": "/boundary-pml/",
+    "title": {"ko": "경계 조건과 PML", "en": "Boundaries and PML"},
+    "files": ["code/boundary_pml.py"],
+    "references": [
+      {"label": "Meep · Perfectly Matched Layer", "url": "https://meep.readthedocs.io/en/latest/Perfectly_Matched_Layer/"},
+      {"label": "Meep · absorber-1d.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/absorber-1d.py"}
+    ],
+    "contribution": {"ko": "반사 경계·Absorber·PML을 같은 기준으로 비교하고, 기준 계산을 뺀 반사 측정, 두께·해상도 비교와 GIF를 추가했습니다.", "en": "Comparable reflecting-boundary, Absorber and PML experiments, reflection measurements using a padded reference, thickness/resolution comparisons and a GIF."}
+  },
+  {
+    "id": "03", "part": 3, "url": "/reference-subtraction/",
+    "title": {"ko": "Reference run 빼기", "en": "Reference subtraction"},
+    "files": ["code/reference_subtraction.py"],
+    "references": [
+      {"label": "Meep · refl-quartz.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/refl-quartz.py"},
+      {"label": "Meep · cylinder_cross_section.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/cylinder_cross_section.py"},
+      {"label": "Meep Basics · Waveguide-bend normalization", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend"}
+    ],
+    "contribution": {"ko": "Fresnel 식과의 대조, 2D 원통의 입사장·전체장·산란장 비교, 반사·투과·측면 flux 수지와 산란 단면적 검사를 구성했습니다.", "en": "Fresnel checks, incident/total/scattered-field comparisons for a 2D cylinder, reflected/transmitted/side-flux accounting and a scattering-cross-section check."}
+  },
+  {
+    "id": "04", "part": 4, "url": "/straight-waveguide/",
+    "title": {"ko": "직선 도파로와 유도 모드", "en": "Straight waveguides and guided modes"},
+    "files": ["code/straight_waveguide.py"],
+    "references": [
+      {"label": "Meep · Mode Decomposition", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/"},
+      {"label": "Meep · EigenModeSource", "url": "https://meep.readthedocs.io/en/latest/Python_User_Interface/#eigenmodesource"}
+    ],
+    "contribution": {"ko": "MPB 모드와 유효 굴절률을 살펴보고, 모드별 전력과 전체 flux를 비교하며 해상도·PML 검사를 추가했습니다.", "en": "MPB modes and effective-index explanations, modal-power versus total-flux comparisons, and resolution/PML checks."}
+  },
+  {
+    "id": "05", "part": 5, "url": "/waveguide-bend-90/",
+    "title": {"ko": "도파로 굽힘과 반지름", "en": "Waveguide bends and bend radius"},
+    "files": ["code/bend90.py"],
+    "references": [
+      {"label": "Meep Basics · Transmittance Spectrum of a Waveguide Bend", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend"}
+    ],
+    "contribution": {"ko": "공식 예제의 직각 굽힘을 기준으로 둥근 굽힘, 반지름 sweep, 손실 비교와 검증 그림을 추가했습니다.", "en": "Rounded bends, a radius sweep, loss comparisons and verification figures alongside the official sharp-bend baseline."}
+  },
+  {
+    "id": "06", "part": 6, "url": "/binary-grating/",
+    "title": {"ko": "이진 격자와 회절 차수", "en": "Binary gratings and diffraction orders"},
+    "files": ["code/binary_grating.py"],
+    "references": [
+      {"label": "Meep · binary_grating.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating.py"},
+      {"label": "Meep · Diffraction Spectrum of a Binary Grating", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-a-binary-grating"}
+    ],
+    "contribution": {"ko": "주기를 조정한 교육용 사례, duty cycle에 따른 위상 비교, 유한 격자와 FFT 방사각 검사, 그림·GIF를 구성했습니다.", "en": "An educational case with an adjusted period, duty-cycle phase comparisons, a finite grating, FFT-based beam-angle checks, figures and GIFs."}
+  },
+  {
+    "id": "07", "part": 7, "url": "/meta-atom/",
+    "title": {"ko": "메타원자와 위상 라이브러리", "en": "Meta-atoms and phase libraries"},
+    "files": ["code/meta_atom.py"],
+    "references": [
+      {"label": "Meep · metasurface_lens.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/metasurface_lens.py"},
+      {"label": "Meep · binary_grating_phasemap.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/binary_grating_phasemap.py"}
+    ],
+    "contribution": {"ko": "폭에 따른 위상 라이브러리, 4단계 위상 선택, supercell의 차수별 전력과 10·40개 원자의 원거리장 비교를 구성했습니다.", "en": "A width-to-phase library, four-level phase selection, supercell order-power accounting and far-field comparisons for 10- and 40-atom arrays."}
+  },
+  {
+    "id": "08", "part": 8, "url": "/metagrating-inverse/",
+    "title": {"ko": "메타격자 역설계", "en": "Metagrating inverse design"},
+    "files": ["code/metagrating_inverse.py"],
+    "references": [
+      {"label": "Meep · Adjoint Solver", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/"},
+      {"label": "Meep · 01-Introduction.ipynb", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb"},
+      {"label": "NLopt · MMA", "url": "https://nlopt.readthedocs.io/en/latest/NLopt_Algorithms/#mma-method-of-moving-asymptotes-and-ccsa"}
+    ],
+    "contribution": {"ko": "07편의 격자를 역설계 문제로 구성하고, 유한차분 gradient 검사, 짧은 MMA 최적화와 새로운 forward 계산을 통한 검증을 추가했습니다.", "en": "An inverse-design problem building on lesson 07, finite-difference gradient checks, a short MMA demonstration and verification in a fresh forward simulation."}
+  },
+  {
+    "id": "09", "part": 9, "url": "/bend-inverse/",
+    "title": {"ko": "도파로 굽힘 역설계", "en": "Waveguide-bend inverse design"},
+    "files": ["code/bend_inverse.py", "code/highres_bend/README.md"],
+    "references": [
+      {"label": "Meep · Adjoint Solver", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/"},
+      {"label": "Meep · 01-Introduction.ipynb", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb"},
+      {"label": "Meep · 02-Filtered_Waveguide_Bend.ipynb", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/02-Filtered_Waveguide_Bend.ipynb"}
+    ],
+    "contribution": {"ko": "자유 설계 영역, gradient 검사, 짧은 최적화와 해상도 재검사를 구성했습니다. forward·adjoint·민감도·구조 갱신을 계산 결과와 스크롤 장면으로 설명합니다.", "en": "A free design region, gradient checks, short optimization and resolution rechecks, with computed forward/adjoint/sensitivity views and a scroll sequence explaining geometry updates."}
+  },
+  {
+    "id": "10", "part": 10, "url": "/dipole-pattern-3d/",
+    "title": {"ko": "점광원의 3D 방사 패턴", "en": "3D dipole radiation patterns"},
+    "files": ["code/dipole_pattern_3d.py"],
+    "references": [
+      {"label": "Meep · Near-to-Far Field Spectra", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/"},
+      {"label": "Meep · dipole_in_vacuum_1D.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_1D.py"},
+      {"label": "Meep · antenna_pec_ground_plane.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/antenna_pec_ground_plane.py"}
+    ],
+    "contribution": {"ko": "각도 격자를 줄인 1D Bloch 계산, 해석식 비교, PEC 거울의 image-dipole near2far와 비교하는 그림·GIF를 추가했습니다.", "en": "A reduced angular grid for 1D Bloch calculations, analytical checks and comparisons with image-dipole near-to-far calculations above a PEC mirror, plus figures and GIFs."}
+  },
+  {
+    "id": "11", "part": 11, "url": "/cavity-ldos/",
+    "title": {"ko": "공진기 LDOS와 Purcell 인자", "en": "Cavity LDOS and Purcell factors"},
+    "files": ["code/cavity_ldos.py"],
+    "references": [
+      {"label": "Meep · Local Density of States", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/"},
+      {"label": "Meep · planar_cavity_ldos.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/planar_cavity_ldos.py"},
+      {"label": "Meep · metal-cavity-ldos.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/metal-cavity-ldos.py"}
+    ],
+    "contribution": {"ko": "축소한 sweep, cylindrical·3D 교차검증, Abram 등의 해석식과 대조, 제한한 실행 시간에서의 수렴 한계를 설명하는 그림을 추가했습니다.", "en": "A reduced sweep, cylindrical/3D cross-checks, comparisons with the analytical expression by Abram et al., and figures explaining convergence limits under a runtime cap."}
+  },
+  {
+    "id": "12", "part": 12, "url": "/ring-resonator/",
+    "title": {"ko": "고리 공진기", "en": "Ring resonators"},
+    "files": ["code/ring_resonator.py"],
+    "references": [
+      {"label": "Meep Basics · Modes of a Ring Resonator", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#modes-of-a-ring-resonator"},
+      {"label": "Meep · ring.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/ring.py"},
+      {"label": "Meep · solve-cw.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/solve-cw.py"},
+      {"label": "Meep · ring-mode-overlap.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/ring-mode-overlap.py"}
+    ],
+    "contribution": {"ko": "해상도 비교, 개별 모드 영상과 방위 차수 계산, 시간 영역 DFT와 solve_cw의 교차검증을 구성했습니다.", "en": "Resolution comparisons, individual mode images, azimuthal mode-number counting, and time-domain DFT versus solve_cw cross-checks."}
+  },
+  {
+    "id": "13", "part": 13, "url": "/cylindrical-dipole/",
+    "title": {"ko": "원통 좌표와 회전 대칭", "en": "Cylindrical coordinates and rotational symmetry"},
+    "files": ["code/cylindrical_dipole.py"],
+    "references": [
+      {"label": "Meep · Cylindrical Coordinates", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/"},
+      {"label": "Meep · dipole_in_vacuum_cyl_on_axis.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_on_axis.py"},
+      {"label": "Meep · dipole_in_vacuum_cyl_off_axis.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_off_axis.py"},
+      {"label": "Meep · ring-cyl.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/ring-cyl.py"},
+      {"label": "Meep · disc_radiation_pattern.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/disc_radiation_pattern.py"}
+    ],
+    "contribution": {"ko": "m 급수의 수렴 비교, 직교 좌표 장 복원, 고리와 디스크 방사 비교, 구조 그림과 GIF를 구성했습니다.", "en": "Azimuthal-series convergence comparisons, Cartesian field reconstruction, ring/disc radiation comparisons, geometry figures and GIFs."}
+  },
+  {
+    "id": "14", "part": 14, "url": "/extraction-efficiency/",
+    "title": {"ko": "박막의 광추출 효율", "en": "Light extraction from a thin film"},
+    "files": ["code/extraction_efficiency.py", "code/extraction_layouts.py"],
+    "references": [
+      {"label": "Meep · Extraction Efficiency of an LED", "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Local_Density_of_States/#extraction-efficiency-of-a-light-emitting-diode-led"},
+      {"label": "Meep · extraction_eff_ldos.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/extraction_eff_ldos.py"},
+      {"label": "Meep · point_dipole_cyl.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/point_dipole_cyl.py"},
+      {"label": "Meep · edge_emitter_2D.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/edge_emitter_2D.py"},
+      {"label": "Meep · disc_extraction_efficiency.py", "url": "https://github.com/NanoComp/meep/blob/master/python/examples/disc_extraction_efficiency.py"}
+    ],
+    "contribution": {"ko": "높이 sweep과 좌표·해상도 대조, 공식 종료 규칙보다 확장한 m 급수 비교, kz 적분과 edge-emitter 실험을 구성했습니다.", "en": "Height sweeps, coordinate/resolution checks, an extended azimuthal series compared with the official stopping rule, kz integration and an edge-emitter study."}
+  },
+  {
+    "id": "metalens", "url": "/metalens/",
+    "title": {"ko": "메타렌즈 위상과 PB 위상", "en": "Metalens phase maps and PB phase"},
+    "files": ["code/metalens_edge_patterns.py", "code/metalens_radius_layout.py", "code/metalens_three_types.py", "code/metalens_phase_anim.py", "code/metalens_ideal_pb.py"],
+    "references": [
+      {"label": "Khorasaninejad et al. · Science (2016)", "url": "https://doi.org/10.1126/science.aaf6644"},
+      {"label": "Arbabi et al. · Nature Communications (2015)", "url": "https://doi.org/10.1038/ncomms8069"}
+    ],
+    "contribution": {"ko": "위상 유도·접기·샘플링·fin 회전 도해와 1D 스칼라 각 스펙트럼 검사를 구성했습니다. 예시 치수와 직경–위상 모형은 논문 소자의 재현이나 FDTD 결과가 아닙니다.", "en": "Phase derivation, wrapping, sampling and fin-rotation illustrations, plus a 1D scalar angular-spectrum check. Illustrative dimensions and the diameter-to-phase model do not reproduce the paper's device and are not FDTD results."}
+  },
+  {
+    "id": "optical-beams", "url": "/optical-beams/",
+    "title": {"ko": "Beam Lab · 곡률·위상·Airy 감쇠 실험", "en": "Beam Lab · Curvature, phase and Airy apodization"},
+    "files": ["code/beam_lab/README.md", "code/beam_lab/profiles.py", "code/beam_lab/run.py", "code/beam_lab/render.py", "code/beam_lab/test_profiles.py", "code/optical_beams/README.md"],
+    "references": [
+      {"label": "Meep · Python interface", "url": "https://meep.readthedocs.io/en/latest/Python_User_Interface/"},
+      {"label": "Daniel Kotik & Jörg Götte · visual and topic inspiration", "url": "https://danielkotik.github.io/Optical-beams-MEEP/"},
+      {"label": "Archived reproduction · pinned source ca145119", "url": "https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de"},
+      {"label": "Archived reproduction · software citation", "url": "https://doi.org/10.5281/zenodo.5211251"}
+    ],
+    "contribution": {"ko": "Beam Lab은 광원 프로파일·Meep 제어·분석 코드를 새로 작성하여 곡률 0·±0.1, LG 위상 전하 ±2, Airy 감쇠 0.08·0.2를 비교합니다. Optical-beams-MEEP는 시각화와 주제의 참고 자료입니다. 기존 원본 실행 결과와 MIT 고지는 별도 재현 기록에 보존합니다.", "en": "Beam Lab uses newly written source profiles, Meep controls and analysis to compare curvature 0 and ±0.1, LG charges ±2, and Airy apodization 0.08 and 0.2. Optical-beams-MEEP is a visual and topic reference. Earlier upstream executions and their MIT notice remain in a separate reproduction archive."}
+  }
+]

@@ -1,8 +1,8 @@
 ---
 layout: lesson
 permalink: /binary-grating/
-lesson_title: "격자는 빛을 어느 방향으로 나눌까?"
-lesson_summary: "하나의 평면파가 세 방향으로 갈라지는 장면에서 출발합니다. 격자 방정식으로 가능한 방향을 정하고, 차수별 효율과 전체 power가 맞는지 검산합니다."
+lesson_title: "격자의 회절 방향과 효율은 어떻게 구할까요?"
+lesson_summary: "평면파가 격자를 지나 세 방향으로 회절하는 모습을 관찰합니다. 격자 방정식으로 전파 가능한 방향을 구하고, 차수별 효율의 합이 전체 투과 전력과 일치하는지 확인합니다."
 lesson_goals:
   - "주기와 파장으로 전파 가능한 회절 차수와 각도를 구한다."
   - "차수별 효율의 합을 flux 및 반사율과 비교한다."
@@ -32,7 +32,7 @@ excerpt: "a glass binary grating under a normally incident plane wave. One perio
 
 </details>
 
-<h2 id="observe">1. 관찰 · 빛의 경로를 먼저 보기</h2>
+<h2 id="observe">1. 관찰 · 격자를 지난 빛의 회절 방향</h2>
 
 유리 막대 8개에 왼쪽에서 평면파를 보냈습니다. 막대 뒤에서 빛이 **곧장 가는 방향과 비스듬히 가는 방향**으로 나뉩니다. 청록 점선은 방정식으로 예측한 방향이고, 오른쪽 곡선은 실제 필드의 공간 FFT입니다.
 
@@ -48,7 +48,7 @@ excerpt: "a glass binary grating under a normally incident plane wave. One perio
     <img src="{{ site.baseurl }}/assets/meep/06/05_anim_finite.gif" alt="8개 유리 막대 뒤에서 세 회절 빔이 형성되는 펄스의 시간 전개" loading="lazy" data-animation-src="{{ site.baseurl }}/assets/meep/06/05_anim_finite.gif" data-static-src="{{ site.baseurl }}/assets/meep/06/04_finite.png">
   </a>
   <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
-  <figcaption>같은 유한 격자를 짧은 펄스로. 평면파가 막대를 지나는 순간 막대마다 산란파가 생기고, 그것들이 보강되는 세 방향으로만 빔이 자란다. 0차는 곧장, ±1차는 비스듬히.</figcaption>
+  <figcaption>같은 유한 격자에 짧은 펄스를 입사시킨 결과입니다. 막대마다 생긴 산란파가 서로 보강되는 세 방향으로 빔이 형성됩니다. 0차는 정면으로, ±1차는 비스듬히 전파합니다.</figcaption>
 </figure>
 
 <h2 id="predict">2. 예측 · 결과를 읽기 전에</h2>
@@ -68,20 +68,17 @@ excerpt: "a glass binary grating under a normally incident plane wave. One perio
 
 </details>
 
-<h2 id="understand">3. 원리 이해하기 · 관찰을 설명하는 방법</h2>
+<h2 id="understand">3. 원리 이해하기 · 격자 방정식과 차수별 효율</h2>
+
+{% include chapter-illustration.html %}
 
 <!-- concept-illustration:part-06:start -->
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/06/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/06/00_concept.png" alt="왼쪽은 유리에서 공기로 돌출한 한 주기 격자와 y 주기 경계 및 x PML, 오른쪽은 +x 기준 0도와 ±36.6도의 공기 중 회절 방향을 보여준다." loading="lazy">
-  </a>
-  <figcaption>A 실험의 유리(n = 1.5)는 왼쪽에 있고, 유리 돌출부가 오른쪽 공기로 이어집니다. 빛은 유리에서 +x 방향으로 입사합니다. y 방향 주기 2.6 µm, 돌출 높이 0.5 µm, 폭 1.3 µm이며 한 주기 셀은 y 주기 경계와 x PML을 사용합니다. 파장 1.55 µm에서 공기로 전파하는 차수는 0, ±1이며 각도 ±36.6°는 +x 법선 기준입니다. 오른쪽 반복 배열은 방향 설명용이며 별도 유한 8개 격자의 계산 배치와 구분합니다.</figcaption>
-</figure>
+<p class="lesson-note">A 실험의 유리(n = 1.5)는 왼쪽에 있고, 유리 돌출부가 오른쪽 공기로 이어집니다. 빛은 유리에서 +x 방향으로 입사합니다. y 방향 주기 2.6 µm, 돌출 높이 0.5 µm, 폭 1.3 µm이며 한 주기 셀은 y 주기 경계와 x PML을 사용합니다. 파장 1.55 µm에서 공기로 전파하는 차수는 0, ±1이며 각도 ±36.6°는 +x 법선 기준입니다. 오른쪽 반복 배열은 방향 설명용이며 별도 유한 8개 격자의 계산 배치와 구분합니다.</p>
 
 <!-- concept-illustration:part-06:end -->
 
-### 방향은 주기와 파장으로 정한다
+### 주기와 파장으로 회절 방향을 구합니다
 
 수직 입사한 빛이 공기로 나갈 때, 주기 Λ는 가로 방향 파수를 차수 m마다 다르게 만듭니다.
 
@@ -89,7 +86,7 @@ $$\sin\theta_m=m\lambda/\Lambda$$
 
 전파하려면 $\lvert m\rvert\lambda/\Lambda<1$이어야 합니다. 주기 2.6 µm와 파장 1.55 µm에서는 m = 0, ±1만 전파하고, ±1차 각도는 법선에서 ±36.6°입니다. 이 식은 **갈 수 있는 방향**을 알려주며 각 방향의 power는 알려주지 않습니다.
 
-### 한 주기로 효율을 구하고 전체 합을 확인한다
+### 한 주기 셀에서 차수별 효율을 계산합니다
 
 무한히 반복되는 격자는 막대 하나와 y 방향 주기 경계로 계산합니다. PML은 빛이 진행하는 x 방향에만 둡니다. `DiffractedPlanewave`로 각 차수의 복소 진폭을 분해한 뒤 입사 flux로 정규화합니다.
 
@@ -127,7 +124,7 @@ $$
 
 **가정과 유효 범위**: 2D, Ez 편광, 수직 입사, 손실 없는 유리(n 1.5). 격자는 유리 기판 위의 유리 막대. 유한 격자의 각도는 FFT 분해능 1/(cut 길이) ≈ 0.037 cycles/µm(±1.8°)로 제한된다.
 
-### 결과 보기 전에 맞춰보기
+### 결과를 보기 전에 예상하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -145,13 +142,13 @@ $$
 
 <h2 id="run">4. 직접 실행 · 변수 하나만 바꾸기</h2>
 
-### 한 번만 바꿔보기: 회절 주기
+### 한 번만 바꿔보기: 격자 주기
 
 1. 전체 코드와 `blogfig.py`가 있는 `code/` 폴더에서 `python binary_grating.py`를 실행하고 기준 `result.json`을 보관합니다.
 2. `GP_A, GH_A, GDC_A = 2.6, 0.5, 0.5`에서 **첫 값만 3.5로** 바꿉니다. 높이·duty cycle·파장은 그대로 둡니다.
 3. 다시 실행해 `orders_propagating`의 차수 목록, 각 차수의 `T_m`, 그 합과 `T_total`을 비교합니다.
 
-방정식은 ±2차도 전파할 것으로 예측합니다. 새 차수에 얼마가 갈지는 계산으로 확인해야 합니다. 아래 측정 효율은 원래 2.6 µm 주기의 값이며, **3.5 µm의 효율은 새 실험 결과로 채워야 합니다**. B 실험의 `GP_B = 1.2`는 그대로 유지합니다.
+격자 방정식에 따르면 ±2차도 전파할 수 있습니다. 각 차수의 전력은 계산으로 확인해야 합니다. 아래 효율은 원래 2.6 µm 주기의 결과이며, **3.5 µm에서의 효율은 직접 실행해 구해야 합니다**. B 실험의 `GP_B = 1.2`는 그대로 유지합니다.
 
 <details markdown="1">
 <summary>계산 배치·광원·파라미터 보기</summary>
@@ -287,7 +284,7 @@ T_total = mp.get_fluxes(tran)[0] / P_in
 R = -mp.get_fluxes(refl)[0] / P_in
 ```
 
-- **무엇**: 차수 m의 평면파 진폭 a_m을 하나씩 구해 \|a_m\|²/P_in을 효율로, 위각을 위상으로 쓴다.
+- **무엇**: 차수 m의 평면파 진폭 a_m을 각각 구한다. \|a_m\|²/P_in은 효율이고, 복소 진폭의 편각은 위상이다.
 - **왜**: `DiffractedPlanewave((0, m, 0), axis, s, p)`는 "주기 방향 y로 m번째 차수, s 편광(Ez)"이라는 하나의 평면파 모드다. `get_eigenmode_coefficients`는 이 객체를 한 번에 하나만 받는다. 04편의 band 번호 대신 차수를 직접 지정하는 셈이다.
 - **틀리면**: 리스트로 여러 `DiffractedPlanewave`를 넘기면 `TypeError`가 난다(처음 실행에서 그랬다). `axis`를 x로 주면 평면 정의가 바뀌어 s·p가 뒤집힌다.
 
@@ -295,9 +292,9 @@ R = -mp.get_fluxes(refl)[0] / P_in
 
 </details>
 
-<h2 id="interpret">5. 해석 · 측정값과 한계를 함께 읽기</h2>
+<h2 id="interpret">5. 해석 · 회절 효율 검산과 위상 변화 범위</h2>
 
-### 방향 예측과 power 측정을 따로 읽기
+### 예측한 회절 방향과 계산한 전력 비교
 
 | 차수 | 공기 중 각도 | 입사 power 대비 효율 |
 |---|---|---|
@@ -324,7 +321,7 @@ R = -mp.get_fluxes(refl)[0] / P_in
 </figure>
 
 <aside class="lesson-note" markdown="1">
-**유한 격자의 각도에는 분해능이 있습니다.** FFT 피크 0.372 cycles/µm(35.2°)와 방정식의 0.385 cycles/µm(36.6°)는 cut 길이가 정하는 약 ±0.037 cycles/µm, ±1.8° 범위 안에서 비교합니다. 이 결과만으로 1° 이하의 각도 정확도, 비스듬한 입사·다른 편광·파장 스펙트럼까지 검증했다고 볼 수 없습니다.
+**유한 격자의 회절 각도는 측정 구간의 길이에 따라 분해능이 제한됩니다.** FFT 피크 0.372 cycles/µm(35.2°)와 방정식의 0.385 cycles/µm(36.6°)는 cut 길이가 정하는 약 ±0.037 cycles/µm, ±1.8° 범위 안에서 비교합니다. 이 결과만으로 1° 이하의 각도 정확도, 비스듬한 입사·다른 편광·파장 스펙트럼까지 검증했다고 볼 수 없습니다.
 </aside>
 
 <details markdown="1">
@@ -691,7 +688,7 @@ C. finite grating (8 ridges): spatial-FFT peak at 0.372 cycles/um -> theta = 35.
 
 ### 어디에 쓰이는가
 
-회절 격자는 분광기, 광섬유 결합기, AR 안경, 홀로그램의 공통 부품이다. 차수별 효율이 그 부품의 성능이다.
+회절 격자는 분광기, 광섬유 결합기, AR 안경, 홀로그램에 쓰입니다. 차수별 효율은 원하는 방향으로 전력을 얼마나 전달하는지 평가하는 지표입니다.
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|

@@ -1,12 +1,12 @@
 ---
 layout: lesson
 permalink: /waveguide-bend-90/
-lesson_title: "빛은 직각 모서리를 얼마나 잘 돌아갈까?"
-lesson_summary: "날카로운 코너에서 새는 빛을 보고, 직선 도파로를 기준으로 투과·반사를 나눠 잽니다. 코너를 둥글릴 때 손실과 크기가 어떻게 바뀌는지 확인합니다."
+lesson_title: "도파로의 굽힘 반지름은 손실에 어떤 영향을 줄까요?"
+lesson_summary: "직각으로 꺾인 도파로의 방사장을 관찰하고, 직선 도파로를 기준으로 투과율과 반사율을 구합니다. 굽힘 반지름에 따라 손실과 소자 크기가 어떻게 달라지는지 비교합니다."
 lesson_goals:
-  - "투과·반사·방사로 나뉜 빛을 필드와 수치로 연결한다."
+  - "투과·반사·방사를 장 분포와 전력 비율로 설명한다."
   - "직선 기준 run과 입사장 빼기가 필요한 이유를 설명한다."
-  - "굽힘 반지름과 손실을 비교하고 수치 오차의 한계를 읽는다."
+  - "굽힘 반지름에 따른 손실을 비교하고 수치 오차의 영향을 설명한다."
 lesson_prerequisites: "04편의 도파로 모드와 03편의 reference run을 알면 좋습니다. 실행에는 Meep와 Python이 필요합니다."
 date: 2026-10-23
 title: "Meep Example 05 · Bent waveguide와 radius trade-off — 2-run flux 정규화, sharp bend 기준값, radius sweep"
@@ -32,7 +32,7 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 
 </details>
 
-<h2 id="observe">1. 관찰 · 빛의 경로를 먼저 보기</h2>
+<h2 id="observe">1. 관찰 · 굽힘 구간의 투과·반사·방사</h2>
 
 같은 폭의 도파로를 직각으로 꺾었습니다. 입력은 왼쪽, 출력은 위쪽입니다. 수평 암에서 코너까지 온 파면이 **수직 암으로만 이어지는지, 주변 공기로도 퍼지는지** 보세요. 필드의 밝기를 바로 투과율로 읽지 말고 뒤의 flux 측정과 연결합니다.
 
@@ -48,7 +48,7 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
     <img src="{{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif" alt="날카로운 코너에서 펄스가 반사·방사·투과로 나뉘는 시간 전개" loading="lazy" data-animation-src="{{ site.baseurl }}/assets/meep/05/06_anim_sharp.gif" data-static-src="{{ site.baseurl }}/assets/meep/05/02_field.png">
   </a>
   <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
-  <figcaption>sharp 코너의 시간 전개. 펄스가 코너에 닿는 순간 cladding으로 큰 파면이 퍼져 나가고, 수직 암으로는 일부만 올라간다. 되돌아오는 파가 수평 암에서 입사파와 겹친다.</figcaption>
+  <figcaption>직각 코너에서의 시간 변화입니다. 펄스가 코너에 닿으면 cladding으로 큰 파면이 퍼지고, 일부만 수직 도파로로 진행합니다. 반사파는 수평 도파로에서 입사파와 겹칩니다.</figcaption>
 </figure>
 
 <figure class="lesson-figure lesson-animation">
@@ -56,7 +56,7 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
     <img src="{{ site.baseurl }}/assets/meep/05/06_anim_round.gif" alt="반지름 3a의 둥근 코너를 따라 펄스가 출력으로 이동하는 시간 전개" loading="lazy" data-animation-src="{{ site.baseurl }}/assets/meep/05/06_anim_round.gif" data-static-src="{{ site.baseurl }}/assets/meep/05/05_field_round.png">
   </a>
   <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
-  <figcaption>반지름 3a 코너의 시간 전개. 같은 펄스가 코너를 돌아 수직 암 위의 투과 단면(파란 선)까지 거의 그대로 간다.</figcaption>
+  <figcaption>반지름 3a 코너에서의 시간 변화입니다. 같은 펄스가 굽힘 구간을 지나 수직 도파로의 투과 측정 단면(파란 선)까지 거의 그대로 전달됩니다.</figcaption>
 </figure>
 
 <h2 id="predict">2. 예측 · 결과를 읽기 전에</h2>
@@ -76,24 +76,21 @@ excerpt: "a dielectric waveguide (ε = 12, width 1) turns a sharp 90° corner. W
 
 </details>
 
-<h2 id="understand">3. 원리 이해하기 · 관찰을 설명하는 방법</h2>
+<h2 id="understand">3. 원리 이해하기 · 직선 기준 계산과 전력 정규화</h2>
+
+{% include chapter-illustration.html %}
 
 <!-- concept-illustration:part-05:start -->
 
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/05/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/05/00_concept.png" alt="직선 기준, 날카로운 L자 굽힘, 둥근 굽힘을 비교한다. 입력은 왼쪽, 출력은 위쪽이며 날카로운 코너의 반사와 바깥 방사 경로를 표시한다." loading="lazy">
-  </a>
-  <figcaption>공기 속 ε = 12 유전체 도파로에서 직선 기준과 날카로운 직각, 둥근 굽힘을 비교합니다. 유효 입사광은 왼쪽에서 +x 방향으로 들어오고 출력은 위쪽 +y 방향입니다. 코너에서는 투과·반사·바깥 방사가 나뉠 수 있습니다. 그림의 R ≈ 0.70 µm는 둥근 굽힘의 중심선 곡률반경 0.6975 µm를 반올림한 값입니다. 점선은 위치 안내선입니다. 화살표 굵기는 계산된 전력 비율을 나타내지 않습니다. 파장을 1550 nm로 읽는 이 글의 환산에서 폭은 232.5 nm입니다.</figcaption>
-</figure>
+<p class="lesson-note">공기 속 ε = 12 유전체 도파로에서 직선 기준과 날카로운 직각, 둥근 굽힘을 비교합니다. 유효 입사광은 왼쪽에서 +x 방향으로 들어오고 출력은 위쪽 +y 방향입니다. 코너에서는 투과·반사·바깥 방사가 나뉠 수 있습니다. 그림의 R ≈ 0.70 µm는 둥근 굽힘의 중심선 곡률반경 0.6975 µm를 반올림한 값입니다. 점선은 위치 안내선입니다. 화살표 굵기는 계산된 전력 비율을 나타내지 않습니다. 파장을 1550 nm로 읽는 이 글의 환산에서 폭은 232.5 nm입니다.</p>
 
 <!-- concept-illustration:part-05:end -->
 
-### 먼저 직선에서 기준을 만든다
+### 직선 도파로에서 입사 전력을 구합니다
 
 기준 run은 같은 재료·폭·source를 가진 직선 도파로입니다. 여기서 실제로 전달된 power를 입력값 P_in으로 저장하고, 반사 단면에서는 입사장의 DFT 데이터를 저장합니다. 굽힘 run에서는 같은 반사 단면에 `load_minus_flux_data`를 적용해 **필드 수준에서 입사 성분을 뺍니다**. power 숫자끼리 빼면 간섭항이 남습니다.
 
-### 출력, 되돌아옴, 바깥으로 샘을 나눈다
+### 투과율·반사율·방사 손실을 구분합니다
 
 $$T=P_{\mathrm{tran}}/P_{\mathrm{in}},\qquad R=-P_{\mathrm{refl}}/P_{\mathrm{in}},\qquad L=1-T-R$$
 
@@ -123,7 +120,7 @@ $$
 
 **가정과 유효 범위**: 2D, lossless 재료(잔여는 전부 방사), Ez 편광(면에 수직한 전기장), 공식 예제의 무차원 단위(길이 단위 a, ε = 12, 파장 6.67a). 그림에서는 a = 232.5 nm로 읽어 중심 파장을 1550 nm, 길이를 µm로 표시한다.
 
-### 결과 보기 전에 맞춰보기
+### 결과를 보기 전에 예상하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -349,7 +346,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.4f}, radiation loss = {L[ic]:.4f}")
 
 </details>
 
-<h2 id="interpret">5. 해석 · 측정값과 한계를 함께 읽기</h2>
+<h2 id="interpret">5. 해석 · 굽힘 반지름에 따른 손실과 수치 오차</h2>
 
 ### 투과가 낮아진 이유를 숫자로 확인하기
 
@@ -382,7 +379,7 @@ sharp bend에서는 입력의 약 20%만 위쪽 암에 도달하고 잔여 방�
 </figure>
 
 <aside class="lesson-note" markdown="1">
-**숫자의 유효 자리도 결과입니다.** sharp bend의 T는 해상도 25→40에서 0.1997→0.1894, PML 두께 1→1.5와 monitor 이동을 함께 바꾸면 0.1703으로 변합니다. 따라서 T ≈ 0.2의 경향을 읽어야 합니다. 반지름 4a의 T = 1.0031은 이득이 아니라 수치 오차입니다. source power가 중심의 0.005%인 대역 끝의 비율은 신뢰도가 낮습니다.
+**계산 조건에 따른 변화를 보고 유효 자릿수를 판단해야 합니다.** sharp bend의 T는 해상도 25→40에서 0.1997→0.1894, PML 두께 1→1.5와 monitor 이동을 함께 바꾸면 0.1703으로 변합니다. 따라서 T ≈ 0.2 수준으로 해석해야 합니다. 반지름 4a의 T = 1.0031은 이득이 아니라 수치 오차입니다. source power가 중심의 0.005%인 대역 끝의 비율은 신뢰도가 낮습니다.
 </aside>
 
 <details markdown="1">
@@ -395,7 +392,7 @@ sharp bend에서는 입력의 약 20%만 위쪽 암에 도달하고 잔여 방�
 | L (방사, 잔여) | 0.5801 | — |
 | T + R | 0.4199 | ≤ 1 성립 |
 
-### 코너를 둥글리면: radius sweep
+### 굽힘 반지름에 따른 투과율 비교
 
 
 
@@ -416,7 +413,7 @@ sharp bend에서는 입력의 약 20%만 위쪽 암에 도달하고 잔여 방�
 | 4a | 0.93 | 1.003 | 0.000 | −0.003 |
 | 6a | 1.40 | 1.000 | 0.000 | 0.000 |
 
-반사는 반지름 1a(파장의 1/7)에서 이미 사라진다. 방사는 더 천천히 줄어 1.5a에서 10% 아래로, 3a에서 1% 대로 내려간다. 손실이 꺾이는 무릎(knee)은 1.5–2a, 즉 도파로 안 파장(1.92a)의 한 배 근처다. 그보다 큰 반지름은 면적만 늘린다. 4a에서 T가 1을 0.3% 넘는 것은 정규화 run과 bend run의 수치 오차이지 이득이 아니다.
+반사는 반지름 1a(파장의 1/7)에서 이미 작아진다. 방사는 더 천천히 줄어 1.5a에서 10% 아래로, 3a에서 1% 대로 내려간다. 손실 감소가 완만해지는 구간은 1.5–2a, 즉 도파로 안 파장(1.92a)의 한 배 근처다. 그보다 큰 반지름을 선택할 때는 추가 손실 감소와 면적 증가를 함께 비교해야 한다. 4a에서 T가 1을 0.3% 넘는 것은 정규화 run과 bend run의 수치 오차이지 이득이 아니다.
 
 ### 수렴성 (sharp bend)
 
@@ -768,7 +765,7 @@ convergence res=25 dpml=1.5: T=0.1703 R=0.2173 L=0.6124
 
 ### 어디에 쓰이는가
 
-bend 반지름은 칩 면적을 정하는 숫자다. 반지름을 두 배로 하면 고리 하나의 면적은 네 배가 되고, foundry의 설계 규칙에는 최소 반지름이 적혀 있다.
+굽힘 반지름은 도파로가 차지하는 칩 면적에 영향을 줍니다. 반지름을 두 배로 하면 고리 하나의 면적은 네 배가 됩니다. 반지름을 줄일 때의 손실을 확인해야 하며, 파운드리의 설계 규칙에도 최소 굽힘 반지름이 정해져 있습니다.
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|

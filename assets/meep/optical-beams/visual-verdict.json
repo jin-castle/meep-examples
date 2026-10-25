@@ -1,0 +1,11 @@
+{
+  "score": 93,
+  "verdict": "pass",
+  "category_match": true,
+  "differences": [
+    "The original reference images rotate the interface to horizontal; these coordinate-preserving plots show its actual slope",
+    "These independently rendered figures add axes, common color scales and explicit instantaneous versus cycle-mean labels"
+  ],
+  "suggestions": [],
+  "reasoning": "The signed red-blue field over gray dielectric and black-background hot map reproduce the requested visual conventions. Labels and colorbars are legible without overlap, and both cases retain common scales with their physical coordinates."
+}

@@ -7,10 +7,10 @@ lang: ko
 series: meep-examples
 part: 12
 permalink: /ring-resonator/
-lesson_title: "고리에 갇힌 빛은 얼마나 오래 남을까?"
-lesson_summary: "펄스가 꺼진 뒤 남는 울림에서 공진 주파수·Q·공진 간격을 읽고, 어느 숫자까지 믿을 수 있는지 확인합니다."
+lesson_title: "고리 공진기의 빛은 얼마나 오래 남을까요?"
+lesson_summary: "펄스가 꺼진 뒤의 전기장 신호로 공진 주파수·Q·공진 간격을 구하고, 각 측정값의 신뢰도를 확인합니다."
 lesson_goals:
-  - "공진 주파수·Q·FSR이 각각 무엇을 말하는지 구분합니다."
+  - "공진 주파수·Q·FSR이 나타내는 물리량을 구분합니다."
   - "Harminv 관측 시간을 바꿔 Q의 신뢰 조건을 확인합니다."
   - "주파수의 수렴과 Q의 수렴이 다른 이유를 설명합니다."
 lesson_prerequisites: "11편의 공진과 선폭, 05편의 굽힘 손실을 알고 있으면 좋습니다."
@@ -24,11 +24,11 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 ---
 <h2 id="observe">1. 먼저 관찰하기</h2>
 
-고리에 짧은 펄스를 넣었다가 끄면 빛은 바로 사라질까요? 아래 영상에서 **고리를 도는 울림과 바깥으로 새는 빛**을 찾아보세요. 11편의 두 거울 대신, 이번에는 유전체 도파로를 둥글게 말아 빛을 가둡니다.
+고리에 짧은 펄스를 넣었다가 끄면 빛은 바로 사라질까요? 아래 영상에서 **고리에 남은 전기장과 바깥으로 새는 빛**을 찾아보세요. 11편의 두 거울에 이어, 이번에는 고리 모양의 유전체 도파로로 빛을 가둡니다.
 
 <figure class="lesson-figure">
   <a href="{{ site.baseurl }}/assets/meep/12/05_anim_ring.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/12/05_anim_ring.gif" data-animation-src="{{ site.baseurl }}/assets/meep/12/05_anim_ring.gif" data-static-src="{{ site.baseurl }}/assets/meep/12/03_modes.png" alt="광대역 펄스 뒤 고리에서 울리는 전기장과 바깥으로 새는 빛" loading="eager"></a>
-  <figcaption>펄스가 꺼진 뒤에도 세 모드가 함께 울려 맥놀이가 보입니다. 낮은 모드부터 PML 쪽으로 새어 나갑니다.</figcaption>
+  <figcaption>펄스가 꺼진 뒤에도 세 모드가 겹쳐 맥놀이가 나타납니다. 주파수가 낮은 모드부터 PML 쪽으로 새어 나갑니다.</figcaption>
   <button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
 </figure>
 
@@ -79,6 +79,8 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 
 <h2 id="understand">3. 원리 이해하기</h2>
 
+{% include chapter-illustration.html %}
+
 <figure class="lesson-figure">
 <svg viewBox="0 0 300 245" role="img" aria-labelledby="ring-principle-title ring-principle-desc" xmlns="http://www.w3.org/2000/svg">
   <title id="ring-principle-title">고리 공진의 원리</title>
@@ -98,7 +100,7 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 <figcaption>원리 개념도입니다. 점선은 빛의 왕복 경로를, 화살표는 진행과 누설을 뜻합니다. 실제 전기장 분포나 손실 크기를 그린 그림은 아닙니다.</figcaption>
 </figure>
 
-고리를 한 바퀴 돌아온 파동이 같은 위상으로 만나면 보강됩니다. 그래서 아무 주파수나 남는 것이 아니라, 둘레에 맞는 **공진 주파수**만 남습니다. **Q**는 그 울림이 얼마나 천천히 사라지는지, **FSR**은 이웃한 공진 주파수가 얼마나 떨어져 있는지를 말합니다.
+고리를 한 바퀴 돌아온 파동이 같은 위상으로 만나면 보강됩니다. 이 조건을 만족하는 **공진 주파수**의 빛이 고리에 남습니다. **Q**는 공진의 감쇠 정도를, **FSR**은 이웃한 공진 주파수 사이의 간격을 나타냅니다.
 
 `Harminv`는 **source가 꺼진 뒤 한 점에 남는 신호**에서 주파수와 감쇠율을 함께 찾습니다. Q가 크다고 감쇠가 끝날 때까지 기다릴 필요는 없지만, 추정 오차를 확인해야 합니다. **양의 Q·관측 대역 안의 모드**와 `error < f/(2Q)`가 기본 조건이며, 이 글의 세 모드는 error가 그 기준의 2% 아래입니다.
 
@@ -128,7 +130,7 @@ Harminv는 source가 꺼진 뒤 한 점에서 기록한 field를 감쇠 사인�
 
 **가정과 유효 범위**: 2D Ez, 손실 없는 유전체, 단위 a = 1 µm(공진 파장 5.7~8.5 µm). 통신 파장으로 옮기려면 모든 길이에 0.27을 곱한다. 고리가 도파로와 결합하지 않은 고립 고리라 Q는 굽힘 방사만 반영한다.
 
-### 결과 보기 전에 맞춰보기
+### 결과를 보기 전에 예측하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -147,7 +149,7 @@ Harminv는 source가 꺼진 뒤 한 점에서 기록한 field를 감쇠 사인�
 
 <h2 id="run">4. 변수 하나 바꿔 실험하기</h2>
 
-이번에는 **Harminv가 울림을 관측하는 시간만** 바꿉니다. 저장소의 `code/` 폴더에서 공통 helper `blogfig.py`와 `ring_resonator.py`를 함께 두고 Meep 환경에서 실행하세요. 전체 코드는 아래 참고 자료에도 있습니다. 단일 CPU 기준 약 10분이며, 원문의 4분은 4개 MPI 프로세스를 사용한 기록입니다.
+이번에는 **Harminv가 전기장 신호를 관측하는 시간만** 바꿉니다. 저장소의 `code/` 폴더에서 공통 helper `blogfig.py`와 `ring_resonator.py`를 함께 두고 Meep 환경에서 실행하세요. 전체 코드는 아래 참고 자료에도 있습니다. 단일 CPU 기준 약 10분이며, 원문의 4분은 4개 MPI 프로세스를 사용한 기록입니다.
 
 ```bash
 OMP_NUM_THREADS=1 python ring_resonator.py
@@ -261,7 +263,7 @@ ez_cw = sim.get_array(vol=NONPML, component=mp.Ez)
 - **왜**: 공진의 세 숫자는 한 점의 시간 신호에 다 들어 있다. 공간 monitor는 모드의 모양을 볼 때만 필요하다.
 - **틀리면**: Harminv probe를 모드의 마디(node)에 두면 그 모드가 안 보인다. source와 같은 점을 쓰면 적어도 여기된 모드는 보인다.
 
-### ⑥ 실행 — 울림 창, 감쇠 조건, 반복 종료
+### ⑥ 실행 — 관측 시간, 감쇠 조건, 반복 종료
 
 ```python
 sim.run(mp.after_sources(h), until_after_sources=300)                                              # A: fixed window (official)
@@ -271,7 +273,7 @@ sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Ez, mp.Vector3(R 
 ```
 
 - **무엇**: A는 고정 창(공식). B와 C의 시간영역은 감쇠 조건. C의 solve는 tolerance와 최대 반복.
-- **왜**: Harminv는 감쇠가 끝나기를 기다리지 않는다. 그것이 Harminv의 존재 이유다. 반대로 DFT는 field가 다 빠져야 정확하므로 Q가 큰 모드일수록 오래 돈다(11편의 2Q/f).
+- **왜**: Harminv는 감쇠 중인 신호에서 주파수와 감쇠율을 추정한다. 반면 DFT는 field가 충분히 감쇠할 때까지 축적해야 하므로 Q가 큰 모드일수록 계산 시간이 길다(11편의 2Q/f).
 - **틀리면**: B에서 감쇠 기준을 느슨하게 하면 DFT에 꼬리가 남아 모드 모양에 이웃 모드가 섞인다.
 
 ### ⑦ 후처리 — FSR, m, 복소 정렬
@@ -374,7 +376,7 @@ err_td = np.linalg.norm(alpha * ez_td - ref) / np.linalg.norm(ref)
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: 이 고리(2D, n 3.4, R 1, w 1)의 대역 0.10~0.20에는 Ez 모드가 셋 있고 주파수는 해상도 10에서 이미 1% 안이다. 간격은 $n_g$ 3.69의 $1/(n_gL)$과 같다. f = 0.118 모드는 시간영역과 주파수 영역이 0.40% 안에서 같다.
-- 할 수 없는 것: Q의 절대값. 해상도 30에서도 수렴하지 않았고 Harminv 창 300의 값이다. 도파로와 결합한 고리의 Q(결합 손실이 더해진다). 3D 디스크의 값. 통신 파장으로 축소했을 때의 재료 분산.
+- 확인되지 않은 것: Q의 수렴값. 해상도 30에서도 수렴하지 않았고 Harminv 관측 시간 300에서 얻은 값이다. 도파로와 결합한 고리의 Q에는 결합 손실이 추가되며, 3D 디스크의 결과도 별도 계산이 필요하다. 통신 파장으로 축소했을 때의 재료 분산은 여기서 다루지 않았다.
 
 </details>
 

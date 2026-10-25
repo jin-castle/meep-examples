@@ -1,0 +1,442 @@
+{
+  "passed": true,
+  "figures": [
+    "vortex_longitudinal.png",
+    "vortex_transverse.png",
+    "vortex_3d.png",
+    "vortex_3d_modulus.png",
+    "airy_free_space.png"
+  ],
+  "runs": {
+    "lg": {
+      "beam": "lg",
+      "source_sha256": "e3bb98b0a981298f07c554215749f4aca7dbf193bd0fe6a699077e2a5c308c0d",
+      "upstream_commit": "ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+      "meep": "1.33.0",
+      "source_script_unchanged": true,
+      "mpi_processes": 1,
+      "threads": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "output_change": "Original Python per-cell output callbacks replaced by native get_array plane exports; simulation grid/source/steps unchanged",
+      "source_acceleration": {
+        "passed": true,
+        "points": [
+          {
+            "y": 0,
+            "z": 0,
+            "original": [
+              1.7859069785529714e-16,
+              1.9960136819121442e-16
+            ],
+            "reduced": [
+              0.0,
+              0.0
+            ],
+            "absolute_error": 2.6783454509126857e-16,
+            "relative_error": null
+          },
+          {
+            "y": 0.25,
+            "z": 0,
+            "original": [
+              -0.09998268739284528,
+              -0.7270963034471942
+            ],
+            "reduced": [
+              -0.09998268739282486,
+              -0.7270963034472232
+            ],
+            "absolute_error": 3.5453682048669836e-14,
+            "relative_error": 4.830607328694163e-14
+          },
+          {
+            "y": -0.25,
+            "z": 0,
+            "original": [
+              -0.09998268739284558,
+              -0.727096303447194
+            ],
+            "reduced": [
+              -0.09998268739282504,
+              -0.7270963034472232
+            ],
+            "absolute_error": 3.569915187070742e-14,
+            "relative_error": 4.864052890700395e-14
+          },
+          {
+            "y": 0,
+            "z": 0.25,
+            "original": [
+              0.0999826873929774,
+              0.7270963034472276
+            ],
+            "reduced": [
+              0.09998268739282494,
+              0.7270963034472232
+            ],
+            "absolute_error": 1.5252604025429843e-13,
+            "relative_error": 2.0781858619299794e-13
+          },
+          {
+            "y": 0,
+            "z": -0.25,
+            "original": [
+              0.09998268739297911,
+              0.7270963034472278
+            ],
+            "reduced": [
+              0.09998268739282477,
+              0.7270963034472232
+            ],
+            "absolute_error": 1.54401990132986e-13,
+            "relative_error": 2.1037459073430627e-13
+          },
+          {
+            "y": 0.25,
+            "z": 0.25,
+            "original": [
+              1.082811116168287,
+              -0.5834463415764479
+            ],
+            "reduced": [
+              1.082811116168278,
+              -0.5834463415763927
+            ],
+            "absolute_error": 5.588834476144593e-14,
+            "relative_error": 4.5437835641786503e-14
+          },
+          {
+            "y": -0.25,
+            "z": 0.25,
+            "original": [
+              -1.082811116168297,
+              0.5834463415764184
+            ],
+            "reduced": [
+              -1.082811116168278,
+              0.5834463415763929
+            ],
+            "absolute_error": 3.175315487452555e-14,
+            "relative_error": 2.581566225400522e-14
+          },
+          {
+            "y": 0.25,
+            "z": -0.25,
+            "original": [
+              -1.0828111161682974,
+              0.5834463415764185
+            ],
+            "reduced": [
+              -1.082811116168278,
+              0.5834463415763925
+            ],
+            "absolute_error": 3.237437752605086e-14,
+            "relative_error": 2.632072306511791e-14
+          },
+          {
+            "y": -0.25,
+            "z": -0.25,
+            "original": [
+              1.0828111161682885,
+              -0.5834463415764475
+            ],
+            "reduced": [
+              1.082811116168278,
+              -0.5834463415763924
+            ],
+            "absolute_error": 5.604724282600033e-14,
+            "relative_error": 4.5567021506421364e-14
+          },
+          {
+            "y": 0.8,
+            "z": 0,
+            "original": [
+              0.47597939952538115,
+              1.5000054613870464
+            ],
+            "reduced": [
+              0.47597939952539353,
+              1.5000054613870002
+            ],
+            "absolute_error": 4.7815470300361036e-14,
+            "relative_error": 3.03838556916868e-14
+          },
+          {
+            "y": -0.8,
+            "z": 0,
+            "original": [
+              0.4759793995253826,
+              1.5000054613870473
+            ],
+            "reduced": [
+              0.4759793995253939,
+              1.500005461387
+            ],
+            "absolute_error": 4.863233082493318e-14,
+            "relative_error": 3.090292142800451e-14
+          },
+          {
+            "y": 0,
+            "z": 0.8,
+            "original": [
+              -0.4759793995253811,
+              -1.500005461387046
+            ],
+            "reduced": [
+              -0.4759793995253937,
+              -1.5000054613870002
+            ],
+            "absolute_error": 4.744515071574076e-14,
+            "relative_error": 3.0148539867159144e-14
+          },
+          {
+            "y": 0,
+            "z": -0.8,
+            "original": [
+              -0.47597939952538276,
+              -1.500005461387047
+            ],
+            "reduced": [
+              -0.47597939952539337,
+              -1.5000054613870002
+            ],
+            "absolute_error": 4.8036137782568936e-14,
+            "relative_error": 3.0524076605402274e-14
+          },
+          {
+            "y": 0.7,
+            "z": 0.4,
+            "original": [
+              -0.9717063017740462,
+              1.2175647233669695
+            ],
+            "reduced": [
+              -0.9717063017742292,
+              1.2175647233665043
+            ],
+            "absolute_error": 4.999123720164691e-13,
+            "relative_error": 3.2091343464417495e-13
+          },
+          {
+            "y": -0.7,
+            "z": 0.4,
+            "original": [
+              1.5359058024579288,
+              0.260135266893823
+            ],
+            "reduced": [
+              1.5359058029099286,
+              0.2601352668938019
+            ],
+            "absolute_error": 4.51999771437342e-10,
+            "relative_error": 2.901564499529545e-10
+          },
+          {
+            "y": 0.7,
+            "z": -0.4,
+            "original": [
+              1.5359058024579308,
+              0.26013526689382377
+            ],
+            "reduced": [
+              1.5359058029099284,
+              0.2601352668938023
+            ],
+            "absolute_error": 4.519975510095967e-10,
+            "relative_error": 2.901550245729591e-10
+          },
+          {
+            "y": -0.7,
+            "z": -0.4,
+            "original": [
+              -0.9717063017740445,
+              1.217564723366971
+            ],
+            "reduced": [
+              -0.9717063017742296,
+              1.2175647233665041
+            ],
+            "absolute_error": 5.022986264533512e-13,
+            "relative_error": 3.2244526532119106e-13
+          },
+          {
+            "y": 1.5,
+            "z": 1.5,
+            "original": [
+              0.011455438851324868,
+              0.003977475701407461
+            ],
+            "reduced": [
+              0.011455438849033373,
+              0.003977475700750651
+            ],
+            "absolute_error": 2.383767780097613e-12,
+            "relative_error": 1.9657816732227744e-10
+          },
+          {
+            "y": -1.5,
+            "z": 1.5,
+            "original": [
+              -0.011455438851325236,
+              -0.003977475701407461
+            ],
+            "reduced": [
+              -0.011455438849033373,
+              -0.0039774757007506505
+            ],
+            "absolute_error": 2.384121546998784e-12,
+            "relative_error": 1.9660734082217063e-10
+          },
+          {
+            "y": 1.5,
+            "z": -1.5,
+            "original": [
+              -0.01145543885132469,
+              -0.003977475701407648
+            ],
+            "reduced": [
+              -0.011455438849033373,
+              -0.003977475700750653
+            ],
+            "absolute_error": 2.38364717419951e-12,
+            "relative_error": 1.965682215185749e-10
+          },
+          {
+            "y": -1.5,
+            "z": -1.5,
+            "original": [
+              0.0114554388513245,
+              0.003977475701406592
+            ],
+            "reduced": [
+              0.011455438849033373,
+              0.003977475700750654
+            ],
+            "absolute_error": 2.3831741853372945e-12,
+            "relative_error": 1.965292163417896e-10
+          },
+          {
+            "y": 1.5,
+            "z": 0,
+            "original": [
+              -0.011357875016411376,
+              -0.1604484947633712
+            ],
+            "reduced": [
+              -0.011357874953777953,
+              -0.16044849436637496
+            ],
+            "absolute_error": 4.0190665752187423e-10,
+            "relative_error": 2.498642653100676e-09
+          },
+          {
+            "y": 0.03,
+            "z": 0.07,
+            "original": [
+              0.046683266145254095,
+              0.06507172274909478
+            ],
+            "reduced": [
+              0.04668326614525279,
+              0.06507172274909316
+            ],
+            "absolute_error": 2.082824332422744e-15,
+            "relative_error": 2.600757122107492e-14
+          }
+        ],
+        "max_absolute_error": 4.51999771437342e-10,
+        "max_relative_error_above_1e_minus6": 2.498642653100676e-09,
+        "formula": "2*pi*(-1)^m*k^2*exp(i*m*atan2(z,y))*integral_0^(pi/2)[sin(theta)cos(theta)exp(-(k*w*sin(theta)/2)^2)*theta^abs(m)*J_m(k*rho*sin(theta))*exp(i*k*x*cos(theta))] dtheta",
+        "method": "Exact analytic azimuth integral of upstream spherical spectrum; no paraxial approximation. Cached radius rounded to14 decimals. SciPy quad epsabs1e-11 epsrel1e-10.",
+        "orientation": "exp(+i*m*atan2(z,y)); verified all y,z quadrants against original double quadrature"
+      },
+      "numerical": {
+        "cell": [
+          5,
+          5,
+          4
+        ],
+        "resolution": 77,
+        "pml": 0.25,
+        "frequency": 5,
+        "runtime": 10,
+        "courant": 0.3333333333333333,
+        "optical_periods": 50
+      },
+      "physical": {
+        "e_z": 1,
+        "e_y": 0,
+        "m_charge": 2,
+        "n1": 1.0,
+        "n2": 1.54,
+        "ref_medium": 0,
+        "kw_0": 8,
+        "kr_w": 0,
+        "chi_deg": 45
+      },
+      "shape": [
+        385,
+        385,
+        308
+      ],
+      "finite": true,
+      "quantity": "sum(Re(E_j(t))^2), sum(Im(E_j(t))^2), j=x,y,z; their sum is sum(abs(complex E_j(t))^2)",
+      "passed": true,
+      "elapsed_seconds": 3105.3641172800008,
+      "final_time": 10.0
+    },
+    "airy": {
+      "beam": "airy",
+      "source_sha256": "5c4e1b76eb2792819c825937121d41de2009397d6d099ed7fb5ed72e79a08184",
+      "upstream_commit": "ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+      "meep": "1.33.0",
+      "source_script_unchanged": true,
+      "mpi_processes": 1,
+      "threads": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "output_change": "Original Python per-cell output callbacks replaced by native get_array plane exports; simulation grid/source/steps unchanged",
+      "numerical": {
+        "cell": [
+          10,
+          10
+        ],
+        "resolution": 180,
+        "pml": 0.25,
+        "frequency": 12,
+        "runtime": 90,
+        "courant": 0.5,
+        "optical_periods": 1080
+      },
+      "physical": {
+        "s_pol": true,
+        "n1": 1.0,
+        "n2": 1.0,
+        "ref_medium": 0,
+        "kw_0": 7,
+        "kr_w": 0,
+        "M": 0,
+        "W": 4,
+        "chi_deg": 45
+      },
+      "shape": [
+        1800,
+        1800
+      ],
+      "finite": true,
+      "quantity": "Instantaneous real Ez(t)^2 at t=90, not time-averaged intensity",
+      "epsilon_range": [
+        1.0,
+        1.0
+      ],
+      "passed": true,
+      "elapsed_seconds": 399.48807683700034,
+      "final_time": 90.0
+    }
+  }
+}

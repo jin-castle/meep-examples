@@ -4,42 +4,70 @@
 "01":
   label: "빈 진공 셀에서 점원과 3 µm 선원이 내보내는 파면"
   note: "빈 진공 셀(12 × 12 µm, PML 없음)의 점원(왼쪽)과 3 µm 선원(오른쪽), 이 글의 Meep 계산 Re(Ez)입니다(빨강 −, 파랑 +). 2D 점원은 화면에 수직인 선전류라 막대로 그렸고, 높이는 표시용입니다."
+  label_en: "Wavefronts from a point source and a 3 µm line source in an empty vacuum cell"
+  note_en: "A point source (left) and a 3 µm line source (right) in an empty 12 × 12 µm vacuum cell without PML: Re(Ez) from this chapter's Meep run (red −, blue +). A 2D point source is a line current out of the page, so it is drawn as a rod; the height is for display."
 "02":
   label: "반사 경계와 PML 경계에서 같은 점원이 만드는 장"
   note: "같은 점원을 반사 경계(왼쪽)와 PML 1 µm(오른쪽)로 계산한 Re(Ez)입니다(빨강 −, 파랑 +). 셀은 12 × 8 µm이고, 2D 계산이라 높이는 표시용입니다."
+  label_en: "The same point source with a reflecting boundary and with a PML"
+  note_en: "The same point source with a reflecting boundary (left) and a 1 µm PML (right), Re(Ez) (red −, blue +) in a 12 × 8 µm cell. The simulation is 2D, so the height is for display."
 "03":
   label: "입사장, 원기둥이 있는 전체장, 둘의 차인 산란장"
   note: "입사장(물체 없음), 전체장(n = 2, r = 0.75 µm 원기둥), 산란장(전체 − 입사)의 Re(Ez)입니다. 세 장은 각자 최댓값으로 색 범위를 잡았고, 2D 계산이라 높이는 표시용입니다."
+  label_en: "Incident field, total field with the cylinder, and their difference, the scattered field"
+  note_en: "Incident field (no object), total field (n = 2 cylinder, r = 0.75 µm) and scattered field (total − incident), Re(Ez). Each panel uses its own maximum for the colour range; the simulation is 2D, so the height is for display."
 "04":
   label: "SiO2 클래딩 안 Si 스트립 도파관 코어를 지나가는 TE0 펄스"
   note: "구조 치수는 글의 시뮬레이션 그대로이고, 장은 이 글의 Meep 계산 Re(Ey)입니다(빨강 −, 파랑 +). 계산이 2D라 높이는 표시용이고, 장은 높이 방향으로 같습니다."
+  label_en: "A TE0 pulse travelling through a Si strip waveguide core in SiO2 cladding"
+  note_en: "Dimensions follow this chapter's simulation; the field is Re(Ey) from its Meep run (red −, blue +). The simulation is 2D, so the height is for display and the field is the same at every height."
 "05":
   label: "유전체 도파관의 날카로운 90° 굽힘과 둥근 굽힘을 지나는 펄스"
   note: "ε = 12 도파관(폭 0.23 µm)의 날카로운 모서리(왼쪽)와 반경 0.70 µm 굽힘(오른쪽), 이 글의 Meep 계산 Re(Ez)입니다. 2D 계산이라 높이는 표시용입니다."
+  label_en: "A pulse through a sharp and a rounded 90° bend of a dielectric waveguide"
+  note_en: "A sharp corner (left) and a 0.70 µm radius bend (right) of an ε = 12 waveguide 0.23 µm wide, Re(Ez) from this chapter's Meep run. The simulation is 2D, so the height is for display."
 "06":
   label: "유리 ridge 8개짜리 binary grating을 지나 갈라지는 평면파"
   note: "유리 기판 위 ridge 8개(0.5 × 1.3 µm, 주기 2.6 µm)를 지나는 평면파, 이 글의 Meep 계산 Re(Ez)입니다. 2D 계산이라 높이는 표시용입니다."
+  label_en: "A plane wave splitting behind an eight-ridge binary grating"
+  note_en: "A plane wave through eight glass ridges (0.5 × 1.3 µm, period 2.6 µm) on a glass substrate, Re(Ez) from this chapter's Meep run. The simulation is 2D, so the height is for display."
 "07":
   label: "폭이 다른 Si meta-atom 12개를 지나 비스듬히 기우는 파면"
   note: "폭 4가지 Si 막대 12개(0.45 µm 간격, 높이 0.9 µm)를 지나 59.4° 쪽으로 기우는 파면, 이 글의 Meep 계산 Re(Ez)입니다. 2D 계산이라 화면의 두께는 표시용입니다."
+  label_en: "A wavefront tilting after twelve Si meta-atoms of different widths"
+  note_en: "Twelve Si bars of four widths (0.45 µm pitch, 0.9 µm tall) tilt the wavefront toward 59.4°, Re(Ez) from this chapter's Meep run. The simulation is 2D, so the thickness on screen is for display."
 "08":
   label: "최적화된 metagrating 5주기를 지나 꺾이는 파면"
   note: "최적화한 density(주기 1.8 µm당 73픽셀)를 5주기 늘어놓은 구조이고, 금색 막대의 두께가 density입니다. 장은 이 글의 Meep 계산 Re(Ez)이고, 2D 계산이라 두께는 표시용입니다."
+  label_en: "A wavefront steered by five periods of the optimised metagrating"
+  note_en: "The optimised density (73 pixels per 1.8 µm period) repeated over five periods; the thickness of each gold bar is the density. Re(Ez) from this chapter's Meep run; the simulation is 2D, so the thickness is for display."
 "09":
   label: "최적화된 1 × 1 µm 설계 영역에서 90° 꺾이는 도파관 모드"
   note: "11 × 11 density(색: SiO2 → Si) 설계 영역을 지나 꺾이는 모드, 글과 같은 해상도 10의 Meep 계산 Re(Ez)입니다. 2D 계산이라 높이는 표시용입니다."
+  label_en: "A waveguide mode turning 90° through the optimised 1 × 1 µm design region"
+  note_en: "The mode turns through the 11 × 11 density design (colour: SiO2 → Si), Re(Ez) from this chapter's Meep run at the same resolution 10. The simulation is 2D, so the height is for display."
 "10":
   label: "금속 거울 위 쌍극자가 내보내는 파면"
   note: "PEC 거울(y = 0) 위 1.25 µm의 쌍극자, 이 글의 Meep 계산 Re(Ez)입니다. 계산은 거울 대신 반대 부호 image dipole로 했으므로 물리적인 위쪽 절반만 보였습니다. 높이는 표시용입니다."
+  label_en: "Wavefronts from a dipole above a metal mirror"
+  note_en: "A dipole 1.25 µm above a PEC mirror (y = 0), Re(Ez) from this chapter's Meep run. The run replaces the mirror with an opposite-sign image dipole, so only the physical upper half is shown. The height is for display."
 "11":
   label: "구멍 하나 뚫린 금속 상자 안의 쌍극자"
   note: "폭 0.4 µm 구멍이 하나 있는 금속 상자(안쪽 1 × 1 µm) 속 쌍극자, 이 글의 Meep 계산 Re(Ez)입니다. 색 범위는 글처럼 |Ez|의 99번째 백분위로 잘랐고, 높이는 표시용입니다."
+  label_en: "A dipole inside a metal box with one aperture"
+  note_en: "A dipole in a metal box (1 × 1 µm inside) with one 0.4 µm aperture, Re(Ez) from this chapter's Meep run. As in the chapter, the colour range is clipped at the 99th percentile of |Ez|; the height is for display."
 "12":
   label: "고리 공진기 안에서 펄스가 지난 뒤 남아 울리는 모드"
   note: "고리(반지름 1–2 µm, n = 3.4) 안 점광원 펄스가 지나간 뒤 높은 Q 모드가 남아 울리는 모습, 이 글의 Meep 계산 Re(Ez)입니다. 2D 계산이라 높이는 표시용입니다."
+  label_en: "A mode still ringing in a ring resonator after the pulse has passed"
+  note_en: "After the point-source pulse inside the ring (radius 1–2 µm, n = 3.4) has passed, the high-Q mode keeps ringing: Re(Ez) from this chapter's Meep run. The simulation is 2D, so the height is for display."
 "13":
   label: "회전체로 계산한 고리의 m = 3 모드"
   note: "12편의 고리를 회전체로 본 반지름 방향 cylindrical 계산(m = 3)의 복소 Ez(r)를 exp(i3φ)로 돌려 보였고, 두 광주기를 반복 재생합니다. 높이는 표시용입니다."
+  label_en: "The m = 3 mode of the ring computed as a body of revolution"
+  note_en: "Chapter 12's ring as a body of revolution: the complex Ez(r) of the radial cylindrical run (m = 3) is revolved with exp(i3φ), and two optical periods play on repeat. The height is for display."
 "14":
   label: "레이저 적층의 쪼갠 면 안쪽 쌍극자에서 공기로 나오는 빛"
   note: "활성층(0.3 µm, n = 2.3) 안, 쪼갠 면에서 0.5 µm 안쪽의 쌍극자입니다. 2D 단면(kz = 0) Meep 계산의 Re(Ez)이고, 높이는 표시용입니다."
+  label_en: "Light leaving a dipole inside the cleaved facet of a laser stack"
+  note_en: "A dipole in the active layer (0.3 µm, n = 2.3), 0.5 µm behind the cleaved facet. Re(Ez) from the 2D cross-section (kz = 0) Meep run; the height is for display."

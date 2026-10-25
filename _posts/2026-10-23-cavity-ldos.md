@@ -1,8 +1,8 @@
 ---
 layout: lesson
 permalink: /cavity-ldos/
-lesson_title: "두 거울 사이에서 빛의 양은 어떻게 달라질까?"
-lesson_summary: "같은 쌍극자의 LDOS를 거울 유무에 따라 비교합니다. Purcell 인자, 모드 cutoff, 높은 Q에서의 실행 시간 한계를 읽습니다."
+lesson_title: "두 거울 사이에서 쌍극자의 방출은 어떻게 달라질까요?"
+lesson_summary: "같은 쌍극자의 LDOS를 거울 유무에 따라 비교합니다. Purcell 인자와 모드 cutoff를 해석하고, Q가 높을 때 실행 시간이 충분한지 확인합니다."
 lesson_goals:
   - "같은 source의 cavity·bulk 비율로 Purcell 인자를 구한다."
   - "평면 cavity의 cutoff와 두 좌표계의 결과를 해석한다."
@@ -23,7 +23,7 @@ image: /assets/meep/11/03_purcell.png
 excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here the dipole sits between two mirrors and the question is the emitted power itself. Meep measures it as the local density of states (LDOS) at the source point with `dft_ldos`. Part A: an in-plane dipole in a dielectric slab (n = 2.4) between two lossless metallic mirrors, the Purcell factor F = LDOS(cavity)/LDOS(bulk) versus the normalized thickness t = nL/λ, swept in cylindrical coordinates and checked in 3D. Part B: a dipole in a 2D metal box with one aperture, where the LDOS at resonance is compared with the single-mode estimate 2Q/(πωV)."
 ---
 
-<h2 id="observe">1. 먼저 보기: 거울은 빛의 양도 바꿀까?</h2>
+<h2 id="observe">1. 먼저 보기: 거울은 쌍극자의 방출 전력도 바꿀까?</h2>
 
 10편에서는 거울 하나가 빛이 나가는 방향을 바꿨습니다. 이번에는 **같은 쌍극자를 두 거울 사이에 놓았을 때 방출 power가 얼마나 달라지는지** 봅니다. source 위치에서 잰 LDOS를 거울 없는 bulk의 LDOS로 나눈 값이 Purcell 인자입니다.
 
@@ -37,7 +37,7 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/11/06_anim_planar.gif" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/06_anim_planar.gif" data-animation-src="{{ site.baseurl }}/assets/meep/11/06_anim_planar.gif" data-static-src="{{ site.baseurl }}/assets/meep/11/04_cavity_field.png" alt="두 평면 거울 사이에서 r 방향으로 퍼지는 실제 cylindrical Er 펄스"></a>
 <button type="button" class="animation-toggle" hidden>애니메이션 정지</button>
-<figcaption>파트 A, t = 1.0의 펄스입니다. 두 검은 선이 거울이고 가로는 r, 세로는 z입니다. 읽기 위해 z축을 늘려 그렸으며 실제 비율의 3D 장면은 아닙니다.</figcaption>
+<figcaption>파트 A, t = 1.0의 펄스입니다. 두 검은 선이 거울이고 가로는 r, 세로는 z입니다. 분포가 잘 보이도록 z축을 늘려 그렸으므로 실제 비율의 3D 장면과는 다릅니다.</figcaption>
 </figure>
 
 <h2 id="predict">2. 먼저 예측하기: 거울을 두면 항상 더 밝아질까?</h2>
@@ -55,7 +55,9 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 
 </details>
 
-<h2 id="understand">3. 원리 이해하기: 같은 source로 두 번 재는 이유</h2>
+<h2 id="understand">3. 원리 이해하기: 같은 광원의 LDOS를 비교하는 이유</h2>
+
+{% include chapter-illustration.html %}
 
 쌍극자는 자신이 만든 field와 상호작용합니다. 거울에서 돌아온 field가 source 자리의 응답을 바꾸면, 같은 진폭의 전류가 내는 power도 달라집니다. <code>dft_ldos</code>는 source 자리의 field와 전류의 주파수 성분으로 이 응답을 구합니다.
 
@@ -91,7 +93,7 @@ excerpt: "post 10 put one mirror next to a dipole and the pattern changed. Here 
 <figcaption>파트 B, w = 0.4 µm의 실제 펄스입니다. 상자 안에서 field가 진동하며 오른쪽 구멍으로 나갑니다. 이 그림은 평면 cavity의 Purcell sweep과 별도인 2D 실험입니다.</figcaption>
 </figure>
 
-<h2 id="run">4. 직접 실행하기: 높은 Q를 더 오래 관찰하기</h2>
+<h2 id="run">4. 직접 실행하기: Q가 높은 공진기의 계산 시간 늘리기</h2>
 
 Meep 1.33.0 환경에서 저장소의 <code>code/</code> 폴더에 있는 원본과 공통 helper를 사용합니다. 먼저 원본 결과를 보관하세요. 기존 단일 코어 실행은 약 6.6분입니다.
 
@@ -103,7 +105,7 @@ OMP_NUM_THREADS=1 python cavity_ldos.py
 
 w = 0.2의 로그에서 <code>T_run</code>, <code>dft_ldos</code>, 스펙트럼 폭으로 구한 Q를 원본과 비교하세요. 더 긴 계산에서 공진 스펙트럼이 어떻게 변하는지 확인합니다. 원본이 요구한 시간은 23915이므로 **12000 역시 그 기준보다 짧습니다.** 새 수치를 수렴한 값으로 단정하지 말고, 원본의 3499.1119와 구별해 기록하세요.
 
-<h2 id="interpret">5. 결과 해석하기: 큰 Q와 믿을 수 있는 LDOS는 다르다</h2>
+<h2 id="interpret">5. 결과 해석하기: LDOS 계산 시간이 충분했을까?</h2>
 
 | 평면 cavity의 비교 | 실제 기록 |
 |---|---|
@@ -190,7 +192,7 @@ w = 0.2의 로그에서 <code>T_run</code>, <code>dft_ldos</code>, 스펙트럼 
 
 
 
-### 원본 §2 · 물리 한 페이지
+### 원본 §2 · LDOS와 Purcell 인자의 관계
 
 주파수 ω에서 위치 $\mathbf x_0$의 쌍극자 $\hat p$가 내는 power는 그 자리의 전기장이 전류에 하는 일 $-\tfrac12\mathrm{Re}[\hat E\cdot\hat J^*]$에 비례한다. Meep의 `dft_ldos`는 이것을 단위 쌍극자로 정규화해 돌려준다.
 
@@ -215,7 +217,7 @@ $$
 V^{(1)}=\frac{a^2}{4},\quad \omega^{(1)}=\frac{\sqrt2\,\pi c}{a}
 $$
 
-빛이 오래 머물수록($Q$), 좁은 곳에 몰릴수록($V$) 쌍극자가 더 많이 낸다. `dft_ldos`로 이것을 직접 재려면 DFT가 수렴할 만큼, 즉 field가 다 빠져나갈 만큼 돌려야 하고 그 시간은 $2Q/f$ 정도다.
+이 근사에서는 $Q$가 클수록, 모드 부피 $V$가 작을수록 쌍극자의 방출이 커진다. `dft_ldos`로 직접 측정하려면 field가 충분히 감쇠해 DFT가 수렴할 때까지 계산해야 하며, 필요한 시간의 기준은 $2Q/f$ 정도다.
 
 | 기호 | 뜻 | 코드 변수 |
 |------|----|-----------|
@@ -229,7 +231,7 @@ $$
 
 **가정과 유효 범위**: 파트 A는 손실 없는 유전체(n = 2.4)와 완전도체 거울, 단일 주파수, 수평 편광 쌍극자. 파트 B는 2D Ez, 완전도체 상자. 모드 부피 $a^2/4$는 닫힌 상자의 해석값이라 구멍이 있는 상자에는 근사다. 손실 매질의 점광원 LDOS는 해상도에 따라 발산하므로 이 글의 방법을 그대로 옮기면 안 된다.
 
-### 결과 보기 전에 맞춰보기
+### 결과를 보기 전에 예측하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -363,7 +365,7 @@ sim.run(mp.dft_ldos(f, 8 * f / Q, 101), until_after_sources=min(2 * Q / f, T_MAX
 
 - **무엇**: `dft_ldos`는 step function이다. source 점의 field와 전류의 DFT를 축적해 LDOS를 만든다. Harminv는 source가 꺼진 뒤의 감쇠에서 공진 주파수와 Q를 꺼낸다.
 - **왜**: LDOS는 flux가 아니라 source 자리의 일이다. 그래서 flux box가 필요 없고 source 점 하나면 된다. 파트 B에서는 Harminv의 f를 `dft_ldos`의 주파수로 넘기고, 스펙트럼의 폭으로 Q를 한 번 더 확인한다.
-- **틀리면**: `dft_ldos`의 주파수를 Harminv의 f가 아니라 처음의 fcen으로 두면 공진에서 조금 비껴 LDOS가 작게 나온다. Q가 수천이면 폭이 1e-4라 조금이 크다.
+- **틀리면**: `dft_ldos`의 주파수를 Harminv의 f가 아니라 처음의 fcen으로 두면 공진 주파수에서 벗어나 LDOS가 작게 나온다. Q가 수천이면 선폭이 1e-4이므로 작은 주파수 차이도 결과에 큰 영향을 준다.
 
 ### ⑥ 실행 — 감쇠 조건과 2Q/f
 
@@ -457,12 +459,12 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 |---|---|---|---|
 | A sweep 간격 | 0.1 (21점, 이 글) vs 0.05 (41점, 노트) | median 0.94% vs 0.95% | 간격은 오차를 바꾸지 않는다. 각 점이 독립 run |
 | A 3D 해상도 | 48 (이 글) vs 71 (노트) | $t=1,2$에서 CYL과 2.3% / 0.9% (t = 1.0 / 2.0) vs 노트 median 1.3% | 노트의 3D max 11.4%($t=1.45$)는 이 글에서 재지 않았다 |
-| B run 시간 | 2Q/f (w ≥ 0.3) vs cap 6000 (w = 0.2) | 비 0.81~0.89 vs 0.72 | 미수렴은 작은 오차가 아니라 다른 숫자 |
+| B run 시간 | 2Q/f (w ≥ 0.3) vs cap 6000 (w = 0.2) | 비 0.81~0.89 vs 0.72 | 실행 시간이 부족한 값은 수렴한 값으로 보고할 수 없음 |
 
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: n = 2.4, 완전도체 거울, res 71에서 cylindrical `dft_ldos`의 Purcell 인자는 cutoff 밖에서 Eq. 7 대비 상대오차 중앙값 0.94%, 최대 3.6%이며, 3D 두 점과 2.3% / 0.9% (t = 1.0 / 2.0) 안에서 같다. 금속 상자에서 Harminv의 Q로 정한 시간만큼 돌리면 직접 잰 LDOS가 $2Q/(\pi\omega V)$와 0.81~0.89 안에서 같다.
-- 할 수 없는 것: cutoff 세 점의 값. 해석식 자체가 불연속이다. 노트가 본 3D의 국소 11% 오차($t=1.45$)는 이 글의 두 점에 없다. 손실 있는 거울이나 매질. 모드 부피 $a^2/4$는 닫힌 상자의 값이라 구멍이 넓어질수록 근사가 나빠진다. w = 0.2의 LDOS는 이 글의 run 시간으로는 모른다.
+- 확인되지 않은 것: cutoff 세 점에서의 일치 여부. 해석식 자체가 불연속이다. 노트에서 확인한 3D의 국소 11% 오차($t=1.45$)는 이 글의 두 점으로 검사하지 않았다. 손실 있는 거울이나 매질도 다루지 않았다. 모드 부피 $a^2/4$는 닫힌 상자의 값이라 구멍이 넓어질수록 근사가 나빠진다. w = 0.2의 수렴한 LDOS는 이 글의 실행 시간으로는 확인할 수 없다.
 
 
 ### 원본 §6 · 흔한 실수

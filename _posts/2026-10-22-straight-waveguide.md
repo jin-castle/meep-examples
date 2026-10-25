@@ -1,8 +1,8 @@
 ---
 layout: lesson
 permalink: /straight-waveguide/
-lesson_title: "직선 도파로에서 빛이 전부 나올까?"
-lesson_summary: "정답을 아는 직선 도파로로 source와 monitor를 검증합니다. 구조가 가두는 모드와 실제로 넣고 재는 모드를 구분합니다."
+lesson_title: "직선 도파로의 투과율은 어떻게 구할까요?"
+lesson_summary: "투과율을 예측할 수 있는 직선 도파로로 광원과 측정 설정을 검증합니다. 도파로가 지원하는 모드와 실제로 주입하고 측정하는 모드를 구분합니다."
 lesson_goals:
   - "guided mode와 유효 굴절률 n_eff의 의미를 설명한다."
   - "EigenModeSource와 mode monitor로 같은 모드의 투과율을 구한다."
@@ -32,7 +32,7 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 
 </details>
 
-<h2 id="observe">1. 관찰 · 빛이 따라가는 길 보기</h2>
+<h2 id="observe">1. 관찰 · 도파로를 따라 전파하는 모드</h2>
 
 실리콘 띠에 기본 모드의 펄스를 넣습니다. 위 그림의 줄무늬가 띠를 따라 이어지고, 아래 포락선은 core 밖에서 약해집니다. 균일한 직선에는 빛을 꺾거나 되돌릴 불연속이 없습니다. **넣은 모드의 power가 반대쪽에서 그대로 나오는지** 확인해 봅시다.
 
@@ -70,16 +70,13 @@ excerpt: "a 2D silicon strip waveguide (0.5 µm wide, SiO₂ cladding) with the 
 
 <h2 id="understand">3. 원리 이해하기</h2>
 
+{% include chapter-illustration.html %}
+
 <!-- concept-illustration:part-04:start -->
-<figure class="lesson-figure">
-  <a href="{{ site.baseurl }}/assets/meep/04/00_concept.png" data-lightbox>
-    <img src="{{ site.baseurl }}/assets/meep/04/00_concept.png" alt="실제 유한 두께 3D 도파로와 z 방향으로 동일하게 이어지는 2D 모델을 비교하고 Si core, SiO₂ cladding, 진행 방향과 모델 폭을 표시한다." loading="lazy">
-  </a>
-  <figcaption>왼쪽은 두께가 있는 실제 3D 도파로의 개념이고, 오른쪽은 이 예제처럼 z 방향으로 재료와 장이 변하지 않는 2D 모델입니다. 계산 모델은 폭 0.5 µm Si(n = 3.48) core와 SiO₂(n = 1.44) cladding이며, 모드는 core 바깥에도 약하게 이어집니다. 2D 계산이 유한 두께 소자의 단면을 그대로 계산한 것은 아닙니다. 이 단면은 여러 guided mode를 가두지만 이 예제에서는 기본 모드만 주입하고 측정합니다.</figcaption>
-</figure>
+<p class="lesson-note">왼쪽은 두께가 있는 실제 3D 도파로의 개념이고, 오른쪽은 이 예제처럼 z 방향으로 재료와 장이 변하지 않는 2D 모델입니다. 계산 모델은 폭 0.5 µm Si(n = 3.48) core와 SiO₂(n = 1.44) cladding이며, 모드는 core 바깥에도 약하게 이어집니다. 2D 계산이 유한 두께 소자의 단면을 그대로 계산한 것은 아닙니다. 이 단면은 여러 guided mode를 가두지만 이 예제에서는 기본 모드만 주입하고 측정합니다.</p>
 <!-- concept-illustration:part-04:end -->
 
-### 모드는 단면이 허용하는 빛의 모양입니다
+### 모드의 장 분포는 도파로 단면에 따라 정해집니다
 
 굴절률이 높은 Si core(n = 3.48)와 낮은 SiO₂ cladding(n = 1.44)의 경계가 빛을 가둡니다. 모드는 진행해도 횡방향 모양이 유지되는 장입니다. core 밖의 꼬리도 모드의 일부이므로 source와 monitor의 폭을 core보다 넓게 잡습니다.
 
@@ -115,7 +112,7 @@ $$
 
 **가정과 유효 범위**: 2D(z 방향 무한), lossless 재료. 폭 0.5 µm 슬랩은 TE 모드를 세 개 가두지만(아래 표) 기본 모드만 넣고 기본 모드에만 투영한다.
 
-#### 모드는 몇 개인가: n_eff 먼저
+#### 유효 굴절률로 모드 수 확인하기
 
 빛을 넣기 전에 이 단면이 어떤 모드를 가두는지 MPB로 푼다. Meep 안에서 `sim.get_eigenmode`를 부르면 같은 계산이 된다. 유효 굴절률 n_eff = k/f가 n_clad와 n_core 사이에 있으면 guided다.
 
@@ -135,7 +132,7 @@ for band in (1, 2, 3):
 
 `EigenModeSource(eig_band=1)`은 이 중 band 1만 넣고, `get_eigenmode_coefficients(..., [1])`은 band 1에만 투영한다. 그래서 이 글의 T는 "mode 1 → mode 1" 투과율이다.
 
-#### 결과 보기 전에 맞춰보기
+#### 결과를 보기 전에 예상하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -223,7 +220,7 @@ sx, sy = 14.0, 6.0       # cell size [um], PML included
 - **왜**: Meep에는 단위가 없다. 1 = 1 µm로 정하면 주파수 단위는 1/µm이고, 파장 1.55 µm는 f = 0.645다.
 - **틀리면**: `resolution`이 낮으면 core가 몇 픽셀로만 표현되어 모드 형태가 왜곡되고 T가 1에서 벗어난다. `df`가 너무 좁으면 펄스가 길어져 실행 시간이 늘어난다.
 
-> **함정**: `fcen = 1.55`라고 쓰는 실수. Meep의 주파수는 파장의 역수다.
+> **주의**: `fcen = 1.55`처럼 파장 값을 주파수에 그대로 넣지 않는다. Meep의 주파수는 파장의 역수다.
 
 #### ② 재료와 구조 — 무엇이 어디에 있는가
 
@@ -253,7 +250,7 @@ sources = [mp.EigenModeSource(src=mp.GaussianSource(fcen, fwidth=df),
 - **왜**: 점 source나 평면파를 넣으면 모드에 맞지 않는 성분이 함께 들어가 반사·방사 잡음을 만든다. `EigenModeSource`는 MPB로 모드를 먼저 풀어 그 모양대로 넣으므로 TE0만 들어간다.
 - **틀리면**: `eig_parity`를 `EVEN_Y`로 두면 2D에서는 TM이 되어 전혀 다른 모드를 넣는다. `size`를 core 폭만큼만 잡으면 꼬리가 잘려 T < 1.
 
-> **함정**: `eig_band=0`은 없다. 1부터 센다.
+> **주의**: `eig_band=0`은 없다. 모드 번호는 1부터 센다.
 
 #### ④ Simulation과 경계 — 계산 상자와 PML
 
@@ -326,14 +323,14 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 
 </details>
 
-<h2 id="interpret">5. 해석 · 숫자로 확인하고 한계 읽기</h2>
+<h2 id="interpret">5. 해석 · 모드 투과율 검산과 수치 잔차</h2>
 
 1.55 µm에서 **T = 1.0000, R = 8.0 × 10⁻⁶**입니다. 1.48–1.63 µm 대역에서도 T는 **0.99999–1.00001**입니다. 이것은 기본 모드 주입·측정·정규화가 직선 기준에서 일관되게 동작한다는 검산입니다.
 
 전체 flux의 투과율도 1.0000이고, 입력 flux 중 mode 1의 몫은 **0.9999**입니다. 이 직선에서는 거의 같지만, 다른 구조에서 전체 flux와 특정 모드 power는 서로 다를 수 있습니다. 둘을 비교하거나 빼려면 분모부터 통일해야 합니다.
 
 <aside class="lesson-note" markdown="1">
-**작은 R의 숫자까지 확정된 것은 아닙니다.** 해상도를 25 → 50 → 70으로 올리면 R은 **2.1 × 10⁻⁴ → 8.0 × 10⁻⁶ → 1.4 × 10⁻⁶**으로 줄었습니다. 반면 PML을 1 → 0.5 µm로 바꾸면 R ≈ 8.1 × 10⁻⁶으로 거의 같습니다. 이 설정의 잔차는 격자 이산화에 민감하며, 3D 소자의 반사율을 뜻하지 않습니다.
+**R이 작더라도 그 값이 수렴했다고 볼 수는 없습니다.** 해상도를 25 → 50 → 70으로 올리면 R은 **2.1 × 10⁻⁴ → 8.0 × 10⁻⁶ → 1.4 × 10⁻⁶**으로 줄었습니다. 반면 PML을 1 → 0.5 µm로 바꾸면 R ≈ 8.1 × 10⁻⁶으로 거의 같습니다. 이 설정의 잔차는 격자 이산화에 민감하며, 3D 소자의 반사율을 뜻하지 않습니다.
 </aside>
 
 <details markdown="1">
@@ -348,7 +345,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 
 #### 전체 flux와 modal power
 
-`add_mode_monitor`는 flux monitor이기도 하다. 같은 단면에서 두 가지 수를 뽑을 수 있다.
+`add_mode_monitor`는 flux monitor이기도 하다. 같은 단면에서 전체 flux와 특정 모드의 power를 모두 구할 수 있다.
 
 | 양 | 분모 | 값 @ 1.55 µm |
 |---|---|---|
@@ -367,7 +364,7 @@ print(f"T = {T[ic]:.4f}, R = {R[ic]:.2e}, T+R = {T[ic]+R[ic]:.4f}")
 | 70 | 1.0 | 1.000000 | 1.4 × 10⁻⁶ | 해상도 1.4배 |
 | 50 | 0.5 | 1.000000 | 8.1 × 10⁻⁶ | PML 절반 |
 
-T는 해상도 25에서도 1에 10⁻⁵ 안으로 붙는다. R은 해상도에 따라 10⁻⁴에서 10⁻⁶으로 내려가고 PML 두께에는 둔감하다. 이 구조에서 R은 PML 반사가 아니라 격자 이산화 잔차다.
+T는 해상도 25에서도 1과의 차이가 10⁻⁵ 이내다. R은 해상도에 따라 10⁻⁴에서 10⁻⁶으로 줄어들고 PML 두께에는 둔감하다. 이 구조에서 R은 PML 반사가 아니라 격자 이산화 잔차다.
 
 #### 예측과 비교
 
@@ -420,7 +417,7 @@ core 바깥의 evanescent tail도 모드의 일부입니다. source에서는 주
 
 #### 어디에 쓰이는가
 
-직선 도파로는 실리콘 포토닉스의 배선이고, 그 위의 모든 부품은 이 글의 source와 monitor로 잰다.
+직선 도파로는 실리콘 포토닉스 소자 사이에서 빛을 전달하는 배선입니다. 이 글의 광원과 측정 설정은 여러 도파로 부품의 성능을 평가하는 기준으로 사용할 수 있습니다.
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|

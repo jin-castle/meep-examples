@@ -1,0 +1,350 @@
+{
+  "passed": true,
+  "iterations": 6,
+  "checks": [
+    {
+      "iteration": 0,
+      "monotonic": true,
+      "density_chain_exact": true,
+      "projected_gradient_update_exact": true,
+      "repeated_geometry_forward_field_matches": true,
+      "field_repeat_relative_linf_error": 0.0,
+      "scenes": {
+        "forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306,
+          "sprite": "forward-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 8.881784197001252e-16,
+            "16": 1.7763568394002505e-15,
+            "24": 3.552713678800501e-15
+          },
+          "loop_closure_max_absolute_error": 4.440892098500626e-15,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true,
+          "input_phase_slope_rad_per_um": 13.125825966783967
+        },
+        "adjoint": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 0.0030279939741658535,
+          "sprite": "adjoint-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 2.168404344971009e-19,
+            "16": 4.336808689942018e-19,
+            "24": 4.336808689942018e-19
+          },
+          "loop_closure_max_absolute_error": 6.505213034913027e-19,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true
+        },
+        "updated_forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306
+        }
+      }
+    },
+    {
+      "iteration": 1,
+      "monotonic": true,
+      "density_chain_exact": true,
+      "projected_gradient_update_exact": true,
+      "repeated_geometry_forward_field_matches": true,
+      "field_repeat_relative_linf_error": 0.0,
+      "scenes": {
+        "forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306,
+          "sprite": "forward-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 1.7763568394002505e-15,
+            "16": 1.7763568394002505e-15,
+            "24": 3.552713678800501e-15
+          },
+          "loop_closure_max_absolute_error": 3.552713678800501e-15,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true,
+          "input_phase_slope_rad_per_um": 13.106637603327332
+        },
+        "adjoint": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 0.010048574700474221,
+          "sprite": "adjoint-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 8.673617379884035e-19,
+            "16": 1.0842021724855044e-18,
+            "24": 1.734723475976807e-18
+          },
+          "loop_closure_max_absolute_error": 2.168404344971009e-18,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true
+        },
+        "updated_forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306
+        }
+      }
+    },
+    {
+      "iteration": 2,
+      "monotonic": true,
+      "density_chain_exact": true,
+      "projected_gradient_update_exact": true,
+      "repeated_geometry_forward_field_matches": true,
+      "field_repeat_relative_linf_error": 0.0,
+      "scenes": {
+        "forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306,
+          "sprite": "forward-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 9.992007221626409e-16,
+            "16": 1.7763568394002505e-15,
+            "24": 3.1086244689504383e-15
+          },
+          "loop_closure_max_absolute_error": 3.552713678800501e-15,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true,
+          "input_phase_slope_rad_per_um": 13.02108846225935
+        },
+        "adjoint": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 0.012774924318384047,
+          "sprite": "adjoint-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 8.673617379884035e-19,
+            "16": 1.734723475976807e-18,
+            "24": 2.168404344971009e-18
+          },
+          "loop_closure_max_absolute_error": 3.144186300207963e-18,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true
+        },
+        "updated_forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306
+        }
+      }
+    },
+    {
+      "iteration": 3,
+      "monotonic": true,
+      "density_chain_exact": true,
+      "projected_gradient_update_exact": true,
+      "repeated_geometry_forward_field_matches": true,
+      "field_repeat_relative_linf_error": 1.2435852334246385e-11,
+      "scenes": {
+        "forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306,
+          "sprite": "forward-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 1.1102230246251565e-15,
+            "16": 1.7763568394002505e-15,
+            "24": 3.1086244689504383e-15
+          },
+          "loop_closure_max_absolute_error": 3.552713678800501e-15,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true,
+          "input_phase_slope_rad_per_um": 12.965341719245954
+        },
+        "adjoint": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 0.015330386706600039,
+          "sprite": "adjoint-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 8.673617379884035e-19,
+            "16": 1.8431436932253575e-18,
+            "24": 2.6020852139652106e-18
+          },
+          "loop_closure_max_absolute_error": 3.903127820947816e-18,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true
+        },
+        "updated_forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306
+        }
+      }
+    },
+    {
+      "iteration": 4,
+      "monotonic": true,
+      "density_chain_exact": true,
+      "projected_gradient_update_exact": true,
+      "repeated_geometry_forward_field_matches": true,
+      "field_repeat_relative_linf_error": 0.0,
+      "scenes": {
+        "forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306,
+          "sprite": "forward-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 1.1102230246251565e-15,
+            "16": 1.7763568394002505e-15,
+            "24": 3.1086244689504383e-15
+          },
+          "loop_closure_max_absolute_error": 3.552713678800501e-15,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true,
+          "input_phase_slope_rad_per_um": 13.027978229671204
+        },
+        "adjoint": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 0.016893788246170095,
+          "sprite": "adjoint-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 8.673617379884035e-19,
+            "16": 2.168404344971009e-18,
+            "24": 2.6020852139652106e-18
+          },
+          "loop_closure_max_absolute_error": 4.336808689942018e-18,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true
+        },
+        "updated_forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306
+        }
+      }
+    },
+    {
+      "iteration": 5,
+      "monotonic": true,
+      "density_chain_exact": true,
+      "projected_gradient_update_exact": true,
+      "repeated_geometry_forward_field_matches": true,
+      "field_repeat_relative_linf_error": 0.0,
+      "scenes": {
+        "forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306,
+          "sprite": "forward-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 1.1102230246251565e-15,
+            "16": 1.7763568394002505e-15,
+            "24": 3.164135620181696e-15
+          },
+          "loop_closure_max_absolute_error": 3.552713678800501e-15,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true,
+          "input_phase_slope_rad_per_um": 13.037438265383338
+        },
+        "adjoint": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 0.017941712180960218,
+          "sprite": "adjoint-phases.png",
+          "sprite_pixels": [
+            2880,
+            1200
+          ],
+          "quarter_cycle_max_absolute_errors": {
+            "0": 0.0,
+            "8": 8.673617379884035e-19,
+            "16": 2.1751806085490433e-18,
+            "24": 2.6020852139652106e-18
+          },
+          "loop_closure_max_absolute_error": 4.3503612170980865e-18,
+          "saved_all_frames_match": true,
+          "animated_content": true,
+          "phase0_capture_exact_scene_crop": true
+        },
+        "updated_forward": {
+          "complex_finite": true,
+          "coordinates_verified": true,
+          "symmetric_limit": 20.31869826702306
+        }
+      }
+    }
+  ],
+  "finite_difference_gate": {
+    "epsilon": 0.01,
+    "observed": 16.270450260673996,
+    "adjoint": 16.270500438837722,
+    "relative_error": 3.0840058462743072e-06,
+    "passed": true
+  },
+  "all_physical_runs_before_time_cap": true
+}

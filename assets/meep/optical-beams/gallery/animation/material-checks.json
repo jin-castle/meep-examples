@@ -1,0 +1,115 @@
+{
+  "passed": true,
+  "display_only": true,
+  "same_meep_field_and_geometry": true,
+  "original_mayavi_opacity": 0.5,
+  "original_script_has_no_mirror_shader": true,
+  "settings": {
+    "diffuse": {
+      "blender": "4.5.14 LTS",
+      "engine": "CYCLES",
+      "threads": 1,
+      "device": "CPU",
+      "samples": 32,
+      "resolution": 720,
+      "denoising": true,
+      "material": {
+        "style": "diffuse",
+        "opacity": 0.5,
+        "display_only": true,
+        "IOR": 1.54,
+        "metallic": 0.0,
+        "specular_ior_level": 0.0,
+        "roughness": 0.800000011920929,
+        "note": "Display shader only; no change to the Meep dielectric interface or field data."
+      },
+      "base_scene_sha256": "49e42f047bad784e251d2a8e899d7680e958005ec269e6fcbec5e1e31acc278e",
+      "fixed_camera": [
+        [
+          0.6644630432128906,
+          -0.7332947850227356,
+          -0.14410966634750366,
+          -2.2280452251434326
+        ],
+        [
+          0.6644629836082458,
+          0.49145007133483887,
+          0.5629971027374268,
+          8.662580490112305
+        ],
+        [
+          -0.3420201539993286,
+          -0.46984630823135376,
+          0.813797652721405,
+          12.500758171081543
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "cut_planes": 2,
+      "red_direction_annotations": 3,
+      "spatial_stride": 1,
+      "native_mesh_import": {
+        "vertices": 661303,
+        "triangles": 1308590,
+        "import_maximum_coordinate_error": 0.0
+      },
+      "output_sha256": "f11f32737875285af235b8d952822780ffe6f54d49e9e0a3337a43fbaf3abb16"
+    },
+    "glossy": {
+      "blender": "4.5.14 LTS",
+      "engine": "CYCLES",
+      "threads": 1,
+      "device": "CPU",
+      "samples": 32,
+      "resolution": 720,
+      "denoising": true,
+      "material": {
+        "style": "glossy",
+        "opacity": 0.5,
+        "display_only": true,
+        "IOR": 1.54,
+        "metallic": 0.0,
+        "specular_ior_level": 0.10000000149011612,
+        "roughness": 0.1599999964237213,
+        "note": "Display shader only; no change to the Meep dielectric interface or field data."
+      },
+      "base_scene_sha256": "49e42f047bad784e251d2a8e899d7680e958005ec269e6fcbec5e1e31acc278e",
+      "fixed_camera": [
+        [
+          0.6644630432128906,
+          -0.7332947850227356,
+          -0.14410966634750366,
+          -2.2280452251434326
+        ],
+        [
+          0.6644629836082458,
+          0.49145007133483887,
+          0.5629971027374268,
+          8.662580490112305
+        ],
+        [
+          -0.3420201539993286,
+          -0.46984630823135376,
+          0.813797652721405,
+          12.500758171081543
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "cut_planes": 2,
+      "red_direction_annotations": 3,
+      "spatial_stride": 1,
+      "output_sha256": "86f01ac9ac33e8d785439886d553fb083290327b678b0e1f53b57788a5254f3a"
+    }
+  },
+  "comparison_sha256": "d8ff0c4db01f8bf9a6b35262c9388c5d29bc057698eabd7325590b9323cf3446"
+}

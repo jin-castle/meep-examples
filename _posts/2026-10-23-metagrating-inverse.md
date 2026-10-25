@@ -1,15 +1,15 @@
 ---
 layout: lesson
 permalink: /metagrating-inverse/
-lesson_title: "격자의 빛을 원하는 방향으로 더 보내려면?"
-lesson_summary: "73개 밀도를 바꿔 +1차 효율을 높입니다. 실제 gradient를 검증하고 한 번의 갱신과 별도 측정을 연결합니다."
+lesson_title: "메타격자의 회절 효율은 어떻게 높일까요?"
+lesson_summary: "73개 밀도를 바꿔 +1차 효율을 높입니다. 계산한 gradient를 검증하고, 설계를 갱신한 뒤 별도 시뮬레이션으로 효율을 확인합니다."
 lesson_goals:
   - "forward·adjoint에서 밀도 gradient를 얻는 흐름을 설명한다."
-  - "유한차분 gate와 한 번의 step으로 미분의 의미를 확인한다."
+  - "유한차분 검증과 한 번의 설계 갱신으로 미분의 의미를 확인한다."
   - "optimizer 점수와 새 시뮬레이션의 차수별 효율을 구별한다."
 lesson_prerequisites: "06편 회절 차수 · 07편 meta-atom library와 supercell"
 date: 2026-10-23
-title: "Meep Example 08 · Metagrating inverse design — forward, adjoint, gradient, 검증의 4단계 계약"
+title: "Meep Example 08 · Metagrating inverse design — forward, adjoint, gradient, 검증의 4단계 절차"
 title_en: "Meep Example 08 · Metagrating inverse design — a four-step contract: forward, adjoint, gradient, verification"
 lang: ko
 series: meep-examples
@@ -25,7 +25,7 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 
 <h2 id="observe">1. 먼저 보기: 같은 격자로 더 많은 빛을 보낼 수 있을까?</h2>
 
-07편에서 고른 네 개의 Si 막대는 서로 다른 이웃과 만나면 library에서 예상한 응답과 달라집니다. 이번에는 한 주기 전체를 **73개 밀도 변수**로 열어, 오른쪽 위 +1차로 나가는 빛을 늘려 봅니다.
+07편에서 고른 네 개의 Si 막대는 이웃한 막대의 형상이 달라지면 library에서 예상한 응답과 달라집니다. 이번에는 한 주기 전체를 **73개 밀도 변수**로 표현해, 오른쪽 위 +1차로 나가는 빛을 늘려 봅니다.
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/08/06_verify.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/08/06_verify.png" alt="새 시뮬레이션에서 비교한 원래 격자와 갱신 격자의 차수별 효율 및 전기장"></a>
@@ -40,10 +40,10 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 <figcaption>실제 펄스 전파 애니메이션입니다. 다섯 주기의 유한 배열에서 파면이 약 +59° 방향으로 기웁니다. 위 효율 표는 한 주기 주기경계 계산의 결과이므로 이 애니메이션 자체로 효율을 읽지는 않습니다.</figcaption>
 </figure>
 
-<h2 id="predict">2. 먼저 예측하기: gradient 방향이면 멀리 갈수록 좋을까?</h2>
+<h2 id="predict">2. 먼저 예측하기: 갱신 폭을 키우면 효율도 높아질까?</h2>
 
 <fieldset class="prediction">
-<legend>현재 설계의 gradient 방향으로 한 번 움직일 때, step 크기 α를 계속 키우면?</legend>
+<legend>현재 설계를 gradient 방향으로 한 번 갱신할 때, 갱신 폭 α를 계속 키우면?</legend>
 <label><input type="radio" name="metagrating-prediction" value="always"> +1차 효율이 계속 증가한다.</label>
 <label><input type="radio" name="metagrating-prediction" value="local"> 처음에는 증가해도 큰 step에서는 감소할 수 있다.</label>
 </fieldset>
@@ -57,17 +57,16 @@ excerpt: "the post-07 library design (four Si bars) becomes the starting point o
 
 <h2 id="understand">3. 원리 이해하기: 기울기를 검증한 뒤 재료를 바꾸기</h2>
 
+{% include chapter-illustration.html %}
+
 밀도 ρ = 0은 공기, 1은 Si이며 사이는 유전율을 보간한 값입니다. 73개 변수는 가로 x 방향의 세로 띠를 바꿉니다. 한 띠의 높이 0.9 µm 전체는 같은 밀도를 사용하고 SiO₂ 기판은 고정합니다.
 
-<figure class="lesson-figure">
-<a href="{{ site.baseurl }}/assets/meep/08/00_concept.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/08/00_concept.png" alt="정방향 계산과 수반 계산으로 얻은 민감도로 73개 밀도를 갱신하고 별도 검증하는 개념도" loading="lazy"></a>
-<figcaption>설명용 개념도입니다. 기판 아래에서 +y 방향으로 입사하고 오른쪽 위 +1차를 목표로 합니다. forward와 adjoint는 별도 계산이며 회색 띠는 실제 최적화 결과가 아닙니다.</figcaption>
-</figure>
+<p class="lesson-note">설명용 개념도입니다. 기판 아래에서 +y 방향으로 입사하고 오른쪽 위 +1차를 목표로 합니다. forward와 adjoint는 별도 계산이며 회색 띠는 실제 최적화 결과가 아닙니다.</p>
 
 1. **Forward:** 원래 광원으로 빛을 보내 +1차 모드 진폭을 구합니다.
 2. **Adjoint:** 목적함수에서 유도한 source를 출력 monitor에 놓고 별도 계산합니다.
 3. **Gradient gate:** 저장한 두 field와 재료의 밀도 의존성으로 구한 미분을 유한차분과 비교합니다.
-4. **갱신과 재측정:** 먼저 손으로 한 걸음, 이어서 MMA로 갱신하고 새 시뮬레이션으로 차수별 power를 다시 잽니다.
+4. **갱신과 재측정:** 먼저 gradient를 이용해 한 번 갱신합니다. 이어서 MMA로 최적화하고 새 시뮬레이션으로 차수별 power를 다시 측정합니다.
 
 목적함수는 **J = &#124;a₊₁&#124;²/P_in**입니다. 이 단일 주파수·단일 목적함수 예제에서는 forward와 adjoint 두 계산으로 모든 밀도의 미분을 얻습니다. 하지만 두 field의 밝기를 그냥 곱한 그림이 곧 최종 형상은 아닙니다.
 
@@ -80,7 +79,7 @@ gate에서는 0/1 경계에서 떨어진 내부점과 gradient 방향을 사용�
 
 <p class="lesson-note"><strong>모델 범위.</strong> 2D Ez, 파장 1.55 µm, x 주기경계·y PML, 해상도 40입니다. 설계 영역은 73 × 1이고 경계 평균·필터·투영을 사용하지 않습니다. 필터나 투영을 추가하면 그 mapping의 미분도 연결해야 합니다.</p>
 
-<h2 id="run">4. 직접 실행하기: 한 번의 step 크기만 바꾸기</h2>
+<h2 id="run">4. 직접 실행하기: 한 번 갱신할 때의 변화 폭 바꾸기</h2>
 
 Meep 1.33.0, nlopt, autograd가 준비된 환경에서 저장소의 <code>code/</code> 폴더를 사용합니다. 전체 코드와 공통 helper는 아래 참고 자료에서 확인할 수 있습니다. 먼저 원본 실행을 보관합니다. 원래 기록은 단일 코어 약 48초입니다.
 
@@ -92,7 +91,7 @@ OMP_NUM_THREADS=1 python metagrating_inverse.py
 
 실행 로그의 <code>one manual step</code>에서 α = 0.8, 1.2의 J와 ΔJ를 비교하세요. α = 1.2는 0.8보다 멀리 움직이지만 더 좋아진다는 보장은 없습니다. 새 결과는 직접 측정해야 하며, 기존 α = 2.0의 0.4840을 새 결과로 사용하지 않습니다.
 
-<h2 id="interpret">5. 결과 해석하기: 오른 것은 어떤 차수인가?</h2>
+<h2 id="interpret">5. 결과 해석하기: 어느 차수의 효율이 높아졌을까?</h2>
 
 | 새 시뮬레이션의 측정값 | 원래 설계 | 갱신 설계 |
 |---|---:|---:|
@@ -147,16 +146,16 @@ MMA 내부의 최고 J는 **0.6241**, 별도 검증의 +1차 효율은 **0.6228*
 - `meep.adjoint`의 세 요소: `MaterialGrid` 설계 변수, `DesignRegion`, `EigenmodeCoefficient` 목적함수를 묶는 `OptimizationProblem`
 - forward field와 adjoint field가 각각 무엇이고 gradient가 왜 둘의 곱인지
 - gradient gate: gradient 방향의 중심차분과 g·v를 비교하는 법, 그리고 랜덤 방향·경계점을 쓰면 왜 틀리는지
-- optimizer 전에 손으로 한 걸음 가 보기. step size가 커지면 선형 근사가 깨진다
+- optimizer를 실행하기 전에 gradient로 한 번 갱신하기. 갱신 폭이 커지면 선형 근사가 깨진다
 - MMA 5회의 의미와 한계. 회색조 픽셀은 재료가 아니다
-- 계약 4: optimizer 내부 FOM이 아니라 새 시뮬레이션의 차수별 power로 다시 재기
+- 검증 단계 4: 새 시뮬레이션의 차수별 power를 측정해 optimizer 내부 FOM과 비교하기
 
 **전제 지식**: 07편의 library와 supercell, 06편의 `DiffractedPlanewave`. **공식 문서**: [Adjoint Solver 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Adjoint_Solver/), [adjoint 예제 01](https://github.com/NanoComp/meep/blob/master/python/examples/adjoint_optimization/01-Introduction.ipynb). **이전 글**: [07 · Metalens의 meta-atom과 phase library]({{ site.baseurl }}/meta-atom/) · **다음 글**: [09 · Waveguide bend inverse design]({{ site.baseurl }}/bend-inverse/)
 
 
 ### 원본 §1 · 무엇을 알고 싶은가
 
-07편의 4단계 설계는 +1차에 51%를 보냈고 상한 0.81의 63%였다. 모자란 이유는 library가 "이웃이 나와 같다"는 가정에서 나온 값이라는 것이었다. 그 가정을 버리고 73개 픽셀의 밀도를 전부 설계 변수로 열면 얼마나 회복되는가. 이것이 이 글의 질문이고, 답보다 중요한 것은 답을 믿어도 되는지 확인하는 절차다. adjoint 최적화는 gradient가 틀려도 에러 없이 조용히 엉뚱한 곳으로 수렴한다.
+07편의 4단계 설계는 +1차에 51%를 보냈고 상한 0.81의 63%였다. library는 동일한 구조가 반복된다는 가정으로 계산했지만 실제 배열에서는 이웃한 구조가 달랐다. 이번에는 그 가정 없이 73개 픽셀의 밀도를 모두 바꿔 효율을 얼마나 높일 수 있는지 확인한다. 이때 계산한 gradient가 맞는지도 검증해야 한다. 잘못된 gradient를 사용해도 optimizer는 오류 메시지 없이 실행될 수 있기 때문이다.
 
 ### 어디에 쓰이는가
 
@@ -170,11 +169,11 @@ metagrating은 LiDAR의 빔 조향과 대각도 회절 소자의 핵심이고, a
 
 
 
-### 원본 §2 · 물리 한 페이지
+### 원본 §2 · 목적함수와 gradient 계산
 
 
 
-목적함수 J = &#124;a₊₁&#124;²/P_in은 73개 밀도 ρ의 함수다. 미분 ∂J/∂ρ_i를 하나씩 유한차분으로 구하면 146번의 시뮬레이션이 필요하다. adjoint 방법은 두 번으로 끝낸다. 원래 source로 쏜 forward field E_f와, 목적함수 monitor 자리에서 거꾸로 쏜 adjoint field E_a의 곱이 모든 픽셀의 gradient다. "빛이 실제로 지나는 곳"과 "목적함수가 민감한 곳"이 겹치는 픽셀에서 gradient가 크다.
+목적함수 J = &#124;a₊₁&#124;²/P_in은 73개 밀도 ρ의 함수다. 미분 ∂J/∂ρ_i를 하나씩 유한차분으로 구하면 146번의 시뮬레이션이 필요하다. 이 예제의 adjoint 방법은 두 번의 계산으로 모든 밀도의 미분을 구한다. 원래 source로 구한 forward field E_f와, 목적함수에서 유도한 source를 monitor 위치에 놓고 별도로 구한 adjoint field E_a를 사용한다. 두 복소장의 겹침에 재료의 밀도 의존성을 반영하면 각 픽셀의 gradient를 얻는다.
 
 $$
 \frac{\partial J}{\partial \rho_i}\;\propto\;\mathrm{Re}\big(E_f\cdot E_a\big)\Big\lvert _{\text{pixel } i},\qquad
@@ -195,7 +194,7 @@ gate에서 두 가지를 지킨다. 방향 v는 gradient 방향이다. 설계 �
 
 **가정과 유효 범위**: 2D Ez, 1D 설계 영역(높이 방향 1픽셀, 막대 높이 전체가 한 변수), 단일 주파수, `eps_averaging=False`로 경계 평균 없음. 제작 제약(최소 선폭, 이진화)은 없다.
 
-### 결과 보기 전에 맞춰보기
+### 결과를 보기 전에 예측하기
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -259,7 +258,7 @@ for j, w in enumerate(W_LIB):
 ```
 
 - **무엇**: 07편 파라미터를 그대로 두고, library 설계를 73개 0/1 밀도로 옮긴다.
-- **왜**: 출발점이 랜덤이 아니라 "이미 괜찮은 설계"여야 "adjoint가 간극을 얼마나 메우는가"를 물을 수 있다. 랜덤 회색조는 +1차 효율 0.018에서 시작한다(§5).
+- **왜**: library 설계를 출발점으로 삼아 adjoint 최적화로 효율이 얼마나 개선되는지 비교한다. 랜덤 회색조는 +1차 효율 0.018에서 시작한다(§5).
 - **틀리면**: 픽셀 폭 25 nm와 library 폭(0.075 = 3 px)이 맞지 않으면 baseline이 07편과 다른 구조가 된다.
 
 ### ② 재료와 구조 — 무엇이 어디에 있는가
@@ -331,7 +330,7 @@ solver.set_max_objective(nlopt_objective); solver.set_maxeval(5)
 ```
 
 - **무엇**: `opt(...)` 한 번이 forward와 adjoint 두 run이다. gate는 세 step으로 중심차분. 그다음 손으로 한 걸음, 그다음 MMA 5회.
-- **왜**: 순서가 계약이다. gate를 통과하지 못한 gradient로는 아무것도 하지 않는다. 손 step은 "gradient 방향으로 가면 정말 오르는가, 얼마나 멀리까지"를 보여 준다.
+- **왜**: 먼저 gate를 통과한 gradient인지 확인해야 한다. 한 번의 갱신으로 gradient 방향에서 성능이 증가하는지, 어느 정도의 갱신 폭까지 유효한지 살펴본다.
 - **틀리면**: 0/1 baseline에서 바로 gate를 재면 clip 때문에 FD가 adjoint의 절반이 나와 HOLD가 된다. 랜덤 방향으로 재면 상대오차가 1/√73 배로 부풀려진다.
 
 ### ⑦ 후처리 — 계약 4, 별도 검증
@@ -361,7 +360,7 @@ def forward_orders(weights):
 
 <figure class="lesson-figure">
 <a href="{{ site.baseurl }}/assets/meep/08/02_fields.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/08/02_fields.png" alt="왼쪽: library baseline의 forward field. 파면이 위로 갈수록 오른쪽으로 기운다(+1차). 가운데: 랜덤 회색조 출발점. 파면이 뭉개지고 J = 0.018이다. 오른쪽: adjoint field. monitor" loading="lazy"></a>
-<figcaption markdown="span">왼쪽: library baseline의 forward field. 파면이 위로 갈수록 오른쪽으로 기운다(+1차). 가운데: 랜덤 회색조 출발점. 파면이 뭉개지고 J = 0.018이다. 오른쪽: adjoint field. monitor에서 아래로 내려오는 파. 절대 크기는 비교하지 않는다. 볼 것은 "어디에 있는가"다.</figcaption>
+<figcaption markdown="span">왼쪽은 library baseline의 forward field로, 위쪽으로 진행하는 파면이 오른쪽으로 기운다(+1차). 가운데는 랜덤 회색조 출발점이며 파면이 불규칙하고 J = 0.018이다. 오른쪽은 monitor에서 아래쪽으로 향하는 adjoint field다. 이 그림에서는 절대 크기보다 각 장의 공간 분포를 비교한다.</figcaption>
 </figure>
 
 
@@ -419,7 +418,7 @@ def forward_orders(weights):
 | 검증 vs optimizer | 둘째 자리 차이 | 0.6228 vs 0.6241 | ✅ |
 | 회색조 | 수십 개 | 27 / 73 | ✅ |
 
-예측대로였고, 숫자로 확인된 것은 두 가지다. 07편의 "이웃이 같다" 가정이 잃던 몫의 절반 가까이를 픽셀 자유도가 되찾았다(61% → 77%). 그리고 그 개선의 대부분은 0차 누설을 줄인 데서 왔다(0.067 → 0.017). −1차는 거의 그대로다. 계단 근사의 거울상 누설은 5회로는 못 건드렸다.
+예측과 계산 결과를 비교하면 두 가지를 확인할 수 있다. 07편의 동일한 이웃을 가정한 설계에서 픽셀별 밀도를 조절하자 상한 대비 효율이 높아졌다(61% → 77%). 그 개선의 대부분은 0차 누설 감소에서 왔다(0.067 → 0.017). −1차는 거의 그대로이며, 5회 평가에서는 이 차수의 누설이 크게 줄지 않았다.
 
 ### 수렴성
 
@@ -428,7 +427,7 @@ def forward_orders(weights):
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: 이 셀·해상도에서 adjoint gradient는 유한차분과 1% 안에서 같다. library baseline에서 다섯 번의 MMA 평가로 +1차 효율이 0.50에서 0.62로 올랐고, 그 값은 별도 run으로 재확인됐다.
-- 할 수 없는 것: "최적 설계를 찾았다". maxeval 5는 수렴이 아니다. 73개 중 27개가 회색조라 이 패턴은 실제 소자가 아니다. 최소 선폭 제약이 없어 이진화하면 효율이 달라진다. 다른 해상도·파장·편광에서의 값.
+- 확인되지 않은 것: 최적 설계로의 수렴. maxeval 5만으로는 수렴을 판단할 수 없다. 73개 중 27개가 회색조여서 제작 가능한 이진 재료 구조도 아니다. 최소 선폭 제약이 없어 이진화하면 효율이 달라진다. 다른 해상도·파장·편광에서의 성능은 별도 검증이 필요하다.
 
 
 ### 원본 §6 · 흔한 실수
