@@ -1,0 +1,192 @@
+{
+ "meep_version": "1.33.0",
+ "source": {
+  "fcen": 1.0,
+  "fwidth": 0.5,
+  "t0": 10.0,
+  "width": 2.0
+ },
+ "vacuum": [
+  {
+   "D": 1,
+   "S": 0.5,
+   "limit": 1.0,
+   "status": "stable",
+   "t_last": 80.0,
+   "steps_last": 3200
+  },
+  {
+   "D": 1,
+   "S": 0.99,
+   "limit": 1.0,
+   "status": "stable",
+   "t_last": 79.69500000000001,
+   "steps_last": 1610
+  },
+  {
+   "D": 1,
+   "S": 1.0,
+   "limit": 1.0,
+   "status": "stable",
+   "t_last": 80.0,
+   "steps_last": 1600
+  },
+  {
+   "D": 1,
+   "S": 1.01,
+   "limit": 1.0,
+   "status": "diverged",
+   "t_last": 21.715,
+   "steps_last": 430
+  },
+  {
+   "D": 1,
+   "S": 1.05,
+   "limit": 1.0,
+   "status": "diverged",
+   "t_last": 21.525000000000002,
+   "steps_last": 410
+  },
+  {
+   "D": 2,
+   "S": 0.5,
+   "limit": 0.7071067811865475,
+   "status": "stable",
+   "t_last": 80.0,
+   "steps_last": 1600
+  },
+  {
+   "D": 2,
+   "S": 0.7,
+   "limit": 0.7071067811865475,
+   "status": "stable",
+   "t_last": 79.86999999999999,
+   "steps_last": 1141
+  },
+  {
+   "D": 2,
+   "S": 0.71,
+   "limit": 0.7071067811865475,
+   "status": "diverged",
+   "t_last": 23.358999999999998,
+   "steps_last": 329
+  },
+  {
+   "D": 2,
+   "S": 0.72,
+   "limit": 0.7071067811865475,
+   "status": "diverged",
+   "t_last": 21.671999999999997,
+   "steps_last": 301
+  },
+  {
+   "D": 2,
+   "S": 0.75,
+   "limit": 0.7071067811865475,
+   "status": "diverged",
+   "t_last": 21.525,
+   "steps_last": 287
+  },
+  {
+   "D": 3,
+   "S": 0.5,
+   "limit": 0.5773502691896258,
+   "status": "stable",
+   "t_last": 80.0,
+   "steps_last": 1280
+  },
+  {
+   "D": 3,
+   "S": 0.57,
+   "limit": 0.5773502691896258,
+   "status": "stable",
+   "t_last": 79.8,
+   "steps_last": 1120
+  },
+  {
+   "D": 3,
+   "S": 0.58,
+   "limit": 0.5773502691896258,
+   "status": "diverged",
+   "t_last": 25.882499999999997,
+   "steps_last": 357
+  },
+  {
+   "D": 3,
+   "S": 0.59,
+   "limit": 0.5773502691896258,
+   "status": "diverged",
+   "t_last": 21.682499999999997,
+   "steps_last": 294
+  },
+  {
+   "D": 3,
+   "S": 0.62,
+   "limit": 0.5773502691896258,
+   "status": "diverged",
+   "t_last": 21.39,
+   "steps_last": 276
+  }
+ ],
+ "lorentz": {
+  "0.5": {
+   "3.0": "stable",
+   "3.5": "stable",
+   "4.0": "stable",
+   "4.5": "stable",
+   "5.0": "stable",
+   "5.5": "stable",
+   "6.0": "diverged",
+   "6.5": "diverged",
+   "7.0": "diverged",
+   "7.5": "diverged",
+   "8.0": "diverged",
+   "8.5": "diverged",
+   "9.0": "diverged",
+   "9.5": "diverged",
+   "10.0": "diverged",
+   "10.5": "diverged",
+   "11.0": "diverged",
+   "11.5": "diverged",
+   "12.0": "diverged",
+   "12.5": "diverged",
+   "13.0": "diverged",
+   "13.5": "diverged",
+   "14.0": "diverged",
+   "14.5": "diverged",
+   "15.0": "diverged",
+   "15.5": "diverged",
+   "16.0": "diverged"
+  },
+  "0.25": {
+   "3.0": "stable",
+   "3.5": "stable",
+   "4.0": "stable",
+   "4.5": "stable",
+   "5.0": "stable",
+   "5.5": "stable",
+   "6.0": "stable",
+   "6.5": "stable",
+   "7.0": "stable",
+   "7.5": "stable",
+   "8.0": "stable",
+   "8.5": "stable",
+   "9.0": "stable",
+   "9.5": "stable",
+   "10.0": "stable",
+   "10.5": "stable",
+   "11.0": "stable",
+   "11.5": "diverged",
+   "12.0": "diverged",
+   "12.5": "diverged",
+   "13.0": "diverged",
+   "13.5": "diverged",
+   "14.0": "diverged",
+   "14.5": "diverged",
+   "15.0": "diverged",
+   "15.5": "diverged",
+   "16.0": "diverged"
+  }
+ },
+ "lorentz_res": 10
+}

@@ -1,0 +1,15 @@
+/* Concept dictionary: term pages (_layouts/term.html) and the index (_layouts/concepts.html). Reuses lesson.css tokens. */
+.term-page h1 .term-full { display: block; margin-top: var(--space-2); font-size: var(--text-lead); font-weight: 500; color: var(--ink-secondary); }
+.term-glance dl { margin: 0; display: grid; gap: var(--space-3); }
+.term-glance dl > div { display: grid; grid-template-columns: minmax(7.5em, 11em) minmax(0, 1fr); gap: var(--space-4); }
+.term-glance dt { font-weight: 650; font-size: var(--text-small); color: var(--ink-secondary); }
+.term-glance dd { margin: 0; font-size: var(--text-small); line-height: 1.7; overflow-wrap: anywhere; }
+.term-glance code { font-size: .9em; padding: 2px 5px; border: 0; border-radius: 3px; background: var(--paper); color: var(--ink); white-space: normal; overflow-wrap: anywhere; }
+.term-index { list-style: none; margin: 0 0 var(--space-10); padding: 0; border-top: 1px solid var(--rule); }
+.term-index li { padding: var(--space-4) 0; border-bottom: 1px solid var(--rule); display: grid; gap: var(--space-1); }
+.term-index a { font-size: var(--text-body); text-underline-offset: 3px; }
+.term-index .term-full { color: var(--ink-secondary); font-weight: 400; }
+.term-index li > span { font-size: var(--text-small); color: var(--ink-secondary); }
+@media (max-width: 640px) {
+  .term-glance dl > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+}

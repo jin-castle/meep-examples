@@ -1,0 +1,55 @@
+{% include locale.html %}
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-baseurl="{{ site.baseurl }}">
+  {% include head.html %}
+  <body class="lesson-page term-page">
+    <a class="lesson-skip" href="#lesson-content">{{ ui.skip }}</a>
+    <header class="lesson-header">
+      <a class="lesson-brand" href="{{ home_path | relative_url }}" aria-label="{{ ui.home }}">
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M3 24h10a7 7 0 0 0 7-7V3" fill="none" stroke="currentColor" stroke-width="5"/><path d="M3 24h10a7 7 0 0 0 7-7V3" fill="none" stroke="white" stroke-width="1.5"/></svg>
+        <span>Meep <strong>Examples</strong></span>
+      </a>
+      <a class="all-examples-link" href="{{ home_path | append: '#examples' | relative_url }}">{{ ui.all_examples }} <span aria-hidden="true">↗</span></a>
+      {% include site-controls.html %}
+    </header>
+    {% assign terms = site.pages | where: 'layout', 'term' | where: 'lang', lang | sort: 'order' %}
+    {% capture concept_toc %}<ol>{% for axis in page.axes %}{% assign group = terms | where: 'axis', axis.key %}{% if group.size > 0 %}<li><a href="#axis-{{ axis.key }}">{{ axis.label | escape }}</a></li>{% endif %}{% endfor %}</ol>{% endcapture %}
+    <details class="mobile-toc">
+      <summary>{{ ui.toc }} <span aria-hidden="true">＋</span></summary>
+      <nav aria-label="{{ ui.mobile_toc }}">{{ concept_toc }}</nav>
+    </details>
+    <div class="lesson-shell">
+      <aside class="lesson-sidebar">
+        <a class="lesson-back" href="{{ home_path | append: '#concepts' | relative_url }}">← Meep Examples</a>
+        <p class="lesson-eyebrow">{{ ui.concepts }}</p>
+        <nav aria-label="{{ ui.body_toc }}">{{ concept_toc }}</nav>
+        <p class="lesson-side-note">{{ ui.term_note }}</p>
+      </aside>
+      <main id="lesson-content" class="lesson-main">
+        <article>
+          <header class="lesson-intro">
+            <p class="lesson-eyebrow">MEEP EXAMPLES <span aria-hidden="true">/</span> {{ ui.concepts }}</p>
+            <h1>{{ page.lesson_title | escape }}</h1>
+            <p class="lesson-lead">{{ page.lesson_summary | escape }}</p>
+          </header>
+          <div class="lesson-content">
+            {{ content }}
+            {% for axis in page.axes %}
+            {% assign group = terms | where: 'axis', axis.key %}
+            {% if group.size > 0 %}
+            <h2 id="axis-{{ axis.key }}">{{ axis.label | escape }}</h2>
+            <p>{{ axis.note | escape }}</p>
+            <ul class="term-index">
+              {% for term in group %}
+              <li><a href="{{ term.url | relative_url }}"><strong>{{ term.term_label | escape }}</strong>{% if term.term_full %} <span class="term-full">{{ term.term_full | escape }}</span>{% endif %}</a><span>{{ term.lesson_summary | escape }}</span></li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </article>
+        <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }} · {% include rights-link.html %}</footer>
+      </main>
+    </div>
+  </body>
+</html>
