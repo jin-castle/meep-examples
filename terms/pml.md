@@ -53,7 +53,16 @@ $$e^{ik_x \tilde{x}} = e^{ik_x x}\,\exp\!\left(-\frac{k_x}{\omega}\int^{x}\sigma
 
 <h2 id="why">2. 왜 필요한가</h2>
 
-경계에서 돌아온 파는 계산 결과에 실제 소자에는 없는 반사원을 하나 더합니다. 투과율, 방사 손실, 공진기의 Q, 점광원의 방출률이 모두 이 가짜 반사의 영향을 받습니다. 02편은 같은 점원과 같은 셀에서 경계 처리만 바꿔 경계가 돌려보낸 장을 쟀습니다.
+경계에서 돌아온 파는 계산 결과에 실제 소자에는 없는 반사원을 하나 더합니다. 투과율, 방사 손실, 공진기의 Q, 점광원의 방출률이 모두 이 가짜 반사의 영향을 받습니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.gif" alt="2D 진공, 중앙 Ez 점원(파장 1.55 µm), resolution 12, 내부 8 × 8 µm. 위 줄은 Ez: 경계층 없음은 벽에서 돌아온 파가 내부를 채우고, Absorber와 PML은 바깥 1 µm 층에서 파가 줄어든다. 아래 줄은 경계가 돌려보낸 장(큰 참조 셀을 뺀 값)을 50배로 키운 것: 경계층 없음은 포화, Absorber는 층 입구에서 반사된 무늬가 남고, PML은 거의 비어 있다." data-animation-src="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>같은 점원을 세 경계에서 계산했습니다(위 줄 Ez, 색 범위 같음). 아래 줄은 경계가 돌려보낸 장만 보려고, 경계가 닿지 않는 큰 참조 셀의 장을 빼고 50배로 키운 것입니다. Absorber는 층 입구에서 생긴 반사가 50배에서 또렷하게 보이고(t &gt; 20의 최대 지표 4.5 × 10⁻²), PML은 같은 배율에서도 거의 보이지 않습니다(9.5 × 10⁻⁵). 지표는 02편과 같은 정의이지만 source 위치와 시각이 달라 02편 표의 수와 직접 비교하지는 않습니다.</figcaption>
+</figure>
+ 02편은 같은 점원과 같은 셀에서 경계 처리만 바꿔 경계가 돌려보낸 장을 쟀습니다.
 
 | 경계 처리 | 반사 지표 (02편, 2D 진공, res 12) |
 |---|---|
@@ -153,5 +162,6 @@ adjoint 계산은 같은 셀에서 두 번 돌립니다. forward run은 입력 s
 
 - 함께 보면 좋은 개념: [Courant 조건]({{ site.baseurl }}/terms/courant-condition/) (분산 재료와 PML이 겹칠 때의 발산), [Flux 정규화]({{ site.baseurl }}/terms/flux-normalization/) (monitor와 PML의 간격)
 - 측정과 해설: [02 · 경계 조건과 PML]({{ site.baseurl }}/boundary-pml/)
+- 애니메이션 코드: [code/pml_flux_gif.py](https://github.com/jin-castle/meep-examples/blob/main/code/pml_flux_gif.py) (Meep 1.33.0, 단일 코어 약 1분) · [anim.json]({{ site.baseurl }}/assets/meep/terms-pml/anim.json)
 - Meep 공식 문서: [Perfectly Matched Layer](https://meep.readthedocs.io/en/master/Perfectly_Matched_Layer/) · [Python API: PML, Absorber](https://meep.readthedocs.io/en/master/Python_User_Interface/#pml) · [FAQ: Checking convergence](https://meep.readthedocs.io/en/master/FAQ/#checking-convergence)
 - 참고 문헌: S. G. Johnson, [Notes on Perfectly Matched Layers](https://arxiv.org/abs/2108.05348) (MIT 강의 노트, arXiv 2021)

@@ -39,6 +39,14 @@ $$P[\mathbf{E}_{\text{inc}}+\mathbf{E}_{\text{r}}] = P[\mathbf{E}_{\text{inc}}] 
 
 Meep therefore subtracts fields, not fluxes. In the reference run you save the Fourier-transformed fields on the reflection plane with `get_flux_data`; in the run with the structure you create the same monitor and immediately load those fields with their sign flipped using `load_minus_flux_data`. From then on, the accumulated value is $\tilde{\mathbf{E}}-\tilde{\mathbf{E}}_{\text{inc}}$, the flux of the reflected (scattered) field alone. The reflection plane must sit at the same position relative to the source in both runs so the phases match.
 
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.gif" alt="The two runs of the Part 05 sharp bend. Top left run 1 straight guide, centre run 2 bend, right their difference. Green line: reflection plane; purple: transmission planes. Bottom: flux accumulated so far at the centre frequency divided by the final P_in of run 1: purple (run 1 P_in) goes from 0 to 1, blue (T) from 0 to 0.20, red (R) starts at −1.05, crosses 0 near t = 65 and rises to 0.22." data-animation-src="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>Pause animation</button>
+  <figcaption>The Part 05 sharp bend recomputed with the same settings. What remains left of the reflection plane in the right panel (run 2 − run 1) is the reflected wave. The bottom graph is the flux accumulated while the run proceeds. Run 2 starts with the whole incident field already subtracted, so R(t) begins at −1.05 and reaches 0.22 only after the reflected wave has fully passed the plane (t ≈ 140). Stopping when the source switches off at t = 100 would have given T = 0.011 and R = 0.0002. The start is slightly below −1 because the incident power crossing the reflection plane includes what the line source radiated outside the guide, 5 % more than P_in measured down the guide.</figcaption>
+</figure>
+
 <details markdown="1">
 <summary>Going deeper · when subtracting fluxes and subtracting fields agree</summary>
 
@@ -116,7 +124,7 @@ The official FAQ lists five reasons for reflectance or transmittance below zero 
 |---|---|---|---|
 | T > 1 or R + T > 1 | The reference and structure runs are not comparable (cell, resolution, source, monitor position or background material differs) | Print both runs' settings side by side | Recompute the reference with the same settings; never reuse a reference from another resolution |
 | Values jump or exceed 1 at the band edges | Source power at the edge frequencies is so small that round-off dominates | Check the relative source power at the edges | Use an `fwidth` similar to the measured band; do not report edge values |
-| T changes when the decay tolerance is tightened | The run stopped before the fields left, so the Fourier transforms are incomplete | Rerun with a 10× tighter tolerance | `stop_when_fields_decayed` at a point near the transmission plane, or `stop_when_dft_decayed` |
+| T changes when the decay tolerance is tightened | The run stopped before the fields left, so the Fourier transforms are incomplete (bottom graph of the animation in section 1) | Rerun with a 10× tighter tolerance | `stop_when_fields_decayed` at a point near the transmission plane, or `stop_when_dft_decayed` |
 | Negative reflectance | The −1 was forgotten, or the monitor is behind the source | Check that the reflection plane lies between the source and the structure | Fix the position and use −flux |
 | Transmission too small and 1 − T − R suspiciously large | `load_minus_flux_data` was applied to the transmission plane too, so it measures only the scattered field | Check which monitor received the data | Use it on the reflection plane only |
 | A straight reference whose T is not 1 | The reference monitor is too close to the source and counts radiation outside the guide | Move the monitor away from the source and compare `P_in` | Move it farther, or use an `EigenModeSource` |
@@ -136,4 +144,5 @@ Termination becomes stricter. The adjoint run also builds the gradient from the 
 
 - Related concepts: [PML]({{ site.baseurl }}/en/terms/pml/) (the gap between monitors and the PML), [Courant condition]({{ site.baseurl }}/en/terms/courant-condition/)
 - Measurements and explanation: [03 · Reference subtraction]({{ site.baseurl }}/en/reference-subtraction/) · [05 · Two-run normalization]({{ site.baseurl }}/en/waveguide-bend-90/)
+- Animation code: [code/pml_flux_gif.py](https://github.com/jin-castle/meep-examples/blob/main/code/pml_flux_gif.py) (Meep 1.33.0, about 1 min on one core) · [anim.json]({{ site.baseurl }}/assets/meep/terms-flux/anim.json)
 - Official Meep documentation: [Basics: Transmittance spectrum of a waveguide bend](https://meep.readthedocs.io/en/master/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend) · [Introduction: Transmittance/reflectance spectra](https://meep.readthedocs.io/en/master/Introduction/#transmittancereflectance-spectra) · [Python API: Flux spectra](https://meep.readthedocs.io/en/master/Python_User_Interface/#flux-spectra) · [FAQ: reflectance/transmittance below zero or above one](https://meep.readthedocs.io/en/master/FAQ/#why-are-my-reflectancetransmittance-values-less-than-zero-andor-greater-than-one)

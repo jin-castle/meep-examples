@@ -54,7 +54,16 @@ An evanescent wave $e^{-\kappa x}$ has $k_x = i\kappa$. The same substitution th
 
 <h2 id="why">2. Why it matters</h2>
 
-A wave returned by the boundary adds a reflector that the real device does not have. Transmission, radiation loss, cavity Q and the emission rate of a point source are all affected by this spurious reflection. Part 02 kept the source and the cell fixed, changed only the boundary treatment and measured the field returned by the boundary.
+A wave returned by the boundary adds a reflector that the real device does not have. Transmission, radiation loss, cavity Q and the emission rate of a point source are all affected by this spurious reflection.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.gif" alt="2D vacuum, Ez point source at the centre (wavelength 1.55 µm), resolution 12, 8 × 8 µm interior. Top row, Ez: with no layer the wave returning from the walls fills the interior; with Absorber and PML the wave fades in the outer 1 µm layer. Bottom row, the field sent back by the boundary (a large reference cell subtracted), ×50: saturated for no layer, a pattern reflected at the layer entrance for Absorber, nearly empty for PML." data-animation-src="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-pml/01_anim_pml.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>Pause animation</button>
+  <figcaption>The same point source with three boundaries (top row Ez, one colour scale). The bottom row shows only what the boundary sent back: the field of a large reference cell that no boundary reaches is subtracted, then magnified 50 times. The reflection at the Absorber's entrance is plain at ×50 (largest metric after t = 20: 4.5 × 10⁻²), while the PML stays nearly invisible at the same magnification (9.5 × 10⁻⁵). The metric is defined as in Part 02, but the source position and time differ, so the numbers are not directly comparable with the table from Part 02.</figcaption>
+</figure>
+ Part 02 kept the source and the cell fixed, changed only the boundary treatment and measured the field returned by the boundary.
 
 | Boundary treatment | Reflection metric (Part 02, 2D vacuum, res 12) |
 |---|---|
@@ -154,5 +163,6 @@ Two checks therefore come first in inverse design. First, before running, comput
 
 - Related concepts: [Courant condition]({{ site.baseurl }}/en/terms/courant-condition/) (divergence when dispersive materials overlap PML), [Flux normalization]({{ site.baseurl }}/en/terms/flux-normalization/) (the gap between monitors and the PML)
 - Measurements and explanation: [02 · Boundary conditions and PML]({{ site.baseurl }}/en/boundary-pml/)
+- Animation code: [code/pml_flux_gif.py](https://github.com/jin-castle/meep-examples/blob/main/code/pml_flux_gif.py) (Meep 1.33.0, about 1 min on one core) · [anim.json]({{ site.baseurl }}/assets/meep/terms-pml/anim.json)
 - Official Meep documentation: [Perfectly Matched Layer](https://meep.readthedocs.io/en/master/Perfectly_Matched_Layer/) · [Python API: PML, Absorber](https://meep.readthedocs.io/en/master/Python_User_Interface/#pml) · [FAQ: Checking convergence](https://meep.readthedocs.io/en/master/FAQ/#checking-convergence)
 - Reference: S. G. Johnson, [Notes on Perfectly Matched Layers](https://arxiv.org/abs/2108.05348) (MIT course notes, arXiv 2021)

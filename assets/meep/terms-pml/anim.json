@@ -1,0 +1,14 @@
+{
+ "colour_limit": 0.2611364722251892,
+ "amplification": 50,
+ "metric_at_t27": {
+  "no layer (Meep default wall)": 1.2705139448319485,
+  "mp.Absorber(1.0)": 0.012920445132730878,
+  "mp.PML(1.0)": 8.067981329037617e-06
+ },
+ "metric_max_after_t20": {
+  "no layer (Meep default wall)": 1.3441452521459718,
+  "mp.Absorber(1.0)": 0.04541611840839486,
+  "mp.PML(1.0)": 9.482340834094947e-05
+ }
+}

@@ -38,6 +38,14 @@ $$P[\mathbf{E}_{\text{inc}}+\mathbf{E}_{\text{r}}] = P[\mathbf{E}_{\text{inc}}] 
 
 그래서 Meep은 flux를 빼지 않고 장을 뺍니다. reference run에서 반사면의 Fourier 변환 장을 `get_flux_data`로 저장해 두고, 구조가 있는 run에서 같은 monitor를 만든 직후 `load_minus_flux_data`로 그 장의 부호를 바꿔 넣습니다. 이후 누적되는 값은 $\tilde{\mathbf{E}}-\tilde{\mathbf{E}}_{\text{inc}}$, 곧 반사된(산란된) 장만의 flux입니다. 두 run에서 반사면은 source에 대해 같은 위치에 있어야 위상이 맞습니다.
 
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.gif" alt="05편 sharp bend의 두 run. 위 줄 왼쪽은 run 1 직선 도파로, 가운데는 run 2 bend, 오른쪽은 두 장의 차. 초록 선은 반사면, 보라 선은 투과면. 아래 그래프는 중심 주파수에서 지금까지 누적된 flux를 run 1의 최종 P_in으로 나눈 값: 보라(run 1 P_in)는 0에서 1로, 파랑(T)은 0에서 0.20으로, 빨강(R)은 −1.05에서 시작해 t ≈ 65에 0을 지나 0.22로 올라간다." data-animation-src="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-flux/01_anim_flux.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>05편 sharp bend를 같은 설정으로 다시 계산했습니다. 오른쪽 패널(run 2 − run 1)의 반사면 왼쪽에 남는 것이 반사파입니다. 아래 그래프는 계산이 진행되는 동안 누적된 flux입니다. run 2는 시작할 때 입사장 전체를 빼 둔 상태라 R(t)가 −1.05에서 출발하고, 반사파가 반사면을 다 지나간 뒤(t ≈ 140)에야 0.22에 도달합니다. source가 꺼지는 t = 100에 멈췄다면 T = 0.011, R = 0.0002가 나왔을 것입니다. 출발값이 −1보다 조금 작은 것은 반사면을 지나는 입사 전력에 선원이 도파로 밖으로 내보낸 몫이 섞여, 도파로 끝에서 잰 P_in보다 5 % 크기 때문입니다.</figcaption>
+</figure>
+
 <details markdown="1">
 <summary>더 깊이 · 언제 flux 빼기와 장 빼기가 같아지는가</summary>
 
@@ -115,7 +123,7 @@ L = 1.0 - T - R                                      # what is left: radiated ou
 |---|---|---|---|
 | T > 1 또는 R + T > 1 | reference와 구조 run이 비교 가능하지 않음(셀, resolution, source, monitor 위치, 배경 재료 중 하나가 다름) | 두 run의 설정을 나란히 출력해 비교 | 같은 설정으로 reference를 다시 계산. 다른 resolution의 reference를 재사용하지 않음 |
 | 대역 가장자리에서 값이 튀거나 1을 넘음 | 가장자리 주파수의 source power가 너무 작아 반올림 오차가 커짐 | source 스펙트럼에서 가장자리의 상대 power 확인 | `fwidth`를 측정 대역과 비슷하게, 가장자리 값은 보고하지 않음 |
-| decay 허용값을 조이면 T가 변함 | 장이 다 빠져나가기 전에 종료해 Fourier 변환이 덜 누적됨 | 허용값을 10배 조여 다시 실행 | 투과면 근처 점에서 `stop_when_fields_decayed`, 또는 `stop_when_dft_decayed` |
+| decay 허용값을 조이면 T가 변함 | 장이 다 빠져나가기 전에 종료해 Fourier 변환이 덜 누적됨 (1절 애니메이션의 아래 그래프) | 허용값을 10배 조여 다시 실행 | 투과면 근처 점에서 `stop_when_fields_decayed`, 또는 `stop_when_dft_decayed` |
 | 반사율이 음수 | −1을 곱하지 않음, 또는 monitor가 source 뒤에 있음 | 반사면이 source와 구조 사이에 있는지 확인 | 위치를 고치고 −flux로 계산 |
 | 투과율이 실제보다 작고 1 − T − R이 이상하게 큼 | 투과면에도 `load_minus_flux_data`를 걸어 산란장만 잼 | 어느 monitor에 데이터를 넣었는지 확인 | 반사면에만 사용 |
 | 직선 reference인데 T가 1에서 벗어남 | reference의 monitor가 source에 너무 가까워 도파로 밖 방사까지 셈 | monitor를 source에서 멀리 옮겨 `P_in` 비교 | 충분히 떨어뜨리거나 `EigenModeSource` 사용 |
@@ -135,4 +143,5 @@ adjoint 최적화의 목적함수는 보통 flux가 아니라 모드 계수의 �
 
 - 함께 보면 좋은 개념: [PML]({{ site.baseurl }}/terms/pml/) (monitor와 PML의 간격), [Courant 조건]({{ site.baseurl }}/terms/courant-condition/)
 - 측정과 해설: [03 · reference 빼기]({{ site.baseurl }}/reference-subtraction/) · [05 · 2-run 정규화]({{ site.baseurl }}/waveguide-bend-90/)
+- 애니메이션 코드: [code/pml_flux_gif.py](https://github.com/jin-castle/meep-examples/blob/main/code/pml_flux_gif.py) (Meep 1.33.0, 단일 코어 약 1분) · [anim.json]({{ site.baseurl }}/assets/meep/terms-flux/anim.json)
 - Meep 공식 문서: [Basics: Transmittance spectrum of a waveguide bend](https://meep.readthedocs.io/en/master/Python_Tutorials/Basics/#transmittance-spectrum-of-a-waveguide-bend) · [Introduction: Transmittance/reflectance spectra](https://meep.readthedocs.io/en/master/Introduction/#transmittancereflectance-spectra) · [Python API: Flux spectra](https://meep.readthedocs.io/en/master/Python_User_Interface/#flux-spectra) · [FAQ: reflectance/transmittance below zero or above one](https://meep.readthedocs.io/en/master/FAQ/#why-are-my-reflectancetransmittance-values-less-than-zero-andor-greater-than-one)
