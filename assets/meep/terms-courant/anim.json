@@ -1,0 +1,38 @@
+{
+ "meep_version": "1.33.0",
+ "stop_threshold": 1000000.0,
+ "2d": {
+  "S": [
+   0.7,
+   0.71
+  ],
+  "status": [
+   "stable",
+   "diverged"
+  ],
+  "t_stop_unstable": 15.62,
+  "colour_limit": 0.2660942006426736
+ },
+ "1d": {
+  "labels": [
+   "S = 1.00",
+   "S = 1.003"
+  ],
+  "status": [
+   "stable",
+   "diverged"
+  ],
+  "t_stop_unstable": 11.2336
+ },
+ "lorentz": {
+  "labels": [
+   "S = 0.25",
+   "S = 0.5"
+  ],
+  "status": [
+   "stable",
+   "diverged"
+  ],
+  "t_stop_unstable": 20.8
+ }
+}

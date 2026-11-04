@@ -21,7 +21,7 @@ related:
   - { url: "/en/point-line-source/", label: "01 · Point or line: how does light spread?" }
   - { url: "/en/boundary-pml/", label: "02 · What if light returns from the walls of the computation box?" }
   - { url: "/en/cylindrical-dipole/", label: "13 · How can rotational symmetry simplify a 3D light calculation?" }
-calc_note: "The figure and part of the tables on this page come from a Meep 1.33.0 run made for this page (code/courant_stability.py, about 10 s on one core)."
+calc_note: "The figures, animations and part of the tables on this page come from Meep 1.33.0 runs made for this page (code/courant_stability.py about 10 s, code/courant_gif.py about 1 min, one core)."
 tags: [meep, fdtd, courant, cfl, stability, dispersive]
 ---
 
@@ -38,6 +38,18 @@ In Meep units $c = 1$ and $\Delta x = 1/\text{resolution}$, so $\Delta t = S/\te
 $$S \le \frac{n_{\min}}{\sqrt{D}}$$
 
 where $D$ is the number of dimensions and $n_{\min}$ is the smallest refractive index in the cell (usually 1, vacuum). The official docs note that the default of 0.5 is sufficient for one to three dimensions. A material with index below 1 (ε < 1) lowers the limit accordingly.
+
+What grows past the limit is easiest to see in 1D. Below, the same pulse is computed with S = 1.00 (exactly the limit) and S = 1.003 (0.3 % over). The dots in the lower-left zoom are grid points.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.gif" alt="1D vacuum, resolution 20. The blue line (S 1.00) is a pulse spreading both ways. The red line (S 1.003) develops a zigzag that flips sign at every grid point from t ≈ 5, grows over the whole cell and stops at t = 11.2 when max|Ex| exceeds 10⁶. The zoom shows the 20 grid points between z = −3 and −2 µm, each frame scaled to its own maximum." data-animation-src="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>Pause animation</button>
+  <figcaption>1D vacuum, resolution 20. With S = 1.00 (blue) the pulse spreads both ways and stays stable. With S = 1.003 (red) the first steps are identical, then from t ≈ 5 a zigzag that flips sign at every grid point grows until max|Ex| > 10⁶ stops the run at t = 11.2. The pulse has not even left the cell.</figcaption>
+</figure>
+
+What grows is not the pulse but a zigzag with the grid spacing. It starts at the size of floating-point round-off and grows by a fixed factor every step, independent of the physical wave. The equation under "Going deeper" gives that factor.
 
 <details markdown="1">
 <summary>Going deeper · where 1/√D comes from</summary>
@@ -60,9 +72,27 @@ $$\frac{d^2P_n}{dt^2} + \gamma_n\frac{dP_n}{dt} + \omega_n^2 P_n = \sigma_n\,\om
 
 The official Materials page says this equation becomes unstable roughly when $\omega_n\Delta t/2 > 1$. With $\omega_n = 2\pi f_n$ and $\Delta t = S/\text{resolution}$, the limit on the resonance frequency is $f_n < \text{resolution}/(\pi S)$. A run can satisfy the vacuum condition and still diverge if a material resonance is high; lowering S or raising the resolution shrinks Δt and raises the limit.
 
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.gif" alt="1D Lorentz medium (f_n 5.7, ε∞ 2.25, σ 0.5, γ 0.05), resolution 10, closed cell without PML. The blue line (S 0.25) keeps bouncing inside the medium at constant size. The red line (S 0.5) grows a grid-point zigzag from t ≈ 10 and stops at t = 20.8 above 10⁶." data-animation-src="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>Pause animation</button>
+  <figcaption>The same Lorentz medium (f_n = 5.7), resolution 10 and source. By the vacuum limit alone, S = 0.5 is half of the 1D limit and should be safe, but the polarization equation of the material breaks first and the run stops at t = 20.8. Lowering S to 0.25 lets the same calculation finish. For these parameters, divergence at S = 0.5 started between f_n 5.6 and 5.7.</figcaption>
+</figure>
+
 <h2 id="why">2. Why it matters</h2>
 
-A run past this limit starts without any error message. The fields look normal for the first few steps and then grow exponentially. For this page we ran a vacuum cell changing only S.
+A run past this limit starts without any error message. The fields look normal for the first few steps and then grow exponentially. The two runs below differ only in S, by 0.01, in 2D vacuum.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.gif" alt="2D vacuum, resolution 10, Ez point source at the centre. Left, S 0.70: a circular wavefront spreads into the PML. Centre, S 0.71: it looks the same until t ≈ 10, then a pixel checkerboard covers the cell and the run stops at t = 15.6. Right: the dashed 1 × 1 µm box (10 × 10 pixels) of the centre panel, each frame scaled to its own maximum; neighbouring pixels alternate in sign. Bottom: max|Ez| of both runs." data-animation-src="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>Pause animation</button>
+  <figcaption>2D vacuum, resolution 10; both field maps share one colour scale. S = 0.70 (below the limit 0.7071) lets the circular wavefront leave through the PML. S = 0.71 is indistinguishable until t ≈ 10, then a checkerboard covers the cell and max|Ez| > 10⁶ stops it at t = 15.6. The alternating neighbouring pixels in the zoom are the $k_i\Delta x = \pi$ component from "Going deeper" in section 1.</figcaption>
+</figure>
+
+Collecting several values of S, and 3D, measured the same way gives one summary figure.
 
 <figure class="lesson-figure">
   <a href="{{ site.baseurl }}/assets/meep/terms-courant/01_courant.png" data-lightbox>
@@ -149,7 +179,7 @@ Second, optimization often runs at a low resolution and only the final design is
 <h2 id="connections">7. Connections</h2>
 
 - Related concepts: [PML]({{ site.baseurl }}/en/terms/pml/) (divergence when dispersive materials overlap PML), [Flux normalization]({{ site.baseurl }}/en/terms/flux-normalization/)
-- Code: [code/courant_stability.py](https://github.com/jin-castle/meep-examples/blob/main/code/courant_stability.py) · results [result.json]({{ site.baseurl }}/assets/meep/terms-courant/result.json)
+- Code: [code/courant_stability.py](https://github.com/jin-castle/meep-examples/blob/main/code/courant_stability.py) (limits) · [code/courant_gif.py](https://github.com/jin-castle/meep-examples/blob/main/code/courant_gif.py) (animations) · results [result.json]({{ site.baseurl }}/assets/meep/terms-courant/result.json), [anim.json]({{ site.baseurl }}/assets/meep/terms-courant/anim.json)
 - Official Meep documentation: [Introduction: FDTD methods](https://meep.readthedocs.io/en/master/Introduction/#finite-difference-time-domain-methods) · [Materials: Numerical stability](https://meep.readthedocs.io/en/master/Materials/#numerical-stability) · [FAQ: Why are the fields blowing up?](https://meep.readthedocs.io/en/master/FAQ/#why-are-the-fields-blowing-up-in-my-simulation) · [Python API: Simulation](https://meep.readthedocs.io/en/master/Python_User_Interface/#simulation)
 - Reference: A. Taflove, S. C. Hagness, *Computational Electrodynamics: The Finite-Difference Time-Domain Method*, 3rd ed., Artech House (2005), ch. 4 on numerical dispersion and stability
 

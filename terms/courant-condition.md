@@ -20,7 +20,7 @@ related:
   - { url: "/point-line-source/", label: "01 · 점원과 선원에서 빛은 어떻게 퍼질까요?" }
   - { url: "/boundary-pml/", label: "02 · 계산 경계의 반사는 어떻게 줄일까요?" }
   - { url: "/cylindrical-dipole/", label: "13 · 회전 대칭 구조의 3D 전자기장은 어떻게 계산할까요?" }
-calc_note: "이 페이지의 그림과 표 일부는 이 페이지를 위해 새로 실행한 Meep 1.33.0 계산입니다(code/courant_stability.py, 단일 코어 약 10초)."
+calc_note: "이 페이지의 그림, 애니메이션, 표 일부는 이 페이지를 위해 새로 실행한 Meep 1.33.0 계산입니다(code/courant_stability.py 약 10초, code/courant_gif.py 약 1분, 단일 코어)."
 tags: [meep, fdtd, courant, cfl, stability, dispersive]
 ---
 
@@ -37,6 +37,18 @@ Meep 단위에서는 $c = 1$, $\Delta x = 1/\text{resolution}$이므로 $\Delta 
 $$S \le \frac{n_{\min}}{\sqrt{D}}$$
 
 $D$는 차원 수, $n_{\min}$은 셀 안의 최소 굴절률입니다(보통 진공의 1). 공식 문서는 기본값 0.5가 1~3차원 모두에 충분하다고 적습니다. 굴절률이 1보다 작은 재료(ε < 1)를 넣으면 한계가 그만큼 낮아집니다.
+
+한계를 넘었을 때 무엇이 커지는지는 1D에서 가장 잘 보입니다. 아래는 같은 펄스를 S = 1.00(한계와 같음)과 S = 1.003(0.3 % 초과)으로 계산한 것입니다. 왼쪽 아래 확대 그림의 점이 격자점입니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.gif" alt="1D 진공, resolution 20. 파란 선(S 1.00)은 펄스가 양쪽으로 퍼져 나간다. 빨간 선(S 1.003)은 t ≈ 5부터 격자점마다 부호가 바뀌는 지그재그가 셀 전체에 생겨 커지고, t = 11.2에 max|Ex|가 10⁶을 넘어 멈춘다. 확대 그림은 z = −3 ~ −2 µm의 격자점 20개를 각 프레임 최대값으로 나눈 것이다." data-animation-src="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-courant/03_anim_1d.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>1D 진공, resolution 20. S = 1.00(파랑)은 펄스가 양쪽으로 퍼져 나가고 끝까지 안정합니다. S = 1.003(빨강)은 처음 몇 단계는 같다가 t ≈ 5부터 격자점마다 부호가 바뀌는 지그재그가 자라고, t = 11.2에 max|Ex| > 10⁶이 되어 멈춥니다. 펄스는 아직 셀을 벗어나지도 않았습니다.</figcaption>
+</figure>
+
+자라는 것은 펄스가 아니라 픽셀 간격의 지그재그입니다. 이 무늬는 처음에 부동소수점 반올림 오차 크기로 생기고, 물리적 파동과 상관없이 매 단계 일정 배율로 커집니다. 아래 "더 깊이"의 식이 이 배율을 줍니다.
 
 <details markdown="1">
 <summary>더 깊이 · 1/√D가 나오는 과정</summary>
@@ -59,9 +71,27 @@ $$\frac{d^2P_n}{dt^2} + \gamma_n\frac{dP_n}{dt} + \omega_n^2 P_n = \sigma_n\,\om
 
 공식 Materials 문서는 이 식이 대략 $\omega_n\Delta t/2 > 1$에서 불안정해진다고 적습니다. $\omega_n = 2\pi f_n$, $\Delta t = S/\text{resolution}$을 넣으면 공진 주파수의 한계는 $f_n < \text{resolution}/(\pi S)$입니다. 진공 조건을 만족해도 재료의 공진 주파수가 높으면 발산할 수 있고, 이때는 S를 낮추거나 resolution을 올리면 Δt가 작아져 한계가 올라갑니다.
 
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.gif" alt="1D Lorentz 매질(f_n 5.7, ε∞ 2.25, σ 0.5, γ 0.05), resolution 10, PML 없는 닫힌 셀. 파란 선(S 0.25)은 펄스가 매질 안에서 오가며 크기를 유지한다. 빨간 선(S 0.5)은 t ≈ 10부터 격자점 지그재그가 자라 t = 20.8에 10⁶을 넘어 멈춘다." data-animation-src="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-courant/04_anim_lorentz.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>같은 Lorentz 매질(f_n = 5.7), 같은 resolution 10, 같은 source. 진공 한계로 보면 S = 0.5는 1D 한계 1의 절반이라 안전해야 하지만, 재료의 분극 방정식이 먼저 무너져 t = 20.8에 멈춥니다. S를 0.25로 낮추면 같은 계산이 끝까지 갑니다. 이 조건에서 S = 0.5의 발산은 f_n 5.6과 5.7 사이에서 시작했습니다.</figcaption>
+</figure>
+
 <h2 id="why">2. 왜 필요한가</h2>
 
-이 한계를 넘은 계산은 오류 메시지 없이 시작합니다. 처음 몇 단계의 장은 정상처럼 보이다가 지수적으로 커집니다. 이 페이지를 위해 진공 셀에서 S만 바꿔 실행했습니다.
+이 한계를 넘은 계산은 오류 메시지 없이 시작합니다. 처음 몇 단계의 장은 정상처럼 보이다가 지수적으로 커집니다. 아래 두 run은 2D 진공에서 S만 0.01 다릅니다.
+
+<figure class="lesson-figure">
+  <a href="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.gif" data-lightbox>
+    <img src="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.gif" alt="2D 진공, resolution 10, 중앙 Ez 점원. 왼쪽 S 0.70은 원형 파면이 퍼져 PML로 나간다. 가운데 S 0.71은 t ≈ 10까지 같아 보이다가 셀 전체가 픽셀 체크무늬로 덮이고 t = 15.6에 멈춘다. 오른쪽은 가운데 그림의 점선 상자 1 × 1 µm(10 × 10 픽셀)를 프레임마다 최대값으로 나눈 것으로, 이웃 픽셀끼리 부호가 엇갈린다. 아래 그래프는 두 run의 max|Ez|." data-animation-src="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.gif" data-static-src="{{ site.baseurl }}/assets/meep/terms-courant/02_anim_2d.png">
+  </a>
+  <button class="animation-toggle" type="button" hidden>애니메이션 정지</button>
+  <figcaption>2D 진공, resolution 10, 두 장 지도의 색 범위는 같습니다. S = 0.70(한계 0.7071 아래)은 원형 파면이 PML로 빠져나갑니다. S = 0.71은 t ≈ 10까지 구별되지 않다가 체크무늬가 셀을 덮고 t = 15.6에 max|Ez| > 10⁶이 되어 멈춥니다. 오른쪽 확대 그림에서 이웃 픽셀끼리 부호가 엇갈리는 이 무늬가 1절 "더 깊이"에 나오는 $k_i\Delta x = \pi$ 성분입니다.</figcaption>
+</figure>
+
+여러 S 값과 3D까지 같은 방식으로 잰 결과를 한 장에 모으면 다음과 같습니다.
 
 <figure class="lesson-figure">
   <a href="{{ site.baseurl }}/assets/meep/terms-courant/01_courant.png" data-lightbox>
@@ -148,7 +178,7 @@ adjoint 최적화는 forward와 adjoint를 같은 Δt로 수십~수백 번 반�
 <h2 id="connections">7. 연결</h2>
 
 - 함께 보면 좋은 개념: [PML]({{ site.baseurl }}/terms/pml/) (분산 재료와 PML이 겹칠 때의 발산), [Flux 정규화]({{ site.baseurl }}/terms/flux-normalization/)
-- 코드: [code/courant_stability.py](https://github.com/jin-castle/meep-examples/blob/main/code/courant_stability.py) · 결과 [result.json]({{ site.baseurl }}/assets/meep/terms-courant/result.json)
+- 코드: [code/courant_stability.py](https://github.com/jin-castle/meep-examples/blob/main/code/courant_stability.py)(한계 측정) · [code/courant_gif.py](https://github.com/jin-castle/meep-examples/blob/main/code/courant_gif.py)(애니메이션) · 결과 [result.json]({{ site.baseurl }}/assets/meep/terms-courant/result.json), [anim.json]({{ site.baseurl }}/assets/meep/terms-courant/anim.json)
 - Meep 공식 문서: [Introduction: FDTD methods](https://meep.readthedocs.io/en/master/Introduction/#finite-difference-time-domain-methods) · [Materials: Numerical stability](https://meep.readthedocs.io/en/master/Materials/#numerical-stability) · [FAQ: Why are the fields blowing up?](https://meep.readthedocs.io/en/master/FAQ/#why-are-the-fields-blowing-up-in-my-simulation) · [Python API: Simulation](https://meep.readthedocs.io/en/master/Python_User_Interface/#simulation)
 - 참고 문헌: A. Taflove, S. C. Hagness, *Computational Electrodynamics: The Finite-Difference Time-Domain Method*, 3rd ed., Artech House (2005), 4장 수치 분산과 안정성
 
