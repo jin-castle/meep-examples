@@ -1,0 +1,215 @@
+{
+ "source": "convergence tables of the published examples",
+ "rows": [
+  {
+   "part": 4,
+   "quantity": "straight guide: T",
+   "kind": "ratio",
+   "res": [
+    25,
+    50
+   ],
+   "values": [
+    0.999996,
+    1.0
+   ],
+   "change_percent": 0.0004000016000068001
+  },
+  {
+   "part": 6,
+   "quantity": "grating: T + R",
+   "kind": "sum",
+   "res": [
+    25,
+    50
+   ],
+   "values": [
+    0.9994,
+    0.9998
+   ],
+   "change_percent": 0.04002401440865189
+  },
+  {
+   "part": 1,
+   "quantity": "line source: share of power along +-x",
+   "kind": "ratio",
+   "res": [
+    20,
+    40
+   ],
+   "values": [
+    0.9188,
+    0.9182
+   ],
+   "change_percent": 0.0653025685676898
+  },
+  {
+   "part": 6,
+   "quantity": "grating: 0th-order T",
+   "kind": "ratio",
+   "res": [
+    25,
+    50
+   ],
+   "values": [
+    0.7591,
+    0.7597
+   ],
+   "change_percent": 0.07904096956923264
+  },
+  {
+   "part": 3,
+   "quantity": "cylinder: R + T + S",
+   "kind": "sum",
+   "res": [
+    20,
+    40
+   ],
+   "values": [
+    0.9988,
+    0.9997
+   ],
+   "change_percent": 0.09010812975570803
+  },
+  {
+   "part": 12,
+   "quantity": "ring: resonance frequency f3",
+   "kind": "resonance",
+   "res": [
+    10,
+    20
+   ],
+   "values": [
+    0.17525,
+    0.17564
+   ],
+   "change_percent": 0.22253922967189813
+  },
+  {
+   "part": 3,
+   "quantity": "cylinder: T",
+   "kind": "ratio",
+   "res": [
+    20,
+    40
+   ],
+   "values": [
+    0.6736,
+    0.6626
+   ],
+   "change_percent": 1.6330166270783864
+  },
+  {
+   "part": 5,
+   "quantity": "sharp bend: R",
+   "kind": "ratio",
+   "res": [
+    25,
+    40
+   ],
+   "values": [
+    0.22,
+    0.224
+   ],
+   "change_percent": 1.81818181818182
+  },
+  {
+   "part": 3,
+   "quantity": "cylinder: Q_sca",
+   "kind": "ratio",
+   "res": [
+    20,
+    40
+   ],
+   "values": [
+    2.515,
+    2.628
+   ],
+   "change_percent": 4.493041749502981
+  },
+  {
+   "part": 3,
+   "quantity": "cylinder: R",
+   "kind": "ratio",
+   "res": [
+    20,
+    40
+   ],
+   "values": [
+    0.0823,
+    0.0861
+   ],
+   "change_percent": 4.617253948967191
+  },
+  {
+   "part": 5,
+   "quantity": "sharp bend: T",
+   "kind": "ratio",
+   "res": [
+    25,
+    40
+   ],
+   "values": [
+    0.2,
+    0.189
+   ],
+   "change_percent": 5.500000000000004
+  },
+  {
+   "part": 2,
+   "quantity": "PML 1 um: reflection metric",
+   "kind": "ratio",
+   "res": [
+    12,
+    24
+   ],
+   "values": [
+    0.00045,
+    0.00051
+   ],
+   "change_percent": 13.333333333333346
+  },
+  {
+   "part": 9,
+   "quantity": "bend inverse design: mode-1 T",
+   "kind": "design",
+   "res": [
+    10,
+    20
+   ],
+   "values": [
+    0.7801,
+    0.6391
+   ],
+   "change_percent": 18.0746058197667
+  },
+  {
+   "part": 12,
+   "quantity": "ring: quality factor Q3",
+   "kind": "resonance",
+   "res": [
+    10,
+    20
+   ],
+   "values": [
+    1675,
+    2132
+   ],
+   "change_percent": 27.28358208955224
+  },
+  {
+   "part": 14,
+   "quantity": "thin-film extraction, h >= 0.6 (largest)",
+   "kind": "ratio",
+   "res": [
+    40,
+    80
+   ],
+   "values": [
+    null,
+    null
+   ],
+   "change_percent": 54.0
+  }
+ ]
+}

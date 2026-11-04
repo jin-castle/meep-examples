@@ -8,6 +8,7 @@ lesson_summary: "Meep 코드를 짜고 결과를 읽을 때 필요한 FDTD 개�
 axes:
   - { key: numerics, label: "수치해석", note: "격자와 시간 간격, 경계, 수렴처럼 FDTD라는 계산 방법에서 나오는 개념입니다." }
   - { key: block, label: "Meep 블록", note: "source, monitor, 경계, 재료처럼 Meep 코드에서 한 덩어리로 쓰는 요소와 그 사용 규칙입니다." }
+  - { key: validation, label: "검증", note: "수렴 확인과 에너지 보존처럼, 코드가 끝까지 돈 뒤 결과가 맞는지 확인하는 방법입니다." }
   - { key: em, label: "전자기학", note: "편광, 모드, 회절, LDOS처럼 계산 결과를 해석하는 데 필요한 물리 개념입니다." }
   - { key: invdes, label: "Inverse design", note: "설계 영역, 목적함수, adjoint gradient처럼 역설계에서 새로 등장하는 개념입니다." }
 ---

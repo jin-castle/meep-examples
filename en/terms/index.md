@@ -8,6 +8,7 @@ lesson_summary: "FDTD concepts you need when writing Meep code and reading its r
 axes:
   - { key: numerics, label: "Numerics", note: "Concepts that come from FDTD as a computational method: grid and time step, boundaries, convergence." }
   - { key: block, label: "Meep building blocks", note: "Pieces you use as a unit in Meep code, such as sources, monitors, boundaries and materials, and the rules for using them." }
+  - { key: validation, label: "Validation", note: "Ways to check that a run that finished actually gave the right answer, such as convergence checks and energy conservation." }
   - { key: em, label: "Electromagnetics", note: "Physical concepts needed to interpret results, such as polarization, modes, diffraction and LDOS." }
   - { key: invdes, label: "Inverse design", note: "Concepts that appear in inverse design: design regions, objectives, adjoint gradients." }
 ---

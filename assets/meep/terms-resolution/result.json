@@ -1,0 +1,80 @@
+{
+ "meep_version": "1.33.0",
+ "n_si": 3.48,
+ "wavelength_um": 1.55,
+ "fcen": 0.6451612903225806,
+ "fwidth": 0.25,
+ "probe_distance_um": 20.0,
+ "exact_phase_rad": 282.13528863206403,
+ "courant": 0.5,
+ "source": {
+  "t0": 20.0,
+  "width": 4.0
+ },
+ "table": [
+  {
+   "resolution": 10,
+   "pixels_per_wavelength_in_si": 4.45,
+   "k_measured": 15.400317432352843,
+   "k_yee_theory": 15.623986259154982,
+   "k_exact": 14.106764431603201,
+   "phase_error_percent_measured": 9.169735604655816,
+   "phase_error_percent_yee": 10.755278681430084,
+   "lag_over_20um_rad_measured": 25.87106001499283,
+   "lag_over_20um_wavelengths_measured": 4.117507084413193,
+   "group_velocity_measured": 0.2072727272727273,
+   "group_velocity_yee": 0.2050952587171286,
+   "group_velocity_error_percent_measured": -27.8690909090909,
+   "group_velocity_error_percent_yee": -28.62684996643925,
+   "dft_span_um": 20.1
+  },
+  {
+   "resolution": 20,
+   "pixels_per_wavelength_in_si": 8.91,
+   "k_measured": 14.41068592409197,
+   "k_yee_theory": 14.410428235700856,
+   "k_exact": 14.106764431603201,
+   "phase_error_percent_measured": 2.1544379929383197,
+   "phase_error_percent_yee": 2.152611292050503,
+   "lag_over_20um_rad_measured": 6.078429849775375,
+   "lag_over_20um_wavelengths_measured": 0.9674121568290778,
+   "group_velocity_measured": 0.27,
+   "group_velocity_yee": 0.2692550558716634,
+   "group_velocity_error_percent_measured": -6.03999999999999,
+   "group_velocity_error_percent_yee": -6.299240556661145,
+   "dft_span_um": 20.05
+  },
+  {
+   "resolution": 40,
+   "pixels_per_wavelength_in_si": 17.82,
+   "k_measured": 14.179384324242887,
+   "k_yee_theory": 14.17937922585443,
+   "k_exact": 14.106764431603201,
+   "phase_error_percent_measured": 0.5147877317423459,
+   "phase_error_percent_yee": 0.5147515902977021,
+   "lag_over_20um_rad_measured": 1.4523978527937231,
+   "lag_over_20um_wavelengths_measured": 0.231156297608176,
+   "group_velocity_measured": 0.2859090909090909,
+   "group_velocity_yee": 0.2829453074493509,
+   "group_velocity_error_percent_measured": -0.5036363636363728,
+   "group_velocity_error_percent_yee": -1.5350330076258745,
+   "dft_span_um": 20.025000000000002
+  },
+  {
+   "resolution": 80,
+   "pixels_per_wavelength_in_si": 35.63,
+   "k_measured": 14.124727695621235,
+   "k_yee_theory": 14.124726317117277,
+   "k_exact": 14.106764431603201,
+   "phase_error_percent_measured": 0.12733794560141082,
+   "phase_error_percent_yee": 0.12732817366565063,
+   "lag_over_20um_rad_measured": 0.35926528036068106,
+   "lag_over_20um_wavelengths_measured": 0.05717884525069802,
+   "group_velocity_measured": 0.28704545454545455,
+   "group_velocity_yee": 0.2862602930446387,
+   "group_velocity_error_percent_measured": -0.10818181818181838,
+   "group_velocity_error_percent_yee": -0.38141802046574025,
+   "dft_span_um": 20.012500000000003
+  }
+ ]
+}
