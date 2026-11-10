@@ -255,6 +255,7 @@ The site inventory is maintained in [`_data/sources.json`](_data/sources.json). 
 
 - Local pages: [한국어](https://jin-castle.github.io/meep-examples/zone-plate-near2far/) / [English](https://jin-castle.github.io/meep-examples/en/zone-plate-near2far/).
 - Local code: `code/zone_plate_near2far.py`.
+- Intro video: project-authored Three.js rendering of saved Meep complex Er(r,z) from `zp_n25_r25_fields.npz`, revolved with the m = −1 angular phase. Two steady-state optical periods repeat; axial geometry and field are displayed 8× taller. The 200 µm near2far focus is presented in the original numerical figures. Source parameters, hashes and authoring recipe are in `_tools/intro16/`, with the Three.js MIT notice.
 - References: [Meep · Cylindrical Coordinates · Binary-Phase Zone Plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate); [Meep · zone_plate.py](https://github.com/NanoComp/meep/blob/master/python/examples/zone_plate.py); [LBL CXRO · Zone plate theory](https://zoneplate.lbl.gov/theory).
 - Project work: N 25/50/100 comparison against scalar theory (1.22Δr_N, N², 1/√N), a resolution ladder, transmitted/incident flux and hemisphere far-field power balance, DFT maps and a time-domain GIF.
 - 프로젝트 작업: N 25/50/100 비교와 스칼라 이론(1.22Δr_N, N², 1/√N) 대조, 해상도 사다리, 투과·입사 flux와 반구 far 전력 수지, DFT 지도와 시간 영역 GIF를 구성했습니다.
