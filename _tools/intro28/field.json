@@ -1,0 +1,39 @@
+{
+  "source": "C:\\Users\\bgs43\\Desktop\\paper_repro\\p1-povinelli2005-opticalforce\\runs\\anim_even_s0.5_ey.npz",
+  "source_sha256": "ac996c26ab2b573a524d46d5cc1b51d78221c0705f616606b213203a9cd4c8e9",
+  "run_metadata_sha256": "1a6ddfa30f38a84349b50f44a20fc9a4e7c03ae9c32ce3e76f29a9c83bdb6372",
+  "field_sha256": "09acab6421dd70e2c37eb77279b8c1b2621c4bd373de921287b0348606afc523",
+  "nx": 202,
+  "ny": 122,
+  "extent": [
+    -2.5,
+    2.5,
+    -1.5,
+    1.5
+  ],
+  "encoding": "RGBA8, rows y ascending, columns x ascending; R=Re(Ey)/lim and G=Im(Ey)/lim mapped from [-1,1] to [0,255]; B=0,A=255",
+  "lim": 1962.0512874529397,
+  "max_component_quantization_error_normalized": 0.00392156862745098,
+  "fcen": 0.2,
+  "kz": 0.3857897870486012,
+  "gap": 0.5,
+  "mode": "even",
+  "resolution": 40,
+  "index": 3.45,
+  "formula": "Re[(Ey_re(x,y)+i*Ey_im(x,y))*exp(i*(2*pi*kz*z-phase))]",
+  "units": "dimensionless normalized lattice units: a=1; frequency fa/c; kz*a",
+  "interpretation": "Saved Meep complex transverse DFT field extended with the known Bloch propagation factor; steady-state phase cycle, not a 3D transient simulation. Finite z length and ground grid are display geometry.",
+  "display": {
+    "rod_length_a": 9,
+    "loop_seconds": 8,
+    "phase_cycles": 2,
+    "fps": 30,
+    "size": [
+      1280,
+      720
+    ],
+    "colormap": "RdBu, negative red, positive blue, zero white; signed color clamp(1.25*Re(Ey)/lim,-1,1)",
+    "fixed_color_gain": 1.25,
+    "opacity": "1-exp(-3.8*abs(Re(Ey)/lim)^1.3*ray_step); zero field transparent; complex magnitude below .012 omitted as display threshold"
+  }
+}

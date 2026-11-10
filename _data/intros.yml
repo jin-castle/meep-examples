@@ -71,3 +71,8 @@
   note: "활성층(0.3 µm, n = 2.3) 안, 쪼갠 면에서 0.5 µm 안쪽의 쌍극자입니다. 2D 단면(kz = 0) Meep 계산의 Re(Ez)이고, 높이는 표시용입니다."
   label_en: "Light leaving a dipole inside the cleaved facet of a laser stack"
   note_en: "A dipole in the active layer (0.3 µm, n = 2.3), 0.5 µm behind the cleaved facet. Re(Ez) from the 2D cross-section (kz = 0) Meep run; the height is for display."
+"28":
+  label: "나란한 두 도파로의 대칭 모드 전기장"
+  note: "간격 s/a = 0.5인 두 도파로의 기존 Meep 계산 복소 Ey 단면을 Bloch 위상으로 길이 방향에 펼쳤습니다(fa/c = 0.2, kz·a = 0.38579). 빨강은 음수, 파랑은 양수입니다. 두 광주기를 반복하는 정상상태 위상 시각화이며, 유한한 도파로 길이는 표시용입니다."
+  label_en: "The symmetric-mode electric field of two parallel waveguides"
+  note_en: "The saved complex Ey cross-section from Meep is extended along two guides using the Bloch phase (s/a = 0.5, fa/c = 0.2, kz·a = 0.38579). Red is negative; blue is positive. Two optical periods repeat as a steady-state phase visualization; the finite guide length is for display."

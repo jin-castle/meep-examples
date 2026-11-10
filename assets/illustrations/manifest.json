@@ -836,25 +836,22 @@
       "theme": "light",
       "width": 1620,
       "height": 971,
-      "bytes": 1549871,
-      "sha256": "2bd90a23131b98fa3fc7350b2ae3486aee62a9a9bd9cd11949b602a759d417e9",
-      "generationPrompt": [
-        "Scientific educational concept illustration for a Meep example card, landscape 5:3 canvas 1620x972. Match reference image 12 exactly in visual language: polished pale-blue orthographic 3D apparatus, soft studio shading, rounded subtle edges, airy white background, gentle ground shadow, slate sans-serif labels. Reference 12 is STYLE ONLY; do not draw a ring resonator. Main diagram occupies center within generous margins, title at upper left and small caption lower left in same proportions as reference (title roughly 55 px, caption 36 px). No plots, axes, numerical data, panels, borders or watermark. Subject: two separate parallel blue silicon waveguides of square cross section, long rectangular bars suspended in air, identical lengths and widths, straight and separated by a visible narrow air gap, three-quarter view showing front square end faces and top surfaces. A faint neutral coordinate ground below is a drawing aid, not a physical substrate. Subtle pale amber light along each bar with small amber circular source highlights on the front end faces, suggesting coupled light. Two teal transverse arrows near front of bars point TOWARD one another to indicate attractive force for the symmetric mode; one thin muted longitudinal arrow shows propagation. No second apparatus or spurious connections between bars, no heat maps. Keep arrows distinct from the amber optical paths. Exact Korean title: \"나란한 두 도파로 사이의 힘\". Exact bottom caption: \"개념도 · 계산 결과 아님\".",
-        "Correct ONLY the two teal force arrows near the front ends. They must be transverse to the bars, along the straight diagonal joining the centers of the two front square faces (upper-left to lower-right on the image), and point TOWARD EACH OTHER across the gap to show attraction. Put the first arrow outside the upper-left bar pointing down-right toward the lower-right bar; put the second outside the lower-right bar pointing up-left toward the upper-left bar. Both arrowheads should terminate against the two OUTER sides of the bars, clear of the glowing end-face points. Remove the existing two horizontal arrows. Preserve bars, gap, geometry, text, title, caption, color, shadows, all other elements and 5:3 canvas exactly."
-      ],
-      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
+      "bytes": 1194689,
+      "sha256": "2b210cbc3b302b21355b658a7415d8f93ec3b22cf9b1bb2b3628225de9cab228",
+      "generationPrompt": "Edit the supplied scientific illustration. The user explicitly reports that the ground grid is badly aligned with the waveguides. Fix that geometric defect rigorously. Keep the TWO existing blue waveguides, their exact positions, camera, shape, amber light paths, source markers, teal transverse arrows, text, and all white background unchanged. Completely REPLACE ONLY the ground grid/ground surface and its subtle shadow. New ground is ONE orthographic rectangular coordinate grid immediately below the rods. One family of parallel grid lines MUST have the EXACT SAME image slope as the long straight edges of the waveguides (bottom-left to top-right, about -0.47 slope). The other family MUST be parallel to the transverse width edges of the square front end faces (upper-left to lower-right, about +0.60 slope). These are the local long and cross axes of the same device coordinate system. Grid must be a long narrow parallelogram around the two rods, with an equal modest margin at BOTH front and back ends, and modest symmetric margins to both outer sides. Both waveguides lie centered over the grid and fit COMPLETELY within its projected perimeter with no rear ends extending beyond it. No wide skewed square rotated relative to device. Grid is a faint virtual coordinate aid, not a slab or physical substrate: thin pale-blue lines, transparent white fill and soft ground shadow. Preserve title exactly \"나란한 두 도파로 사이의 힘\" and caption exactly \"개념도 · 계산 결과 아님\", typography, margins and 5:3 canvas. No new elements.",
+      "review": "Visually reviewed: grid axes parallel to guide length and width; complete guide footprints inside the grid; correct locale, contrast and unclipped captions."
     },
     {
       "file": "28.ko.dark.png",
       "chapter": "28",
       "locale": "ko",
       "theme": "dark",
-      "width": 1620,
+      "width": 1619,
       "height": 971,
-      "bytes": 1411786,
-      "sha256": "9128f7c371fb09c0ae0e734f91352c6e35751150ad68d5a1c5d1d4f242f0830c",
-      "generationPrompt": "Create Korean dark-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"나란한 두 도파로 사이의 힘\", bottom left caption exactly \"개념도 · 계산 결과 아님\". No additional text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 text, gently brighter blue dielectric/teal paths and amber sources with good contrast, soft dark shadow. No white panels, frames or bright ground plane. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
-      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
+      "bytes": 1392314,
+      "sha256": "468f24687216b99f41050debc91e8e7c5511faf0072a74ac0ab562016626b422",
+      "generationPrompt": "Create Korean dark variant of supplied corrected scientific illustration. Preserve EXACT camera, geometry, placements and all gridline directions: two rectangular parallel waveguides, amber paths, source dots, arrows. The single narrow rectangular ground grid has longitudinal lines parallel to rod long edges and transverse lines parallel to rod front edges; keep this grid exactly. Change ONLY text and background theme. Title exactly \"나란한 두 도파로 사이의 힘\". Bottom left caption exactly \"개념도 · 계산 결과 아님\". Uniform deep navy #0d1722 background, light #e8eef4 title and caption, blue rods with clear contrast, faint cool blue grid, subtle shadows. No other text, no extra shapes or arrows. Preserve 5:3 canvas and text safe margins.",
+      "review": "Visually reviewed: grid axes parallel to guide length and width; complete guide footprints inside the grid; correct locale, contrast and unclipped captions."
     },
     {
       "file": "28.en.light.png",
@@ -863,22 +860,22 @@
       "theme": "light",
       "width": 1620,
       "height": 971,
-      "bytes": 1269952,
-      "sha256": "9583a8cb2a986439fcdc68380ce21cf24086221f8e8952c3ebf799e7e11ebfab",
-      "generationPrompt": "Create English light-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"Force between parallel waveguides\", bottom left caption exactly \"Concept illustration · not simulation data\". No additional text. Pure white #ffffff background, slate #526579 title/caption, preserve pale blue materials and all original color shading. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
-      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
+      "bytes": 1221426,
+      "sha256": "660c1db9429460a2b4620f7b36a99be563721cb54dd7f1cecf131f2d119355a1",
+      "generationPrompt": "Create English light variant of supplied corrected scientific illustration. Preserve EXACT camera, geometry, placements and all gridline directions: two rectangular parallel waveguides, amber paths, source dots, arrows. The single narrow rectangular ground grid has longitudinal lines parallel to rod long edges and transverse lines parallel to rod front edges; keep this grid exactly. Change ONLY text and background theme. Title exactly \"Force between parallel waveguides\". Bottom left caption exactly \"Concept illustration · not simulation data\". Pure white background, slate #526579 text, pale blue rods, faint light blue grid. No other text, no extra shapes or arrows. Preserve 5:3 canvas and text safe margins.",
+      "review": "Visually reviewed: grid axes parallel to guide length and width; complete guide footprints inside the grid; correct locale, contrast and unclipped captions."
     },
     {
       "file": "28.en.dark.png",
       "chapter": "28",
       "locale": "en",
       "theme": "dark",
-      "width": 1620,
+      "width": 1619,
       "height": 971,
-      "bytes": 1442227,
-      "sha256": "7fcc1a7b7e24d21835da824953813912002efe989b71d3f49789cae8abde3df9",
-      "generationPrompt": "Create English dark-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"Force between parallel waveguides\", bottom left caption exactly \"Concept illustration · not simulation data\". No additional text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 text, gently brighter blue dielectric/teal paths and amber sources with good contrast, soft dark shadow. No white panels, frames or bright ground plane. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
-      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
+      "bytes": 1442991,
+      "sha256": "eb61be42b0cd30d55cac4035f54b3ac5e9966f6433bf5896f759339e8d6f316b",
+      "generationPrompt": "Create English dark variant of supplied corrected scientific illustration. Preserve EXACT camera, geometry, placements and all gridline directions: two rectangular parallel waveguides, amber paths, source dots, arrows. The single narrow rectangular ground grid has longitudinal lines parallel to rod long edges and transverse lines parallel to rod front edges; keep this grid exactly. Change ONLY text and background theme. Title exactly \"Force between parallel waveguides\". Bottom left caption exactly \"Concept illustration · not simulation data\". Uniform deep navy #0d1722 background, light #e8eef4 title and caption, blue rods with clear contrast, faint cool blue grid, subtle shadows. No other text, no extra shapes or arrows. Preserve 5:3 canvas and text safe margins.",
+      "review": "Visually reviewed: grid axes parallel to guide length and width; complete guide footprints inside the grid; correct locale, contrast and unclipped captions."
     }
   ],
   "updatedAt": "2026-11-10"

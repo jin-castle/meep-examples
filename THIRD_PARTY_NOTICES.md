@@ -263,6 +263,7 @@ The site inventory is maintained in [`_data/sources.json`](_data/sources.json). 
 
 - Local pages: [한국어](https://jin-castle.github.io/meep-examples/parallel-waveguide-force/) / [English](https://jin-castle.github.io/meep-examples/en/parallel-waveguide-force/).
 - Local code: `code/parallel_waveguide_force.py`, `code/parallel_waveguide_mpb.py`.
+- Intro video: project-authored Three.js rendering of the saved Meep complex Ey cross-section (`anim_even_s0.5_ey.npz`), extended with the Bloch factor exp(i2πkz z) and played through two steady-state optical periods. Source parameters, hashes, packed data and rendering recipe are recorded in `_tools/intro28/`. The displayed guide length is illustrative. Three.js is MIT-licensed; its notice accompanies the rendering source.
 - References: [Meep · Optical Forces](https://meep.readthedocs.io/en/latest/Python_Tutorials/Optical_Forces/); [Meep · parallel-wvgs-force.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-force.py); [Meep · parallel-wvgs-mpb.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-mpb.py); [Povinelli et al. · Optics Letters 30, 3042 (2005)](https://doi.org/10.1364/OL.30.003042).
 - Project work: Separation of the fixed-k (official example) and fixed-ω (paper Fig. 1c) curves, Maxwell stress tensor versus MPB Eq.1 cross-check, a resolution ladder, mode cross sections and a time-domain GIF.
 - 프로젝트 작업: 고정 k(공식 예제)와 고정 ω(논문 Fig. 1c) 곡선의 분리, Maxwell 응력 텐서와 MPB Eq.1의 교차검증, 해상도 사다리, 모드 단면과 시간 영역 GIF를 구성했습니다.
