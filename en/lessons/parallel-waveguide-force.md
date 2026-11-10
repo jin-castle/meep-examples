@@ -1,7 +1,7 @@
 ---
 layout: lesson
 permalink: /en/parallel-waveguide-force/
-lesson_title: "How hard does light push two waveguides together?"
+lesson_title: "How much force does light exert between two waveguides?"
 lesson_summary: "Measure the optical force between two parallel silicon waveguides with the Maxwell stress tensor, cross-check it against the mode-frequency derivative from MPB, and see why fixing ω and fixing k give different curves."
 lesson_goals:
   - "Measure a force with add_force and two ForceRegion lines in vacuum, normalized by the transmitted power."
@@ -23,25 +23,34 @@ tags: [meep, fdtd, optical-force, stress-tensor, mpb, eigenmode, waveguide, povi
 image: /assets/meep/28/02_results.png
 excerpt: "two parallel silicon strip waveguides (n 3.45, square a×a, gap s). The coupled modes split into a symmetric and an anti-symmetric branch, and a change of the gap shifts their frequency; that shift is a force. Meep measures the force directly with the Maxwell stress tensor (`add_force`) and MPB gives it from the mode frequency derivative, F = −(1/ω)(dω/ds)|_k U (Eq.1 of Povinelli 2005)."
 ---
-<h2 id="observe">Observe: a force between two waveguides</h2>
+<h2 id="observe">1. Observe: a force between two waveguides</h2>
 
-![hero]({{ '/assets/meep/28/02_results.png' | relative_url }})
+Can the same pair of waveguides attract or repel depending on the optical mode? In the plots below, compare the signs of the symmetric- and antisymmetric-mode forces and how they change with the gap.
+
+<figure class="lesson-figure">
+<a href="{{ '/assets/meep/28/02_results.png' | relative_url }}" data-lightbox><img src="{{ '/assets/meep/28/02_results.png' | relative_url }}" alt="Optical forces of symmetric and antisymmetric modes versus the gap between parallel silicon waveguides, comparing stress-tensor and MPB results" loading="eager"></a>
+<figcaption>Actual Meep and MPB results. Negative force is attractive; positive force is repulsive. Distinguish the fixed-frequency and fixed-wavevector curves.</figcaption>
+</figure>
+
+<details markdown="1">
+<summary>Calculation summary and runtime</summary>
 
 - **What**: two parallel silicon strip waveguides (n 3.45, square a×a, gap s). The coupled modes split into a symmetric and an anti-symmetric branch, and a change of the gap shifts their frequency; that shift is a force. Meep measures the force directly with the Maxwell stress tensor (`add_force`) and MPB gives it from the mode frequency derivative, F = −(1/ω)(dω/ds)|_k U (Eq.1 of Povinelli 2005).
 - **Result**: at the paper's condition (fixed a/λ = 0.2) the symmetric mode is attractive at every gap and matches the paper's Fig.1(c) within 0.04 (dimensionless (F/L)(ac/P), gap 0.1–1.0 a); the anti-symmetric mode is repulsive for s/a ≥ 0.1 with a peak +0.66 at s/a 0.2 and matches for s/a ≥ 0.25. Stress tensor and Eq.1 agree to a median of 2–3 %. The official example fixes k_z = 0.5 instead of ω and therefore draws a different curve (s 0.5: −0.198 vs −0.291 for the symmetric mode).
 - **Takeaway**: decide first what is held fixed — ω or k. Inside a narrow gap the stress-tensor line monitor converges slowly (s/a 0.1: Meep +0.50 vs Eq.1 +0.11), so for small gaps trust the mode-frequency derivative. With `find_k` at fixed ω, Eq.1 becomes (F/L)(ac/P) = (1/f)·dk/ds.
 - **Code**: full script at the bottom; one (s, mode) run takes ~62 s on one core.
 
-## 0. What you will learn
+</details>
+
+<details markdown="1">
+<summary>Learning scope and applications</summary>
 
 - How to measure a Maxwell-stress-tensor force with `add_force` and `ForceRegion`, and why two line monitors replace a closed box.
 - How to handle a waveguide that is infinite along z as a 2D cross-section with a `k_point`, and how `get_eigenmode` with `match_frequency` finds k.
 - How to obtain the same force by a second method (MPB, the derivative of the mode frequency) as a cross-check.
 - Why the paper (fixed frequency) and the official example (fixed k) draw different curves.
 
-**Prerequisites**: `EigenModeSource` and flux normalization from chapter 04, Harminv and the idea of a mode from chapter 12. **Official example**: the [Optical Forces tutorial](https://meep.readthedocs.io/en/latest/Python_Tutorials/Optical_Forces/), scripts [parallel-wvgs-force.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-force.py) · [parallel-wvgs-mpb.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-mpb.py). **Previous**: 27 · (season 4, unpublished) · **Next**: (to be decided) — this is the PLAN slot for chapter 28 (two waveguides side by side — supermodes and optical force)
-
-## 1. What do we want to find out?
+**Prerequisites**: `EigenModeSource` and flux normalization from chapter 04, Harminv and the idea of a mode from chapter 12. **Official example**: the [Optical Forces tutorial](https://meep.readthedocs.io/en/latest/Python_Tutorials/Optical_Forces/), scripts [parallel-wvgs-force.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-force.py) · [parallel-wvgs-mpb.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-mpb.py).
 
 Put two waveguides side by side and the evanescent tail of one reaches into the other. Of the two coupled modes, the symmetric mode drops in frequency as the gap narrows and the anti-symmetric mode rises. For a mode carrying energy U = Nħω, changing the gap by Δs changes the energy in proportion to Δω, and that derivative is a force. Two questions: can FDTD measure this force directly (stress tensor), and does the value agree with the mode-frequency derivative and with the paper's figure?
 
@@ -55,7 +64,32 @@ This is the starting point of optomechanics, moving structures with light. For 1
 | cavity optomechanics | dω/ds (optomechanical coupling g = dω/dx) | chapter 12 resonator Q |
 | optical tweezers and particle binding | stress-tensor monitor placement | chapter 03 scattered field |
 
-<h2 id="understand">2. Understand: the physics on one page</h2>
+</details>
+
+<h2 id="predict">2. Predict before viewing the results</h2>
+
+<fieldset class="prediction">
+<legend>Does it matter whether frequency ω or wavevector k is held fixed when plotting force against gap?</legend>
+<label><input type="radio" name="parallel-waveguide-force-prediction" value="different"> Yes. Different fixed conditions can give different curves.</label>
+<label><input type="radio" name="parallel-waveguide-force-prediction" value="same"> No. The same geometry must always give the same curve.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>Compare the predictions and criteria</summary>
+
+| Quantity | My prediction | Reasoning |
+|--------|---------|------|
+| sign of the symmetric-mode force | negative everywhere (attractive) | frequency drops as the gap closes |
+| anti-symmetric mode | repulsive for s/a ≳ 0.3, turning attractive at small gaps | paper Fig.1(c) |
+| stress tensor vs Eq.1 | within 5 % | mathematically the same quantity |
+| fixed-k vs fixed-ω curves | different | different paths of the derivative |
+| notebook (2020) frequencies | within 1e-6 | same code |
+
+**Decision rule**: if the symmetric mode comes out positive, or the two methods differ by more than 10 %, suspect the force-line positions or the normalization.
+
+</details>
+
+<h2 id="understand">3. Understand: the physics on one page</h2>
 
 {% include chapter-illustration.html %}
 
@@ -78,19 +112,7 @@ P = v_g U/L is the transmitted power. Negative means attractive. If instead the 
 
 **Assumptions and range of validity**: 2D cross-section + Bloch k_z (infinite along z), lossless n 3.45, vacuum cladding, one mode excited. The paper fixes a/λ = 0.2; the official example fixes k_z = 0.5.
 
-<h2 id="predict">Predict before viewing the results</h2>
-
-| Quantity | My prediction | Reasoning |
-|--------|---------|------|
-| sign of the symmetric-mode force | negative everywhere (attractive) | frequency drops as the gap closes |
-| anti-symmetric mode | repulsive for s/a ≳ 0.3, turning attractive at small gaps | paper Fig.1(c) |
-| stress tensor vs Eq.1 | within 5 % | mathematically the same quantity |
-| fixed-k vs fixed-ω curves | different | different paths of the derivative |
-| notebook (2020) frequencies | within 1e-6 | same code |
-
-**Decision rule**: if the symmetric mode comes out positive, or the two methods differ by more than 10 %, suspect the force-line positions or the normalization.
-
-## 3. Simulation layout
+### Simulation layout
 
 ![layout]({{ '/assets/meep/28/01_layout_modes.png' | relative_url }})
 *(a) Cell 7×5 µm (PML 1), two Si waveguides (gap s = 0.5), two force lines (red x = 0.49 s, orange x = 0.5 s + 1.01 a), green dashed line is the full-cell flux plane. (b)(c) |Ey| of the two modes. (d) Time convergence of the accumulated DFT F/P. (e) Mode frequencies at fixed k — □ current build at res 30, × the 2020 notebook. (f) k_z found at fixed f = 0.2.*
@@ -219,7 +241,7 @@ Four of five predictions held. The 20 frequency lines of the notebook (2020-05) 
 - Established: at fixed a/λ 0.2, the attractive symmetric-mode curve (s/a 0.1–1.0) and the anti-symmetric curve for s/a ≥ 0.25 agree with the paper's Fig.1(c) within the eye-reading error. The stress tensor and the mode-frequency derivative give the same force (except in narrow gaps). The official example's curve (k_z 0.5) is not the paper's curve.
 - Not established: the anti-symmetric force for s/a ≤ 0.15 and the d → 0 limit (−1.49/−21.54) — the resolution is insufficient. The paper values are read from the figure by eye (±0.08). Finite-length and substrate (SOI) effects are absent in a 2D cross-section with k.
 
-## 6. Common mistakes
+### Common mistakes
 
 | Symptom | Cause | Fix |
 |------|------|----------|
@@ -230,7 +252,7 @@ Four of five predictions held. The 20 frequency lines of the notebook (2020-05) 
 | F/P wobbles with time | until too short | 1500 or more, compare with 3000 |
 | 1e-3 difference from the notebook | eigenmode-solver build differences | compare force ratios |
 
-## 7. Try it yourself
+### Try it yourself
 
 | Change | Expected change | Number to check |
 |---------|----------|------------|
@@ -239,9 +261,15 @@ Four of five predictions held. The 20 frequency lines of the notebook (2020-05) 
 | Hz-polarized (TE) mode | a different curve | sign-change position |
 | a/λ 0.15 · 0.25 | coupling strength changes | force at s 0.5 |
 
-<h2 id="reference">8. Full code and references</h2>
+<h2 id="check">6. Check your understanding</h2>
 
-`code/parallel_waveguide_force.py` — computes one (s, mode, fixed) combination and saves JSON. The sweep over s 0.05–1.0, mode odd/even and fixed k/f runs outside. The MPB route is `parallel-wvgs-mpb.py` plus `find_k` (PROJ-013 `mpb_run.py`).
+1. Explain why the symmetric-mode force is negative in terms of how the frequency depends on the gap. (§3)
+2. At fixed f, why does the example's formula −(1/f)(df/ds)/v_g give zero when used with MPB Eq.1? (§4 ⑦)
+3. At s/a 0.1 the stress tensor and Eq.1 differ by a factor of five — which one should you trust, and why? (§5)
+
+<h2 id="reference">7. Full code and references</h2>
+
+`code/parallel_waveguide_force.py` — computes one (s, mode, fixed) combination and saves JSON. The sweep over s 0.05–1.0, mode odd/even and fixed k/f runs outside. The MPB route is `parallel-wvgs-mpb.py` plus `find_k` to obtain the propagation constant at fixed frequency.
 
 <details>
 <summary>parallel_waveguide_force.py (click to expand)</summary>
@@ -307,16 +335,9 @@ if mp.am_master():
 {% endhighlight %}
 </details>
 
-<h2 id="check">Check your understanding</h2>
-
-1. Explain why the symmetric-mode force is negative in terms of how the frequency depends on the gap. (§2)
-2. At fixed f, why does the example's formula −(1/f)(df/ds)/v_g give zero when used with MPB Eq.1? (§4 ⑦)
-3. At s/a 0.1 the stress tensor and Eq.1 differ by a factor of five — which one should you trust, and why? (§5)
-
-## 9. Further reading
+### Further reading
 
 - M. L. Povinelli et al., "Evanescent-wave bonding between optical waveguides," Opt. Lett. 30, 3042 (2005); arXiv physics/0509073.
 - P. T. Rakich, M. A. Popović, Z. Wang, Opt. Express 17, 18116 (2009) — equivalence of Eq.1 and the stress tensor.
 - Meep documentation: [Optical Forces](https://meep.readthedocs.io/en/latest/Python_Tutorials/Optical_Forces/), [Force spectra](https://meep.readthedocs.io/en/latest/Python_User_Interface/#force-spectra).
-- Original record of this chapter: PROJ-013 reproduction report (12 pre-registered criteria, 10 passed; awaiting human review).
 - Mode sources: [04 · A straight waveguide]({{ site.baseurl }}/en/straight-waveguide/) · Resonator modes: [12 · A ring that confines light]({{ site.baseurl }}/en/ring-resonator/)

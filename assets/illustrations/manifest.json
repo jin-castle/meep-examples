@@ -1,6 +1,6 @@
 {
   "createdAt": "2026-10-24T08:12:05.914895+00:00",
-  "tool": "Built-in imagegen; one edit invocation per generated variant; chapters 16 and 28: matplotlib drawing (_tools/draw-illustrations.py), no generative model",
+  "tool": "Built-in imagegen; separate generation/edit invocation per selected illustration and locale/theme variant",
   "purpose": "Explanatory concept illustrations, not numerical simulation results",
   "variantContract": "XX.{ko|en}.{light|dark}.png",
   "chapters": 16,
@@ -784,11 +784,14 @@
       "locale": "ko",
       "theme": "light",
       "width": 1620,
-      "height": 972,
-      "bytes": 246103,
-      "sha256": "dbd37ed893bf6aa09239dd1355c0e374b8fac2001f89956ed325079232005bdf",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1590654,
+      "sha256": "6610f104cfd1ed4b1a3e6d7f3a36c4fae54b9dd2b16011d6a8523ac994d465d2",
+      "generationPrompt": [
+        "Scientific educational concept illustration for a Meep example card, landscape 5:3 canvas 1620x972. Match reference image 12 exactly in visual language: polished pale-blue orthographic 3D apparatus, soft studio shading, rounded subtle edges, airy white background, gentle ground shadow, slate sans-serif labels. Reference 12 is STYLE ONLY; do not draw a ring resonator. Main diagram occupies center within generous margins, title at upper left and small caption lower left in same proportions as reference (title roughly 55 px, caption 36 px). No plots, axes, numerical data, panels, borders or watermark. Subject: binary PHASE Fresnel zone plate: a blue-tinted transparent glass square substrate with a solid central circular glass zone and FOUR complete alternating raised concentric annular glass zones with radially decreasing widths. All rings share one center and stay continuous, no cuts. Three-quarter top view. A FEW thin teal schematic light paths from plate edges converge to a small amber focal point above the plate on its central axis. Keep focus and rays in upper-center below title, no rays through label areas. A very faint outlined horizontal near-to-far sampling plane above plate, clearly measurement overlay rather than material. Show several subtle amber upward incident-light arrows below/along front of plate. Apparatus fills middle 70% of canvas, avoiding massive oversized slab. Thickness and distances schematic. Exact Korean title: \"영역판과 셀 밖의 초점\". Exact bottom caption: \"개념도 · 계산 결과 아님\".",
+        "Correct ONLY placement of the thin near-to-far measurement grid plane: move it BELOW the amber focus and ABOVE the circular zone plate, halfway between plate and focus, so teal converging light paths pass through it before reaching focus. It should be faint, with thin dashed teal perimeter, small enough not to obscure the rings. Remove old plane above focal point completely. Preserve exact geometry, text, palette, margins, 5:3 canvas and all other elements. This is an apparatus concept, not computed data."
+      ],
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "16.ko.dark.png",
@@ -796,11 +799,11 @@
       "locale": "ko",
       "theme": "dark",
       "width": 1620,
-      "height": 972,
-      "bytes": 236871,
-      "sha256": "c134ca3168b106f209e58efa5709740a682182c02fa5e53ea49630d318c1ae0c",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1439960,
+      "sha256": "38063591fe6cd857b761ac452d8fb761745e93846df6cd3b1c9ef30a58ddd9c0",
+      "generationPrompt": "Create Korean dark-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"영역판과 셀 밖의 초점\", bottom left caption exactly \"개념도 · 계산 결과 아님\". No additional text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 text, gently brighter blue dielectric/teal paths and amber sources with good contrast, soft dark shadow. No white panels, frames or bright ground plane. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "16.en.light.png",
@@ -808,11 +811,11 @@
       "locale": "en",
       "theme": "light",
       "width": 1620,
-      "height": 972,
-      "bytes": 249873,
-      "sha256": "597216c3ad544cfc1b4665d6bccd448829f29f9d93c476a5763daadf966a35d4",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1270091,
+      "sha256": "3610054798d01bef927a752c2fd60455afdf06d613715083aa06dbd9cdc9b40a",
+      "generationPrompt": "Create English light-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"Zone plate focus outside the cell\", bottom left caption exactly \"Concept illustration · not simulation data\". No additional text. Pure white #ffffff background, slate #526579 title/caption, preserve pale blue materials and all original color shading. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "16.en.dark.png",
@@ -820,11 +823,11 @@
       "locale": "en",
       "theme": "dark",
       "width": 1620,
-      "height": 972,
-      "bytes": 240778,
-      "sha256": "0a43cb7e94a89ebd9f32a02d81672c119cb19f9e028d2acee25cdbd499ab7c35",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1469193,
+      "sha256": "dc2743850133508d950417e403611494943c70dc925fbece47ad5c2973bb3fb7",
+      "generationPrompt": "Create English dark-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"Zone plate focus outside the cell\", bottom left caption exactly \"Concept illustration · not simulation data\". No additional text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 text, gently brighter blue dielectric/teal paths and amber sources with good contrast, soft dark shadow. No white panels, frames or bright ground plane. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "28.ko.light.png",
@@ -832,11 +835,14 @@
       "locale": "ko",
       "theme": "light",
       "width": 1620,
-      "height": 972,
-      "bytes": 84080,
-      "sha256": "e6e459ee69f8ad55ca5a82724b3110fc258f6ce2278b496f609535c81fee41a2",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1549871,
+      "sha256": "2bd90a23131b98fa3fc7350b2ae3486aee62a9a9bd9cd11949b602a759d417e9",
+      "generationPrompt": [
+        "Scientific educational concept illustration for a Meep example card, landscape 5:3 canvas 1620x972. Match reference image 12 exactly in visual language: polished pale-blue orthographic 3D apparatus, soft studio shading, rounded subtle edges, airy white background, gentle ground shadow, slate sans-serif labels. Reference 12 is STYLE ONLY; do not draw a ring resonator. Main diagram occupies center within generous margins, title at upper left and small caption lower left in same proportions as reference (title roughly 55 px, caption 36 px). No plots, axes, numerical data, panels, borders or watermark. Subject: two separate parallel blue silicon waveguides of square cross section, long rectangular bars suspended in air, identical lengths and widths, straight and separated by a visible narrow air gap, three-quarter view showing front square end faces and top surfaces. A faint neutral coordinate ground below is a drawing aid, not a physical substrate. Subtle pale amber light along each bar with small amber circular source highlights on the front end faces, suggesting coupled light. Two teal transverse arrows near front of bars point TOWARD one another to indicate attractive force for the symmetric mode; one thin muted longitudinal arrow shows propagation. No second apparatus or spurious connections between bars, no heat maps. Keep arrows distinct from the amber optical paths. Exact Korean title: \"나란한 두 도파로 사이의 힘\". Exact bottom caption: \"개념도 · 계산 결과 아님\".",
+        "Correct ONLY the two teal force arrows near the front ends. They must be transverse to the bars, along the straight diagonal joining the centers of the two front square faces (upper-left to lower-right on the image), and point TOWARD EACH OTHER across the gap to show attraction. Put the first arrow outside the upper-left bar pointing down-right toward the lower-right bar; put the second outside the lower-right bar pointing up-left toward the upper-left bar. Both arrowheads should terminate against the two OUTER sides of the bars, clear of the glowing end-face points. Remove the existing two horizontal arrows. Preserve bars, gap, geometry, text, title, caption, color, shadows, all other elements and 5:3 canvas exactly."
+      ],
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "28.ko.dark.png",
@@ -844,11 +850,11 @@
       "locale": "ko",
       "theme": "dark",
       "width": 1620,
-      "height": 972,
-      "bytes": 94509,
-      "sha256": "4df04b22e25589bb4de1db9b0911326f479eef957f23a0bdf04b7d4bf5a6c839",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1411786,
+      "sha256": "9128f7c371fb09c0ae0e734f91352c6e35751150ad68d5a1c5d1d4f242f0830c",
+      "generationPrompt": "Create Korean dark-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"나란한 두 도파로 사이의 힘\", bottom left caption exactly \"개념도 · 계산 결과 아님\". No additional text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 text, gently brighter blue dielectric/teal paths and amber sources with good contrast, soft dark shadow. No white panels, frames or bright ground plane. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "28.en.light.png",
@@ -856,11 +862,11 @@
       "locale": "en",
       "theme": "light",
       "width": 1620,
-      "height": 972,
-      "bytes": 95253,
-      "sha256": "33f6f83f58ecf105600021211b1af32088c2c4bd57cd4e6aca58a2afdba2bf48",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1269952,
+      "sha256": "9583a8cb2a986439fcdc68380ce21cf24086221f8e8952c3ebf799e7e11ebfab",
+      "generationPrompt": "Create English light-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"Force between parallel waveguides\", bottom left caption exactly \"Concept illustration · not simulation data\". No additional text. Pure white #ffffff background, slate #526579 title/caption, preserve pale blue materials and all original color shading. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     },
     {
       "file": "28.en.dark.png",
@@ -868,11 +874,12 @@
       "locale": "en",
       "theme": "dark",
       "width": 1620,
-      "height": 972,
-      "bytes": 105897,
-      "sha256": "e46ddbc997df2a3f95cefed1f44555d1c93fb6ce32c7afedfe8c8c461565b2a3",
-      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
-      "review": "Rendered from code; re-run the script to reproduce exactly"
+      "height": 971,
+      "bytes": 1442227,
+      "sha256": "7fcc1a7b7e24d21835da824953813912002efe989b71d3f49789cae8abde3df9",
+      "generationPrompt": "Create English dark-mode variant of this EXACT scientific concept illustration. Preserve geometry, camera, arrows, sampling plane position, all optical paths, relative sizes, whitespace and 5:3 canvas. Change ONLY title/caption language and background/theme. Title upper left exactly \"Force between parallel waveguides\", bottom left caption exactly \"Concept illustration · not simulation data\". No additional text. Uniform deep navy #0d1722 background covering entire canvas, light #e8eef4 text, gently brighter blue dielectric/teal paths and amber sources with good contrast, soft dark shadow. No white panels, frames or bright ground plane. Keep the same font style/size as original; English title fits on ONE line within safe margins. Do not crop, move, add or remove any scientific elements. Arrows schematic, not numerical field data.",
+      "review": "Visually reviewed: shared orthographic style, readable exact labels, schematic geometry, locale/theme and uncropped framing"
     }
-  ]
+  ],
+  "updatedAt": "2026-11-10"
 }

@@ -23,25 +23,34 @@ tags: [meep, fdtd, near2far, zone-plate, cylindrical, diffractive-lens, focusing
 image: /assets/meep/16/02_results.png
 excerpt: "a binary-phase glass zone plate (N = 25/50/100 zones, f = 200 µm, λ = 0.5 µm) on a glass substrate, illuminated from below by an x-polarized planewave written in cylindrical coordinates as m = −1 (Er − iEφ). The focal spot lies 200 µm outside the cell, so the fields there come from a near-to-far transformation (`add_near2far` + `get_farfields`) of the fields on the top and side faces of the cell."
 ---
-<h2 id="observe">Observe: a focus far outside the cell</h2>
+<h2 id="observe">1. Observe: a focus far outside the cell</h2>
 
-![hero]({{ '/assets/meep/16/02_results.png' | relative_url }})
+How does a larger zone plate change the focus? Compare the focal position and width for N = 25, 50 and 100 below. Although the cell is only 6.5 µm tall, near2far reads the field at a focus 200 µm outside it.
+
+<figure class="lesson-figure">
+<a href="{{ '/assets/meep/16/02_results.png' | relative_url }}" data-lightbox><img src="{{ '/assets/meep/16/02_results.png' | relative_url }}" alt="Axial and focal-plane intensity profiles, peak intensity and first-zero radius for 25, 50 and 100 zones" loading="eager"></a>
+<figcaption>Actual Meep results. The focus stays at z = 199.8–199.9 µm as the zone count increases, while the peak rises and the spot narrows.</figcaption>
+</figure>
+
+<details markdown="1">
+<summary>Calculation summary and runtime</summary>
 
 - **What**: a binary-phase glass zone plate (N = 25/50/100 zones, f = 200 µm, λ = 0.5 µm) on a glass substrate, illuminated from below by an x-polarized planewave written in cylindrical coordinates as m = −1 (Er − iEφ). The focal spot lies 200 µm outside the cell, so the fields there come from a near-to-far transformation (`add_near2far` + `get_farfields`) of the fields on the top and side faces of the cell.
 - **Result**: the three documented curves come out as drawn — focus at z = 199.8–199.9 µm for all N, peak |E|² 4683 / 17403 / 64881 (ratios 3.7 and 13.9 versus N² = 4 and 16), first zero of the focal spot 1.204 / 0.901 / 0.701 µm versus the scalar 1.22·Δr_N = 1.261 / 0.907 / 0.667 µm (within 5 %), FWHM ratio N 100 / N 25 = 0.54 (1/√N → 0.5). Resolution 25 is converged (peak 2 %, FWHM 0.1 % from 25 to 50). Transmitted/incident net flux 0.99–1.00, but the far power integrated over a hemisphere with 1° steps is only 70–76 % of the near flux.
 - **Takeaway**: near2far gives the field anywhere outside the cell from one run, but each far point costs an integral over the near surface — sampling matters twice: the far scan step for the focal profile, and the angular step if you integrate the far power. Here a 1° angular step misses the λ/D ≈ 0.15–0.3° fringes of a 100–200 µm aperture and under-counts the power by 25–30 %.
 - **Code**: full script at the bottom; N 25 takes ~4 min on one core (the far-field points, not the FDTD, dominate).
 
-## 0. What you will learn
+</details>
+
+<details markdown="1">
+<summary>Learning scope and applications</summary>
 
 - How to write an x-polarized planewave as a single m = −1 source in cylindrical coordinates (Er and −iEφ), and why the planewave needs `is_integrated`.
 - Where to put the `add_near2far` surfaces (in air, inside the PML) and how `get_farfields` returns the field on any line or plane outside the cell.
 - The zone-plate design rule r_n² = nλ(f + nλ/4), the resolution 1.22·Δr_N, and the peak intensity ∝ N².
 - An energy balance that integrates the far-field power and compares it with the near flux — and how it goes wrong when the angular sampling is too coarse.
 
-**Prerequisites**: cylindrical coordinates and m from chapter 13, near2far from chapter 10. **Official example**: [Focusing properties of a binary-phase zone plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate), script [zone_plate.py](https://github.com/NanoComp/meep/blob/master/python/examples/zone_plate.py). **Previous**: 15 · When there are thousands of point sources · **Next**: 17 · Launching an oblique planewave
-
-## 1. What do we want to find out?
+**Prerequisites**: cylindrical coordinates and m from chapter 13, near2far from chapter 10. **Official example**: [Focusing properties of a binary-phase zone plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate), script [zone_plate.py](https://github.com/NanoComp/meep/blob/master/python/examples/zone_plate.py).
 
 Up to chapter 14 the light left the structure and went outward. The simplest device that gathers that light at a distant point is a zone plate. Cut the radius every half-wavelength of path difference and flip the phase of the odd zones by π, and every zone adds constructively at the focus. Two questions follow. The cell is only 6.5 µm tall — can Meep show a focus 200 µm away (near2far)? And if the number of zones N is quadrupled, does the focal width halve?
 
@@ -55,7 +64,32 @@ Zone plates are the objective lenses of X-ray and EUV microscopes (wavelengths w
 | Flat diffractive lenses and metalenses | near2far focal profile, PSF outside the cell | chapter 07 meta-atoms, the metalens topic page |
 | LED and laser package optics | far-field distribution of the extracted light | chapter 14 extraction |
 
-<h2 id="understand">2. Understand: the physics on one page</h2>
+</details>
+
+<h2 id="predict">2. Predict before viewing the results</h2>
+
+<fieldset class="prediction">
+<legend>What happens to the focal width when N increases fourfold from 25 to 100?</legend>
+<label><input type="radio" name="zone-plate-near2far-prediction" value="half"> It decreases to about half.</label>
+<label><input type="radio" name="zone-plate-near2far-prediction" value="same"> It stays the same because the focal length is unchanged.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>Compare the predictions and criteria</summary>
+
+| Quantity | My prediction | Reasoning |
+|--------|---------|------|
+| z of the peak | 200 ± 1 µm | design rule |
+| peak ratio N 50/25, 100/25 | 4, 16 | ∝ N² |
+| first zero r₀ | 1.26 / 0.91 / 0.67 µm | 1.22·Δr_N |
+| hemisphere far power / near top flux | 1 ± 0.1 | power conservation |
+| transmitted/incident net flux | 1 ± 0.03 | lossless |
+
+**Decision rule**: if the z peak misses 200 µm by several µm or the peak ratio departs from N² by more than a factor of two, suspect the near-surface position or the sign of m.
+
+</details>
+
+<h2 id="understand">3. Understand: the physics on one page</h2>
 
 {% include chapter-illustration.html %}
 
@@ -77,19 +111,7 @@ $$
 
 **Assumptions and range of validity**: cylindrical coordinates with m = −1 (x-polarized planewave), lossless glass, vacuum outside the cell, far points in the φ = 0 (r–z) plane.
 
-<h2 id="predict">Predict before viewing the results</h2>
-
-| Quantity | My prediction | Reasoning |
-|--------|---------|------|
-| z of the peak | 200 ± 1 µm | design rule |
-| peak ratio N 50/25, 100/25 | 4, 16 | ∝ N² |
-| first zero r₀ | 1.26 / 0.91 / 0.67 µm | 1.22·Δr_N |
-| hemisphere far power / near top flux | 1 ± 0.1 | power conservation |
-| transmitted/incident net flux | 1 ± 0.03 | lossless |
-
-**Decision rule**: if the z peak misses 200 µm by several µm or the peak ratio departs from N² by more than a factor of two, suspect the near-surface position or the sign of m.
-
-## 3. Simulation layout
+### Simulation layout
 
 ![layout]({{ '/assets/meep/16/01_layout_source.png' | relative_url }})
 *(a) The r ≤ 20 µm region: glass substrate and zone plate (dark blue), green dashed near2far and transmitted-flux top face, red planewave source (inside the substrate), orange incident-flux face, ▲ the decay monitor point (mid-r, z 0). The cell radius is R_N + 3 µm. (b) Re Er(t) at mid-r, z 0. (c) Spectrum — fwidth 0.2 f.*
@@ -213,7 +235,7 @@ Four of five predictions held. The peak ratio sits slightly below N², which I a
 - Established: the cylindrical near2far of the current Meep (1.33) reproduces the official zone-plate figures (N 25/50/100) as drawn, and the focal position, size and intensity agree with scalar theory (f, 1.22·Δr_N, N²) within 5 %. The upstream resolution 25 is converged.
 - Not established (by the pre-registered criteria): power conservation of the 91-point hemisphere integral — the 1801-point diagnostic gives 1.025. The dependence of r₀ on resolution (pinned to the far grid). Why the peak ratio sits below N² (hypothesis only).
 
-## 6. Common mistakes
+### Common mistakes
 
 | Symptom | Cause | Fix |
 |------|------|----------|
@@ -224,7 +246,7 @@ Four of five predictions held. The peak ratio sits slightly below N², which I a
 | seconds per far point | far points near the near surface, or concurrent runs | shrink the scan or run alone |
 | diffraction from the source edge | no is_integrated | enable it |
 
-## 7. Try it yourself
+### Try it yourself
 
 | Change | Expected change | Number to check |
 |---------|----------|------------|
@@ -233,9 +255,15 @@ Four of five predictions held. The peak ratio sits slightly below N², which I a
 | far step 0.1 → 0.02 | FWHM stable to more digits | FWHM_r |
 | hemisphere θ 91 → 1801 points | power ratio → 1 | P_far/P_top |
 
-<h2 id="reference">8. Full code and references</h2>
+<h2 id="check">6. Check your understanding</h2>
 
-`code/zone_plate_near2far.py` — arguments `--num-zones --resolution --far-res --hemi --anim`. It includes the PROJ-013 reproduction monitors (flux, hemisphere, DFT, recording).
+1. Why does a 0.5 µm glass step in the odd zones amount to a π phase? (§3)
+2. Why must the near2far surface not be placed inside the substrate? (§4 ⑤)
+3. The hemisphere far-field power comes out below the near flux — what do you suspect first? (§5 power balance and common mistakes)
+
+<h2 id="reference">7. Full code and references</h2>
+
+`code/zone_plate_near2far.py` — arguments `--num-zones --resolution --far-res --hemi --anim`. It includes monitors for flux, hemisphere power, DFT fields and animation recording.
 
 <details>
 <summary>zone_plate_near2far.py (click to expand)</summary>
@@ -382,15 +410,7 @@ if rec is not None:
 {% endhighlight %}
 </details>
 
-<h2 id="check">Check your understanding</h2>
-
-1. Why does a 0.5 µm glass step in the odd zones amount to a π phase? (§2)
-2. Why must the near2far surface not be placed inside the substrate? (§4 ⑤)
-3. The hemisphere far-field power comes out below the near flux — what do you suspect first? (§5 balance, §6)
-
-## 9. Further reading
+### Further reading
 
 - Meep documentation: [Cylindrical Coordinates — zone plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate), [Near-to-far field spectra](https://meep.readthedocs.io/en/latest/Python_User_Interface/#near-to-far-field-spectra).
 - LBL CXRO, [Zone plate theory](http://zoneplate.lbl.gov/theory) — Δr = 1.22 Δr_N.
-- Original record of this chapter: PROJ-013 reproduction report e-zone-plate (14 pre-registered criteria; awaiting human review).
-- Previous: 15 · When there are thousands of point sources · Cylindrical coordinates: [13 · Computing 3D with rotational symmetry]({{ site.baseurl }}/en/cylindrical-dipole/) · Next: 17 · Launching an oblique planewave

@@ -1,5 +1,11 @@
 # Meep Examples design contract
 
+### 2026-11-10: Examples 16 and 28
+
+The catalog and lesson explanation share imagegen concept illustrations in the existing four-file Korean/English and light/dark contract. Match chapters 12–14: pale blue orthographic apparatus, soft shadows, slate labels and the explicit concept caption. Chapter 16 shows a binary-phase glass zone plate, an intervening near-to-far measurement surface and a schematic focus; chapter 28 shows two separate suspended guides with transverse attraction arrows for the symmetric mode. Coordinates, thickness, optical paths and focal distance in these illustrations are schematic. Numerical figures remain the original simulation outputs.
+
+The earlier `_tools/draw-illustrations.py` drawings are historical drafts, superseded by the approved imagegen assets; do not regenerate production images from that script. Generation prompts and asset hashes are recorded in `assets/illustrations/manifest.json`. Cards use the existing component and theme/language switching. Both bilingual lessons follow observe, predict, understand, run, interpret, check and reference, preserving code, equations and numerical tables.
+
 ## 1. Brief and reference
 An approachable Korean Meep encyclopedia: see the path light takes, then open a real, reproducible example. Preserve the approved paper/cyan/amber identity while upgrading the inverse-design story with centered ports, forward/adjoint DFT capture, complex-field overlap, gradient and a verified geometry update.
 

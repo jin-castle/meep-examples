@@ -14,32 +14,41 @@ lang: ko
 series: meep-examples
 part: 16
 level: intermediate
-runtime: "N 25: 23 s FDTD + far-field 점 1,500개 (≈ 4 min single core); N 100 ≈ 30 min"
+runtime: "N 25: FDTD 23초 + 원거리 점 1,500개 (한 코어 약 4분); N 100 약 30분"
 meep_version: "1.33.0"
 official_example: "https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate"
 tags: [meep, fdtd, near2far, zone-plate, cylindrical, diffractive-lens, focusing]
 image: /assets/meep/16/02_results.png
-excerpt: "a binary-phase glass zone plate (N = 25/50/100 zones, f = 200 µm, λ = 0.5 µm) on a glass substrate, illuminated from below by an x-polarized planewave written in cylindrical coordinates as m = −1 (Er − iEφ). The focal spot lies 200 µm outside the cell, so the fields there come from a near-to-far transformation (`add_near2far` + `get_farfields`) of the fields on the top and side faces of the cell."
+excerpt: "유리 기판 위 이진 위상 영역판의 셀 밖 초점을 near2far로 계산합니다. 영역 수에 따른 초점 세기와 폭을 스칼라 이론과 비교하고, 원거리 전력 적분의 표본 간격을 점검합니다."
 ---
-<h2 id="observe">관찰하기: 셀 밖 200 µm의 초점</h2>
+<h2 id="observe">1. 관찰하기: 셀 밖 200 µm의 초점</h2>
 
-![hero]({{ site.baseurl }}/assets/meep/16/02_results.png)
+영역판의 크기를 키우면 초점은 어떻게 달라질까요? 아래 결과에서 N = 25·50·100의 초점 위치와 폭을 비교해 보세요. 계산 셀은 두께 6.5 µm지만, near2far로 셀 밖 200 µm의 장을 읽습니다.
 
-- **What**: a binary-phase glass zone plate (N = 25/50/100 zones, f = 200 µm, λ = 0.5 µm) on a glass substrate, illuminated from below by an x-polarized planewave written in cylindrical coordinates as m = −1 (Er − iEφ). The focal spot lies 200 µm outside the cell, so the fields there come from a near-to-far transformation (`add_near2far` + `get_farfields`) of the fields on the top and side faces of the cell.
-- **Result**: the three documented curves come out as drawn — focus at z = 199.8–199.9 µm for all N, peak |E|² 4683 / 17403 / 64881 (ratios 3.7 and 13.9 versus N² = 4 and 16), first zero of the focal spot 1.204 / 0.901 / 0.701 µm versus the scalar 1.22·Δr_N = 1.261 / 0.907 / 0.667 µm (within 5 %), FWHM ratio N 100 / N 25 = 0.54 (1/√N → 0.5). Resolution 25 is converged (peak 2 %, FWHM 0.1 % from 25 to 50). Transmitted/incident net flux 0.99–1.00, but the far power integrated over a hemisphere with 1° steps is only 70–76 % of the near flux.
-- **Takeaway**: near2far gives the field anywhere outside the cell from one run, but each far point costs an integral over the near surface — sampling matters twice: the far scan step for the focal profile, and the angular step if you integrate the far power. Here a 1° angular step misses the λ/D ≈ 0.15–0.3° fringes of a 100–200 µm aperture and under-counts the power by 25–30 %.
-- **Code**: full script at the bottom; N 25 takes ~4 min on one core (the far-field points, not the FDTD, dominate).
+<figure class="lesson-figure">
+<a href="{{ site.baseurl }}/assets/meep/16/02_results.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/16/02_results.png" alt="영역 수 25·50·100에 따른 축 방향과 초점면의 세기 분포, 피크 세기 및 첫 영점 반지름 비교" loading="eager"></a>
+<figcaption>실제 Meep 계산 결과입니다. 영역 수를 늘려도 초점은 z = 199.8–199.9 µm에 있고, 피크는 높아지며 초점 폭은 줄어듭니다.</figcaption>
+</figure>
 
-## 0. 이 글에서 배우는 것
+<details markdown="1">
+<summary>계산 요약과 실행 시간</summary>
+
+- **무엇을 계산하나요?** 유리 기판 위 이진 위상 영역판(N = 25/50/100, f = 200 µm, λ = 0.5 µm)에 아래쪽에서 x 편광 평면파를 넣습니다. 원통좌표의 m = −1(Er − iEφ)로 광원을 표현하고, 셀 윗면과 옆면의 장을 `add_near2far`와 `get_farfields`로 변환해 셀 밖 초점을 구합니다.
+- **어떤 결과가 나왔나요?** 모든 N에서 초점은 z = 199.8–199.9 µm입니다. 피크 |E|²는 4683 / 17403 / 64881로, N = 25 대비 3.7배·13.9배입니다(N² 예측 4배·16배). 첫 영점 반지름은 1.204 / 0.901 / 0.701 µm로 스칼라 예측 1.22·Δr_N = 1.261 / 0.907 / 0.667 µm와 5% 안에서 맞습니다. N = 100/25의 FWHM 비는 0.54입니다(1/√N 예측 0.5). 해상도 25→50에서 피크 변화는 2%, FWHM 변화는 0.1%입니다. 투과/입사 순전력 비는 0.99–1.00이지만, 1° 간격 반구 적분은 근거리 전력의 70–76%만 회수합니다.
+- **무엇을 주의하나요?** near2far는 한 번의 계산으로 셀 밖 장을 구하지만, 각 원거리 점마다 근거리 면 적분이 필요합니다. 초점 스캔 간격과 전력 적분의 각도 간격을 각각 확인해야 합니다. 이 예제의 100–200 µm 개구에서는 λ/D ≈ 0.15–0.3° 무늬를 1° 표본이 놓쳐 전력을 25–30% 적게 셉니다.
+- **코드는 어디에 있나요?** 마지막 절에 전체 스크립트를 실었습니다. N = 25는 한 코어에서 약 4분이며, FDTD보다 원거리 점의 후처리가 대부분의 시간을 차지합니다.
+
+</details>
+
+<details markdown="1">
+<summary>학습 범위와 활용 분야</summary>
 
 - 원통좌표에서 x 편광 평면파를 m = −1 하나로 쓰는 법(Er와 −iEφ)과 `is_integrated` 평면파 source
 - `add_near2far`의 면을 어디에 두고(공기, PML 안쪽), `get_farfields`로 셀 밖 임의 선·면의 장을 얻는 법
 - 영역판의 설계식 r_n² = nλ(f + nλ/4)와 분해능 1.22·Δr_N, 피크 세기 ∝ N²
 - far-field 전력을 적분해 near flux와 맞춰 보는 에너지 수지 — 각 표본이 거칠면 어떻게 틀리는가
 
-**전제 지식**: 13편의 원통좌표와 m, 10편의 near2far. **공식 예제**: [Focusing properties of a binary-phase zone plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate), 스크립트 [zone_plate.py](https://github.com/NanoComp/meep/blob/master/python/examples/zone_plate.py). **이전 글**: 15 · 점광원이 수천 개일 때 · **다음 글**: 17 · 비스듬한 평면파 만들기
-
-## 1. 무엇을 알고 싶은가
+**전제 지식**: 13편의 원통좌표와 m, 10편의 near2far. **공식 예제**: [Focusing properties of a binary-phase zone plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate), 스크립트 [zone_plate.py](https://github.com/NanoComp/meep/blob/master/python/examples/zone_plate.py).
 
 14편까지 빛은 구조 안에서 밖으로 나갔다. 나간 빛을 멀리서 한 점에 모으는 가장 단순한 소자가 영역판이다. 반지름을 λ/2 광로차마다 끊어 홀수 영역의 위상을 π 뒤집으면 모든 영역이 초점에서 더해진다. 질문은 둘이다. 셀이 6.5 µm 두께뿐인데 200 µm 밖의 초점을 Meep으로 볼 수 있는가(near2far), 그리고 영역 수 N을 네 배 늘리면 초점 폭이 반으로 주는가.
 
@@ -53,7 +62,32 @@ X선·EUV 현미경의 대물렌즈가 영역판이고(굴절 렌즈가 없는 �
 | 평판 회절 렌즈·metalens | near2far 초점 프로파일, 셀 밖 PSF | 07편 meta-atom, metalens 주제 페이지 |
 | LED·레이저 패키지 광학 | 꺼낸 빛의 far-field 분포 | 14편 광추출 |
 
-<h2 id="understand">2. 원리 이해하기: 영역판의 설계식과 near2far</h2>
+</details>
+
+<h2 id="predict">2. 예측하기: 초점의 위치·세기와 에너지 수지</h2>
+
+<fieldset class="prediction">
+<legend>영역 수 N을 25에서 100으로 네 배 늘리면 초점 폭은 어떻게 될까요?</legend>
+<label><input type="radio" name="zone-plate-near2far-prediction" value="half"> 대략 절반으로 줄어든다.</label>
+<label><input type="radio" name="zone-plate-near2far-prediction" value="same"> 초점 거리가 같으므로 폭도 같다.</label>
+</fieldset>
+
+<details markdown="1">
+<summary>예측의 근거와 판정 기준 보기</summary>
+
+| 물리량 | 내 예측 | 근거 |
+|--------|---------|------|
+| z 피크 위치 | 200 ± 1 µm | 설계식 |
+| 피크 비 N 50/25, 100/25 | 4, 16 | ∝ N² |
+| 첫 영점 r₀ | 1.26 / 0.91 / 0.67 µm | 1.22·Δr_N |
+| 반구 far 전력 / near 윗면 flux | 1 ± 0.1 | 전력 보존 |
+| 투과/입사 net flux | 1 ± 0.03 | 무손실 |
+
+**판정 기준**: z 피크가 200에서 수 µm 벗어나거나 피크 비가 N²에서 2배 넘게 벗어나면 near 면 위치·m 부호를 의심한다.
+
+</details>
+
+<h2 id="understand">3. 원리 이해하기: 영역판의 설계식과 near2far</h2>
 
 {% include chapter-illustration.html %}
 
@@ -75,19 +109,7 @@ $$
 
 **가정과 유효 범위**: 원통좌표 m = −1(x 편광 평면파), 무손실 유리, 셀 밖은 진공, far 점은 φ = 0 평면(r–z).
 
-<h2 id="predict">예측하기: 초점의 위치·세기와 에너지 수지</h2>
-
-| 물리량 | 내 예측 | 근거 |
-|--------|---------|------|
-| z 피크 위치 | 200 ± 1 µm | 설계식 |
-| 피크 비 N 50/25, 100/25 | 4, 16 | ∝ N² |
-| 첫 영점 r₀ | 1.26 / 0.91 / 0.67 µm | 1.22·Δr_N |
-| 반구 far 전력 / near 윗면 flux | 1 ± 0.1 | 전력 보존 |
-| 투과/입사 net flux | 1 ± 0.03 | 무손실 |
-
-**판정 기준**: z 피크가 200에서 수 µm 벗어나거나 피크 비가 N²에서 2배 넘게 벗어나면 near 면 위치·m 부호를 의심한다.
-
-## 3. 시뮬레이션 설계도
+### 시뮬레이션 설계도
 
 ![layout]({{ site.baseurl }}/assets/meep/16/01_layout_source.png)
 *(a) r ≤ 20 µm 구간: 유리 기판과 영역판(진한 파랑), 초록 점선 near2far·투과 flux 윗면, 빨강 평면파 source(기판 안), 주황 입사 flux 면, ▲ 종료 감시점(r 중앙 z 0). 셀 r은 R_N + 3 µm. (b) r 중앙 z 0의 Re Er(t). (c) 스펙트럼 — fwidth 0.2 f.*
@@ -211,7 +233,7 @@ I = |Ex|² + |Ey|² + |Ez|²
 - 할 수 있는 것: 현재 Meep(1.33)의 원통 near2far가 공식 zone plate 그림(N 25/50/100)을 그대로 재현하고, 초점 위치·크기·세기가 스칼라 이론(f, 1.22·Δr_N, N²)과 5 % 안에서 맞는다. upstream res 25는 수렴해 있다.
 - 할 수 없는 것(등록 기준으로는): 91점 반구 적분의 전력 보존 — 진단(1801점)에서는 1.025로 맞는다. 해상도에 따른 r₀ 변화(far 격자에 묶임). 피크 비가 N²보다 낮은 이유(가설만).
 
-## 6. 흔한 실수
+### 흔한 실수
 
 | 증상 | 원인 | 고치는 법 |
 |------|------|----------|
@@ -222,7 +244,7 @@ I = |Ex|² + |Ey|² + |Ez|²
 | 점당 수 초 | far 점이 near 면 근처, 또는 다른 run과 동시 실행 | 스캔 범위를 줄이거나 단독 실행 |
 | source 가장자리 회절 | is_integrated 없음 | 켠다 |
 
-## 7. 직접 해보기
+### 직접 해보기
 
 | 바꿀 것 | 예상 변화 | 확인할 수치 |
 |---------|----------|------------|
@@ -231,9 +253,15 @@ I = |Ex|² + |Ey|² + |Ez|²
 | far 간격 0.1 → 0.02 | FWHM 소수점 안정 | FWHM_r |
 | 반구 θ 표본 91 → 1801 | 전력 비 → 1 | P_far/P_top |
 
-<h2 id="reference">8. 전체 코드와 참고 자료</h2>
+<h2 id="check">6. 이해 확인하기</h2>
 
-`code/zone_plate_near2far.py` — 인자 `--num-zones --resolution --far-res --hemi --anim`. PROJ-013 재현용 monitor(flux·반구·DFT·녹화)가 들어 있다.
+1. 홀수 영역의 유리 두께 0.5 µm가 왜 π 위상인가? (§3)
+2. near2far 면을 기판 안에 두면 안 되는 이유는? (§4 ⑤)
+3. 반구 far 전력 적분이 near flux보다 작게 나왔다면 먼저 무엇을 의심하는가? (§5 에너지 수지와 흔한 실수)
+
+<h2 id="reference">7. 전체 코드와 참고 자료</h2>
+
+`code/zone_plate_near2far.py` — 인자 `--num-zones --resolution --far-res --hemi --anim`. 투과 전력·반구 전력·DFT 장·애니메이션 기록용 모니터를 포함합니다.
 
 <details>
 <summary>zone_plate_near2far.py (클릭해서 펼치기)</summary>
@@ -380,14 +408,7 @@ if rec is not None:
 {% endhighlight %}
 </details>
 
-<h2 id="check">이해 확인하기</h2>
-
-1. 홀수 영역의 유리 두께 0.5 µm가 왜 π 위상인가? (§2)
-2. near2far 면을 기판 안에 두면 안 되는 이유는? (§4 ⑤)
-3. 반구 far 전력 적분이 near flux보다 작게 나왔다면 먼저 무엇을 의심하는가? (§5 수지, §6)
-
-## 9. 더 읽기
+### 더 읽기
 
 - Meep 문서 [Cylindrical Coordinates — zone plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate), [Near-to-far field spectra](https://meep.readthedocs.io/en/latest/Python_User_Interface/#near-to-far-field-spectra).
 - LBL CXRO, [Zone plate theory](http://zoneplate.lbl.gov/theory) — Δr = 1.22 Δr_N.
-- 이 글의 원 기록: PROJ-013 재현 보고서 e-zone-plate(사전 등록 기준 14개; 사람 확인 대기).

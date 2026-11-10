@@ -10,9 +10,9 @@ const ids = ['scope', 'reuse', 'code', 'images', 'sources', 'third-party'];
 const notices = read('THIRD_PARTY_NOTICES.md');
 const pages = ['rights-and-licenses.md', 'en/rights-and-licenses.md'];
 
-assert.equal(sources.length, 16, 'All 14 lessons and both topics must be attributed');
-assert.equal(new Set(sources.map(source => source.id)).size, 16, 'Unique source anchors');
-assert.deepEqual(sources.filter(source => source.part).map(source => source.part), Array.from({ length: 14 }, (_, i) => i + 1));
+assert.equal(sources.length, 18, 'All 16 lessons and both topics must be attributed');
+assert.equal(new Set(sources.map(source => source.id)).size, sources.length, 'Unique source anchors');
+assert.deepEqual(sources.filter(source => source.part).map(source => source.part), [...Array.from({ length: 14 }, (_, i) => i + 1), 16, 28]);
 const posts = fs.readdirSync(path.join(root, '_posts')).filter(file => file.endsWith('.md')).map(file => ({ file, text: read('_posts/' + file) }));
 for (const source of sources) {
   for (const lang of ['ko', 'en']) {
@@ -54,7 +54,7 @@ for (const layout of ['lesson', 'topic']) {
 assert.match(read('LICENSES/Meep-GPL-2.0.txt'), /Version 2, June 1991/);
 assert.match(read('code/optical_beams/source/LICENSE'), /Copyright \(c\) 2018 Daniel Kotik/);
 assert(notices.includes('GSAP Standard License'));
-console.log('PASS local: 16 attributed lessons/topics, bilingual policies, notices, license copy and shared links');
+console.log('PASS local: 18 attributed lessons/topics, bilingual policies, notices, license copy and shared links');
 
 if (process.argv.includes('--live')) {
   const base = 'https://jin-castle.github.io/meep-examples';
@@ -77,7 +77,7 @@ if (process.argv.includes('--live')) {
         if (route.endsWith(rights)) {
           assert(html.includes('id="theme-select"'), `${route}: theme control`);
           assert(html.includes(`rel="canonical" href="${base}${route}"`), `${route}: canonical`);
-          assert.equal((html.match(/class="source-record"/g) || []).length, 16, `${route}: complete source inventory`);
+          assert.equal((html.match(/class="source-record"/g) || []).length, sources.length, `${route}: complete source inventory`);
           for (const id of ids) assert(html.includes(`id="${id}"`), `${route}: ${id} anchor`);
           for (const source of sources) {
             assert(html.includes(`id="source-${source.id}"`), `${route}: ${source.id} anchor`);

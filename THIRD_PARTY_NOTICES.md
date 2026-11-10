@@ -1,6 +1,6 @@
 # Third-party notices and contribution inventory
 
-Updated: 2026-10-24. Maintainer/editor: [jin-castle](https://github.com/jin-castle).
+Updated: 2026-11-10. Maintainer/editor: [jin-castle](https://github.com/jin-castle).
 
 한국어 안내: 원본 자료의 권리는 각 권리자에게 있습니다. 아래의 출처와 프로젝트 추가 작업은 모든 파일의 독립 창작이나 단독 소유를 입증하는 목록이 아닙니다. 코드 재구성은 기존 라이선스 의무를 없애지 않으며, AI 산출물 전체에 독점 저작권을 주장하지 않습니다.
 
@@ -250,6 +250,22 @@ The site inventory is maintained in [`_data/sources.json`](_data/sources.json). 
 - Project work: Newly written source profiles, simulation controls and analysis compare curvature 0 and ±0.1, LG charges ±2, and Airy apodization 0.08 and 0.2, with new experiment data and figures.
 - 프로젝트 작업: 광원 프로파일·시뮬레이션 제어·분석 코드를 새로 작성하여 곡률 0·±0.1, LG 위상 전하 ±2, Airy 감쇠 0.08·0.2를 비교하고 새 실험 데이터와 그림을 제작합니다.
 - Historical reproduction: [한국어](https://jin-castle.github.io/meep-examples/optical-beams/archive/) / [English](https://jin-castle.github.io/meep-examples/en/optical-beams/archive/), with source and wrappers in `code/optical_beams/`. The [pinned source ca145119](https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de), [software citation](https://doi.org/10.5281/zenodo.5211251), MIT notice, measured fields and original-image comparison remain attributed to their actual origins as detailed in section 3.
+
+### 16 · Cylindrical near2far and a binary-phase zone plate
+
+- Local pages: [한국어](https://jin-castle.github.io/meep-examples/zone-plate-near2far/) / [English](https://jin-castle.github.io/meep-examples/en/zone-plate-near2far/).
+- Local code: `code/zone_plate_near2far.py`.
+- References: [Meep · Cylindrical Coordinates · Binary-Phase Zone Plate](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/#focusing-properties-of-a-binary-phase-zone-plate); [Meep · zone_plate.py](https://github.com/NanoComp/meep/blob/master/python/examples/zone_plate.py); [LBL CXRO · Zone plate theory](https://zoneplate.lbl.gov/theory).
+- Project work: N 25/50/100 comparison against scalar theory (1.22Δr_N, N², 1/√N), a resolution ladder, transmitted/incident flux and hemisphere far-field power balance, DFT maps and a time-domain GIF.
+- 프로젝트 작업: N 25/50/100 비교와 스칼라 이론(1.22Δr_N, N², 1/√N) 대조, 해상도 사다리, 투과·입사 flux와 반구 far 전력 수지, DFT 지도와 시간 영역 GIF를 구성했습니다.
+
+### 28 · Optical force between two parallel waveguides
+
+- Local pages: [한국어](https://jin-castle.github.io/meep-examples/parallel-waveguide-force/) / [English](https://jin-castle.github.io/meep-examples/en/parallel-waveguide-force/).
+- Local code: `code/parallel_waveguide_force.py`, `code/parallel_waveguide_mpb.py`.
+- References: [Meep · Optical Forces](https://meep.readthedocs.io/en/latest/Python_Tutorials/Optical_Forces/); [Meep · parallel-wvgs-force.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-force.py); [Meep · parallel-wvgs-mpb.py](https://github.com/NanoComp/meep/blob/master/python/examples/parallel-wvgs-mpb.py); [Povinelli et al. · Optics Letters 30, 3042 (2005)](https://doi.org/10.1364/OL.30.003042).
+- Project work: Separation of the fixed-k (official example) and fixed-ω (paper Fig. 1c) curves, Maxwell stress tensor versus MPB Eq.1 cross-check, a resolution ladder, mode cross sections and a time-domain GIF.
+- 프로젝트 작업: 고정 k(공식 예제)와 고정 ω(논문 Fig. 1c) 곡선의 분리, Maxwell 응력 텐서와 MPB Eq.1의 교차검증, 해상도 사다리, 모드 단면과 시간 영역 GIF를 구성했습니다.
 
 ## 7. Attribution corrections and permission requests
 
