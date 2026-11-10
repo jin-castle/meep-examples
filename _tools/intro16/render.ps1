@@ -30,4 +30,3 @@ if ($LASTEXITCODE -ne 0) { throw 'Video encoding failed' }
 if ($LASTEXITCODE -ne 0) { throw 'Poster encoding failed' }
 & $Ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,pix_fmt,r_frame_rate,nb_frames,duration -show_entries format=duration,size -of json (Join-Path $assetFolder '00_intro.mp4')
 if ($LASTEXITCODE -ne 0) { throw 'FFprobe validation failed' }
-

@@ -102,4 +102,3 @@ report = {
 }
 (folder / "render-validation.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 print(json.dumps({k: v for k, v in report.items() if k != "ffprobe"}, indent=2))
-
