@@ -387,7 +387,7 @@ PML is a way to imitate unbounded space. Whenever light escapes into open space,
 |---|---|---|
 | Radiation loss of waveguide bends and tapers | Escaped light must not return if loss is to be measured as loss; PML reflection 4.5e-4 indicates the floor of this setup’s field metric | Bend in Chapter 05, taper in Chapter 29 |
 | Far fields of antennas, scatterers, and metasurfaces | Open boundaries; returning light distorts the far field | near2far in Chapter 10 |
-| Structures with metals or dispersive materials reaching the boundary (plasmonics, absorbers) | Absorber when PML is unstable | Dispersive materials in Chapter 20 |
+| Structures with metals or dispersive materials reaching the boundary (plasmonics, absorbers) | Absorber when PML is unstable | [Dispersive materials in Chapter 20]({{ site.baseurl }}/en/material-dispersion/) |
 | Periodic structures (gratings, metasurfaces) | PML in one direction and Bloch-periodic boundaries in the others | Gratings in Chapter 06 |
 
 </details>

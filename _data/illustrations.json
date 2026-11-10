@@ -62,5 +62,17 @@
   "28": {
     "ko": "나란한 두 도파로 사이의 힘",
     "en": "Force between parallel waveguides"
+  },
+  "17": {
+    "ko": "원하는 방향으로 움직이는 파면",
+    "en": "Wavefronts in a chosen direction"
+  },
+  "18": {
+    "ko": "계면에서 갈라지는 빛",
+    "en": "Light meeting an interface"
+  },
+  "20": {
+    "ko": "파장에 따라 달라지는 재료 응답",
+    "en": "A material responds to wavelength"
   }
 }

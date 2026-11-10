@@ -53,7 +53,7 @@ Extraction efficiency is the second factor in external quantum efficiency (EQE) 
 | Application | Quantity used here | What comes next |
 |---|---|---|
 | Emitting-layer design for OLEDs, LEDs, and micro-LEDs | Extraction versus height (distance from the electrode), with an LDOS-derived denominator | Chapter 15: thousands of emitters |
-| Cleaved facets of semiconductor lasers and SOAs | 2D cross-section plus kz integration, polarization-dependent extraction | Chapter 18: angular response of interfaces |
+| Cleaved facets of semiconductor lasers and SOAs | 2D cross-section plus kz integration, polarization-dependent extraction | [Chapter 18: angular response of interfaces]({{ site.baseurl }}/en/angular-reflectance/) |
 | Collection from quantum dots and single-photon sources | On/off-axis dipole differences and m series | Chapter 16: far-field collection |
 | Optimizing extraction structures: textures, lenses, photonic crystals | Numerator/denominator definitions and cross-check procedure | Chapter 35: near2far inverse design |
 
@@ -178,7 +178,7 @@ mp.Simulation(..., k_point=mp.Vector3(0, 0, kz), kz_2d="real/imag")             
 ```
 
 - **What**: the same physics in three representations. C uses the z component of `k_point` and `kz_2d` in a 2D cell.
-- **Why**: `kz_2d="real/imag"` solves the nonzero-kz 2D problem using two real field sets. Equivalence of real/imag, complex, and 3d representations was checked in the 10_sources kz_2d note (planned for chapter 18).
+- **Why**: `kz_2d="real/imag"` solves the nonzero-kz 2D problem using two real field sets. The real/imag, complex and 3d forms represent the same physical problem; numerical comparisons must also match the grid, symmetries and stopping conditions. Chapter 18 separately addresses angular interface response.
 - **If wrong**: setting both 3D mirror phases to +1 represents a source with different parity (chapter 11).
 
 ### ⑤ Monitors — the numerator uses an open surface in air

@@ -1,0 +1,53 @@
+{
+  "lessons": [
+    {
+      "part": "17", "slug": "oblique-plane-wave", "category": "basics", "name": "Oblique plane waves",
+      "ko": {"kicker": "17 · 입사파 만들기", "title": "원하는 방향으로 평면파를 어떻게 넣을까요?", "summary": "파면의 공간 위상과 Bloch 경계를 맞추고, 계산된 파수와 각도로 광원이 원하는 방향을 향하는지 확인합니다.", "search": "17 평면파 경사 입사 광원 위상 Bloch k_point eigenmode oblique plane wave", "alt": "같은 위상의 파면에 수직인 파수 벡터를 보여 주는 개념도"},
+      "en": {"kicker": "17 · Making an incident wave", "title": "How do we launch a plane wave in a chosen direction?", "summary": "Match the spatial phase to Bloch boundaries, then measure the wavevector and angle to check where the source actually sends light.", "search": "17 oblique plane wave phase Bloch k_point eigenmode source incidence", "alt": "Concept diagram of a wavevector normal to constant-phase wavefronts"}
+    },
+    {
+      "part": "18", "slug": "angular-reflectance", "category": "basics", "name": "Angle-dependent reflection",
+      "ko": {"kicker": "18 · 각도와 편광", "title": "비스듬히 들어온 빛은 얼마나 반사될까요?", "summary": "P 편광의 반사율을 Fresnel 식으로 검산하고, Brewster 각과 넓은 대역에서 달라지는 입사각·해상도 오차를 살펴봅니다.", "search": "18 각도 편광 반사 투과 Fresnel Brewster 경사 입사 angular reflectance", "alt": "유전체 계면에서 입사광이 반사광과 굴절광으로 갈라지는 개념도"},
+      "en": {"kicker": "18 · Angle and polarization", "title": "How much light reflects at an oblique angle?", "summary": "Check P-polarized reflectance against Fresnel theory, then examine the Brewster angle, frequency-dependent angles and resolution error.", "search": "18 angle polarization reflection transmission Fresnel Brewster oblique reflectance", "alt": "Concept diagram of incident, reflected and refracted light at a dielectric interface"}
+    },
+    {
+      "part": "20", "slug": "material-dispersion", "category": "basics", "name": "Dispersive materials",
+      "ko": {"kicker": "20 · 재료의 분산", "title": "굴절률이 파장에 따라 달라지면 어떻게 계산할까요?", "summary": "분산 재료의 석영 반사율을 해석식과 비교하고, Lorentz 모드에서 유전율을 역산할 때의 한계를 구분합니다.", "search": "20 분산 재료 석영 Lorentz Sellmeier 복소 유전율 material dispersion quartz", "alt": "서로 다른 파장의 파동이 재료 안에서 서로 다르게 압축되는 개념도"},
+      "en": {"kicker": "20 · Material dispersion", "title": "What if the refractive index changes with wavelength?", "summary": "Compare dispersive-quartz reflectance with theory, then identify the limits of estimating permittivity from Lorentz-mode frequencies.", "search": "20 material dispersion quartz Lorentz Sellmeier complex permittivity", "alt": "Concept diagram of different wavelength compression inside a dispersive material"}
+    }
+  ],
+  "paths": [
+    {
+      "id": "incidence-path",
+      "ko": {"title": "입사파에서 실제 재료까지", "description": "03편의 기준 계산을 익혔다면, 입사 방향·계면 응답·파장 의존성을 차례로 더해 보세요. 번호보다 선행 개념을 따라 읽어도 좋습니다."},
+      "en": {"title": "From incident waves to real materials", "description": "After the reference run in 03, add direction, interface response and wavelength dependence. Follow prerequisites rather than numerical order."},
+      "steps": [
+        {"number": "03 → 17", "slug": "oblique-plane-wave", "ko": {"title": "입사 방향 정하기", "detail": "공간 위상 · Bloch 경계 · 파수 검산"}, "en": {"title": "Choose the incident direction", "detail": "Spatial phase · Bloch boundaries · measured k"}},
+        {"number": "17 → 18", "slug": "angular-reflectance", "ko": {"title": "계면에서 반사 재기", "detail": "P 편광 · Fresnel · 각도와 대역폭"}, "en": {"title": "Measure interface reflection", "detail": "P polarization · Fresnel · angle and bandwidth"}},
+        {"number": "03 → 20", "slug": "material-dispersion", "ko": {"title": "파장에 따른 재료 응답", "detail": "Sellmeier · Lorentz · 검증 한계"}, "en": {"title": "Add material dispersion", "detail": "Sellmeier · Lorentz · validation limits"}},
+        {"number": "18 / 20 → 06—07", "slug": "binary-grating", "ko": {"title": "격자와 위상 설계로", "detail": "입사각·재료 가정을 확인하며 다시 읽기"}, "en": {"title": "Return to gratings and phase", "detail": "Revisit incidence and material assumptions"}}
+      ]
+    },
+    {
+      "id": "emission-path",
+      "ko": {"title": "광원을 가두고, 꺼내고, 모으기", "description": "점광원의 방사부터 공진·대칭·광추출을 거쳐 셀 밖 초점까지 이어집니다."},
+      "en": {"title": "Confine, extract and focus emitted light", "description": "Follow a point source through radiation, resonance, symmetry and extraction to a focus beyond the cell."},
+      "steps": [
+        {"number": "10 → 11", "slug": "dipole-pattern-3d", "ko": {"title": "어디로, 얼마나 방사할까", "detail": "3D 방사 패턴 → LDOS와 Purcell"}, "en": {"title": "Where and how strongly?", "detail": "3D radiation → LDOS and Purcell"}},
+        {"number": "12 → 13", "slug": "ring-resonator", "ko": {"title": "공진과 회전 대칭", "detail": "Q · FSR → cylindrical의 m"}, "en": {"title": "Resonance and rotational symmetry", "detail": "Q · FSR → cylindrical m"}},
+        {"number": "13 → 14", "slug": "extraction-efficiency", "ko": {"title": "공기로 나오는 빛", "detail": "대칭을 활용해 추출 효율 계산"}, "en": {"title": "Light escaping into air", "detail": "Use symmetry to calculate extraction"}},
+        {"number": "10 / 13 → 16", "slug": "zone-plate-near2far", "ko": {"title": "셀 밖의 초점", "detail": "near2far · 영역판 · 분해능"}, "en": {"title": "A focus beyond the cell", "detail": "near2far · zone plate · resolution"}}
+      ]
+    },
+    {
+      "id": "force-path",
+      "ko": {"title": "도파로 모드에서 광력까지", "description": "빛이 다니는 모드를 이해한 뒤, 그 모드가 구조에 가하는 힘을 두 방법으로 확인합니다."},
+      "en": {"title": "From guided modes to optical forces", "description": "Understand a guided mode, then compare two ways of measuring the force it exerts on a structure."},
+      "steps": [
+        {"number": "04", "slug": "straight-waveguide", "ko": {"title": "모드와 유효 굴절률", "detail": "EigenModeSource · 모드 전력"}, "en": {"title": "Modes and effective index", "detail": "EigenModeSource · modal power"}},
+        {"number": "12", "slug": "ring-resonator", "ko": {"title": "주파수와 분산 읽기", "detail": "Harminv · 공진 · 군굴절률"}, "en": {"title": "Read frequency and dispersion", "detail": "Harminv · resonance · group index"}},
+        {"number": "04 / 12 → 28", "slug": "parallel-waveguide-force", "ko": {"title": "빛이 미는 힘", "detail": "Maxwell 응력 ↔ 모드 주파수 변화"}, "en": {"title": "The force carried by light", "detail": "Maxwell stress ↔ mode-frequency change"}}
+      ]
+    }
+  ]
+}

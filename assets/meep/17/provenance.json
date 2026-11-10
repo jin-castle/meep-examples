@@ -1,0 +1,161 @@
+{
+  "lesson": 17,
+  "slug": "oblique-plane-wave",
+  "published_on": "2026-11-10",
+  "source_project": "e-oblique-source",
+  "source_event_id": "e-oblique-source-20261109",
+  "upstream": {
+    "repository": "https://github.com/NanoComp/meep",
+    "commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+    "file": "python/examples/oblique-planewave.py",
+    "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/oblique-planewave.py",
+    "tutorial": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Eigenmode_Source/#planewaves-in-homogeneous-media",
+    "license": "GPL-2.0-or-later",
+    "license_text": "LICENSES/Meep-GPL-2.0.txt",
+    "notice": "THIRD_PARTY_NOTICES.md"
+  },
+  "solver": "Meep 1.33.0, WSL pmp, MPI 4 processes",
+  "fields_recomputed_for_publication": false,
+  "conditions": {
+    "dimensions": "2D Ez",
+    "index": 1.5,
+    "frequency_per_um": 1.0,
+    "cell_um": [
+      14,
+      10
+    ],
+    "pml_um": 2,
+    "pml_directions": [
+      "x"
+    ],
+    "y_boundary": "Bloch periodic",
+    "resolution_px_per_um": 50,
+    "requested_angles_deg": [
+      0,
+      40,
+      120,
+      210
+    ],
+    "until": 23.56,
+    "analysis_crop_um": [
+      6,
+      6
+    ]
+  },
+  "verified_subset": {
+    "checks": [
+      "C7",
+      "C7b",
+      "C8"
+    ],
+    "max_angle_error_deg": 0.061364220808542314,
+    "max_k_magnitude_relative_error": 0.0016329222370772278,
+    "max_windowed_fft_ratio": 0.0028835405231216705
+  },
+  "limitations": [
+    "The aggregate source project verdict is refuted; only plane-wave checks C7/C7b/C8 passed.",
+    "Rotated-guide and grazing-incidence claims are not validated by this lesson.",
+    "Windowed FFT ratio is not reflected Poynting power and retains the archive mirrored-index convention.",
+    "No independent plane-wave resolution or stopping-time convergence study was archived.",
+    "The field plot has separate per-panel color normalization and Korean annotations.",
+    "The full saved NPZ fields remain in the source project; the public bundle includes the plotted result and numeric/log records."
+  ],
+  "run_ids": {
+    "0": "wsl-local_20261108T193415Z_07fa53",
+    "40": "wsl-local_20261108T193418Z_d7dcfe",
+    "120": "wsl-local_20261108T193422Z_d8cf58",
+    "210": "wsl-local_20261108T193427Z_6f91f3"
+  },
+  "artifacts": [
+    {
+      "path": "assets/meep/17/01_planewave.png",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\_blog\\posts\\e-oblique-source\\planewave.png",
+      "sha256": "5a5d980818ad873f7efb5511877ace07f3efe8fc89785502d0143bb6869746cf",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/archived_pw_run.py",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\code\\pw_run.py",
+      "sha256": "9fa7fd94dca14ac67ade8f8a60f195c4ac1797bfb74cf1126441a972b0b18340",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/upstream_oblique-planewave.py",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\upstream\\oblique-planewave.py",
+      "sha256": "341e025c0538dab102746a8a73ffe0ba6c1f75358353f89c271fb5cdaa455e7b",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/aggregate_verdict.json",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\reasoning\\result.json",
+      "sha256": "96ff67cb65fb011838decfb671f57257aa056262289f3f17120de1e95cedc8a2",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/summary.json",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\summary.json",
+      "sha256": "bfb9bbb90eb07a94946544d3311987e9e10b159eee185b22df7ab343c8b9ffa3",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a0.json",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a0.json",
+      "sha256": "16063e32cc5284ac50182c5e0222b6db01c37576f5eb495b21d5548afe92a18e",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a0.log",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a0.log",
+      "sha256": "d00740e84374002d75a3808fe709fd9b9a80466f19fa4e5116b90c8b6a8ee211",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a40.json",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a40.json",
+      "sha256": "919c308fd87d78b5f93d47c40a8a7c2e2c0d980189110575e10f2f2f4463f177",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a40.log",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a40.log",
+      "sha256": "0674d47f12133c2ecb82dc0040dcd110548e9835be1ffdf79d71727efd76d571",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a120.json",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a120.json",
+      "sha256": "1508e5bdae2ce649f7c84ae90b0a789172007dced6690e7b856bcdf08e71d644",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a120.log",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a120.log",
+      "sha256": "cfcdb2233e059162c507c3830446b86d8446da67865678fa0dd2c4f64465699f",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a210.json",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a210.json",
+      "sha256": "c059bf0b6e3ed7c6a7de469d2b45e643af9296109e7f80ed10a6ad300eb69bf2",
+      "copied_verbatim": true
+    },
+    {
+      "path": "assets/meep/17/pw_a210.log",
+      "source_path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a210.log",
+      "sha256": "c6f975c82bfca76ec89e5c082892e51580a092c2286c15d819eb08c4b0f8b4b5",
+      "copied_verbatim": true
+    }
+  ],
+  "adapted_cli": {
+    "path": "code/oblique_plane_wave.py",
+    "sha256": "1cd8b96f6c81e7ca38dfaf7666391fd49f7e8fdfa4e8c1764412ba1a4c9ff5fe",
+    "source": "assets/meep/17/archived_pw_run.py",
+    "changes": [
+      "English comments, main guard and CLI help",
+      "Per-run output paths and optional plot",
+      "Imports Meep only for execution so archived analysis and --help work without a solver",
+      "Keeps the original physical model and archived analysis convention"
+    ],
+    "em_execution_for_publication": false
+  }
+}

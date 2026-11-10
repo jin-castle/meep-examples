@@ -1,0 +1,78 @@
+{
+  "lesson": 17,
+  "verified_on": "2026-11-10",
+  "solver_executed": false,
+  "checks": [
+    {
+      "name": "cli_help_without_meep",
+      "status": "passed",
+      "command": "python code/oblique_plane_wave.py --help"
+    },
+    {
+      "name": "python_syntax",
+      "status": "passed",
+      "method": "ast.parse"
+    },
+    {
+      "name": "archived_field_analysis_equivalence",
+      "status": "passed",
+      "angles_deg": [
+        0,
+        40,
+        120,
+        210
+      ],
+      "metrics": [
+        "kx",
+        "ky",
+        "k_mag",
+        "angle_fit",
+        "backward_fraction_fft",
+        "fft_peak_angle"
+      ],
+      "relative_tolerance": 1e-10,
+      "absolute_tolerance": 1e-12,
+      "data_source": "e-oblique-source/runs/pw_a{angle}.npz"
+    },
+    {
+      "name": "independent_analytic_plane_waves",
+      "status": "passed",
+      "angles_deg": [
+        40,
+        210
+      ],
+      "angle_and_magnitude_absolute_tolerance": 1e-10
+    },
+    {
+      "name": "bilingual_lesson_contract",
+      "status": "passed",
+      "h2_ids": [
+        "observe",
+        "predict",
+        "understand",
+        "run",
+        "interpret",
+        "check",
+        "reference"
+      ],
+      "details": [
+        "prediction radios",
+        "figure lightbox",
+        "complete CLI embedded identically in both pages",
+        "local asset/code references exist"
+      ]
+    },
+    {
+      "name": "sha256_records",
+      "status": "passed",
+      "count": 14,
+      "details": "13 copied artifacts plus adapted CLI"
+    }
+  ],
+  "not_executed": [
+    "A fresh electromagnetic simulation",
+    "A standalone Jekyll build (shared integration owned by root)",
+    "A new resolution/time convergence study"
+  ],
+  "scientific_limits": "The underlying aggregate verdict remains refuted; only plane-wave checks C7/C7b/C8 passed. FFT window ratio is not reflected power."
+}

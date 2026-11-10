@@ -1,0 +1,43 @@
+{
+  "50": {
+    "fresnel_max_abs_error_common_angles": 0.06349725603583573,
+    "energy_max_abs_residual": 0.13713642582379515,
+    "angles_at_0p8um_deg": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80
+    ]
+  },
+  "100": {
+    "fresnel_max_abs_error_common_angles": 0.013949339637761737,
+    "energy_max_abs_residual": 0.01268930641753585,
+    "angles_at_0p8um_deg": [
+      0.0,
+      45.0,
+      75.0
+    ]
+  },
+  "200": {
+    "fresnel_max_abs_error_common_angles": 0.003397719051610404,
+    "energy_max_abs_residual": 0.014536790936013233,
+    "angles_at_0p8um_deg": [
+      0.0,
+      45.0,
+      75.0
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "chapter": 20,
+  "meep_version": "1.33.0",
+  "source_project": "e-material-dispersion",
+  "source_commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+  "new_simulations": false,
+  "scope": "Saved quartz reflectance and Lorentz mode evidence, including a failed real-frequency retrieval check.",
+  "upstream": [
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/material-dispersion.py",
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/refl-quartz.py"
+  ],
+  "artifacts": [
+    {
+      "file": "quartz-r200.json",
+      "source": "runs/quartz_r200/reflquartz.json",
+      "sha256": "00cdc3bf587d9c1754bd1308ac255f3609159c7c1d4d0cf04ff5e01cc8efad6e",
+      "bytes": 3424
+    },
+    {
+      "file": "quartz-r100.json",
+      "source": "runs/quartz_r100/reflquartz.json",
+      "sha256": "830fe47e5562679e952c3691c73932663f58035c939e257b2718083720cc50c3",
+      "bytes": 3430
+    },
+    {
+      "file": "lorentz-modes.json",
+      "source": "runs/md_kpts/matdisp.json",
+      "sha256": "4685a2b1fc1eea5d8cea0fb5f6b4306d8a6beeaedf6e84747da7513c4782f581",
+      "bytes": 12516
+    },
+    {
+      "file": "summary.json",
+      "source": "runs/summary.json",
+      "sha256": "c22324fa20d81ec291093ccf0125364c7ef847a4482942b7ca66594f97613ed1",
+      "bytes": 230
+    },
+    {
+      "file": "posthoc-numdisp.json",
+      "source": "runs/posthoc_numdisp.json",
+      "sha256": "85645ed016fc29b2cecb62c13ebc06d36895a037dfadaed630b958aa109c9f32",
+      "bytes": 306
+    },
+    {
+      "file": "../../../code/dispersive_quartz.py",
+      "source": "code/reflquartz_repro.py",
+      "source_sha256": "9019149a505274c8c5fc194255bc36ca932b2a7011a41b096dee8fa6c31f5850",
+      "sha256": "7d4fb291135c3b4630931be08b1d7e6298b026286d72c347513f41f4ada8e327",
+      "adaptation": "Argparse --out/--resolution; original simulation physics and stopping criteria unchanged."
+    },
+    {
+      "file": "../../../code/material_dispersion.py",
+      "source": "code/matdisp_repro.py",
+      "source_sha256": "2a274405912ff16ac8b439be3b4fe6d9835d5fda52b3e2faa00e624227ee4b57",
+      "sha256": "01a9809700c1df1d17fd7968b4a7088a9e3107ab4bc4f67110334a3395d69000",
+      "adaptation": "Argparse --out/--resolution; original simulation physics and stopping criteria unchanged."
+    },
+    {
+      "file": "render_results.py",
+      "sha256": "46518cc78e6d435b9dafea5080426635c9b934c631ff42f412d389d39556d670",
+      "bytes": 2873,
+      "role": "Saved-data plotting helper; no EM solve"
+    },
+    {
+      "file": "quartz-reflectance.png",
+      "sha256": "6c360c42d6cef25015a1c8c78c9af9f38f834716bfbab52e8ce09bbf851d84af",
+      "bytes": 149533,
+      "role": "Original plot of saved numerical data"
+    },
+    {
+      "file": "lorentz-validation.png",
+      "sha256": "0bb3c86d97008e8ecb3732e618ea86543c49efc18b06efe4cb2a1cb1d7b749b4",
+      "bytes": 106318,
+      "role": "Original plot of saved numerical data"
+    }
+  ],
+  "lorentz_metric": "abs((k/Re(f))^2 - Re(epsilon(Re(f)))) / abs(Re(epsilon(Re(f)))); Re(f)>0.02 and >0.05 away from both resonances; this is not a full complex-frequency comparison."
+}

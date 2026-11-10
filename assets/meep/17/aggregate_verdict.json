@@ -1,0 +1,236 @@
+{
+ "event_id": "e-oblique-source-20261109",
+ "outcome": "refuted",
+ "observations": [
+  {
+   "metric": "C1_nb_flux_lines_max_rel",
+   "baseline": null,
+   "probe": null,
+   "value": 3.527880906300925e-07,
+   "threshold": 0.001,
+   "pass": true
+  },
+  {
+   "metric": "C2_nb_steps",
+   "baseline": null,
+   "probe": null,
+   "value": "{15334}",
+   "threshold": 15334,
+   "pass": true
+  },
+  {
+   "metric": "C3_doc_alpha2_max_rel",
+   "baseline": null,
+   "probe": null,
+   "value": 0.010372425546528497,
+   "threshold": 0.002,
+   "pass": false
+  },
+  {
+   "metric": "C3b_alpha2_spread",
+   "baseline": null,
+   "probe": null,
+   "value": 0.010697027588863093,
+   "threshold": 0.003,
+   "pass": false
+  },
+  {
+   "metric": "C4_flux_vs_alpha2_max_rel",
+   "baseline": null,
+   "probe": null,
+   "value": 0.001962018143429739,
+   "threshold": 0.01,
+   "pass": true
+  },
+  {
+   "metric": "C5_backward_over_forward_max",
+   "baseline": null,
+   "probe": null,
+   "value": 0.000540609003998557,
+   "threshold": 0.0001,
+   "pass": false
+  },
+  {
+   "metric": "C6a_P80_over_P0_registered_plane_x5",
+   "baseline": null,
+   "probe": null,
+   "value": 0.0826299751385016,
+   "threshold": [
+    0.94,
+    1.0
+   ],
+   "pass": false,
+   "note": "등록 측정면이 60°+ 도파로를 못 지남 — 판정 불가; 진단 수평면 값은 observations_diag"
+  },
+  {
+   "metric": "C6b_P84_over_P0_registered_plane_x5",
+   "baseline": null,
+   "probe": null,
+   "value": 0.10999776225354775,
+   "threshold": [
+    0.5,
+    0.7
+   ],
+   "pass": false,
+   "note": "판정 불가(측정 기하)"
+  },
+  {
+   "metric": "C7_pw_angle_abs_err_max_deg",
+   "baseline": null,
+   "probe": null,
+   "value": 0.061364220808542314,
+   "threshold": 0.5,
+   "pass": true
+  },
+  {
+   "metric": "C7b_pw_kmag_rel_err_max",
+   "baseline": null,
+   "probe": null,
+   "value": 0.0016329222370772278,
+   "threshold": 0.01,
+   "pass": true
+  },
+  {
+   "metric": "C8_pw_backward_fraction_max",
+   "baseline": null,
+   "probe": null,
+   "value": 0.0028835405231216705,
+   "threshold": 0.01,
+   "pass": true
+  },
+  {
+   "metric": "CMP_flux_alpha_mismatch_ratio_res50_over_20",
+   "baseline": 0.0015822019594247672,
+   "probe": 0.0018633145108971506,
+   "value": 1.1776717250271804,
+   "threshold": 0.5,
+   "pass": false
+  }
+ ],
+ "observations_diag": [
+  {
+   "metric": "diag_C6_P80_over_P0_yplane",
+   "baseline": null,
+   "probe": null,
+   "value": 0.8876243498855318,
+   "threshold": [
+    0.94,
+    1.0
+   ],
+   "pass": false
+  },
+  {
+   "metric": "diag_C6_P84_over_P0_yplane",
+   "baseline": null,
+   "probe": null,
+   "value": 0.3066876740722735,
+   "threshold": [
+    0.5,
+    0.7
+   ],
+   "pass": false
+  },
+  {
+   "metric": "diag_C6_P84_over_P0_cell24_yplane",
+   "baseline": null,
+   "probe": null,
+   "value": 0.08866332766416475,
+   "threshold": [
+    0.7,
+    0.9
+   ],
+   "pass": false
+  }
+ ],
+ "interpretation": "판정 12개 중 6개 통과. 노트북 flux 3줄 최대 상대 3.5e-07(kpoint 고정 버그 포함 재현); .py 모드 전력 vs 문서 최대 1.0e-02, 퍼짐 1.07 %; 후방/전방 최대 5.4e-04; 스침 80°/84° 0.888/0.307, 셀 24 0.089; 평면파 각 오차 최대 0.06°, 후방 FFT 최대 2.9e-03; flux−|α|² 차 비 1.18.",
+ "limitations": "스침 입사 그림의 문서 해상도·source 폭 미기재(가정: res 50, source 14). 다중 모드(f 0.3) 경우·oblique-planewave 2019 노트북 미재현. 평면파 각도는 중앙 6 µm 위상 기울기 추정.",
+ "context_scope": "Meep 공식 예제 oblique-source·oblique-planewave @ f7811d4, 2D Ez, ε 12 폭 1 도파로 f 0.15; n 1.5 평면파 f 1",
+ "created_at": "2026-11-09T04:43:23+09:00",
+ "artifacts": [
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\cmp_r20.json",
+   "sha256": "c765385f5924334a9a2aa57cb4a6ae562a508b386f86c78e8e6cc70ff47ece8d",
+   "role": "baseline"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\cmp_r50.json",
+   "sha256": "42bfa55e04dfd2e15636113967cb5903c78c2fcf14a3e7ad816e78f9679fb987",
+   "role": "probe"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\nb_a0.json",
+   "sha256": "842da0c1954be46eb8644ef31771f7265a0e5092ec556d1bbe0283b4ea09faa1",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\nb_a20.json",
+   "sha256": "6d862d35aea88b812dbf043d328fb6bd4fff0b4bb604f97310b7ede7bcb03fec",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\nb_a40.json",
+   "sha256": "f0ed08ae9fcf4ef2731e9b7878f298adc40e146d1134f0c11c4e9a8cf691fe15",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\py_a0.json",
+   "sha256": "dc69a3cf151a936b5cf949de055eaf2ab2e01adc273f007cf87b178e2dd00941",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\py_a20.json",
+   "sha256": "12d29125e9f5359856f9e06d078286e210b691de0602bfcffc1371f71b96159c",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\py_a40.json",
+   "sha256": "2020a7d5d83e9245779b55d7d2221e1109dd7dc278577aa4a52c2e20211c8da0",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\gl_a0.json",
+   "sha256": "7fbd195304d3967badaf342f0dd32006e59f807e5ac8e2956ef42dc5246cdccf",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\gl_a80.json",
+   "sha256": "1173d5f2ea79ae99c4fff0502342aeb79f9f227d9017ae974cb4f0b8c6a062ae",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\gl_a84.json",
+   "sha256": "7f2d8dba0ec1521b7aeb3f7b91c973eca8b71ccf4b9b083fcc0f14399cee935e",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\gl_a84_c24.json",
+   "sha256": "c8aa6f21442a5a321f8b92c4f35fd4a3bf0deaf0b647570d0077f5e8f4e0f275",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a0.json",
+   "sha256": "16063e32cc5284ac50182c5e0222b6db01c37576f5eb495b21d5548afe92a18e",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a40.json",
+   "sha256": "919c308fd87d78b5f93d47c40a8a7c2e2c0d980189110575e10f2f2f4463f177",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a120.json",
+   "sha256": "1508e5bdae2ce649f7c84ae90b0a789172007dced6690e7b856bcdf08e71d644",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\pw_a210.json",
+   "sha256": "c059bf0b6e3ed7c6a7de469d2b45e643af9296109e7f80ed10a6ad300eb69bf2",
+   "role": "check"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-oblique-source\\runs\\summary.json",
+   "sha256": "bfb9bbb90eb07a94946544d3311987e9e10b159eee185b22df7ab343c8b9ffa3",
+   "role": "result"
+  }
+ ]
+}

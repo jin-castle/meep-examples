@@ -64,7 +64,7 @@ excerpt: "a single Ez source in an empty 2D cell, first as a point, then as a 3 
 |---|---|---|
 | LED·OLED·양자점 발광층 모델 | 점원 = 발광 분자 하나(전기 쌍극자). 펄스 시각 t0와 방향 분포 | 10편의 3D 패턴, 11편의 LDOS |
 | 안테나·RF 소자 | 점원의 방사 패턴, 선원의 방향성(배열 안테나의 가장 단순한 형태) | 10편의 near2far |
-| 광섬유·격자 결합기의 입사 빔 | 선원 = 유한한 폭의 입사파. 파면이 평면에 가까워지는 조건 | 17편 평면파, 19편 Gaussian beam |
+| 광섬유·격자 결합기의 입사 빔 | 선원 = 유한한 폭의 입사파. 파면이 평면에 가까워지는 조건 | [17편 평면파]({{ site.baseurl }}/oblique-plane-wave/), 19편 Gaussian beam |
 | 모든 flux 측정 | source를 둘러싼 flux box와 면의 방향 규칙 | 03편의 reference run |
 
 <h2 id="predict">2. 예측 · 네 방향으로 똑같이 나갈까?</h2>

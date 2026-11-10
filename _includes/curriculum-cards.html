@@ -1,0 +1,8 @@
+{% for item in site.data.curriculum.lessons %}
+{% assign text = item[lang] %}
+{% assign art_base = '/assets/illustrations/' | append: item.part %}
+<a class="example-card" href="{{ home_path | append: item.slug | append: '/' | relative_url }}" data-category="{{ item.category }}" data-search="{{ text.search | escape }}">
+  <img class="example-thumbnail" src="{{ art_base | append: '.' | append: lang | append: '.light.png' | relative_url }}" data-variant-base="{{ art_base | relative_url }}" data-variant-locale="{{ lang }}" width="800" height="480" loading="lazy" decoding="async" alt="{{ text.alt | escape }}">
+  <div><span class="card-kicker">{{ text.kicker | escape }}</span><h3>{{ text.title | escape }}</h3><p>{{ text.summary | escape }}</p><span class="card-footer">{{ item.name | escape }} <span aria-hidden="true">↗</span></span></div>
+</a>
+{% endfor %}

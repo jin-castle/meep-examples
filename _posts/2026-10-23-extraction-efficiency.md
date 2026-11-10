@@ -51,7 +51,7 @@ excerpt: "post 11 measured how much a dipole emits (LDOS); post 13 split a body 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|
 | OLED·LED·micro-LED 발광층 설계 | 높이(전극과의 거리)에 따른 추출 효율, LDOS 분모 | 15편 수천 개의 발광체 |
-| 반도체 레이저·SOA의 절단면 | 2D 단면 + kz 적분, 편광별 추출 | 18편 계면의 각도 응답 |
+| 반도체 레이저·SOA의 절단면 | 2D 단면 + kz 적분, 편광별 추출 | [18편 계면의 각도 응답]({{ site.baseurl }}/angular-reflectance/) |
 | 양자점·단일광자원 수집 효율 | 축 위/축 밖 쌍극자의 차이, m 급수 | 16편 far field로 모으기 |
 | 광추출 구조(텍스처, 렌즈, 광결정) 최적화 | 분자·분모 정의와 교차검증 절차 | 35편 near2far 역설계 |
 
@@ -176,7 +176,7 @@ mp.Simulation(..., k_point=mp.Vector3(0, 0, kz), kz_2d="real/imag")             
 ```
 
 - **무엇**: 같은 물리를 세 좌표계로. C는 2D 셀에 `k_point`의 z 성분과 `kz_2d`.
-- **왜**: `kz_2d="real/imag"`는 kz가 있는 2D 계산을 실수 field 두 벌로 푸는 방법이다. 세 표현(real/imag, complex, 3d)이 같다는 것은 10_sources의 kz_2d 노트(18편 예정)에서 확인했다.
+- **왜**: `kz_2d="real/imag"`는 kz가 있는 2D 계산을 실수 field 두 벌로 푸는 방법이다. real/imag, complex, 3d는 같은 물리 문제를 표현한다. 수치 비교에서는 격자·대칭·정지 조건도 맞춰야 한다. 18편에서는 별도로 계면의 입사각 응답을 다룬다.
 - **틀리면**: 3D 대칭 위상을 둘 다 +1로 두면 다른 parity의 source를 계산한다(11편).
 
 ### ⑤ Monitor — 분자는 공기 쪽 열린 면

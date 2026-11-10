@@ -418,7 +418,7 @@ S는 total flux와 incident flux의 차이로 계산해야 합니다. 산란장 
 
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|
-| 박막·무반사 코팅·DBR 거울·필터 | 수직 입사 R·T 스펙트럼과 Fresnel 검산 | 18편 비스듬한 입사, 24편 Bragg stack |
+| 박막·무반사 코팅·DBR 거울·필터 | 수직 입사 R·T 스펙트럼과 Fresnel 검산 | [18편 비스듬한 입사]({{ site.baseurl }}/angular-reflectance/), 24편 Bragg stack |
 | 나노입자 센서·색소·라만 기판 | 산란 단면적 Q_sca, 산란장만 따로 보는 monitor | 23편 3D Mie 산란 |
 | 레이더 단면적(RCS)·스텔스 | 같은 산란 단면적 개념을 마이크로파에서 | — |
 | 구조가 있을 때와 없을 때의 모든 비교 | reference run 빼기 | 05편 2-run 정규화 |

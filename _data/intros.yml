@@ -81,3 +81,18 @@
   note: "간격 s/a = 0.5인 두 도파로의 기존 Meep 계산 복소 Ey 단면을 Bloch 위상으로 길이 방향에 펼쳤습니다(fa/c = 0.2, kz·a = 0.38579). 빨강은 음수, 파랑은 양수입니다. 두 광주기를 반복하는 정상상태 위상 시각화이며, 유한한 도파로 길이는 표시용입니다."
   label_en: "The symmetric-mode electric field of two parallel waveguides"
   note_en: "The saved complex Ey cross-section from Meep is extended along two guides using the Bloch phase (s/a = 0.5, fa/c = 0.2, kz·a = 0.38579). Red is negative; blue is positive. Two optical periods repeat as a steady-state phase visualization; the finite guide length is for display."
+"17":
+  label: "파수 벡터에 수직인 평면파의 파면"
+  note: "40° 방향의 k에 수직인 등위상선을 이동시킨 설명용 애니메이션입니다. Meep 계산 영상은 아니며, 본문에서 실제 저장된 Ez와 측정 파수·각도를 비교합니다. 파면의 간격과 표시 속도는 설명용입니다."
+  label_en: "Plane-wave fronts perpendicular to the wavevector"
+  note_en: "An analytic concept loop of constant-phase lines moving along k at 40°. This is not Meep field data; the lesson compares saved Ez with measured wavevectors and angles. Spacing and playback speed are illustrative."
+"18":
+  label: "계면에서 반사하고 굴절하는 빛"
+  note: "공기에서 n = 3.5 매질로 45° 입사할 때의 반사·굴절 개념 애니메이션입니다. 이동 점은 진행 방향만 표시하며 전력·속도·실제 Meep 장을 나타내지 않습니다. P 편광의 실제 반사율과 오차는 본문에서 확인합니다."
+  label_en: "Reflection and refraction at an interface"
+  note_en: "A concept animation of 45° incidence from air into n = 3.5. Moving markers show direction, not power, speed or Meep fields. The lesson contains the measured P-polarized reflectance and numerical error."
+"20":
+  label: "파장별로 달라지는 재료 안의 파장"
+  note: "재료 안에서 λ/n만큼 짧아지는 세 파동의 위상 연속성을 보여 주는 해석적 개념 애니메이션입니다. 굴절률 1.43·1.47·1.54는 설명용이며 석영의 피팅값이나 Meep 결과가 아닙니다. 색별 위상은 비교를 위해 같은 주기로 재생하며 실제 주파수·속도 비율을 나타내지 않습니다. 실제 석영 스펙트럼은 본문에서 비교합니다."
+  label_en: "Wavelength-dependent phase inside a material"
+  note_en: "An analytic concept loop showing continuous phase and wavelength shortened to λ/n inside a material. Indices 1.43, 1.47 and 1.54 are illustrative, not a quartz fit or Meep results. Phases are synchronized for comparison; playback does not represent relative physical frequencies or speeds. The lesson compares the actual quartz spectrum."

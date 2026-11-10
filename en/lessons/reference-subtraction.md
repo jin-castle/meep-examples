@@ -419,7 +419,7 @@ Reflection, transmission, and scattering spectra form the specifications of opti
 
 | Application | What this lesson contributes | What comes next |
 |---|---|---|
-| Thin films, antireflection coatings, DBR mirrors, and filters | Normal-incidence R·T spectra and a Fresnel check | Oblique incidence in Chapter 18, Bragg stacks in Chapter 24 |
+| Thin films, antireflection coatings, DBR mirrors, and filters | Normal-incidence R·T spectra and a Fresnel check | [Oblique incidence in Chapter 18]({{ site.baseurl }}/en/angular-reflectance/), Bragg stacks in Chapter 24 |
 | Nanoparticle sensors, pigments, and Raman substrates | Q_sca and a monitor isolating the scattered field | 3D Mie scattering in Chapter 23 |
 | Radar cross section (RCS) and stealth | The same scattering-cross-section concept at microwave frequencies | — |
 | Comparisons with and without a structure | Reference subtraction | Two-run normalization in Chapter 05 |

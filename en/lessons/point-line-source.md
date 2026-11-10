@@ -65,7 +65,7 @@ Point and line sources are inputs to simulations, rather than devices. The sourc
 |---|---|---|
 | LED, OLED, and quantum-dot emission-layer models | Point source as one emitting molecule (electric dipole); pulse time t0 and directional distribution | 3D patterns in Chapter 10 and LDOS in Chapter 11 |
 | Antennas and RF devices | Point-source radiation patterns and line-source directionality (the simplest array-antenna model) | near2far in Chapter 10 |
-| Incident beams for fibers and grating couplers | A line source as a finite-width incident wave; conditions for nearly planar wavefronts | Plane waves in Chapter 17 and Gaussian beams in Chapter 19 |
+| Incident beams for fibers and grating couplers | A line source as a finite-width incident wave; conditions for nearly planar wavefronts | [Plane waves in Chapter 17]({{ site.baseurl }}/en/oblique-plane-wave/) and Gaussian beams in Chapter 19 |
 | Any flux measurement | A flux box surrounding the source and the surface-normal convention | The reference run in Chapter 03 |
 
 <h2 id="predict">2. Predict · Does equal power leave in all four directions?</h2>

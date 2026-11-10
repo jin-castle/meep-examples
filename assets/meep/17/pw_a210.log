@@ -1,0 +1,20 @@
+[meep_run] run_id wsl-local_20261108T193427Z_6f91f3  np=4  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-oblique-source/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 4 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-oblique-source/code/pw_run.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-oblique-source/runs --tag pw_a210 --resolution 50 --angle 210
+Using MPI version 4.1, 4 processes
+-----------
+Initializing structure...
+Splitting into 4 chunks by voxels
+time for choose_chunkdivision = 0.000198631 s
+Working in 2D dimensions.
+Computational cell is 14 x 10 x 0 with resolution 50
+time for set_epsilon = 0.0600817 s
+-----------
+Meep: using complex fields.
+MPB solved for frequency_1(-1.29904,-0.75,0) = 1 after 2 iters
+run 0 finished at t = 23.57 (2357 timesteps)
+RESULT {"res": 50.0, "angle": 210.0, "until": 23.56, "steps": 2357, "complex": true, "wall": 2.215944290161133, "kx": -1.2962090299839661, "ky": -0.7500000000000003, "k_mag": 1.4975506166443842, "angle_fit": -149.94588025292222, "k_expected": 1.5, "fft_peak_k": [-1.3333333333333333, -0.8333333333333333], "fft_peak_angle": -147.9946167919165, "backward_fraction_fft": 2.132904830639711e-08}
+
+Elapsed run time = 2.3126 s
+[meep_run] completed exit=0 wall=3.0s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261108T193427Z_6f91f3/run_manifest.json
+EXIT 0

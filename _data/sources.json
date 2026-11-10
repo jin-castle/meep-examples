@@ -163,6 +163,93 @@
     "contribution": {"ko": "N 25/50/100 비교와 스칼라 이론(1.22Δr_N, N², 1/√N) 대조, 해상도 사다리, 투과·입사 flux와 반구 far 전력 수지, DFT 지도와 시간 영역 GIF를 구성했습니다.", "en": "N 25/50/100 comparison against scalar theory (1.22Δr_N, N², 1/√N), a resolution ladder, transmitted/incident flux and hemisphere far-field power balance, DFT maps and a time-domain GIF."}
   },
   {
+    "id": "17",
+    "part": 17,
+    "url": "/oblique-plane-wave/",
+    "title": {
+      "ko": "원하는 방향의 평면파",
+      "en": "Plane waves in a chosen direction"
+    },
+    "files": [
+      "code/oblique_plane_wave.py"
+    ],
+    "references": [
+      {
+        "label": "Meep · Eigenmode Source / Planewaves",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Eigenmode_Source/#planewaves-in-homogeneous-media"
+      },
+      {
+        "label": "Meep · oblique-planewave.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/oblique-planewave.py"
+      }
+    ],
+    "contribution": {
+      "ko": "저장된 네 방향의 평면파 장과 파수 추정을 비교하고, 공간 위상·Bloch 경계·부분 검증의 의미를 설명했습니다. 상단 영상은 별도 해석적 개념도입니다.",
+      "en": "Saved fields and wavevector fits for four plane-wave directions, spatial phase and Bloch-boundary explanations, and explicit partial-validation limits. The intro is a separate analytic concept model."
+    }
+  },
+  {
+    "id": "18",
+    "part": 18,
+    "url": "/angular-reflectance/",
+    "title": {
+      "ko": "입사각에 따른 P 편광 반사율",
+      "en": "P-polarized reflection versus angle"
+    },
+    "files": [
+      "code/angular_reflectance.py"
+    ],
+    "references": [
+      {
+        "label": "Meep Basics · Angular Reflectance Spectrum",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#angular-reflectance-spectrum-of-a-planar-interface"
+      },
+      {
+        "label": "Meep · refl-angular.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/refl-angular.py"
+      }
+    ],
+    "contribution": {
+      "ko": "저장된 세 해상도 결과로 P 편광의 Fresnel 반사율·주파수별 입사각·전력 수지를 비교하고, 독립 실행 코드와 재생성 그림을 구성했습니다. 상단 영상은 방향을 보여 주는 개념도입니다.",
+      "en": "Three saved resolution levels compared with P-polarized Fresnel reflectance, frequency-dependent angles and power balance, with standalone code and reproducible plots. The intro is a directional concept diagram."
+    }
+  },
+  {
+    "id": "20",
+    "part": 20,
+    "url": "/material-dispersion/",
+    "title": {
+      "ko": "파장에 따른 재료의 분산",
+      "en": "Wavelength-dependent material response"
+    },
+    "files": [
+      "code/dispersive_quartz.py",
+      "code/material_dispersion.py"
+    ],
+    "references": [
+      {
+        "label": "Meep Basics · Reflectance Spectrum of a Planar Interface",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#reflectance-spectrum-of-a-planar-interface"
+      },
+      {
+        "label": "Meep · Materials / Material Dispersion",
+        "url": "https://meep.readthedocs.io/en/latest/Materials/#material-dispersion"
+      },
+      {
+        "label": "Meep · material-dispersion.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/material-dispersion.py"
+      },
+      {
+        "label": "Meep · refl-quartz.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/refl-quartz.py"
+      }
+    ],
+    "contribution": {
+      "ko": "석영 반사율의 해상도 검산과 Lorentz 모드의 단순 실수 주파수 추정 실패를 구분하고, 저장 데이터·출처 해시·재생성 그림을 공개했습니다. 상단 영상의 굴절률은 설명용입니다.",
+      "en": "Resolution checks for quartz reflectance separated from a failed simple real-frequency estimate of Lorentz-mode permittivity, with saved data, source hashes and reproducible plots. Intro refractive indices are illustrative."
+    }
+  },
+  {
     "id": "28", "part": 28, "url": "/parallel-waveguide-force/",
     "title": {"ko": "평행한 두 도파로 사이의 광력", "en": "Optical force between two parallel waveguides"},
     "files": ["code/parallel_waveguide_force.py", "code/parallel_waveguide_mpb.py"],

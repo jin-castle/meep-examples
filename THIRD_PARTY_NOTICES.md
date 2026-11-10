@@ -272,3 +272,31 @@ The site inventory is maintained in [`_data/sources.json`](_data/sources.json). 
 ## 7. Attribution corrections and permission requests
 
 For source/credit corrections or permission concerning independently authored project additions, contact [jin-castle through the repository](https://github.com/jin-castle/meep-examples), identifying the relevant page/file, proposed use and source evidence. No inquiry is needed to exercise permissions already granted by an applicable third-party license.
+
+## Added curriculum bridges · 17, 18, 20
+
+### 17 · Plane waves in a chosen direction
+
+- Local page: [한국어](https://jin-castle.github.io/meep-examples/oblique-plane-wave/) / [English](https://jin-castle.github.io/meep-examples/en/oblique-plane-wave/).
+- Implementations: `code/oblique_plane_wave.py`.
+- Upstream references: [Meep · Eigenmode Source / Planewaves](https://meep.readthedocs.io/en/latest/Python_Tutorials/Eigenmode_Source/#planewaves-in-homogeneous-media); [Meep · oblique-planewave.py (pinned)](https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/oblique-planewave.py).
+- Project additions: Saved fields and wavevector fits for four plane-wave directions, spatial phase and Bloch-boundary explanations, and explicit partial-validation limits. The intro is a separate analytic concept model.
+- 프로젝트 추가 작업: 저장된 네 방향의 평면파 장과 파수 추정을 비교하고, 공간 위상·Bloch 경계·부분 검증의 의미를 설명했습니다. 상단 영상은 별도 해석적 개념도입니다.
+
+### 18 · Reflection versus angle and polarization
+
+- Local page: [한국어](https://jin-castle.github.io/meep-examples/angular-reflectance/) / [English](https://jin-castle.github.io/meep-examples/en/angular-reflectance/).
+- Implementations: `code/angular_reflectance.py`.
+- Upstream references: [Meep Basics · Angular Reflectance Spectrum](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#angular-reflectance-spectrum-of-a-planar-interface); [Meep · refl-angular.py (pinned)](https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/refl-angular.py).
+- Project additions: Three saved resolution levels compared with P-polarized Fresnel reflectance, frequency-dependent angles and power balance, with standalone code and reproducible plots. The intro is a directional concept diagram.
+- 프로젝트 추가 작업: 저장된 세 해상도 결과로 P 편광의 Fresnel 반사율·주파수별 입사각·전력 수지를 비교하고, 독립 실행 코드와 재생성 그림을 구성했습니다. 상단 영상은 방향을 보여 주는 개념도입니다.
+
+### 20 · Wavelength-dependent material response
+
+- Local page: [한국어](https://jin-castle.github.io/meep-examples/material-dispersion/) / [English](https://jin-castle.github.io/meep-examples/en/material-dispersion/).
+- Implementations: `code/dispersive_quartz.py`, `code/material_dispersion.py`.
+- Upstream references: [Meep Basics · Reflectance Spectrum of a Planar Interface](https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#reflectance-spectrum-of-a-planar-interface); [Meep · Materials / Material Dispersion](https://meep.readthedocs.io/en/latest/Materials/#material-dispersion); [Meep · material-dispersion.py (pinned)](https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/material-dispersion.py); [Meep · refl-quartz.py (pinned)](https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/refl-quartz.py).
+- Project additions: Resolution checks for quartz reflectance separated from a failed simple real-frequency estimate of Lorentz-mode permittivity, with saved data, source hashes and reproducible plots. Intro refractive indices are illustrative.
+- 프로젝트 추가 작업: 석영 반사율의 해상도 검산과 Lorentz 모드의 단순 실수 주파수 추정 실패를 구분하고, 저장 데이터·출처 해시·재생성 그림을 공개했습니다. 상단 영상의 굴절률은 설명용입니다.
+
+These lessons reuse the recorded Meep 1.33.0 calculations, with per-file hashes under `assets/meep/17`, `18` and `20`; no new FDTD run is implied by this publication. Concept PNGs and 8-second intro videos are procedural explanatory graphics authored in `_tools/draw-curriculum.py`, not generative edits of numerical plots.

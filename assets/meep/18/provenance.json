@@ -1,0 +1,86 @@
+{
+  "chapter": 18,
+  "upstream_commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+  "solver": "Meep 1.33.0",
+  "data_generated": "2026-11-08",
+  "figures_redrawn": "2026-11-10",
+  "new_solver_runs": false,
+  "scope": "P polarization, air to lossless nondispersive n=3.5; input angle at lambda=0.8 um; fixed kx",
+  "source_files": [
+    {
+      "source": "e-refl-angular/runs/ang_r50.npz",
+      "published": "assets/meep/18/ang_r50.npz",
+      "sha256": "99e7f1cb4eccfe405a7206cbefe60f17e4eda2afb6ad2c3eea237e1dbca3a65b"
+    },
+    {
+      "source": "e-refl-angular/runs/ang_r100.npz",
+      "published": "assets/meep/18/ang_r100.npz",
+      "sha256": "d7ec004ebf75e1c8a12147cb0d1d04e38fe05fb2116bd244f476e0ed1978ad99"
+    },
+    {
+      "source": "e-refl-angular/runs/ang_r200.npz",
+      "published": "assets/meep/18/ang_r200.npz",
+      "sha256": "0f96744f2dacc0172d0604b1dd6bc96e59e67bacf9acece9792e54fb6c4748e8"
+    },
+    {
+      "source": "e-refl-angular/runs/ang_r50.json",
+      "published": "assets/meep/18/ang_r50.json",
+      "sha256": "03ffec4f8a76722b973414dddd250494832ed5d1c469440af0d0c0bed561904c"
+    },
+    {
+      "source": "e-refl-angular/runs/ang_r100.json",
+      "published": "assets/meep/18/ang_r100.json",
+      "sha256": "b4d91023047a78fd3222d09b7fd8afa0430e44d8f2edf1ba5a6c687758af0e94"
+    },
+    {
+      "source": "e-refl-angular/runs/ang_r200.json",
+      "published": "assets/meep/18/ang_r200.json",
+      "sha256": "0d5fe9fe5e140c0e28e7bcd9f657ca539bae48b063c2133428fa5dcca07ebaa3"
+    }
+  ],
+  "source_script": {
+    "path": "e-refl-angular/code/refl_repro.py",
+    "sha256": "1467fdbfdbfe069c161ab0eb1294714c17a4003c90e086a28c6188b710443447"
+  },
+  "source_verdict": {
+    "path": "e-refl-angular/reasoning/result.json",
+    "sha256": "d298c4a0779c2b74c6dd5b6942051d1e39f8381ee4236de6aa56461404c51fe0",
+    "published_copy": "source_result.json",
+    "transformation": "artifact paths made relative; scientific observations unchanged"
+  },
+  "adapted_script": {
+    "path": "code/angular_reflectance.py",
+    "sha256": "779da492c6b54854734a00def48c9687e75c93fc648609a7772acba0fb375cff"
+  },
+  "figures": [
+    {
+      "file": "01_layout.en.png",
+      "sha256": "7ba25800dc4f58b5e187bc341c0c3ed3e6db881e814fdb9fe09058d73f036eaf"
+    },
+    {
+      "file": "01_layout.ko.png",
+      "sha256": "31d712b93de11ec2fd0be6bc22c0314d371f8ba083cdca445bb88bb63d1536a7"
+    },
+    {
+      "file": "02_results.en.png",
+      "sha256": "cd62fd64ea523aa58f335f8a81d57ed28d308cbd85c4213f2604f2387cd3bfaf"
+    },
+    {
+      "file": "02_results.ko.png",
+      "sha256": "4590331ec273146ade324005cb0012934c211d69f37bb6585261f98567c8615d"
+    },
+    {
+      "file": "03_convergence.en.png",
+      "sha256": "2d9d93c574d06ae6b901255d42fae10e00049eeac4622f5e621b055705862b61"
+    },
+    {
+      "file": "03_convergence.ko.png",
+      "sha256": "105cc262b5fef6138840658299ab9b689438ad1aaef203c94bd3fb881a6501f4"
+    }
+  ],
+  "limitations": [
+    "Resolution ladder compares only input angles 0,45,75 degrees.",
+    "The energy residual remains about1.5 percent at grazing incidence; cause not isolated.",
+    "Existing plane-wave animation from the source project is not a boundary reflection movie and was not copied."
+  ]
+}

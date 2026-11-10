@@ -1,0 +1,13 @@
+{
+  "type": "analytic concept animation, not Meep field data",
+  "chapter": "20",
+  "authoring": "_tools/draw-curriculum.py",
+  "dimensions": [
+    1280,
+    720
+  ],
+  "fps": 30,
+  "duration_seconds": 8,
+  "loop_period_seconds": 4,
+  "model": "three illustrative wavelengths with n=1.43,1.47,1.54, phase continuous across x=0; not a fitted quartz model"
+}

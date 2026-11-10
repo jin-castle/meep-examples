@@ -1,0 +1,10 @@
+{% for path in site.data.curriculum.paths %}
+{% assign path_text = path[lang] %}
+<h3 class="path-subtitle" id="{{ path.id }}">{{ path_text.title | escape }}</h3>
+<p>{{ path_text.description | escape }}</p>
+<ol class="learning-path">
+  {% for step in path.steps %}{% assign step_text = step[lang] %}
+  <li><a href="{{ home_path | append: step.slug | append: '/' | relative_url }}"><span>{{ step.number | escape }}</span><strong>{{ step_text.title | escape }}</strong><small>{{ step_text.detail | escape }}</small></a></li>
+  {% endfor %}
+</ol>
+{% endfor %}
