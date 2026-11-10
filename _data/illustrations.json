@@ -54,5 +54,13 @@
   "09": {
     "ko": "픽셀로 바꾸는 빛의 길",
     "en": "Designing a path with pixels"
+  },
+  "16": {
+    "ko": "영역판과 셀 밖의 초점",
+    "en": "Zone plate focus outside the cell"
+  },
+  "28": {
+    "ko": "나란한 두 도파로 사이의 힘",
+    "en": "Force between two parallel waveguides"
   }
 }

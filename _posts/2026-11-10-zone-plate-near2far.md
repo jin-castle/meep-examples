@@ -1,5 +1,12 @@
 ---
-layout: post
+layout: lesson
+lesson_title: "셀 밖 200 µm의 초점은 어떻게 볼까요?"
+lesson_summary: "이진 위상 영역판의 초점을 원통좌표 near2far로 재고, 스칼라 이론(1.22·Δr_N, N², 1/√N)과 맞춰 봅니다. far-field 표본이 거칠면 에너지 수지가 어떻게 틀리는지 확인합니다."
+lesson_goals:
+  - "x 편광 평면파를 원통좌표의 m = −1 source 하나(Er와 −iEφ)로 쓴다."
+  - "near2far 면을 균일 매질 안에 두고 셀 밖 임의 선의 장을 읽는다."
+  - "회절 초점을 스칼라 이론과 far-field 전력 수지로 검사하고, 각 표본 함정을 설명한다."
+lesson_prerequisites: "13편 원통좌표와 m · 10편 near2far"
 date: 2026-11-10
 title: "Meep Example 16 · 꺼낸 빛을 모으기 — 원통좌표 near2far와 이진 위상 zone plate"
 title_en: "Meep Example 16 · Collecting the extracted light — near-to-far field in cylindrical coordinates and a binary-phase zone plate"
@@ -14,7 +21,7 @@ tags: [meep, fdtd, near2far, zone-plate, cylindrical, diffractive-lens, focusing
 image: /assets/meep/16/02_results.png
 excerpt: "a binary-phase glass zone plate (N = 25/50/100 zones, f = 200 µm, λ = 0.5 µm) on a glass substrate, illuminated from below by an x-polarized planewave written in cylindrical coordinates as m = −1 (Er − iEφ). The focal spot lies 200 µm outside the cell, so the fields there come from a near-to-far transformation (`add_near2far` + `get_farfields`) of the fields on the top and side faces of the cell."
 ---
-## TL;DR (English)
+<h2 id="observe">관찰하기: 셀 밖 200 µm의 초점</h2>
 
 ![hero]({{ site.baseurl }}/assets/meep/16/02_results.png)
 
@@ -46,7 +53,9 @@ X선·EUV 현미경의 대물렌즈가 영역판이고(굴절 렌즈가 없는 �
 | 평판 회절 렌즈·metalens | near2far 초점 프로파일, 셀 밖 PSF | 07편 meta-atom, metalens 주제 페이지 |
 | LED·레이저 패키지 광학 | 꺼낸 빛의 far-field 분포 | 14편 광추출 |
 
-## 2. 물리 한 페이지
+<h2 id="understand">2. 원리 이해하기: 영역판의 설계식과 near2far</h2>
+
+{% include chapter-illustration.html %}
 
 n번째 영역 가장자리에서 초점까지의 거리가 f + nλ/2가 되게 하면
 
@@ -66,7 +75,7 @@ $$
 
 **가정과 유효 범위**: 원통좌표 m = −1(x 편광 평면파), 무손실 유리, 셀 밖은 진공, far 점은 φ = 0 평면(r–z).
 
-### 결과 보기 전에 맞춰보기
+<h2 id="predict">예측하기: 초점의 위치·세기와 에너지 수지</h2>
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -96,7 +105,7 @@ $$
 
 **강의 노트북과의 차이**: 공식 노트북(2024-02)은 N 25만 돌리고 그림만 저장했다. 이 글은 N 세 값과 해상도 사다리, 수지 monitor를 더했다.
 
-## 4. 코드 따라가기
+<h2 id="run">4. 실행하기: 코드 따라가기</h2>
 
 ### ① 파라미터 — 영역 반지름
 
@@ -157,7 +166,7 @@ I = |Ex|² + |Ey|² + |Ez|²
 ```
 무엇: 초점면의 r 스캔과 축의 z 스캔을 0.1 µm 간격으로 받는다. 왜: 초점 폭이 1 µm쯤이라 0.1 µm면 FWHM을 잴 수 있다. 틀리면: 점 수가 비용이다(점당 0.1–0.9 s) — far 점이 near 면 가까이 가면 더 느려진다.
 
-## 5. 결과
+<h2 id="interpret">5. 결과 해석하기</h2>
 
 ![results]({{ site.baseurl }}/assets/meep/16/02_results.png)
 *(a) 축 위 z 스캔(r 0), N 25/50/100. (b) 초점면 r 스캔. ▽는 공식 문서 그림의 첫 영점을 눈으로 읽은 값. (c) 피크 |E|²와 첫 영점 r₀ vs N — 점선 N², 빨강 점선 1.22·Δr_N.*
@@ -222,7 +231,7 @@ I = |Ex|² + |Ey|² + |Ez|²
 | far 간격 0.1 → 0.02 | FWHM 소수점 안정 | FWHM_r |
 | 반구 θ 표본 91 → 1801 | 전력 비 → 1 | P_far/P_top |
 
-## 8. 전체 코드
+<h2 id="reference">8. 전체 코드와 참고 자료</h2>
 
 `code/zone_plate_near2far.py` — 인자 `--num-zones --resolution --far-res --hemi --anim`. PROJ-013 재현용 monitor(flux·반구·DFT·녹화)가 들어 있다.
 
@@ -371,7 +380,7 @@ if rec is not None:
 {% endhighlight %}
 </details>
 
-## 확인 질문
+<h2 id="check">이해 확인하기</h2>
 
 1. 홀수 영역의 유리 두께 0.5 µm가 왜 π 위상인가? (§2)
 2. near2far 면을 기판 안에 두면 안 되는 이유는? (§4 ⑤)

@@ -1,5 +1,12 @@
 ---
-layout: post
+layout: lesson
+lesson_title: "두 도파로 사이에서 빛이 미는 힘은 얼마일까요?"
+lesson_summary: "평행한 두 실리콘 도파로 사이의 광력을 Maxwell 응력 텐서로 재고, MPB의 모드 주파수 미분과 교차검증합니다. ω를 고정할 때와 k를 고정할 때 곡선이 왜 달라지는지 봅니다."
+lesson_goals:
+  - "add_force와 진공 속 ForceRegion 선 두 개로 힘을 재고 전송 전력으로 정규화한다."
+  - "z로 무한한 도파로를 2D 단면 + Bloch k_point로 다루고, match_frequency로 고정 주파수의 k를 찾는다."
+  - "응력 텐서를 Povinelli 2005 Eq.1과 교차검증하고, 선 monitor가 수렴하지 않는 좁은 틈을 가려낸다."
+lesson_prerequisites: "04편 EigenModeSource와 flux 정규화 · 12편 Harminv와 모드"
 date: 2026-11-10
 title: "Meep Example 28 · 평행한 두 도파로 사이의 광력 — Maxwell 응력 텐서, MPB Eq.1, 고정 ω와 고정 k"
 title_en: "Meep Example 28 · Optical force between two parallel waveguides — the Maxwell stress tensor, the MPB Eq.1 route, and fixed-ω versus fixed-k"
@@ -14,7 +21,7 @@ tags: [meep, fdtd, optical-force, stress-tensor, mpb, eigenmode, waveguide, povi
 image: /assets/meep/28/02_results.png
 excerpt: "two parallel silicon strip waveguides (n 3.45, square a×a, gap s). The coupled modes split into a symmetric and an anti-symmetric branch, and a change of the gap shifts their frequency; that shift is a force. Meep measures the force directly with the Maxwell stress tensor (`add_force`) and MPB gives it from the mode frequency derivative, F = −(1/ω)(dω/ds)|_k U (Eq.1 of Povinelli 2005)."
 ---
-## TL;DR (English)
+<h2 id="observe">관찰하기: 두 도파로 사이의 힘</h2>
 
 ![hero]({{ site.baseurl }}/assets/meep/28/02_results.png)
 
@@ -46,7 +53,9 @@ excerpt: "two parallel silicon strip waveguides (n 3.45, square a×a, gap s). Th
 | cavity optomechanics | dω/ds (optomechanical coupling g = dω/dx) | 12편 공진기 Q |
 | 광 트위저·입자 결합 | 응력 텐서 monitor 배치 | 03편 산란장 |
 
-## 2. 물리 한 페이지
+<h2 id="understand">2. 원리 이해하기: 모드 주파수의 미분이 힘이다</h2>
+
+{% include chapter-illustration.html %}
 
 k가 보존된 채 간격 s를 단열적으로 바꾸면
 
@@ -67,7 +76,7 @@ P = v_g U/L이 전송 전력이다. 음수가 인력. 주파수를 고정하고 
 
 **가정과 유효 범위**: 2D 단면 + Bloch k_z(z로 무한), 무손실 n 3.45, 진공 clad, 한 모드만 여기. 논문은 고정 a/λ = 0.2, 공식 예제는 고정 k_z = 0.5.
 
-### 결과 보기 전에 맞춰보기
+<h2 id="predict">예측하기: 힘의 부호와 두 방법의 일치</h2>
 
 | 물리량 | 내 예측 | 근거 |
 |--------|---------|------|
@@ -98,7 +107,7 @@ P = v_g U/L이 전송 전력이다. 음수가 인력. 주파수를 고정하고 
 
 **강의 노트북과의 차이**: 공식 노트북은 res 30, s 0.1 step 0.1이고 `data:`(힘) 줄은 저장되어 있지 않다. 이 글은 res 40, step 0.05, 두 조건(k·f 고정).
 
-## 4. 코드 따라가기
+<h2 id="run">4. 실행하기: 코드 따라가기</h2>
 
 ### ① 파라미터 — 무엇을 고정하는가
 
@@ -161,7 +170,7 @@ F_over_P = -force / flux                      # (F/L)(ac/P)
 ```
 무엇: 부호 약속(음수 = 인력)을 맞추고, MPB의 k(s)로 Eq.1을 쓴다. 왜: 두 독립 방법이 맞아야 monitor 배치를 믿을 수 있다. 틀리면: 고정 f에서 예제의 식 −(1/f)(df/ds)/v_g를 그대로 쓰면 df = 0이라 힘이 0이 된다.
 
-## 5. 결과
+<h2 id="interpret">5. 결과 해석하기</h2>
 
 ![results]({{ site.baseurl }}/assets/meep/28/02_results.png)
 *(a) 예제 조건(k_z 0.5): Meep 응력 텐서(점) vs MPB Eq.1(선, res 64; △ res 128 검산). (b) 논문 조건(f 0.2): Meep(채운 점) vs 논문 Fig.1(c)를 눈으로 읽은 값(○ anti-symmetric, + symmetric) vs MPB find_k Eq.1(선). (c) Meep − 논문. symmetric은 ±0.04, anti-symmetric은 s/a ≤ 0.2에서 +0.1~+0.2.*
@@ -228,7 +237,7 @@ F_over_P = -force / flux                      # (F/L)(ac/P)
 | Hz 편광(TE) 모드 | 다른 곡선 | 부호 전환 위치 |
 | a/λ 0.15·0.25 | 결합 세기 변화 | s 0.5의 힘 |
 
-## 8. 전체 코드
+<h2 id="reference">8. 전체 코드와 참고 자료</h2>
 
 `code/parallel_waveguide_force.py` — 한 (s, mode, fixed) 조합을 계산해 JSON으로 저장한다. sweep은 s 0.05~1.0, mode odd/even, fixed k/f를 바깥에서 돈다. MPB 경로는 `parallel-wvgs-mpb.py`에 `find_k`를 더한 것(PROJ-013 `mpb_run.py`).
 
@@ -296,7 +305,7 @@ if mp.am_master():
 {% endhighlight %}
 </details>
 
-## 확인 질문
+<h2 id="check">이해 확인하기</h2>
 
 1. symmetric 모드의 힘이 음수인 이유를 주파수의 간격 의존으로 설명하면? (§2)
 2. 고정 f에서 MPB Eq.1을 쓸 때 예제의 식 −(1/f)(df/ds)/v_g가 왜 0을 주는가? (§4 ⑦)

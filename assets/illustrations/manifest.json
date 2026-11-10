@@ -1,10 +1,10 @@
 {
   "createdAt": "2026-10-24T08:12:05.914895+00:00",
-  "tool": "Built-in imagegen; one edit invocation per generated variant",
+  "tool": "Built-in imagegen; one edit invocation per generated variant; chapters 16 and 28: matplotlib drawing (_tools/draw-illustrations.py), no generative model",
   "purpose": "Explanatory concept illustrations, not numerical simulation results",
   "variantContract": "XX.{ko|en}.{light|dark}.png",
-  "chapters": 14,
-  "assetCount": 56,
+  "chapters": 16,
+  "assetCount": 64,
   "scientificResults": "Original numerical plots, GIFs, fields and densities were not generatively edited.",
   "assets": [
     {
@@ -777,6 +777,102 @@
       "sha256": "7cf178bed960f6a32baa430ef01dc19c1db411dada551f98a6deef075dd446b8",
       "generationPrompt": "Scientific educational website illustration, landscape 5:3, light theme. Re-render attached geometry with polished restrained orthographic 3D engineering shading; preserve exact camera and scientific structure. Broad cropped infinite blue dielectric thin film on cropped PEC mirror, horizontal amber dipole inside film. Teal arrows leave upward into air; amber lateral arrows remain guided along film. No finite chip edges, no fabricated extraction texture or numerical efficiency. Matte blue #76b6da, pale neutral plane, amber #e3a331, teal #0087ad, pure white #ffffff backdrop. Replace all reference labels with only title \"박막 밖으로 나오는 빛\" top left, caption \"개념도 · 계산 결과 아님\" bottom left, slate #526579. No other labels/numbers/logo/watermark. Mobile-readable type, generous safe margins, no fake data plot.",
       "review": "Inspected original master; retained exact PNG"
+    },
+    {
+      "file": "16.ko.light.png",
+      "chapter": "16",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1620,
+      "height": 972,
+      "bytes": 246103,
+      "sha256": "dbd37ed893bf6aa09239dd1355c0e374b8fac2001f89956ed325079232005bdf",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "16.ko.dark.png",
+      "chapter": "16",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1620,
+      "height": 972,
+      "bytes": 236871,
+      "sha256": "c134ca3168b106f209e58efa5709740a682182c02fa5e53ea49630d318c1ae0c",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "16.en.light.png",
+      "chapter": "16",
+      "locale": "en",
+      "theme": "light",
+      "width": 1620,
+      "height": 972,
+      "bytes": 249873,
+      "sha256": "597216c3ad544cfc1b4665d6bccd448829f29f9d93c476a5763daadf966a35d4",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "16.en.dark.png",
+      "chapter": "16",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1620,
+      "height": 972,
+      "bytes": 240778,
+      "sha256": "0a43cb7e94a89ebd9f32a02d81672c119cb19f9e028d2acee25cdbd499ab7c35",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "28.ko.light.png",
+      "chapter": "28",
+      "locale": "ko",
+      "theme": "light",
+      "width": 1620,
+      "height": 972,
+      "bytes": 84080,
+      "sha256": "e6e459ee69f8ad55ca5a82724b3110fc258f6ce2278b496f609535c81fee41a2",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "28.ko.dark.png",
+      "chapter": "28",
+      "locale": "ko",
+      "theme": "dark",
+      "width": 1620,
+      "height": 972,
+      "bytes": 94509,
+      "sha256": "4df04b22e25589bb4de1db9b0911326f479eef957f23a0bdf04b7d4bf5a6c839",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "28.en.light.png",
+      "chapter": "28",
+      "locale": "en",
+      "theme": "light",
+      "width": 1620,
+      "height": 972,
+      "bytes": 95253,
+      "sha256": "33f6f83f58ecf105600021211b1af32088c2c4bd57cd4e6aca58a2afdba2bf48",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
+    },
+    {
+      "file": "28.en.dark.png",
+      "chapter": "28",
+      "locale": "en",
+      "theme": "dark",
+      "width": 1620,
+      "height": 972,
+      "bytes": 105897,
+      "sha256": "e46ddbc997df2a3f95cefed1f44555d1c93fb6ce32c7afedfe8c8c461565b2a3",
+      "generationPrompt": "Not generated: drawn programmatically by _tools/draw-illustrations.py (matplotlib, orthographic shaded apparatus drawing; title and caption only; same palette as the generated chapters).",
+      "review": "Rendered from code; re-run the script to reproduce exactly"
     }
   ]
 }
