@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "title": "Optical-beams-MEEP Gaussian beam reflection and refraction",
+  "meep_version": "1.33.0",
+  "optbeam_version": "2.1.2",
+  "model": "2D FDTD, s polarization, n1=1.54, n2=1.00",
+  "source_code_unchanged": true,
+  "numerical_defaults_unchanged": true,
+  "resolution_pixels_per_a": 184.8,
+  "dense_medium_pixels_per_wavelength": 10,
+  "runtime_a_over_c": 10,
+  "vacuum_optical_periods": 120,
+  "mpi_processes": 1,
+  "threads": 1,
+  "critical_angle_deg": 40.49266149200838,
+  "cases": [
+    {
+      "incidence_deg": 30,
+      "behavior": "reflection and refraction",
+      "central_plane_wave_snell_deg": 50.35388885302628,
+      "measured_local_phase_angle_deg": 50.66184010623955,
+      "local_phase_angle_error_deg": 0.3079512532132753,
+      "harmonic_fit_relative_l2_residual": 0.0008222789318154763,
+      "elapsed_seconds": 22.879783203999978,
+      "wavefront": "planar30_wavefront.png",
+      "mean_squared_field": "planar30_intensity.png",
+      "animation": "planar30.gif"
+    },
+    {
+      "incidence_deg": 45,
+      "behavior": "central incidence exceeds critical angle; reflected beam and near-interface field",
+      "measured_reflected_direction_from_x_deg": 90.85074682046765,
+      "central_plane_wave_reflected_direction_from_x_deg": 90,
+      "harmonic_fit_relative_l2_residual": 0.00020694190276210927,
+      "elapsed_seconds": 21.290379265999945,
+      "wavefront": "planar45_wavefront.png",
+      "mean_squared_field": "planar45_intensity.png",
+      "animation": "planar45.gif"
+    }
+  ],
+  "wavefront_quantity": "Original final instantaneous Ez(t), shared signed scale",
+  "mean_squared_field_quantity": "abs(monochromatic Ez phasor)^2/2 fitted over final two periods, shared linear scale",
+  "original_e2_s_quantity": "Real instantaneous Ez(t)^2; not cycle mean",
+  "limitations": [
+    "No mesh or PML convergence sweep",
+    "Finite beam has an angular spectrum; no exact zero-transmission claim",
+    "No measured R/T efficiency, flux monitor or incident-only subtraction",
+    "Length a has no fixed physical mapping",
+    "Phase-gradient angle is a local diagnostic"
+  ],
+  "doi": "https://doi.org/10.5281/zenodo.5211251",
+  "license": "MIT; preserve source/LICENSE"
+}

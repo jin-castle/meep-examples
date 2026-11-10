@@ -190,7 +190,7 @@ Axial symmetry is common in emitting, resonant, and focusing devices. Cylindrica
 | Application | Quantity used here | What comes next |
 |---|---|---|
 | Extraction from LED, OLED, and micro-LED mesas | On-axis dipoles (m = ±1), off-axis m series, open near2far surfaces | Chapter 14: extraction efficiency |
-| Microdisk and microring lasers, biosensors | Azimuthal m as whispering-gallery order; radial 1D runs for z-invariant rings | Comparison with chapter 12; chapter 26: defect cavities |
+| Microdisk and microring lasers, biosensors | Azimuthal m as whispering-gallery order; radial 1D runs for z-invariant rings | Comparison with chapter 12; [chapter 26: defect cavities]({{ site.baseurl }}/en/photonic-crystal-cavity/) |
 | Axisymmetric lenses, zone plates, nanoantennas | m = ±1 circularly polarized incidence and axisymmetric far fields | Chapter 16: zone plates |
 | Fiber cross-sections and circular grating couplers | Cylindrical guided modes (m), radial PML | — |
 

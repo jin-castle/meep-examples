@@ -1,0 +1,75 @@
+{
+  "event_id": "e-mode-decomposition-20261108",
+  "outcome": "refuted",
+  "observations": [
+    {
+      "metric": "R_rel_diff_vs_notebook_max",
+      "baseline": null,
+      "probe": null,
+      "value": 0.20447552447552436,
+      "threshold": 0.001,
+      "pass": false
+    },
+    {
+      "metric": "steps_match",
+      "baseline": null,
+      "probe": null,
+      "value": 1,
+      "threshold": 1,
+      "pass": true
+    },
+    {
+      "metric": "flux_vs_coeff_rel_gap_max_res25",
+      "baseline": null,
+      "probe": null,
+      "value": 0.23232420186130545,
+      "threshold": 0.3,
+      "pass": true
+    },
+    {
+      "metric": "loglog_slope_Rcoeff",
+      "baseline": null,
+      "probe": null,
+      "value": -1.2780572311657203,
+      "threshold": -2,
+      "pass": false
+    },
+    {
+      "metric": "R_plus_T_min",
+      "baseline": null,
+      "probe": null,
+      "value": 0.9935571391342715,
+      "threshold": 0.98,
+      "pass": true
+    },
+    {
+      "metric": "gap_ratio_res50_over_res25",
+      "baseline": 0.23232420186130545,
+      "probe": 66.35386647872191,
+      "value": 285.60892901865776,
+      "threshold": 0.5,
+      "pass": false
+    }
+  ],
+  "interpretation": "노트북 반사율 재현 최대 상대 2.0e-01, 두 방법 차 최대 0.23(res 25) → 66.35(res 50), 비 285.61; 기울기 -1.28.",
+  "limitations": "Lt 16(문서) 미계산, mode_coeff_phase.py 미포함. 두 방법 차의 물리적 원인(비기본 모드·방사)은 분해하지 않음.",
+  "context_scope": "Meep 공식 예제 mode-decomposition @ f7811d4, 2D ε 12 선형 테이퍼 1→2 µm, λ 6.67",
+  "created_at": "2026-11-08T12:30:00+09:00",
+  "artifacts": [
+    {
+      "path": "e-mode-decomposition/runs/md_r25.json",
+      "sha256": "6077ba7d80feba73a390c50d761edc39c91c95146fada29efc251a16d09cdcd4",
+      "role": "baseline"
+    },
+    {
+      "path": "e-mode-decomposition/runs/md_r50.json",
+      "sha256": "364a0d096ea8d7550e042000ea67da743b39ed178f97d2a050c79a9839efb8fd",
+      "role": "probe"
+    },
+    {
+      "path": "e-mode-decomposition/runs/summary.json",
+      "sha256": "bfa653442d5b2ad71aa6590b63451f867cd712e0d9fbdf206616253a85e77fac",
+      "role": "result"
+    }
+  ]
+}

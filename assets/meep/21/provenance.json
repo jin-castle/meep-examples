@@ -1,0 +1,134 @@
+{
+  "chapter": 21,
+  "meep_version": "1.33.0",
+  "source_project": "e-polarization-grating",
+  "source_commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+  "new_simulations": false,
+  "scope": "Saved anisotropic liquid-crystal grating results: circular-input order selection and a separately evaluated linear-input analytic discrepancy.",
+  "upstream": [
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/polarization_grating.py"
+  ],
+  "artifacts": [
+    {
+      "file": "01_field.en.png",
+      "sha256": "d34208e4dc65ea8191033d0c8f390e6872370a40cb7f67431728471b8af5e3e0",
+      "bytes": 286154,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "01_field.ko.png",
+      "sha256": "6ab81b600adad3ab6153170f1882b77841a4acbfc7e356809405903680a926a8",
+      "bytes": 286034,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "02_orders.en.png",
+      "sha256": "08c06e7718b5c016075bab9423602ed4b71823d71cfbe01dbb9a786b07ad35bc",
+      "bytes": 49660,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "02_orders.ko.png",
+      "sha256": "57272816e3a3f0746816a81ee626069d375531ff74b5132b3c87a16bdc5b3d8c",
+      "bytes": 41772,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "03_validation.en.png",
+      "sha256": "85f3234512469b74e72d7cf3978128a6e0a2f20cc9e5dcd4b73a383fb66a96e9",
+      "bytes": 84479,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "03_validation.ko.png",
+      "sha256": "a623c0eab7a01216d8e04b3d79e286691b15b00f54273d0ac6eb4aaff2ef8b60",
+      "bytes": 74607,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "circ_p05_c1.json",
+      "sha256": "29a1d3ba60d6a68b361a92299731ee9bf0d6a3cf17df1f825ce4cc14dd6cb567",
+      "bytes": 550,
+      "source": "runs/circ_p05_c1.json"
+    },
+    {
+      "file": "circ_p05_c1.npz",
+      "sha256": "ae38a0a1866ca5346cdb154bf6567360fc87e4911d42ef6631b4e7866ef70be8",
+      "bytes": 1840246,
+      "source": "runs/circ_p05_c1.npz"
+    },
+    {
+      "file": "circ_p05_cm1.json",
+      "sha256": "6708ee2c84ffed7d210e4b38a8a446f0e5a731b964a373121780743781887ded",
+      "bytes": 551,
+      "source": "runs/circ_p05_cm1.json"
+    },
+    {
+      "file": "circ_p10_c1.json",
+      "sha256": "f40eddf481676465177aad47b8b8b87fb2f7d6fee464b263422b158a1aa238b6",
+      "bytes": 548,
+      "source": "runs/circ_p10_c1.json"
+    },
+    {
+      "file": "circ_p10_cm1.json",
+      "sha256": "2bfcc5e8170fedca919dfa373430c83244020dce4a763fab835e865c0753e0c5",
+      "bytes": 550,
+      "source": "runs/circ_p10_cm1.json"
+    },
+    {
+      "file": "pg_r30.json",
+      "sha256": "bb20c113363a19664396f791d82b4219fd52dd931ff16d00c009d836b47f82e0",
+      "bytes": 28313,
+      "source": "runs/pg_r30.json"
+    },
+    {
+      "file": "pg_r50.json",
+      "sha256": "c84d3f64866c701db4cce26cfa6a68d9f28455c778848512a38152ce3f651e87",
+      "bytes": 28319,
+      "source": "runs/pg_r50.json"
+    },
+    {
+      "file": "pg_r50_trace.npz",
+      "sha256": "0275f6f5c8cf63a3ec4ebca83056e3e3693f896ec96628fce115ed828753edaf",
+      "bytes": 183811,
+      "source": "runs/pg_r50_trace.npz"
+    },
+    {
+      "file": "plot_saved_results.py",
+      "sha256": "5cf7ba70cde751ce51266b71684a9aaf7cf2ac39d210c76782fde158f2f44fae",
+      "bytes": 3969
+    },
+    {
+      "file": "source_result.json",
+      "sha256": "afca06881e1bba6497647723bb7db2b48dc64a45fa381b984dcd7d78feb4d2d2",
+      "bytes": 5931,
+      "source": "reasoning/result.json",
+      "source_sha256": "8dcfc24cb12141efe0b6f0ef63cef8d3795169318cae985bfdbed0bf47ea407d",
+      "adaptation": "Artifact paths made relative to the source project; scientific results and verdict preserved."
+    },
+    {
+      "file": "summary.json",
+      "sha256": "88f3f0de55886ada7ddf7291472cc6a412353aee3840ba97d378adab956399b2",
+      "bytes": 3210,
+      "source": "runs/summary.json"
+    },
+    {
+      "file": "verified_metrics.json",
+      "sha256": "7c0457f1c08302be42e52aa0aa38818db3fc2a41460326889c04b847b2b0ee7a",
+      "bytes": 1270
+    },
+    {
+      "file": "../../../code/polarization_grating.py",
+      "source": "code/pg_circ.py",
+      "source_sha256": "b8247cd8cad087548d22b4b4580a564f9e0aa1c7212ba604f3c6bce2c9e1fdd1",
+      "sha256": "577bf88ba3b26a6084ee76379769f06aae2e3eb5589894a5ae8667da276c90b4",
+      "bytes": 4655,
+      "adaptation": "Standalone argparse CLI, validation before Meep import, external animation helper removed, explicit Meep-version output; original simulation geometry, sources, monitors and stopping settings preserved."
+    }
+  ],
+  "limitations": [
+    "Circular order selection is demonstrated; its incident-power efficiency is about 94.29%, not 100%.",
+    "The separate linear-input analytic comparison misses its 0.03 criterion at resolution 50 (maximum difference 0.06119).",
+    "The original aggregate verdict is INCONCLUSIVE; no voltage response, material dispersion, or fabrication errors are modeled."
+  ]
+}

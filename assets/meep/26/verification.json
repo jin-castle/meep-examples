@@ -1,0 +1,27 @@
+{
+  "lesson": 26,
+  "verified_on": "2026-11-11",
+  "solver_executed": false,
+  "checks": [
+    {
+      "check": "syntax, bilingual 7-section contract, embedded code equality, asset links, Liquid/TeX, hashes",
+      "status": "passed",
+      "hash_count": 34
+    },
+    {
+      "check": "archived energy balances, dense peak, selected band edges, Harminv Q, completed-run logs",
+      "status": "passed"
+    },
+    {
+      "check": "independent re-fit of archived transmission samples with existing scipy",
+      "status": "passed",
+      "f0": 0.23445009427911842,
+      "Q": 370.3948305618151
+    }
+  ],
+  "not_run": [
+    "New electromagnetic field solve",
+    "Jekyll integration build (root owner)",
+    "New resolution/time/monitor experiments"
+  ]
+}

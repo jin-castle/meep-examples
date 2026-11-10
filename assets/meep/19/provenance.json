@@ -1,0 +1,111 @@
+{
+  "chapter": 19,
+  "publication_date": "2026-11-11",
+  "source_run_date": "2026-10-23",
+  "meep_version": "1.33.0",
+  "upstream_project": "Optical-beams-MEEP",
+  "authors": [
+    "Daniel Kotik",
+    "Jörg Götte"
+  ],
+  "commit": "ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+  "doi": "https://doi.org/10.5281/zenodo.5211251",
+  "license": "MIT; Copyright (c) 2018 Daniel Kotik",
+  "new_simulations": false,
+  "distinct_from_beam_lab": "Reuses the explicitly attributed original-code Gaussian archive; does not use or relabel Beam Lab data.",
+  "model": {
+    "polarization": "2D s (Ez)",
+    "n1": 1.54,
+    "n2": 1.0,
+    "vacuum_frequency_c_over_a": 12,
+    "cell_a": [
+      5,
+      5
+    ],
+    "pml_a": 0.25,
+    "resolution_per_a": 184.8,
+    "runtime_a_over_c": 10,
+    "waist_parameter_a": 0.1061032953945969,
+    "waist_position_x_over_a": -0.7957747154594768,
+    "source_x_over_a": -2.15,
+    "source_y_extent_a": [
+      -1,
+      1
+    ],
+    "incidence_deg": [
+      30,
+      45
+    ],
+    "length_unit": "a has no assigned micrometre mapping"
+  },
+  "references": [
+    "https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de",
+    "https://danielkotik.github.io/Optical-beams-MEEP/",
+    "https://doi.org/10.5281/zenodo.5211251"
+  ],
+  "artifacts": [
+    {
+      "file": "planar30-fields.npz",
+      "sha256": "69bb7b5bc3187e86f886045a6cb078028ab4e208275bd43f792d41cd1d40a5b2",
+      "source": "archived optical-beams-run/planar30/fields.npz",
+      "source_sha256": "219adc6a96990a0a102959fcb5051d6c425cee48da43f9edff9040ac530fd51d",
+      "adaptation": "Lossless extraction of native x,y,epsilon,phasor arrays only; no resampling, no new solve. Phasor comes from the final-two-period cos/sin/DC fit."
+    },
+    {
+      "file": "planar45-fields.npz",
+      "sha256": "738ea855d0d3d70eac292566e0c8d594c6e840a44bd5986c9121e8c9424c8391",
+      "source": "archived optical-beams-run/planar45/fields.npz",
+      "source_sha256": "81b87d6b54aa0ba49f5bee38197befd3894ea3f65c44b4b8affc4ccb14b96951",
+      "adaptation": "Lossless extraction of native x,y,epsilon,phasor arrays only; no resampling, no new solve. Phasor comes from the final-two-period cos/sin/DC fit."
+    },
+    {
+      "file": "archived-results.json",
+      "sha256": "3c82d791cb6889e910e7c9a9b3aa811517fe831c5f673099aa093509f1612ddb"
+    },
+    {
+      "file": "validation.json",
+      "sha256": "c22532ef902cf676cb0b218f51821b70a18f4d9e89ba709368fa71233916e4eb"
+    },
+    {
+      "file": "Optical-beams-MIT-LICENSE.txt",
+      "sha256": "d9d819a62fe5fbdead36488e8582b5f4f83f4d6ee008a16b10f0d17b25ffbbf5"
+    },
+    {
+      "file": "../../../code/gaussian_beam.py",
+      "sha256": "be75a11af2ad51d3b358cd883e0af26db576900ae94e8a24d6cb098fea25f9e3"
+    },
+    {
+      "file": "../../../code/optical_beams/run_original.py",
+      "sha256": "d840a865e76b956f8f1f39efa4a4099308a8bc4c1373ea1968ee27fec6a8d09a",
+      "archived_working_copy_sha256": "a040b8ef4f200f4276418e1ba6af32363bbd32f274566f8fadbee5ade6d8279c",
+      "line_endings": "Published repository file uses LF; archived Windows working-copy hash is retained separately. Code content is unchanged."
+    },
+    {
+      "file": "../../../code/optical_beams/source/scripts/Gauss_2d/Gauss2d.py",
+      "sha256": "477184e390cd400bfdc90f629284fd1f36b76648e6422da2ec793cba4f66445c",
+      "archived_working_copy_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf",
+      "line_endings": "Published repository file uses LF; archived Windows working-copy hash is retained separately. Code content is unchanged."
+    },
+    {
+      "file": "plot_saved_results.py",
+      "sha256": "2533bf2df3ed82e1d96e0d3d5433786db719d133a0292b7549c50d94715370e5"
+    },
+    {
+      "file": "gaussian-cycle-mean.png",
+      "sha256": "c310fbebbabffd9f5e55e6aeed19565a310bd6229c99a5a131942d953db451b8"
+    },
+    {
+      "file": "gaussian-signed-phase.png",
+      "sha256": "c0d3798fb01ddb2e40b4e8cd68b8abb430e5b1d8c44a19638580c6b49e60a854"
+    },
+    {
+      "file": "verified_metrics.json",
+      "sha256": "eab12b59007c9321c7906b1d0513f00f6e06ab8cbcc07c9627675b7b66d4ee05"
+    }
+  ],
+  "source_archive": {
+    "publication_path": "/optical-beams/archive/",
+    "run_folder": "optical-beams-run, archived 2026-10-23",
+    "summary_note": "archived-results.json is an unchanged historical summary; image and animation filenames in it refer to that archive, not this chapter directory."
+  }
+}

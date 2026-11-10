@@ -10,9 +10,9 @@ const ids = ['scope', 'reuse', 'code', 'images', 'sources', 'third-party'];
 const notices = read('THIRD_PARTY_NOTICES.md');
 const pages = ['rights-and-licenses.md', 'en/rights-and-licenses.md'];
 
-assert.equal(sources.length, 21, 'All 19 lessons and both topics must be attributed');
+assert.equal(sources.length, 26, 'All 24 lessons and both topics must be attributed');
 assert.equal(new Set(sources.map(source => source.id)).size, sources.length, 'Unique source anchors');
-assert.deepEqual(sources.filter(source => source.part).map(source => source.part), [...Array.from({ length: 14 }, (_, i) => i + 1), 16, 17, 18, 20, 28]);
+assert.deepEqual(sources.filter(source => source.part).map(source => source.part), [...Array.from({ length: 14 }, (_, i) => i + 1), 16, 17, 18, 19, 20, 21, 25, 26, 27, 28]);
 const posts = fs.readdirSync(path.join(root, '_posts')).filter(file => file.endsWith('.md')).map(file => ({ file, text: read('_posts/' + file) }));
 for (const source of sources) {
   for (const lang of ['ko', 'en']) {
@@ -54,7 +54,7 @@ for (const layout of ['lesson', 'topic']) {
 assert.match(read('LICENSES/Meep-GPL-2.0.txt'), /Version 2, June 1991/);
 assert.match(read('code/optical_beams/source/LICENSE'), /Copyright \(c\) 2018 Daniel Kotik/);
 assert(notices.includes('GSAP Standard License'));
-console.log('PASS local: 21 attributed lessons/topics, bilingual policies, notices, license copy and shared links');
+console.log('PASS local: 26 attributed lessons/topics, bilingual policies, notices, license copy and shared links');
 
 if (process.argv.includes('--live')) {
   const base = 'https://jin-castle.github.io/meep-examples';

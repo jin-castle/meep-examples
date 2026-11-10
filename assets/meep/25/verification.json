@@ -1,0 +1,21 @@
+{
+  "lesson": 25,
+  "verified_on": "2026-11-11",
+  "solver_executed": false,
+  "checks": [
+    {
+      "check": "syntax, bilingual 7-section contract, embedded code equality, asset links, Liquid/TeX, hashes",
+      "status": "passed",
+      "hash_count": 15
+    },
+    {
+      "check": "archived density integral, peak location, method errors, failed-box metric, completed-run logs",
+      "status": "passed"
+    }
+  ],
+  "not_run": [
+    "New electromagnetic field solve",
+    "Jekyll integration build (root owner)",
+    "New resolution/time/monitor experiments"
+  ]
+}

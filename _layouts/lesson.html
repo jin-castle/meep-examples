@@ -41,15 +41,17 @@
         </article>
         {% include source-credit.html %}
         <nav class="lesson-pagination" aria-label="{{ ui.pagination }}">
-          {% assign before_part = page.part | minus: 1 %}{% assign after_part = page.part | plus: 1 %}
+          {% assign before_post = nil %}{% assign after_post = nil %}
           {% assign ordered_posts = site.posts | concat: site.pages | sort: 'part' %}
           {% for post in ordered_posts %}
             {% assign post_lang = post.lang | default: 'ko' %}
-            {% if post_lang == lang and post.layout == 'lesson' %}
-            {% if post.part == before_part %}<a href="{{ post.url | relative_url }}"><span>{{ ui.previous }} {{ post.part }}</span>{{ post.lesson_title | default: post.title | escape }}</a>{% endif %}
-            {% if post.part == after_part %}<a href="{{ post.url | relative_url }}"><span>{{ ui.next }} {{ post.part }}</span>{{ post.lesson_title | default: post.title | escape }} →</a>{% endif %}
+            {% if post_lang == lang and post.layout == 'lesson' and post.part %}
+              {% if post.part < page.part %}{% assign before_post = post %}{% endif %}
+              {% if post.part > page.part and after_post == nil %}{% assign after_post = post %}{% endif %}
             {% endif %}
           {% endfor %}
+          {% if before_post %}<a href="{{ before_post.url | relative_url }}"><span>{{ ui.previous }} {{ before_post.part }}</span>{{ before_post.lesson_title | default: before_post.title | escape }}</a>{% endif %}
+          {% if after_post %}<a href="{{ after_post.url | relative_url }}"><span>{{ ui.next }} {{ after_post.part }}</span>{{ after_post.lesson_title | default: after_post.title | escape }} →</a>{% endif %}
         </nav>
         <footer class="lesson-footer"><a href="{{ home_path | relative_url }}">Meep Examples</a> · {{ ui.footer }} · {% include rights-link.html %}</footer>
       </main>

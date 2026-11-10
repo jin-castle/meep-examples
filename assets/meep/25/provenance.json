@@ -1,0 +1,181 @@
+{
+  "lesson": 25,
+  "slug": "absorbed-power",
+  "published_on": "2026-11-11",
+  "source_project": "e-absorbed-power",
+  "hash_algorithm": "SHA-256",
+  "fields_recomputed_for_publication": false,
+  "upstream": {
+    "repository": "https://github.com/NanoComp/meep",
+    "commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+    "files": [
+      "python/examples/absorbed_power_density.py"
+    ],
+    "license": "GPL-2.0-or-later",
+    "license_text": "../../../LICENSES/Meep-GPL-2.0.txt"
+  },
+  "upstreamrefs": [
+    "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#absorbed-power-density-map-of-a-lossy-cylinder",
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/absorbed_power_density.py"
+  ],
+  "artifacts": [
+    {
+      "file": "source_check.png",
+      "source_path": "_blog/posts/e-absorbed-power/source_check.png",
+      "sha256": "ec0ca19fc4a7324f730f3f4d7ad3c28d67fd69ef58239e165ad798cf42090314",
+      "copied_verbatim": true
+    },
+    {
+      "file": "forward_dft.png",
+      "source_path": "_blog/posts/e-absorbed-power/forward_dft.png",
+      "sha256": "ddb481f22be53a95cd1792a2a94c62faf643a77975832f100250b2d4cb9a9dcf",
+      "copied_verbatim": true
+    },
+    {
+      "file": "resolution_ladder.png",
+      "source_path": "_blog/posts/e-absorbed-power/resolution_ladder.png",
+      "sha256": "fdf11769bcf402b67b876293180ed6cd029981bd61e12074562730b19c8d92d1",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r50.json",
+      "source_path": "e-absorbed-power/runs/abs_r50.json",
+      "sha256": "c0ab0ca42e3e6429b4258604e607de8c9d37026285f0f24f0638a3fd5bb99821",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r50.log",
+      "source_path": "e-absorbed-power/runs/abs_r50.log",
+      "sha256": "d8740eb953ee4537a937cab48cdb3c538518f97b1eebe632b565bdb8ad39d52d",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r100.json",
+      "source_path": "e-absorbed-power/runs/abs_r100.json",
+      "sha256": "ffcd80df82d8c78ed033234bdd56ea4012b8fb01dcba6cb0edbbabee5c4bd1e9",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r100.log",
+      "source_path": "e-absorbed-power/runs/abs_r100.log",
+      "sha256": "0e7d1a58a5dca807de035b10d38638143069df96404b010119a0214408adc9f9",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r200.json",
+      "source_path": "e-absorbed-power/runs/abs_r200.json",
+      "sha256": "f998fd72631625cf45ea75a4a92e56778f1fd3a772624871a60dac53ec08e1f4",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r200.log",
+      "source_path": "e-absorbed-power/runs/abs_r200.log",
+      "sha256": "00a1efadbe7b12197e90f30ca426fa2c662811c1a5317a430512a0529e07fa4e",
+      "copied_verbatim": true
+    },
+    {
+      "file": "abs_r100.npz",
+      "source_path": "e-absorbed-power/runs/abs_r100.npz",
+      "sha256": "22667579582f3170e54ff984b97fded7a9454a2acdd02d8410864c6959790925",
+      "copied_verbatim": true
+    },
+    {
+      "file": "summary.json",
+      "source_path": "e-absorbed-power/runs/summary.json",
+      "sha256": "99660f9e04a247dc43f4b8ab56ad2f2e17e34c78f154b76c677ce1fc6d6504f8",
+      "copied_verbatim": true
+    },
+    {
+      "file": "aggregate_verdict.json",
+      "source_path": "e-absorbed-power/reasoning/result.json",
+      "sha256": "8beb312988adc3d3b74da9e6e21e772432c85cd98404628553ee41170ed33e32",
+      "copied_verbatim": true
+    },
+    {
+      "file": "archived_abs_repro.py",
+      "source_path": "e-absorbed-power/code/abs_repro.py",
+      "sha256": "c5c4d7ac4334be300bdf8c5155958ffbfc3cfb5f982c6b523adc8b1c46d6f0d3",
+      "copied_verbatim": true
+    },
+    {
+      "file": "upstream_absorbed_power_density.py",
+      "source_path": "e-absorbed-power/upstream/absorbed_power_density.py",
+      "sha256": "ccfb293729c694edfde597865fc3c84121efb5707cdaa47e043fca498b8a7ca3",
+      "copied_verbatim": true
+    },
+    {
+      "file": "../../../code/absorbed_power.py",
+      "sha256": "981398178980f5414442c6fe4b84f5297b25e8bda6b60a2a1448f66c860392c8",
+      "role": "standalone adapted executable; not rerun for publication"
+    },
+    {
+      "file": "verification.json",
+      "sha256": "e8477b4e32e01b8159c20f601bc194bb08143463d7556abb39084224a1d5c710",
+      "role": "publication checks; no electromagnetic solver execution"
+    }
+  ],
+  "solver": "Meep 1.33 series (archived project records); lesson metadata 1.33.0",
+  "added_work": [
+    "Bilingual seven-stage lesson with predictions and worked numerical checks",
+    "Standalone argparse CLI with solver import after help parsing",
+    "Copied original plots, numeric data, execution logs and upstream source snapshots",
+    "Hash-verified publication without rerunning electromagnetic fields"
+  ],
+  "plot_notes": [
+    "Plots retain original Korean labels with translated captions/tables.",
+    "Per-panel field color scales do not support cross-panel power comparisons.",
+    "Concept art and header animation are explanatory, separate from numeric field results."
+  ],
+  "source_event_id": "e-absorbed-power-20261108",
+  "source_verdict": "supported, with the registered large-versus-small box check failing",
+  "conditions": {
+    "dimensions": "2D Ez; cylinder infinite along z",
+    "cylinder_radius_um": 1,
+    "material": "meep.materials.SiO2",
+    "epsilon_at_frequency": [
+      2.132084213667966,
+      0.0009852435550391251
+    ],
+    "frequency_per_um": 1,
+    "cell_um": [
+      8,
+      8
+    ],
+    "pml_um": 1,
+    "source_x_um": -3,
+    "source_y_extent_um": 8,
+    "source": "GaussianSource; fwidth 0.1 f; is_integrated=True",
+    "symmetry": "Mirror(Y)",
+    "resolution_px_per_um": [
+      50,
+      100,
+      200
+    ],
+    "after_sources": 100,
+    "final_time": 200,
+    "small_box_half_width_um": 1,
+    "large_box_half_width_um": 2,
+    "mpi_processes": 4
+  },
+  "verified_scope": {
+    "method_error_res50_100_200": [
+      0.03655583047552377,
+      0.009717329487145654,
+      0.002494141499665731
+    ],
+    "res200_over_res50_error_ratio": 0.06822828170558735,
+    "res100_volume_power": 0.1312042249802394,
+    "res100_small_box_power": 0.13249169039006858,
+    "res100_large_box_relative_discrepancy": 0.03380285516250252,
+    "large_box_registered_threshold": 0.02,
+    "large_box_check_passed": false
+  },
+  "limitations": [
+    "One material and one wavelength; not a spectral material validation.",
+    "The large-box monitor test failed; its discrepancy cause was not isolated.",
+    "Grid refinement decreases the observed two-method discrepancy but does not prove the sole cause.",
+    "Power follows the source/DFT normalization and is not directly a watt value.",
+    "Q_abs and Q_scat are diameter-normalized 2D cross sections, not absorption fractions or cavity Q.",
+    "The original optional field_anim helper is omitted from the standalone CLI; no new thermal simulation is performed."
+  ]
+}

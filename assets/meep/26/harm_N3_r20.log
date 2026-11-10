@@ -1,0 +1,44 @@
+[meep_run] run_id wsl-local_20261107T014252Z_159013  np=2  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 2 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code/holey_repro.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/runs --mode harminv -N 3 --tag N3_r20
+Using MPI version 4.1, 2 processes
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000173852 s
+Working in 2D dimensions.
+Computational cell is 12.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0052474 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.2344541534600598, -0.00031478123673809406, 372.4080823393098, 5.81214303345559, -3.7631074859258673-4.429450156702866i, 4.306880606721742e-09+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 3, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.2344541534600598, "Q": 372.4080823393098, "amp": 5.81214303345559, "err": 4.306880606721742e-09}], "wall": 2.0489578247070312}
+
+Elapsed run time = 2.0756 s
+[meep_run] completed exit=0 wall=3.4s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261107T014252Z_159013/run_manifest.json
+EXIT 0

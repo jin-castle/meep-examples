@@ -1,0 +1,57 @@
+[meep_run] run_id wsl-local_20261108T151738Z_1ed5c3  np=4  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-absorbed-power/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 4 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-absorbed-power/code/abs_repro.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-absorbed-power/runs --tag abs_r100 --resolution 100 --anim
+Using MPI version 4.1, 4 processes
+-----------
+Initializing structure...
+Halving computational cell along direction y
+Splitting into 4 chunks by voxels
+time for choose_chunkdivision = 0.000442329 s
+Working in 2D dimensions.
+Computational cell is 8 x 8 x 0 with resolution 100
+time for set_epsilon = 0.0579597 s
+-----------
+Meep progress: 41.475/200.0 = 20.7% done in 4.0s, 15.3s to go
+on time step 8295 (time=41.475), 0.000482232 s/step
+Meep progress: 78.22/200.0 = 39.1% done in 8.0s, 12.5s to go
+on time step 15644 (time=78.22), 0.0005443 s/step
+Meep progress: 118.08500000000001/200.0 = 59.0% done in 12.0s, 8.3s to go
+on time step 23617 (time=118.085), 0.000501722 s/step
+Meep progress: 157.97/200.0 = 79.0% done in 16.0s, 4.3s to go
+on time step 31594 (time=157.97), 0.000501489 s/step
+Meep progress: 199.565/200.0 = 99.8% done in 20.0s, 0.0s to go
+on time step 39913 (time=199.565), 0.000481277 s/step
+run 0 finished at t = 200.0 (40000 timesteps)
+-----------
+Initializing structure...
+Halving computational cell along direction y
+Splitting into 4 chunks by voxels
+time for choose_chunkdivision = 0.000324278 s
+Working in 2D dimensions.
+Computational cell is 8 x 8 x 0 with resolution 100
+     cylinder, center = (0,0,0)
+          radius 1, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0923274 s
+lorentzian susceptibility: frequency=9.67865, gamma=0.0806554
+-----------
+Meep progress: 21.68/200.0 = 10.8% done in 4.0s, 32.9s to go
+on time step 4336 (time=21.68), 0.00092268 s/step
+Meep progress: 45.230000000000004/200.0 = 22.6% done in 8.0s, 27.4s to go
+on time step 9047 (time=45.235), 0.000849199 s/step
+Meep progress: 70.22/200.0 = 35.1% done in 12.0s, 22.2s to go
+on time step 14045 (time=70.225), 0.000800332 s/step
+Meep progress: 95.995/200.0 = 48.0% done in 16.0s, 17.3s to go
+on time step 19200 (time=96), 0.00077605 s/step
+Meep progress: 121.48/200.0 = 60.7% done in 20.0s, 12.9s to go
+on time step 24297 (time=121.485), 0.000784865 s/step
+Meep progress: 147.78/200.0 = 73.9% done in 24.0s, 8.5s to go
+on time step 29557 (time=147.785), 0.000760501 s/step
+Meep progress: 173.99/200.0 = 87.0% done in 28.0s, 4.2s to go
+on time step 34800 (time=174), 0.000762978 s/step
+run 0 finished at t = 200.0 (40000 timesteps)
+RESULT {"res": 100.0, "t_end": 200.0, "timesteps": 40000, "P_dft": 0.1312042249802394, "P_box": 0.13249169039006858, "err": 0.009717329487145654, "P_box_big": 0.1369702878105592, "P_scat": 25.025436314416964, "I0": 6.252562087047802, "Q_abs": 0.010594991984527867, "Q_scat": 2.001214539417147, "eps_SiO2": [2.132084213667966, 0.0009852435550391251], "wall": 53.518980979919434}
+
+Elapsed run time = 53.7157 s
+[meep_run] completed exit=0 wall=54.5s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261108T151738Z_1ed5c3/run_manifest.json
+EXIT 0

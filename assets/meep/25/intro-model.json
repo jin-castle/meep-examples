@@ -1,0 +1,13 @@
+{
+  "type": "analytic concept animation, not Meep field data",
+  "chapter": "25",
+  "authoring": "_tools/draw-curriculum.py",
+  "dimensions": [
+    1280,
+    720
+  ],
+  "fps": 30,
+  "duration_seconds": 8,
+  "loop_period_seconds": 4,
+  "model": "2D cylinder cross-section and square inward-flux contour; finite display extrusion only. Traveling incident phase and pulsing interior illustrate absorption, not a computed temperature or field."
+}

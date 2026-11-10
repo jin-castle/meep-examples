@@ -58,7 +58,7 @@ Ring resonators are widely used in silicon photonics. Resonant frequency, Q, and
 | Wavelength filters, add-drop multiplexers (WDM), ring modulators | Resonant frequency and FSR (channel spacing), Q (linewidth and passband) | Chapter 30: GDS rings |
 | Biological and gas sensors | Resonance shift Δf relative to linewidth f/Q sets a detection scale | Chapter 13: disk resonators |
 | Microring and microdisk lasers, frequency combs | Q and mode volume (threshold), FSR (comb spacing) | Chapter 22: nonlinearity |
-| Measurement procedures for resonant structures | Harminv for f and Q, narrowband excitation for one mode, solve_cw for steady state | Chapter 26: photonic-crystal cavities |
+| Measurement procedures for resonant structures | Harminv for f and Q, narrowband excitation for one mode, solve_cw for steady state | [Chapter 26: photonic-crystal cavities]({{ site.baseurl }}/en/photonic-crystal-cavity/) |
 </details>
 
 <h2 id="predict">2. Predict the results</h2>

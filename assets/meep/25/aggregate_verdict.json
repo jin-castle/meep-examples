@@ -1,0 +1,80 @@
+{
+ "event_id": "e-absorbed-power-20261108",
+ "outcome": "supported",
+ "observations": [
+  {
+   "metric": "P_dft_rel_diff_vs_notebook",
+   "baseline": null,
+   "probe": null,
+   "value": 5.1222979362544916e-08,
+   "threshold": 0.001,
+   "pass": true
+  },
+  {
+   "metric": "P_box_rel_diff_vs_notebook",
+   "baseline": null,
+   "probe": null,
+   "value": 2.7557813639404794e-05,
+   "threshold": 0.001,
+   "pass": true
+  },
+  {
+   "metric": "timesteps_res100",
+   "baseline": null,
+   "probe": null,
+   "value": 40000,
+   "threshold": 40000,
+   "pass": true
+  },
+  {
+   "metric": "two_method_err_res100",
+   "baseline": null,
+   "probe": null,
+   "value": 0.009717329487145654,
+   "threshold": 0.015,
+   "pass": true
+  },
+  {
+   "metric": "big_vs_small_box_rel_diff_res100",
+   "baseline": null,
+   "probe": null,
+   "value": 0.03380285516250252,
+   "threshold": 0.02,
+   "pass": false
+  },
+  {
+   "metric": "err_ratio_res200_over_res50",
+   "baseline": 0.03655583047552377,
+   "probe": 0.002494141499665731,
+   "value": 0.06822828170558735,
+   "threshold": 0.5,
+   "pass": true
+  }
+ ],
+ "interpretation": "노트북 흡수 전력 dft 5.1e-08·box 2.8e-05 상대 차, 두 방법 차 0.97 %(res 100), 큰/작은 상자 차 3.4 %, 두 방법 차 해상도 비 0.07, 흡수 최대 x 0.98.",
+ "limitations": "한 파장·한 재료. 큰 상자 차의 원인(종료 시간 100 뒤 남은 에너지 등) 미시험.",
+ "context_scope": "Meep 공식 예제 absorbed_power_density @ f7811d4, 2D SiO2 원기둥 r 1, λ 1, Ez",
+ "created_at": "2026-11-08T12:30:00+09:00",
+ "artifacts": [
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-absorbed-power\\runs\\abs_r50.json",
+   "sha256": "c0ab0ca42e3e6429b4258604e607de8c9d37026285f0f24f0638a3fd5bb99821",
+   "role": "baseline"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-absorbed-power\\runs\\abs_r200.json",
+   "sha256": "f998fd72631625cf45ea75a4a92e56778f1fd3a772624871a60dac53ec08e1f4",
+   "role": "probe"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-absorbed-power\\runs\\summary.json",
+   "sha256": "99660f9e04a247dc43f4b8ab56ad2f2e17e34c78f154b76c677ce1fc6d6504f8",
+   "role": "result"
+  },
+  {
+   "path": "C:\\Users\\bgs43\\Desktop\\paper_repro\\e-absorbed-power\\runs\\abs_r100.json",
+   "sha256": "ffcd80df82d8c78ed033234bdd56ea4012b8fb01dcba6cb0edbbabee5c4bd1e9",
+   "role": "notebook_check"
+  }
+ ]
+}

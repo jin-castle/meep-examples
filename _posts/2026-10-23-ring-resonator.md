@@ -57,7 +57,7 @@ excerpt: "post 11 measured how much a dipole emits between two mirrors. On a chi
 | 파장 필터, add-drop 다중화기(WDM), ring 변조기 | 공진 주파수와 FSR(채널 간격), Q(선폭 = 통과 대역) | 30편 GDS ring |
 | 바이오·가스 센서 | 공진 이동 Δf를 선폭 f/Q로 나눈 것이 검출 한계 | 13편 디스크 공진기 |
 | microring·microdisk 레이저, 주파수 빗(comb) | Q와 모드 부피(threshold), FSR(빗 간격) | 22편 비선형 |
-| 모든 공진 구조의 측정 절차 | Harminv로 f·Q, 좁은 대역으로 모드 하나, solve_cw로 정상상태 | 26편 photonic crystal cavity |
+| 모든 공진 구조의 측정 절차 | Harminv로 f·Q, 좁은 대역으로 모드 하나, solve_cw로 정상상태 | [26편 photonic crystal cavity]({{ site.baseurl }}/photonic-crystal-cavity/) |
 </details>
 
 <h2 id="predict">2. 결과를 예측해 보기</h2>

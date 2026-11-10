@@ -215,6 +215,36 @@
     }
   },
   {
+    "id": "19",
+    "part": 19,
+    "url": "/gaussian-beam/",
+    "title": {
+      "ko": "Gaussian 빔도 하나의 각도로 설명할 수 있을까요?",
+      "en": "Can one angle describe a Gaussian beam?"
+    },
+    "files": [
+      "code/gaussian_beam.py"
+    ],
+    "references": [
+      {
+        "label": "Optical-beams-MEEP · pinned archive",
+        "url": "https://github.com/DanielKotik/Optical-beams-MEEP/tree/ca145119e5bd0f0804d846ea42e35e4c3daa91de"
+      },
+      {
+        "label": "Optical-beams-MEEP · software citation",
+        "url": "https://doi.org/10.5281/zenodo.5211251"
+      },
+      {
+        "label": "Meep · Python interface",
+        "url": "https://meep.readthedocs.io/en/latest/Python_User_Interface/"
+      }
+    ],
+    "contribution": {
+      "ko": "유한한 폭의 빔이 계면에서 반사·굴절하는 모습을 보고, 실제 복소 장의 위상으로 굴절 방향을 검산합니다. 저장된 계산 자료와 출처 해시, 실행 코드, 한·영 해설을 구성했습니다. 상단 영상은 설명용 개념 애니메이션입니다.",
+      "en": "See a finite beam reflect and refract, then check its direction using the phase of saved complex fields. Saved-run data, source hashes, executable code and bilingual explanations are provided. The intro is an analytic concept animation."
+    }
+  },
+  {
     "id": "20",
     "part": 20,
     "url": "/material-dispersion/",
@@ -247,6 +277,114 @@
     "contribution": {
       "ko": "석영 반사율의 해상도 검산과 Lorentz 모드의 단순 실수 주파수 추정 실패를 구분하고, 저장 데이터·출처 해시·재생성 그림을 공개했습니다. 상단 영상의 굴절률은 설명용입니다.",
       "en": "Resolution checks for quartz reflectance separated from a failed simple real-frequency estimate of Lorentz-mode permittivity, with saved data, source hashes and reproducible plots. Intro refractive indices are illustrative."
+    }
+  },
+  {
+    "id": "21",
+    "part": 21,
+    "url": "/polarization-grating/",
+    "title": {
+      "ko": "편광을 바꾸면 빛이 꺾이는 방향도 바뀔까요?",
+      "en": "Can polarization reverse the diffraction direction?"
+    },
+    "files": [
+      "code/polarization_grating.py"
+    ],
+    "references": [
+      {
+        "label": "Meep · Polarization grating",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/#diffraction-spectrum-of-liquid-crystal-polarization-gratings"
+      },
+      {
+        "label": "Meep · polarization_grating.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/polarization_grating.py"
+      }
+    ],
+    "contribution": {
+      "ko": "회전하는 액정 광축을 유전율 텐서로 만들고, 원편광에 따른 ±1차 전력과 전체 투과율을 구분합니다. 저장된 계산 자료와 출처 해시, 실행 코드, 한·영 해설을 구성했습니다. 상단 영상은 설명용 개념 애니메이션입니다.",
+      "en": "Build a rotating liquid-crystal axis with a permittivity tensor, and distinguish ±1-order power from total transmission. Saved-run data, source hashes, executable code and bilingual explanations are provided. The intro is an analytic concept animation."
+    }
+  },
+  {
+    "id": "25",
+    "part": 25,
+    "url": "/absorbed-power/",
+    "title": {
+      "ko": "물체 안에서 사라진 빛은 어떻게 셀까요?",
+      "en": "How do we count light absorbed inside an object?"
+    },
+    "files": [
+      "code/absorbed_power.py"
+    ],
+    "references": [
+      {
+        "label": "Meep Basics · Absorbed power density",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Basics/#absorbed-power-density-map-of-a-lossy-cylinder"
+      },
+      {
+        "label": "Meep · absorbed_power_density.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/absorbed_power_density.py"
+      }
+    ],
+    "contribution": {
+      "ko": "복소 E·D로 구한 체적 흡수와 경계로 들어오는 flux를 비교하고, 해상도와 모니터 크기의 영향을 확인합니다. 저장된 계산 자료와 출처 해시, 실행 코드, 한·영 해설을 구성했습니다. 상단 영상은 설명용 개념 애니메이션입니다.",
+      "en": "Compare volume absorption from complex E and D with inward boundary flux, then test resolution and monitor size. Saved-run data, source hashes, executable code and bilingual explanations are provided. The intro is an analytic concept animation."
+    }
+  },
+  {
+    "id": "26",
+    "part": 26,
+    "url": "/photonic-crystal-cavity/",
+    "title": {
+      "ko": "구멍 사이에 갇힌 빛의 Q는 어떻게 잴까요?",
+      "en": "How do we measure Q for light trapped between holes?"
+    },
+    "files": [
+      "code/photonic_crystal_cavity.py"
+    ],
+    "references": [
+      {
+        "label": "Meep · Resonant modes in a waveguide cavity",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/"
+      },
+      {
+        "label": "Meep · holey-wvg-cavity.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/holey-wvg-cavity.py"
+      },
+      {
+        "label": "Meep · holey-wvg-bands.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/holey-wvg-bands.py"
+      }
+    ],
+    "contribution": {
+      "ko": "광결정 도파로의 결함 모드를 찾고, Harminv·촘촘한 투과 스캔·감쇠 종료 조건으로 공진을 교차검산합니다. 저장된 계산 자료와 출처 해시, 실행 코드, 한·영 해설을 구성했습니다. 상단 영상은 설명용 개념 애니메이션입니다.",
+      "en": "Find a defect mode and cross-check resonance with Harminv, a dense transmission scan and decay stopping criteria. Saved-run data, source hashes, executable code and bilingual explanations are provided. The intro is an analytic concept animation."
+    }
+  },
+  {
+    "id": "27",
+    "part": 27,
+    "url": "/mode-decomposition/",
+    "title": {
+      "ko": "모드 전력과 전체 flux가 다르면 무엇을 볼까요?",
+      "en": "What if modal power and total flux disagree?"
+    },
+    "files": [
+      "code/mode_decomposition.py"
+    ],
+    "references": [
+      {
+        "label": "Meep · Mode decomposition",
+        "url": "https://meep.readthedocs.io/en/latest/Python_Tutorials/Mode_Decomposition/"
+      },
+      {
+        "label": "Meep · mode-decomposition.py (pinned)",
+        "url": "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/mode-decomposition.py"
+      }
+    ],
+    "contribution": {
+      "ko": "넓어지는 도파로에서 모드 분해와 기준장 차감을 비교하고, 음의 반사율과 해상도 검산 실패를 진단합니다. 저장된 계산 자료와 출처 해시, 실행 코드, 한·영 해설을 구성했습니다. 상단 영상은 설명용 개념 애니메이션입니다.",
+      "en": "Compare modal decomposition with reference subtraction in a widening guide, and diagnose negative reflectance and a failed refinement check. Saved-run data, source hashes, executable code and bilingual explanations are provided. The intro is an analytic concept animation."
     }
   },
   {

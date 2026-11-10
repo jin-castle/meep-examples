@@ -1,0 +1,13 @@
+{
+  "type": "analytic concept animation, not Meep field data",
+  "chapter": "27",
+  "authoring": "_tools/draw-curriculum.py",
+  "dimensions": [
+    1280,
+    720
+  ],
+  "fps": 30,
+  "duration_seconds": 8,
+  "loop_period_seconds": 4,
+  "model": "2D guide widens from w1=1 to w2=2 through a taper. Input-side modal monitor and separate forward/backward direction markers; no power fractions or solved modes encoded."
+}

@@ -96,3 +96,28 @@
   note: "재료 안에서 λ/n만큼 짧아지는 세 파동의 위상 연속성을 보여 주는 해석적 개념 애니메이션입니다. 굴절률 1.43·1.47·1.54는 설명용이며 석영의 피팅값이나 Meep 결과가 아닙니다. 색별 위상은 비교를 위해 같은 주기로 재생하며 실제 주파수·속도 비율을 나타내지 않습니다. 실제 석영 스펙트럼은 본문에서 비교합니다."
   label_en: "Wavelength-dependent phase inside a material"
   note_en: "An analytic concept loop showing continuous phase and wavelength shortened to λ/n inside a material. Indices 1.43, 1.47 and 1.54 are illustrative, not a quartz fit or Meep results. Phases are synchronized for comparison; playback does not represent relative physical frequencies or speeds. The lesson compares the actual quartz spectrum."
+"19":
+  label: "Gaussian 빔의 폭과 휘어진 파면"
+  note: "자유 공간의 근축 Gaussian 모형으로 빔의 허리와 퍼지는 파면을 그린 개념 애니메이션입니다. 실제 Meep 장이나 계면 계산이 아닙니다. 본문은 별도의 저장된 계면 계산을 다룹니다."
+  label_en: "Gaussian waist and curved wavefronts"
+  note_en: "A paraxial free-space Gaussian concept animation of the waist and spreading wavefronts. This is not Meep field data or an interface calculation; the lesson uses separate saved interface runs."
+"21":
+  label: "회전하는 액정 광축과 편광 회절"
+  note: "액정 막의 광축이 y를 따라 yz 면에서 회전하는 설명용 개념 영상입니다. 원편광과 가능한 ±1차 방향을 보이며 회절각은 확대했습니다. 화살표는 전력 비율이나 실제 Meep 장이 아닙니다."
+  label_en: "Rotating liquid-crystal axes and polarization diffraction"
+  note_en: "A concept loop of liquid-crystal axes rotating in yz along y, with circular incidence and possible ±1 orders. Diffraction angles are exaggerated; arrows encode neither power fractions nor Meep fields."
+"25":
+  label: "원통 안의 흡수와 경계로 들어오는 전력"
+  note: "2D 원통과 안쪽 flux 적분의 개념 애니메이션입니다. 높이·밝기·진행 속도는 설명용이며 실제 Meep 장이나 온도 계산이 아닙니다. 체적 흡수와 flux 검산은 본문의 저장된 결과로 확인합니다."
+  label_en: "Cylinder absorption and inward boundary power"
+  note_en: "A concept animation of a 2D cylinder and inward flux integration. Height, brightness and speed are illustrative, not Meep fields or temperature. Saved numerical results compare volume absorption and boundary power."
+"26":
+  label: "여섯 공기 구멍 사이의 결함 모드"
+  note: "각 측면 3개 구멍, 반지름 0.36a와 중앙 간격 1.4a를 사용한 2D 구조의 개념 애니메이션입니다. 높이와 중앙 진동은 표시용이며 실제 Meep 장·Q·감쇠 적합이 아닙니다."
+  label_en: "A defect mode between six air holes"
+  note_en: "A concept loop of a 2D guide with three holes per side, radius 0.36a and central center-to-center spacing 1.4a. Display height and central oscillation are illustrative, not Meep fields, Q or a decay fit."
+"27":
+  label: "넓어지는 도파로와 입력 쪽 모드 모니터"
+  note: "폭 1에서 2로 넓어지는 2D 도파로와 좁은 입력 쪽 모드 모니터를 그린 개념 애니메이션입니다. 화살표와 점은 방향만 나타내며 실제 모드·전력·Meep 장이 아닙니다."
+  label_en: "A widening guide and its input-side modal monitor"
+  note_en: "A concept loop of a 2D guide widening from width 1 to 2, with a modal monitor on the narrow input side. Arrows and markers show direction, not solved modes, power or Meep fields."

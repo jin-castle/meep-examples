@@ -1,0 +1,16 @@
+{
+  "critical_angle_deg": 40.49266149200838,
+  "snell_30_deg": 50.35388885302628,
+  "local_phase_angle_30_deg": 50.66184010623955,
+  "difference_deg": 0.3079512532132753,
+  "reflected_phase_direction_from_positive_x_deg": {
+    "30": 119.97571438340682,
+    "45": 90.85074682046765
+  },
+  "native_shape": [
+    924,
+    924
+  ],
+  "new_simulations": false,
+  "method": "Intensity-weighted local phasor phase gradient; not a beam centroid or Poynting-flux direction"
+}

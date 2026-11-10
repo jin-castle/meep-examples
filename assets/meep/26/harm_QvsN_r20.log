@@ -1,0 +1,321 @@
+[meep_run] run_id wsl-local_20261107T014257Z_75a159  np=2  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 2 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code/holey_repro.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/runs --mode harminv -N 2 4 6 8 10 12 14 --tag QvsN_r20
+Using MPI version 4.1, 2 processes
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000242987 s
+Working in 2D dimensions.
+Computational cell is 10.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.00876022 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.23402785591609995, -0.001873414126331729, 62.46025708537339, 4.626071403187295, -2.8205983810423074-3.6667098876579782i, 4.878944945764665e-09+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 2, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.23402785591609995, "Q": 62.46025708537339, "amp": 4.626071403187295, "err": 4.878944945764665e-09}], "wall": 1.3182775974273682}
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000400733 s
+Working in 2D dimensions.
+Computational cell is 14.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0115697 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.23453222951292557, -7.309230626444653e-05, 1604.3564740206211, 6.010010943696087, -3.9652583651937428-4.516299108850938i, 2.576221240596582e-09+0.0i
+harminv0:, 0.32033807609164056, -0.0028107772418878144, 56.98389600530751, 0.08939759676278608, -0.07611080367904735+0.04689430530769396i, 1.502436338647887e-06+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 4, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.23453222951292557, "Q": 1604.3564740206211, "amp": 6.010010943696087, "err": 2.576221240596582e-09}, {"f": 0.32033807609164056, "Q": 56.98389600530751, "amp": 0.08939759676278608, "err": 1.502436338647887e-06}], "wall": 1.554832935333252}
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000189997 s
+Working in 2D dimensions.
+Computational cell is 18.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 3 objects not shown)...
+time for set_epsilon = 0.0200006 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.23454147742668946, -2.0401847891353682e-05, 5748.044948567828, 6.042373498065564, -3.995722044938123+4.532602213929719i, 2.949496705083841e-09+0.0i
+harminv0:, 0.32588522994893326, -0.0018520948114418246, 87.97746960244359, 0.08796990039652944, -0.055341872851010776+0.06838114129727484i, 1.057850825643388e-06+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 6, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.23454147742668946, "Q": 5748.044948567828, "amp": 6.042373498065564, "err": 2.949496705083841e-09}, {"f": 0.32588522994893326, "Q": 87.97746960244359, "amp": 0.08796990039652944, "err": 1.057850825643388e-06}], "wall": 1.5410552024841309}
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000123666 s
+Working in 2D dimensions.
+Computational cell is 22.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 7 objects not shown)...
+time for set_epsilon = 0.0245333 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.1949044912851124, -0.0007112948576922252, 137.00681874565646, 0.02192188686762645, -0.012915156835722773-0.017713493380632075i, 2.6128090946611414e-06+0.0i
+harminv0:, 0.23454251749220453, -1.9496548993004795e-05, 6014.975203466945, 6.0451901306590825, -3.9989028751915-4.533552636796349i, 3.1895238281379303e-09+0.0i
+harminv0:, 0.3253923453249639, -0.0028754653974103436, 56.58081394719854, 0.10344361542154794, -0.06986985867780998+0.07628095712446174i, 1.717589997473758e-06+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 8, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.1949044912851124, "Q": 137.00681874565646, "amp": 0.02192188686762645, "err": 2.6128090946611414e-06}, {"f": 0.23454251749220453, "Q": 6014.975203466945, "amp": 6.0451901306590825, "err": 3.1895238281379303e-09}, {"f": 0.3253923453249639, "Q": 56.58081394719854, "amp": 0.10344361542154794, "err": 1.717589997473758e-06}], "wall": 1.74025297164917}
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.00021123 s
+Working in 2D dimensions.
+Computational cell is 26.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 11 objects not shown)...
+time for set_epsilon = 0.0304792 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.19647029010334083, -0.00014075728697023675, 697.904507582917, 0.01020386258382751, -0.009503509065039741-0.0037151214085602204i, 2.954484631336928e-06+0.0i
+harminv0:, 0.2345423760443078, -1.928044072952755e-05, 6082.391459161811, 6.044723683369935, -3.998539879686003-4.53325084667218i, 2.1507860763980036e-09+0.0i
+harminv0:, 0.3247699523485172, -0.0009459357055885327, 171.66597604350665, 0.10284094107274723, -0.05366466659082602+0.08772891610195438i, 2.3401726268729523e-07+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 10, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.19647029010334083, "Q": 697.904507582917, "amp": 0.01020386258382751, "err": 2.954484631336928e-06}, {"f": 0.2345423760443078, "Q": 6082.391459161811, "amp": 6.044723683369935, "err": 2.1507860763980036e-09}, {"f": 0.3247699523485172, "Q": 171.66597604350665, "amp": 0.10284094107274723, "err": 2.3401726268729523e-07}], "wall": 1.9066767692565918}
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000239298 s
+Working in 2D dimensions.
+Computational cell is 30.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 15 objects not shown)...
+time for set_epsilon = 0.0345218 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.16855465218098906, -0.00032882298482094044, 256.2999850402413, 0.00023494026431425128, 3.8430070889613464e-05-0.00023177587762204577i, 0.00012567189244102543+0.0i
+harminv0:, 0.23454232067623393, -1.9226036006014656e-05, 6099.601618421497, 6.0444108799764065, -3.9984706725432138+4.532894788850606i, 2.1882128507044703e-09+0.0i
+harminv0:, 0.32530025698160286, -0.0007389203231708993, 220.11862901919847, 0.1023240529043861, -0.05566071752906148+0.08586091268400095i, 1.313987458684379e-07+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 12, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.16855465218098906, "Q": 256.2999850402413, "amp": 0.00023494026431425128, "err": 0.00012567189244102543}, {"f": 0.23454232067623393, "Q": 6099.601618421497, "amp": 6.0444108799764065, "err": 2.1882128507044703e-09}, {"f": 0.32530025698160286, "Q": 220.11862901919847, "amp": 0.1023240529043861, "err": 1.313987458684379e-07}], "wall": 2.120123863220215}
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000174883 s
+Working in 2D dimensions.
+Computational cell is 34.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 19 objects not shown)...
+time for set_epsilon = 0.0302763 s
+-----------
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.17869295938007768, -0.00041148888190049843, 217.12975397387186, 0.0033942600901678915, 0.0031929017881040635+0.0011516856043332381i, 1.683312385118077e-05+0.0i
+harminv0:, 0.2345423572059732, -1.9283090688072305e-05, 6081.555104417236, 6.045123540230349, -3.9986335111079634-4.533701430452992i, 2.051329455972811e-09+0.0i
+harminv0:, 0.3092015187562899, 0.0003830628934266723, -403.59106045268607, 0.0027134900891442313, -0.0026586854150956263+0.0005426051303127954i, 6.094531488889063e-06+0.0i
+harminv0:, 0.32515112224004633, -0.0007660627223511271, 212.22225853917243, 0.1095083235731925, -0.05975086771119805+0.09177094714325411i, 1.4753106614543617e-07+0.0i
+run 0 finished at t = 450.0 (18000 timesteps)
+HARM {"N": 14, "sy": 6, "res": 20, "window": 400, "modes": [{"f": 0.17869295938007768, "Q": 217.12975397387186, "amp": 0.0033942600901678915, "err": 1.683312385118077e-05}, {"f": 0.2345423572059732, "Q": 6081.555104417236, "amp": 6.045123540230349, "err": 2.051329455972811e-09}, {"f": 0.3092015187562899, "Q": -403.59106045268607, "amp": 0.0027134900891442313, "err": 6.094531488889063e-06}, {"f": 0.32515112224004633, "Q": 212.22225853917243, "amp": 0.1095083235731925, "err": 1.4753106614543617e-07}], "wall": 2.3177661895751953}
+
+Elapsed run time = 12.5142 s
+[meep_run] completed exit=0 wall=13.7s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261107T014257Z_75a159/run_manifest.json
+EXIT 0

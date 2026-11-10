@@ -1,8 +1,8 @@
-"""Reproducible concept diagrams and analytic intro loops for lessons 17/18/20.
+"""Reproducible concept diagrams and analytic intro loops for the expanded curriculum.
 
 These are explanatory models, not Meep field data. Numerical figures are kept
 separately under assets/meep/NN. Uses the existing illustration palette/camera.
-Run: python _tools/draw-curriculum.py [--videos]
+Run: python _tools/draw-curriculum.py [19 21 25 26 27] [--videos]
 Requires matplotlib, numpy and FFmpeg (for --videos), outside the site runtime.
 """
 import importlib.util
@@ -25,6 +25,10 @@ TITLES = {
     "18": {"ko": "계면에서 갈라지는 빛", "en": "Light meeting an interface"},
     "20": {"ko": "파장에 따라 달라지는 재료 응답", "en": "A material responds to wavelength"},
 }
+advanced_spec = importlib.util.spec_from_file_location("advanced", ROOT / "_tools/draw-advanced.py")
+advanced = importlib.util.module_from_spec(advanced_spec)
+advanced_spec.loader.exec_module(advanced)
+TITLES.update(advanced.TITLES)
 art.TITLES.update(TITLES)
 
 
@@ -51,6 +55,8 @@ def plane_front(ax, offset, th, alpha=0.6):
 
 
 def draw(chapter, locale="en", theme="light", video=False):
+    if chapter in advanced.TITLES:
+        return advanced.draw(chapter, art, line, locale, theme, video)
     fig, ax, th = art.frame(locale, theme)
     if video:
         fig.set_size_inches(12.8, 7.2)
@@ -133,7 +139,8 @@ def draw(chapter, locale="en", theme="light", video=False):
 
 
 def main():
-    for ch in TITLES:
+    chapters = [a for a in sys.argv[1:] if not a.startswith("--")] or list(TITLES)
+    for ch in chapters:
         for lang in ["ko","en"]:
             for theme in ["light","dark"]:
                 fig,_=draw(ch,lang,theme)
@@ -161,7 +168,7 @@ def main():
         set_time(2)
         fig.savefig(out/"00_intro.jpg",dpi=100,facecolor=fig.get_facecolor())
         plt.close(fig)
-        (out/"intro-model.json").write_text(json.dumps({"type":"analytic concept animation, not Meep field data","chapter":ch,"authoring":"_tools/draw-curriculum.py","dimensions":[1280,720],"fps":30,"duration_seconds":8,"loop_period_seconds":4,"model":{"17":"constant-phase lines k dot r=constant, direction40deg; ray k normal to fronts","18":"Snell/reflection ray schematic: incidence45deg, n1=1, n2=3.5; markers show direction, not power/speed","20":"three illustrative wavelengths with n=1.43,1.47,1.54, phase continuous across x=0; not a fitted quartz model"}[ch]},indent=2)+"\n",encoding="utf-8")
+        (out/"intro-model.json").write_text(json.dumps({"type":"analytic concept animation, not Meep field data","chapter":ch,"authoring":"_tools/draw-curriculum.py","dimensions":[1280,720],"fps":30,"duration_seconds":8,"loop_period_seconds":4,"model":{**advanced.MODELS,"17":"constant-phase lines k dot r=constant, direction40deg; ray k normal to fronts","18":"Snell/reflection ray schematic: incidence45deg, n1=1, n2=3.5; markers show direction, not power/speed","20":"three illustrative wavelengths with n=1.43,1.47,1.54, phase continuous across x=0; not a fitted quartz model"}[ch]},indent=2)+"\n",encoding="utf-8")
         print(f"Rendered {ch}: four concept variants and 8s analytic intro",flush=True)
 
 

@@ -1,0 +1,118 @@
+[meep_run] run_id wsl-local_20261107T014705Z_dd66c8  np=2  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 2 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code/holey_repro.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/runs --mode harminv -N 14 --resolution 80 --tag N14_r80
+Using MPI version 4.1, 2 processes
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000356921 s
+Working in 2D dimensions.
+Computational cell is 34.4 x 6 x 0 with resolution 80
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 19 objects not shown)...
+time for set_epsilon = 0.371153 s
+-----------
+Meep progress: 14.51875/450.0 = 3.2% done in 4.0s, 120.0s to go
+on time step 2323 (time=14.5188), 0.00172287 s/step
+Meep progress: 29.4125/450.0 = 6.5% done in 8.0s, 114.4s to go
+on time step 4706 (time=29.4125), 0.00167879 s/step
+Meep progress: 44.050000000000004/450.0 = 9.8% done in 12.0s, 110.6s to go
+on time step 7048 (time=44.05), 0.00170846 s/step
+Meep progress: 58.65625/450.0 = 13.0% done in 16.0s, 106.8s to go
+on time step 9386 (time=58.6625), 0.00171144 s/step
+Meep progress: 72.64375/450.0 = 16.1% done in 20.0s, 103.9s to go
+on time step 11624 (time=72.65), 0.00178777 s/step
+Meep progress: 86.72500000000001/450.0 = 19.3% done in 24.0s, 100.6s to go
+on time step 13876 (time=86.725), 0.00178054 s/step
+Meep progress: 100.78125/450.0 = 22.4% done in 28.0s, 97.1s to go
+on time step 16130 (time=100.812), 0.00177558 s/step
+Meep progress: 114.81875000000001/450.0 = 25.5% done in 32.0s, 93.4s to go
+on time step 18377 (time=114.856), 0.00178075 s/step
+Meep progress: 129.09375/450.0 = 28.7% done in 36.0s, 89.5s to go
+on time step 20661 (time=129.131), 0.0017521 s/step
+Meep progress: 143.26875/450.0 = 31.8% done in 40.0s, 85.7s to go
+on time step 22929 (time=143.306), 0.00176416 s/step
+Meep progress: 157.5625/450.0 = 35.0% done in 44.0s, 81.7s to go
+on time step 25216 (time=157.6), 0.00174912 s/step
+Meep progress: 171.6125/450.0 = 38.1% done in 48.0s, 77.9s to go
+on time step 27463 (time=171.644), 0.00178048 s/step
+Meep progress: 184.23125000000002/450.0 = 40.9% done in 52.0s, 75.0s to go
+on time step 29482 (time=184.263), 0.00198372 s/step
+Meep progress: 197.50625000000002/450.0 = 43.9% done in 56.0s, 71.6s to go
+on time step 31607 (time=197.544), 0.00188277 s/step
+Meep progress: 211.56875000000002/450.0 = 47.0% done in 60.0s, 67.6s to go
+on time step 33857 (time=211.606), 0.00177804 s/step
+Meep progress: 225.64375/450.0 = 50.1% done in 64.0s, 63.7s to go
+on time step 36109 (time=225.681), 0.00177651 s/step
+Meep progress: 239.60000000000002/450.0 = 53.2% done in 68.0s, 59.7s to go
+on time step 38342 (time=239.638), 0.00179171 s/step
+Meep progress: 253.875/450.0 = 56.4% done in 72.0s, 55.6s to go
+on time step 40625 (time=253.906), 0.00175333 s/step
+Meep progress: 267.875/450.0 = 59.5% done in 76.0s, 51.7s to go
+on time step 42867 (time=267.919), 0.00178484 s/step
+Meep progress: 282.05/450.0 = 62.7% done in 80.0s, 47.7s to go
+on time step 45134 (time=282.088), 0.00176516 s/step
+Meep progress: 296.1875/450.0 = 65.8% done in 84.0s, 43.6s to go
+on time step 47397 (time=296.231), 0.001768 s/step
+Meep progress: 309.99375000000003/450.0 = 68.9% done in 88.0s, 39.8s to go
+on time step 49606 (time=310.038), 0.00181098 s/step
+Meep progress: 324.20000000000005/450.0 = 72.0% done in 92.0s, 35.7s to go
+on time step 51879 (time=324.244), 0.00176037 s/step
+Meep progress: 338.38125/450.0 = 75.2% done in 96.0s, 31.7s to go
+on time step 54149 (time=338.431), 0.00176261 s/step
+Meep progress: 352.68125000000003/450.0 = 78.4% done in 100.0s, 27.6s to go
+on time step 56436 (time=352.725), 0.0017496 s/step
+Meep progress: 367.13125/450.0 = 81.6% done in 104.0s, 23.5s to go
+on time step 58750 (time=367.188), 0.00172936 s/step
+Meep progress: 380.96250000000003/450.0 = 84.7% done in 108.0s, 19.6s to go
+on time step 60962 (time=381.013), 0.0018089 s/step
+Meep progress: 395.15000000000003/450.0 = 87.8% done in 112.0s, 15.6s to go
+on time step 63231 (time=395.194), 0.00176326 s/step
+Meep progress: 409.36875000000003/450.0 = 91.0% done in 116.0s, 11.5s to go
+on time step 65507 (time=409.419), 0.00175782 s/step
+Meep progress: 423.16875000000005/450.0 = 94.0% done in 120.0s, 7.6s to go
+on time step 67715 (time=423.219), 0.00181216 s/step
+Meep progress: 437.46250000000003/450.0 = 97.2% done in 124.0s, 3.6s to go
+on time step 70001 (time=437.506), 0.00175048 s/step
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.19799634422952456, -0.00048168976150057727, 205.52268291183856, 0.005958539960603414, -0.0054236184913819705+0.0024675009467165954i, 5.540151383672304e-06+0.0i
+harminv0:, 0.23501404736279005, -1.835577008200263e-05, 6401.639547479825, 6.257851143936018, -4.472085528025434-4.377345310766196i, 1.3970335835783917e-09+0.0i
+harminv0:, 0.326670689979414, -0.0007599748340836112, 214.9220443419803, 0.10085335929600044, -0.03176325340633548+0.0957209267314785i, 1.2692153509314425e-07+0.0i
+run 0 finished at t = 450.0 (72000 timesteps)
+HARM {"N": 14, "sy": 6, "res": 80.0, "window": 400, "noavg": false, "modes": [{"f": 0.19799634422952456, "Q": 205.52268291183856, "amp": 0.005958539960603414, "err": 5.540151383672304e-06}, {"f": 0.23501404736279005, "Q": 6401.639547479825, "amp": 6.257851143936018, "err": 1.3970335835783917e-09}, {"f": 0.326670689979414, "Q": 214.9220443419803, "amp": 0.10085335929600044, "err": 1.2692153509314425e-07}], "wall": 128.14885354042053}
+
+Elapsed run time = 128.1591 s
+[meep_run] completed exit=0 wall=129.5s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261107T014705Z_dd66c8/run_manifest.json
+EXIT 0

@@ -1,0 +1,67 @@
+[meep_run] run_id wsl-local_20261107T014312Z_78fe82  np=2  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 2 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code/holey_repro.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/runs --mode harminv -N 14 --window 3000 --tag N14_win3000
+Using MPI version 4.1, 2 processes
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.000213857 s
+Working in 2D dimensions.
+Computational cell is 34.4 x 6 x 0 with resolution 20
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-3.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (4.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     ...(+ 19 objects not shown)...
+time for set_epsilon = 0.0391511 s
+-----------
+Meep progress: 793.6/3050.0 = 26.0% done in 4.0s, 11.4s to go
+on time step 31744 (time=793.6), 0.000126011 s/step
+Meep progress: 1539.7250000000001/3050.0 = 50.5% done in 8.0s, 7.8s to go
+on time step 61589 (time=1539.73), 0.000134175 s/step
+Meep progress: 2263.775/3050.0 = 74.2% done in 12.0s, 4.2s to go
+on time step 90569 (time=2264.22), 0.000138037 s/step
+Meep progress: 3039.9/3050.0 = 99.7% done in 16.0s, 0.1s to go
+on time step 121618 (time=3040.45), 0.000128831 s/step
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.19518154851165728, -0.00037069506943967237, 263.26428998190585, 9.550726532805502e-05, 8.832616615123097e-05+3.633353964959432e-05i, 0.00025402595977088875+0.0i
+harminv0:, 0.19818077546928942, -0.0001511391212023406, 655.6236859547795, 0.006426031901206052, -0.005444444315605366+0.0034134897230825643i, 2.5195948220736744e-05+0.0i
+harminv0:, 0.23454238803934027, -1.9329709705353284e-05, 6066.888525862981, 6.049172346271872, -3.9995601694487273-4.538282111753259i, 1.4347624878544336e-08+0.0i
+harminv0:, 0.3061162737370394, 0.00015973616197664746, -958.193404514727, 0.0003871423410370257, -0.00032683829746836605-0.00020749920368909506i, 5.555012112508918e-05+0.0i
+harminv0:, 0.3133260020019874, 0.0008268257595743795, -189.47523004319342, 0.019121163271922655, 0.012534283532539358+0.014439896855498537i, 0.00025639733497111785+0.0i
+harminv0:, 0.32528453565919335, -0.0008090854977352519, 201.01987773215077, 0.11023544026410342, -0.07891286665557283+0.07697149970229564i, 1.5055911720357384e-05+0.0i
+run 0 finished at t = 3050.0 (122000 timesteps)
+HARM {"N": 14, "sy": 6, "res": 20, "window": 3000.0, "modes": [{"f": 0.19518154851165728, "Q": 263.26428998190585, "amp": 9.550726532805502e-05, "err": 0.00025402595977088875}, {"f": 0.19818077546928942, "Q": 655.6236859547795, "amp": 0.006426031901206052, "err": 2.5195948220736744e-05}, {"f": 0.23454238803934027, "Q": 6066.888525862981, "amp": 6.049172346271872, "err": 1.4347624878544336e-08}, {"f": 0.3061162737370394, "Q": -958.193404514727, "amp": 0.0003871423410370257, "err": 5.555012112508918e-05}, {"f": 0.3133260020019874, "Q": -189.47523004319342, "amp": 0.019121163271922655, "err": 0.00025639733497111785}, {"f": 0.32528453565919335, "Q": 201.01987773215077, "amp": 0.11023544026410342, "err": 1.5055911720357384e-05}], "wall": 16.247379541397095}
+
+Elapsed run time = 16.2558 s
+[meep_run] completed exit=0 wall=17.5s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261107T014312Z_78fe82/run_manifest.json
+EXIT 0

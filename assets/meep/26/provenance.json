@@ -1,0 +1,317 @@
+{
+  "lesson": 26,
+  "slug": "photonic-crystal-cavity",
+  "published_on": "2026-11-11",
+  "source_project": "e-holey-wvg-cavity",
+  "hash_algorithm": "SHA-256",
+  "fields_recomputed_for_publication": false,
+  "upstream": {
+    "repository": "https://github.com/NanoComp/meep",
+    "commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+    "files": [
+      "python/examples/holey-wvg-cavity.py",
+      "python/examples/holey-wvg-bands.py"
+    ],
+    "license": "GPL-2.0-or-later",
+    "license_text": "../../../LICENSES/Meep-GPL-2.0.txt"
+  },
+  "upstreamrefs": [
+    "https://meep.readthedocs.io/en/latest/Python_Tutorials/Resonant_Modes_and_Transmission_in_a_Waveguide_Cavity/",
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/holey-wvg-cavity.py",
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/holey-wvg-bands.py"
+  ],
+  "artifacts": [
+    {
+      "file": "source_check.png",
+      "source_path": "_blog/posts/e-holey-wvg-cavity/source_check.png",
+      "sha256": "6932cf7bf8547b2c32e6b330bbc1fe90ab3d58b1f95c1ecf065f55abe8c93b0a",
+      "copied_verbatim": true
+    },
+    {
+      "file": "forward_dft.png",
+      "source_path": "_blog/posts/e-holey-wvg-cavity/forward_dft.png",
+      "sha256": "7c78249c05794704f6cffd0bb7e9c3cfefb298fd4fe26162d5bc50b4bfc29da2",
+      "copied_verbatim": true
+    },
+    {
+      "file": "results.png",
+      "source_path": "_blog/posts/e-holey-wvg-cavity/results.png",
+      "sha256": "22dfc0ef77de272943a182da292aee2e6c7a47e24b756519997b9d06aabdefe4",
+      "copied_verbatim": true
+    },
+    {
+      "file": "trans_r20.json",
+      "source_path": "e-holey-wvg-cavity/runs/trans_r20.json",
+      "sha256": "ee4c7fd972649b426a9ddcb8eb19ab94d5b459da12881d0e497ee2a7bee9a085",
+      "copied_verbatim": true
+    },
+    {
+      "file": "trans_r20.log",
+      "source_path": "e-holey-wvg-cavity/runs/trans_r20.log",
+      "sha256": "0abfe14b0c63b9533e77fb7c3e94a844b5f623e1cbb5c58854fdc8f30663e354",
+      "copied_verbatim": true
+    },
+    {
+      "file": "trans_r20.npz",
+      "source_path": "e-holey-wvg-cavity/runs/trans_r20.npz",
+      "sha256": "38ae94a89650d09b1c7907cdb2d5f8e81d05053db58c42ce3d414bf5616e1cde",
+      "copied_verbatim": true
+    },
+    {
+      "file": "trans_r20_dec1e5.json",
+      "source_path": "e-holey-wvg-cavity/runs/trans_r20_dec1e5.json",
+      "sha256": "a1f864755469e481ea56f631aaf4976b12d60a6acb7fdea69377b7c4b8a74122",
+      "copied_verbatim": true
+    },
+    {
+      "file": "trans_r20_dec1e5.log",
+      "source_path": "e-holey-wvg-cavity/runs/trans_r20_dec1e5.log",
+      "sha256": "cdcb87339fa989b39d759b2cf25afbf529ef7630f235051edf3ca26599e6dd53",
+      "copied_verbatim": true
+    },
+    {
+      "file": "trans_r20_dec1e5.npz",
+      "source_path": "e-holey-wvg-cavity/runs/trans_r20_dec1e5.npz",
+      "sha256": "b866d95f69002a8aa576d21c174b9b26556690b17df4fa4ff7a9faf6b9e5dcc4",
+      "copied_verbatim": true
+    },
+    {
+      "file": "bands_r20.json",
+      "source_path": "e-holey-wvg-cavity/runs/bands_r20.json",
+      "sha256": "33b74c06cf7103ac14e3994e5ea70181c0064c7edf21fc45011b3b5a953f0723",
+      "copied_verbatim": true
+    },
+    {
+      "file": "bands_r20.log",
+      "source_path": "e-holey-wvg-cavity/runs/bands_r20.log",
+      "sha256": "4aa128edd98d13b7890115564cf0f1951bdda0b2f1a14ba7b958aeb7893c8284",
+      "copied_verbatim": true
+    },
+    {
+      "file": "summary.json",
+      "source_path": "e-holey-wvg-cavity/runs/summary.json",
+      "sha256": "6fae9271af6aca18a6eea0cc5d56e18580fd4001f424c266fdcff763c8532a77",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N3_r20.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N3_r20.json",
+      "sha256": "5351ff3b5cf9d82e8fb5bc234140d424d3e5d00318568f2f44202de6380ccdf0",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N3_r20.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N3_r20.log",
+      "sha256": "3ac19307a5c2b7d32926c314a570a726e6197b8e78102a1e97608ceab2f64873",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N3_r40.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N3_r40.json",
+      "sha256": "524919d38f32eff13196466be9435a3a022cc0ce2f381a5bcd6bca49a65bba23",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N3_r40.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N3_r40.log",
+      "sha256": "c7e3e4d44aec8b9ac1c91b94c2379d42ca19ce127f7ddf9e8f38f1e34035a659",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N3_r60.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N3_r60.json",
+      "sha256": "caa40ac0ddc1fac8d6575852fc220580485716039b539586a4c21af0c59bc2c6",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N3_r60.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N3_r60.log",
+      "sha256": "444069d27904b3fac4317a99e9cc87c92047266a00fd8be23bd53460158ef7b4",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_QvsN_r20.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_QvsN_r20.json",
+      "sha256": "0eb4b67f7857f26d673ba7de28ff4a5047ccd5ffd9c97665b443877f7e14ada4",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_QvsN_r20.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_QvsN_r20.log",
+      "sha256": "80f0f8861018a41f773888db2dcc7aafb0ce7a81198320ad1171d2e7bbaf2f42",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N14_r40.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N14_r40.json",
+      "sha256": "035ab776382e2118211a7d9aa98da1d1ac938f520525dab6e8f790e95120e7d5",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N14_r40.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N14_r40.log",
+      "sha256": "9631b07ad31215f94ad01a98ff2abcad143af13d7dc34d90f1fdc3d2149c7433",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N14_r60.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N14_r60.json",
+      "sha256": "bbc950f16f6cf8ebf3916174686746851f52ab83d93fd5e85f39c47baa16cbf5",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N14_r60.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N14_r60.log",
+      "sha256": "7f856462aabff80ae413b5861e1f23391867ea2ea4064fabfd68c916c2f47fce",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N14_r80.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N14_r80.json",
+      "sha256": "b283fde822a57bc553ab38a7610402c0e386e0c399a7bed4044cfca1f6556b32",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N14_r80.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N14_r80.log",
+      "sha256": "8c59f008b4a4533ef2e5b7c4cae46454f30acfa565e7b860f78532b69afa0be2",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N14_win3000.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N14_win3000.json",
+      "sha256": "e0d65d781cdce1de3b7cca67a32b7463f0871642889d7be3741031079264a611",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N14_win3000.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N14_win3000.log",
+      "sha256": "825d1a6fdd34d0c5c7b2e7b4752689a347c7cec3fcaa8b869fae6b527bb2678f",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harminv_N14_sy12.json",
+      "source_path": "e-holey-wvg-cavity/runs/harminv_N14_sy12.json",
+      "sha256": "2ecd30afbe0df1dd07f6d9b69675b359e379864a6c470aea8449fef5e810b740",
+      "copied_verbatim": true
+    },
+    {
+      "file": "harm_N14_sy12.log",
+      "source_path": "e-holey-wvg-cavity/runs/harm_N14_sy12.log",
+      "sha256": "d8e4a605a44b122812be242d403cd68d2bfadd023b37b2a2066a54d890fae168",
+      "copied_verbatim": true
+    },
+    {
+      "file": "archived_holey_repro.py",
+      "source_path": "e-holey-wvg-cavity/code/holey_repro.py",
+      "sha256": "fd0eee63bd1adb549908928a399494744ef248e30350dc5893485805056c6312",
+      "copied_verbatim": true
+    },
+    {
+      "file": "upstream_holey-wvg-cavity.py",
+      "source_path": "e-holey-wvg-cavity/upstream/holey-wvg-cavity.py",
+      "sha256": "5c49abfcc8f8b27d5062969ad1d69533e7b7caee852e8dc8505934d7bfc1ef32",
+      "copied_verbatim": true
+    },
+    {
+      "file": "upstream_holey-wvg-bands.py",
+      "source_path": "e-holey-wvg-cavity/upstream/holey-wvg-bands.py",
+      "sha256": "6eb8e6795548ca74be68e3a64c2b782c20f6fb5483e08eed97a3af6af592cf7b",
+      "copied_verbatim": true
+    },
+    {
+      "file": "../../../code/photonic_crystal_cavity.py",
+      "sha256": "6a6eec5fd57bb0c18f7c33badd3572daac9d36873eee5a7634e60059ed9e8c22",
+      "role": "standalone adapted executable; not rerun for publication"
+    },
+    {
+      "file": "verification.json",
+      "sha256": "b41ace48046cbb0ad1506061f595abc361069e2992b5006d5bd4ca56c9941909",
+      "role": "publication checks; no electromagnetic solver execution"
+    }
+  ],
+  "solver": "Meep 1.33 series (archived project records); lesson metadata 1.33.0",
+  "added_work": [
+    "Bilingual seven-stage lesson with predictions and worked numerical checks",
+    "Standalone argparse CLI with solver import after help parsing",
+    "Copied original plots, numeric data, execution logs and upstream source snapshots",
+    "Hash-verified publication without rerunning electromagnetic fields"
+  ],
+  "plot_notes": [
+    "Plots retain original Korean labels with translated captions/tables.",
+    "Per-panel field color scales do not support cross-panel power comparisons.",
+    "Concept art and header animation are explanatory, separate from numeric field results."
+  ],
+  "source_verdict": "No machine-readable aggregate result.json in source project; quantitative cross-checks below are narrower than overall validation.",
+  "conditions": {
+    "dimensions": "2D Hz/TE defect waveguide; lossless",
+    "guide_epsilon": 13,
+    "guide_width_a": 1.2,
+    "air_hole_radius_a": 0.36,
+    "period_a": 1,
+    "central_hole_center_spacing_a": 1.4,
+    "hole_centers_N3_x_a": [
+      -2.7,
+      -1.7,
+      -0.7,
+      0.7,
+      1.7,
+      2.7
+    ],
+    "N_definition": "holes on each side; 2N total",
+    "cavity_cell_height_a": 6,
+    "cavity_cell_length_a": "2*(N+3)+0.4",
+    "cavity_pml_a": 1,
+    "band_cell_a": [
+      1,
+      12
+    ],
+    "band_k_points": 21,
+    "band_pml": "y only",
+    "transmission_source": "Ey Gaussian line; not EigenModeSource",
+    "resonance_source": "central Hz Gaussian point",
+    "source_fcen": 0.25,
+    "source_fwidth": 0.2,
+    "transmission_decays": [
+      0.001,
+      1e-05
+    ],
+    "harminv_default_after_sources": 400,
+    "mpi_processes": 2
+  },
+  "verified_scope": {
+    "partial_selected_symmetry_band_edges_at_k_0_5": [
+      0.19990244034150606,
+      0.30497042434485766
+    ],
+    "N3_res20_harminv_f": 0.2344541534600598,
+    "N3_res20_harminv_Q": 372.4080823393098,
+    "dense_transmission_lorentz_f": 0.23445009427911842,
+    "dense_transmission_lorentz_Q": 370.3948305618151,
+    "Q_crosscheck_relative_difference": 0.0054060367456266,
+    "dense_peak_T": 0.9284299404579026,
+    "dense_peak_f": 0.23445,
+    "balance_decay1e3": [
+      0.8806323805854257,
+      1.1478938087692283
+    ],
+    "balance_decay1e5": [
+      0.9958454514225835,
+      1.0079856867382557
+    ],
+    "fundamental_source_power_fraction_range": [
+      0.9697109884521762,
+      0.9998226041691792
+    ]
+  },
+  "limitations": [
+    "The selected 2D guided-mode band gap is partial, not a complete all-polarization 3D gap.",
+    "The documentation Q plateau near 8750 was not reproduced: N14 Q is 6081.56 at res20 and 6401.64 at res80.",
+    "Longer Harminv time, larger cell height and resolution tests did not resolve that discrepancy.",
+    "A small Harminv fitting error is not a spatial-convergence estimate.",
+    "The broadband peak is undersampled; the dense monitor is a separate frequency-sampling check.",
+    "The source is a line pulse with a measured fundamental-mode fraction below one.",
+    "Higher-frequency modes, including entries with negative fitted Q, are outside the supported fundamental-mode comparison.",
+    "Original optional animation helper dependencies were removed; the CLI does not add a new Lorentz-fitting dependency."
+  ]
+}

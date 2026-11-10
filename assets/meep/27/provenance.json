@@ -1,0 +1,104 @@
+{
+  "chapter": 27,
+  "meep_version": "1.33.0",
+  "source_project": "e-mode-decomposition",
+  "source_commit": "f7811d4157ea22f19d4ca76bc41c71b6e055763e",
+  "new_simulations": false,
+  "scope": "Saved taper mode-decomposition diagnostic: preserve signed flux, forward residuals, and failed resolution convergence.",
+  "upstream": [
+    "https://github.com/NanoComp/meep/blob/f7811d4157ea22f19d4ca76bc41c71b6e055763e/python/examples/mode-decomposition.py"
+  ],
+  "artifacts": [
+    {
+      "file": "01_field.en.png",
+      "sha256": "4690e7ddaf6a291a420d28295e3242b438c8cbb9fd6888885286af1d598c8258",
+      "bytes": 257814,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "01_field.ko.png",
+      "sha256": "20fb9971f69c15cf73322a3f522ff3608ef6711897c7c9aba8a53392822fbf13",
+      "bytes": 257296,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "02_diagnostic.en.png",
+      "sha256": "a6139aa6147a13a659bea44bf8500d543dc88d8a0040f36bc41d733135844dc4",
+      "bytes": 73508,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "02_diagnostic.ko.png",
+      "sha256": "2b02be46e89843e168ece66d2996d4b5a0bdb395aa4394d43514330fd9c6df2f",
+      "bytes": 68885,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "03_comparison.en.png",
+      "sha256": "da6dd51137e0bce72dbe56d71e9016127f4dcbf20a5b5d06fc9cea0ebf4a728f",
+      "bytes": 93542,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "03_comparison.ko.png",
+      "sha256": "7427b39b9aaed08c6f8224fdb9ee06f2c3f7076a2cc328e3c11c3cd5e3148e40",
+      "bytes": 93054,
+      "derivation": "Redrawn by plot_saved_results.py using the saved JSON or complex DFT arrays; no new solver run."
+    },
+    {
+      "file": "md_r25.json",
+      "sha256": "6077ba7d80feba73a390c50d761edc39c91c95146fada29efc251a16d09cdcd4",
+      "bytes": 1221,
+      "source": "runs/md_r25.json"
+    },
+    {
+      "file": "md_r25.npz",
+      "sha256": "d4d647921e3606c06c5fd3c109822f454cf5fe35b9a4f96bccc1f0b5be4bd145",
+      "bytes": 1276026,
+      "source": "runs/md_r25.npz"
+    },
+    {
+      "file": "md_r50.json",
+      "sha256": "364a0d096ea8d7550e042000ea67da743b39ed178f97d2a050c79a9839efb8fd",
+      "bytes": 1218,
+      "source": "runs/md_r50.json"
+    },
+    {
+      "file": "plot_saved_results.py",
+      "sha256": "879c4196e8f84e37debc76467839defb767803cba17cf47883587074d1204bbd",
+      "bytes": 4219
+    },
+    {
+      "file": "source_result.json",
+      "sha256": "cd6c28e37f9a53a6f3942f55569ccac005fbddcdbda25e40e7908a7377760c2e",
+      "bytes": 2277,
+      "source": "reasoning/result.json",
+      "source_sha256": "99b1df36d3dd19dea7e4793f1e2d74e756139c5eccbe121891854aa306dd01d3",
+      "adaptation": "Artifact paths made relative to the source project; scientific results and verdict preserved."
+    },
+    {
+      "file": "summary.json",
+      "sha256": "bfa653442d5b2ad71aa6590b63451f867cd712e0d9fbdf206616253a85e77fac",
+      "bytes": 1414,
+      "source": "runs/summary.json"
+    },
+    {
+      "file": "verified_metrics.json",
+      "sha256": "80df4438fe535a890e86cd2924350bbe5c0fbc2696a44359987aed8baa1e398b",
+      "bytes": 1156
+    },
+    {
+      "file": "../../../code/mode_decomposition.py",
+      "source": "code/md_repro.py",
+      "source_sha256": "1bbbac7f8181c462a80627668858716012f7e48ec431da0dd651eef169fe582b",
+      "sha256": "987f1bc6c6fb121ca19a8d0b48fbe5fa48b409324a9ecacb8b999f2267c5de4d",
+      "bytes": 4919,
+      "adaptation": "Standalone argparse CLI, validation before Meep import, external animation helper removed, explicit Meep-version output; original simulation geometry, sources, monitors and stopping settings preserved."
+    }
+  ],
+  "limitations": [
+    "Resolution 50 gives four negative signed flux-reflection estimates; physical reflectance is not validated.",
+    "No cause or numerical correction for the residual forward field has been established.",
+    "Only Lt=1,2,4,8 were computed; no 1/Lt^2 law or target-mode output transmission was validated."
+  ]
+}

@@ -189,7 +189,7 @@ near flux는 거의 유지되고 far flux가 증가했습니다. 이는 열린 �
 | 응용 | 이 글의 어떤 것을 쓰는가 | 그 다음에 필요한 것 |
 |---|---|---|
 | LED·OLED·micro-LED 메사의 광추출 | 축 위 쌍극자(m = ±1), 축 밖 쌍극자의 m 급수, 열린 near2far 면 | 14편 광추출 효율 |
-| microdisk·microring 레이저, 바이오센서 | 방위 차수 m = whispering-gallery 차수, m마다 1D run | 12편과 비교, 26편 결함 공진기 |
+| microdisk·microring 레이저, 바이오센서 | 방위 차수 m = whispering-gallery 차수, m마다 1D run | 12편과 비교, [26편 결함 공진기]({{ site.baseurl }}/photonic-crystal-cavity/) |
 | 축 대칭 렌즈·zone plate·나노안테나 | m = ±1 원편광 입사, 축 대칭 far field | 16편 zone plate |
 | 광섬유 단면, 원형 격자 결합기 | 원통 도파 모드(m), r 방향 PML | — |
 

@@ -74,5 +74,25 @@
   "20": {
     "ko": "파장에 따라 달라지는 재료 응답",
     "en": "A material responds to wavelength"
+  },
+  "19": {
+    "ko": "유한한 폭을 가진 Gaussian 빔",
+    "en": "A Gaussian beam with a finite waist"
+  },
+  "21": {
+    "ko": "회전하는 광축과 편광 회절",
+    "en": "Rotating optical axes and diffraction"
+  },
+  "25": {
+    "ko": "물체 안의 흡수와 경계의 전력",
+    "en": "Absorption inside and power at the boundary"
+  },
+  "26": {
+    "ko": "공기 구멍 사이에 가두는 빛",
+    "en": "Light confined between air holes"
+  },
+  "27": {
+    "ko": "넓어지는 도파로의 모드 분해",
+    "en": "Modal analysis of a widening waveguide"
   }
 }

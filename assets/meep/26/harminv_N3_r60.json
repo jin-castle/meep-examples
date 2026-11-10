@@ -1,0 +1,34 @@
+{
+ "args": {
+  "mode": "harminv",
+  "resolution": 60.0,
+  "N": [
+   3
+  ],
+  "sy": 6,
+  "fcen": 0.25,
+  "df": 0.2,
+  "window": 400,
+  "decay": 0.001,
+  "anim": false,
+  "tag": "N3_r60",
+  "out": "/mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/runs"
+ },
+ "rows": [
+  {
+   "N": 3,
+   "sy": 6,
+   "res": 60.0,
+   "window": 400,
+   "modes": [
+    {
+     "f": 0.23494011573078244,
+     "Q": 380.2674306038167,
+     "amp": 6.01904809516378,
+     "err": 1.2718780839929074e-09
+    }
+   ],
+   "wall": 19.20227813720703
+  }
+ ]
+}

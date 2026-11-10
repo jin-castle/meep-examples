@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "critical_angle_deg": 40.49266149200838,
+  "cases": {
+    "30": {
+      "original_instantaneous_e2_max_error": 7.105427357601002e-15,
+      "all_arrays_finite": true,
+      "reflected_direction": {
+        "angle_from_positive_x_deg": 119.97571438340682,
+        "spatial_wavevector": [
+          -56.020848416014005,
+          97.12600640410747
+        ],
+        "method": "intensity-weighted local phasor phase gradient",
+        "mask": {
+          "along_ray": [
+            0.7,
+            1.7
+          ],
+          "transverse_half_width": 0.12
+        }
+      },
+      "expected_reflected_direction_from_x_deg": 120,
+      "passed": true,
+      "transmitted_direction": {
+        "angle_from_positive_x_deg": 20.661840106239556,
+        "spatial_wavevector": [
+          69.11996014290035,
+          26.065661629591972
+        ],
+        "method": "intensity-weighted local phasor phase gradient",
+        "mask": {
+          "along_ray": [
+            0.6,
+            1.6
+          ],
+          "transverse_half_width": 0.12
+        }
+      },
+      "plane_wave_snell_angle_from_normal_deg": 50.35388885302628,
+      "measured_angle_from_normal_deg": 50.66184010623955,
+      "plane_wave_snell_angle_error_deg": 0.3079512532132753,
+      "harmonic_fit_relative_l2_residual": 0.0008222789318154763,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf"
+    },
+    "45": {
+      "original_instantaneous_e2_max_error": 1.4210854715202004e-14,
+      "all_arrays_finite": true,
+      "reflected_direction": {
+        "angle_from_positive_x_deg": 90.85074682046765,
+        "spatial_wavevector": [
+          -1.6328006927503544,
+          109.95717040116263
+        ],
+        "method": "intensity-weighted local phasor phase gradient",
+        "mask": {
+          "along_ray": [
+            0.7,
+            1.7
+          ],
+          "transverse_half_width": 0.12
+        }
+      },
+      "expected_reflected_direction_from_x_deg": 90,
+      "passed": true,
+      "harmonic_fit_relative_l2_residual": 0.00020694190276210927,
+      "source_sha256": "ca2c371dc80d4eb72e6a4be4801ca2261abed4e05514899e3e706783291caccf"
+    }
+  },
+  "limitations": [
+    "Default 10 grid points per denser-medium wavelength; no resolution convergence study",
+    "Finite-width beam contains an angular spectrum; the central 45-degree ray is above critical but zero total transmission is not asserted",
+    "No flux monitors or incident-only subtraction; no measured R/T efficiency claimed",
+    "Phase-gradient direction is a local diagnostic, not a flux or beam-centroid measurement",
+    "The length unit a is arbitrary; no micrometer mapping is assumed"
+  ]
+}

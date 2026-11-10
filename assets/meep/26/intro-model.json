@@ -1,0 +1,13 @@
+{
+  "type": "analytic concept animation, not Meep field data",
+  "chapter": "26",
+  "authoring": "_tools/draw-curriculum.py",
+  "dimensions": [
+    1280,
+    720
+  ],
+  "fps": 30,
+  "duration_seconds": 8,
+  "loop_period_seconds": 4,
+  "model": "N=3 holes per side, centers +/-0.7,+/-1.7,+/-2.7 a, radius0.36a, guide width1.2a. Extruded 2D geometry; periodic central lobe is a concept, not measured Q or a decay fit."
+}

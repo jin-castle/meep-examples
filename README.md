@@ -3,7 +3,7 @@
 Meep (FDTD) 공식 예제 해설 시리즈 — 입문자용. 사이트: https://jin-castle.github.io/meep-examples/
 
 A beginner-friendly walkthrough of the official [Meep](https://meep.readthedocs.io/) examples, ordered like a 10-week applied-electromagnetics course (post number = week − 1; weeks 2–10 → posts 01–09), followed by season 2 (posts 10–16: the journey of a point source, from a mirror to light extraction and the far field).
-Full Korean and English editions, with shared scientific results and English code comments. Published numerical results retain their execution records; new lessons can reuse those saved runs with explicit source hashes. The current catalog has 19 numbered examples and two topic pages. Numbers reserved by earlier posts are retained.
+Full Korean and English editions, with shared scientific results and English code comments. Published numerical results retain their execution records; new lessons can reuse those saved runs with explicit source hashes. The current catalog has 24 numbered examples and two topic pages. Numbers reserved by earlier posts are retained.
 
 | # | Post | Script | Key numbers (Meep 1.33.0) |
 |---|------|--------|---------------------------|
@@ -25,6 +25,11 @@ Full Korean and English editions, with shared scientific results and English cod
 | 17 | 원하는 방향의 평면파 — 위상, Bloch 경계, 파수 검산 | `code/oblique_plane_wave.py` | four directions: max angle error 0.0614°, max wavevector-magnitude relative error 0.163%; no convergence claim |
 | 18 | 입사각과 편광 — P 편광 Fresnel 반사, Brewster 각, 해상도 | `code/angular_reflectance.py` | max absolute R error 0.06350 → 0.01395 → 0.003398 (res 50/100/200); grazing power residual 1.45% |
 | 20 | 분산 재료 — 석영 반사 검산과 Lorentz 모드 진단 | `code/dispersive_quartz.py`, `code/material_dispersion.py` | quartz max absolute R error 1.678e-4; simple real-frequency Lorentz estimate misses 1% target (max 37.2%) |
+| 19 | 유한 폭 Gaussian 빔 — 계면의 위상과 굴절 방향 | `code/gaussian_beam.py` | archived phase-fit angle 50.66184° vs Snell 50.35389°; no normalized R/T or waist-convergence claim |
+| 21 | 편광 격자 — 회전 광축과 차수별 전력 | `code/polarization_grating.py` | circular ±1 selected order 0.94294 of incident power; linear-sweep aggregate inconclusive |
+| 25 | 흡수 전력 — 체적 적분과 안쪽 flux | `code/absorbed_power.py` | volume/boundary discrepancy 3.6556% → 0.9717% → 0.2494%; larger-box check misses 2% target |
+| 26 | 광결정 결함 공진기 — Harminv와 좁은 투과 공진 | `code/photonic_crystal_cavity.py` | N=3 Q 372.408 vs Lorentz fit 370.395; dense T peak 0.92843; tutorial Q=8750 not reproduced |
+| 27 | 모드 분해 — 기준장 차감과 flux 진단 | `code/mode_decomposition.py` | res-50 reflected flux becomes negative; refinement-gap test fails; no validated adiabatic-efficiency claim |
 | 28 | 평행 도파로의 광력 — Maxwell 응력과 모드 미분 | `code/parallel_waveguide_force.py`, `code/parallel_waveguide_mpb.py` | fixed-k and fixed-ω curves compared separately; symmetric/antisymmetric modal forces |
 | topic | Metalens 위상 지도와 PB 위상 — 이상적 렌즈 위상, 2π 접기, 격자 샘플링 (`/metalens/`) | `code/metalens_*.py` (numpy, no Meep) | 1D scalar check: sampled PB phase focuses with FWHM 499 nm vs 493 nm for the continuous ideal phase (peak 0.95); the opposite circular polarization diverges |
 
@@ -33,9 +38,11 @@ Full Korean and English editions, with shared scientific results and English cod
 - Incident-wave branch: 01–03 → **17 plane waves → 18 angular reflection**, then revisit 06–07 with angle and polarization in mind.
 - Material branch: 03 → **20 dispersion** → 07 / 11 / 14, distinguishing validated quartz reflectance from an unresolved Lorentz-mode estimate.
 - Emission branch: 10 → 11 → 12 → 13 → 14 → 16, from radiation and resonances to extraction and a far-field focus.
-- Guided-force branch: 04 → 12 → 28, from guided modes to optical force.
+- Guided diagnostics: 04 → **27 modal power**; 12 → **26 defect cavity** → 28 optical force.
+- Finite-beam branch: 17 / 18 → **19 Gaussian beam**; material/polarization branch: 06 / 18 / 20 → **21 polarization grating**.
+- Absorption branch: 03 / 20 → **25 absorbed power**, with volume and boundary measurements kept separate.
 
-17/18/20 use the same seven-step bilingual lesson structure, four illustration variants and pauseable, reduced-motion-aware intro loops. Their intros are explicitly labelled analytic concept animations; saved Meep plots and JSON/NPZ files remain separate.
+17/18/19/20/21/25/26/27 use the same seven-step bilingual lesson structure, four illustration variants and pauseable, reduced-motion-aware intro loops. Their intros are explicitly labelled analytic concept animations; saved Meep plots and JSON/NPZ files remain separate.
 
 ## Beam Lab
 
@@ -96,7 +103,12 @@ python code/oblique_plane_wave.py --help
 python code/angular_reflectance.py --help
 python code/dispersive_quartz.py --help
 python code/material_dispersion.py --help
-python _tools/draw-curriculum.py --videos  # analytic concept PNGs and MP4s; Matplotlib + FFmpeg
+python code/gaussian_beam.py --help
+python code/polarization_grating.py --help
+python code/absorbed_power.py --help
+python code/photonic_crystal_cavity.py --help
+python code/mode_decomposition.py --help
+python _tools/draw-curriculum.py 19 21 25 26 27 --videos  # analytic concept PNGs and MP4s; Matplotlib + FFmpeg
 ```
 
 ## Sources, contributions and reuse
@@ -124,4 +136,4 @@ explain the choice. The public site does not publish dashboard data.
 
 Jekyll + minima, built by GitHub Pages. Math via MathJax. Korean posts are in `_posts/`; English lessons and topics are in `en/`. Use [한국어](https://jin-castle.github.io/meep-examples/) or [English](https://jin-castle.github.io/meep-examples/en/) and select System, Light or Dark in the header. Language switches preserve the corresponding page and section; theme choices persist when browser storage is available.
 
-Each chapter concept illustration (01–14, 16 and 28 generated/edited as recorded in the manifest; 17/18/20 drawn by `_tools/draw-curriculum.py`) has four explicit PNG exports in `assets/illustrations/`: `XX.ko.light.png`, `XX.ko.dark.png`, `XX.en.light.png`, and `XX.en.dark.png`. The catalog and “Understand the principle” sections share these assets. `manifest.json` records prompts, dimensions and hashes. Numerical figures remain in `assets/meep/NN/` with their original pixels and color scales; theme changes do not invert or generatively edit them.
+Each chapter concept illustration (01–14, 16 and 28 generated/edited as recorded in the manifest; 17/18/19/20/21/25/26/27 drawn by `_tools/draw-curriculum.py`) has four explicit PNG exports in `assets/illustrations/`: `XX.ko.light.png`, `XX.ko.dark.png`, `XX.en.light.png`, and `XX.en.dark.png`. The catalog and “Understand the principle” sections share these assets. `manifest.json` records prompts, dimensions and hashes. Numerical figures remain in `assets/meep/NN/` with their original pixels and color scales; theme changes do not invert or generatively edit them.

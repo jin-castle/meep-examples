@@ -1,0 +1,46 @@
+[meep_run] run_id wsl-local_20261107T014355Z_7d498e  np=2  cwd=/mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code
+[meep_run] $ /home/bgs43/miniforge3/envs/pmp/bin/mpirun -np 2 /home/bgs43/miniforge3/envs/pmp/bin/python /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/code/holey_repro.py --out /mnt/c/Users/bgs43/Desktop/paper_repro/e-holey-wvg-cavity/runs --mode harminv -N 3 --resolution 40 --tag N3_r40
+Using MPI version 4.1, 2 processes
+-----------
+Initializing structure...
+Halving computational cell along direction x
+Halving computational cell along direction y
+Splitting into 2 chunks by voxels
+time for choose_chunkdivision = 0.00014555 s
+Working in 2D dimensions.
+Computational cell is 12.4 x 6 x 0 with resolution 40
+     block, center = (0,0,0)
+          size (1e+20,1.2,1e+20)
+          axes (1,0,0), (0,1,0), (0,0,1)
+          dielectric constant epsilon diagonal = (13,13,13)
+     cylinder, center = (0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-0.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-1.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+     cylinder, center = (-2.7,0,0)
+          radius 0.36, height 1e+20, axis (0, 0, 1)
+          dielectric constant epsilon diagonal = (1,1,1)
+time for set_epsilon = 0.0372011 s
+-----------
+Meep progress: 321.4125/450.0 = 71.4% done in 4.0s, 1.6s to go
+on time step 25713 (time=321.413), 0.000155566 s/step
+harminv0:, frequency, imag. freq., Q, |amp|, amplitude, error
+harminv0:, 0.23489376809815612, -0.00030887225275415926, 380.24420452735706, 5.997062318699942, -4.185309841247785-4.295106283565653i, 1.9307013886987545e-09+0.0i
+run 0 finished at t = 450.0 (36000 timesteps)
+HARM {"N": 3, "sy": 6, "res": 40.0, "window": 400, "modes": [{"f": 0.23489376809815612, "Q": 380.24420452735706, "amp": 5.997062318699942, "err": 1.9307013886987545e-09}], "wall": 5.6868884563446045}
+
+Elapsed run time = 5.7037 s
+[meep_run] completed exit=0 wall=6.9s receipts=0 physics_valid=None fom=None outcome=success
+[meep_run] manifest → /mnt/c/Users/bgs43/Documents/photonics_vault/Photonics-Agent-KB/trace_memory/runs/wsl-local_20261107T014355Z_7d498e/run_manifest.json
+EXIT 0

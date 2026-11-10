@@ -773,7 +773,7 @@ Meta-atoms and phase libraries form a design workflow for metalenses, beam steer
 |---|---|---|
 | Metalens (thin smartphone cameras, AR displays, endoscopes) | Phase library → position-dependent phase → focus | Chapter 35: near2far inverse design |
 | Beam deflector (LiDAR, optical switches) | Four-step blazed design, supercell efficiency | Chapter 08: metagrating inverse design |
-| Polarization- and color-splitting metasurfaces | Add polarization axes and wavelengths to the library method | Chapter 21: anisotropic materials |
+| Polarization- and color-splitting metasurfaces | Add polarization axes and wavelengths to the library method | [Chapter 21: anisotropic materials]({{ site.baseurl }}/en/polarization-grating/) |
 | Unit cell → arrangement → validation workflow | This entire lesson | — |
 
 </details>
