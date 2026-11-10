@@ -448,6 +448,24 @@ P_m = total_flux(radial_flux(ep, hp))            # power of this m alone: decide
 | C: 좌표계 | 2D Cartesian(12편, res 10/20/30) vs cylindrical(res 20) | Q(m = 5) 1675/2132/1610 vs 1627 | 계단 경계가 없는 cylindrical이 res 10·30 쪽과 같다 |
 | D: 반지름 셀 | 6 / 8 µm | 7.43% / 6.41% | 차이가 셀 크기를 따라가면 truncation |
 
+### 독립 재현 검증 — ring-cyl 세 판과 섭동이론 dω/dr (2026-11-10 추가)
+
+파트 C의 ring-cyl을 공식 commit(f7811d4) 그대로 다시 돌리면서 알게 된 것이 둘 있다. 하나는 저장소의 `ring-cyl.py`가 문서 본문·unit test(`tests/test_ring_cyl.py`)와 다른 판이라는 것(PML 32·res 20 vs PML 2·res 10). 다른 하나는 같은 문서의 다음 절 — 고리 반지름에 대한 공진 주파수의 미분 ∂ω/∂r을 경계 섭동이론으로 구하는 `perturbation_theory.py` — 가 이 글에 없었다는 것이다. 둘 다 여기에 붙인다.
+
+<a href="{{ site.baseurl }}/assets/meep/13/08_repro_results.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/08_repro_results.png" alt="repro ring-cyl" loading="lazy"></a>
+*왼쪽·가운데: ring-cyl m = 3/4/5의 f와 Q를 세 판(res 10 dpml 2 = unit test, res 20 dpml 2 = 문서 서술, res 20 dpml 32 = 저장소 .py)으로. ×가 이 글 파트 C의 설정(dpml 32)이고 Q만 10% 낮다. +는 총 장 에너지의 감쇠 기울기로 구한 Q. 오른쪽: m = 5 모드의 dω/dr — 경계 섭동이론(채운 점)과 반지름 +0.01 유한차분(빈 네모), 공식 문서 값(빈 삼각)이 겹친다.*
+
+<a href="{{ site.baseurl }}/assets/meep/13/09_repro_ladder.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/13/09_repro_ladder.png" alt="repro ladder" loading="lazy"></a>
+*왼쪽: 섭동이론 vs 유한차분 차는 해상도 100 → 200에서 줄지 않는다(Ez 0.28%). 오른쪽: 유한차분 간격을 0.01 → 0.005로 줄이자 차가 4배 커졌다. 반 픽셀 이동은 subpixel 평활로만 표현된다.*
+
+| 항목 | 이 글(파트 C) | 재현(2026-11-10) | 뜻 |
+|---|---|---|---|
+| ring-cyl 설정 | PML 32, res 20 (저장소 .py) | 문서·unit test는 PML 2, res 10. unit test 여섯 값(f 0.1183512829, Q 85.680789968, …) 상대 ≤ 1.7×10⁻⁸ 재현 | 같은 이름의 예제가 세 판이다. 문서 수치를 대조하기 전에 .py의 상수를 문서와 맞춰 본다 |
+| Q(m = 5) | 1627 (dpml 32) | dpml 2에서 1817 (res 20), 문서 서술 res 20 m = 4는 0.14748/384 → 재현 0.147478/383.85 | PML 32는 f를 ≤ 8×10⁻⁴만 바꾸지만 Q를 10% 낮춘다. 위 "cylindrical 1627이 2D res 10·30과 같은 쪽"이라는 해석은 dpml 32 판의 값에 기댄 것이라 보류한다. 어느 PML이 참값에 가까운지는 pad·PML 사다리가 필요하다 |
+| Q의 독립 검증 | Harminv만 | 비PML 영역 총 장 에너지의 ln U 기울기 → Q: m 3/4/5 모두 Harminv와 ≤ 3×10⁻⁶, 섭동 run(Q 1225~1825)도 ≤ 1.1×10⁻⁵ | `field_energy_in_box`를 `at_every`로 찍는 한 줄로 Harminv를 검산할 수 있다(복사 손실 = 저장 에너지 감쇠) |
+| 섭동이론 dω/dr (m = 5, Ez) | — | 문서 값 4쌍(Ez·Hz × res 100·200)과 노트북 Harminv 줄이 현재 Meep 1.33에서 상대 ≤ 3.3×10⁻⁹로 그대로. 섭동 vs 유한차분 Ez 0.28%·Hz 0.49%(res 200) | 2019~2020 판과 수치가 같다 |
+| 유한차분 간격 | — | dr 0.01(= res 100에서 1 px) 차 0.28% → dr 0.005(반 픽셀) 1.1%(4배); 2D 판(res 25·50, dr 0.01 = ¼·½ px)은 16% 어긋남, 2D 섭동값 자체는 cyl과 0.008% | 경계 이동 유한차분은 Δr ≥ 1 px이어야 한다. 문서의 "해상도를 먼저 올리고 Δr을 줄여라"의 수치 근거 |
+
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: 진공에서 축 위 쌍극자의 패턴은 m = 0(z) 또는 m = ±1(x)로 0.5% 안에서 맞는다. 축에서 0.5 µm 떨어진 x 쌍극자는 m = 0…8의 합으로 0.6% 안에서 맞는다. 12편 고리의 주파수는 cylindrical 좌표와 2D Cartesian이 0.1% 안에서 같다. ground plane 위 디스크의 near–far 차이는 반지름 셀을 키우면 줄어드는 truncation이다.
@@ -848,3 +866,5 @@ total 457 s on 4 process(es)
 - [Cylindrical coordinates 튜토리얼](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/) · [antenna in cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-an-antenna-in-cylindrical-coordinates) · [disc in cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Near_to_Far_Field_Spectra/#radiation-pattern-of-a-disc-in-cylindrical-coordinates)
 - 스크립트: [dipole_in_vacuum_cyl_on_axis.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_on_axis.py) · [dipole_in_vacuum_cyl_off_axis.py](https://github.com/NanoComp/meep/blob/master/python/examples/dipole_in_vacuum_cyl_off_axis.py) · [ring-cyl.py](https://github.com/NanoComp/meep/blob/master/python/examples/ring-cyl.py) · [disc_radiation_pattern.py](https://github.com/NanoComp/meep/blob/master/python/examples/disc_radiation_pattern.py) · [meep issue 2704 (Er at r = 0)](https://github.com/NanoComp/meep/issues/2704)
 - 이전 글: [12 · 빛을 가두는 고리]({{ site.baseurl }}/ring-resonator/) · near2far와 거울: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · 다음 글: 14 · 박막 속 점광원, 공기로 나오는 몫
+- 2026-11-10 재현으로 바뀐 것: 파트 C의 Q(m = 5) 1627은 저장소 .py의 PML 32 설정 값이고 문서 설정(PML 2)에서는 1817이다. 어느 쪽이 참값에 가까운지는 이 글로는 모른다.
+

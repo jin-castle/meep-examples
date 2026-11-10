@@ -461,6 +461,26 @@ ldos_qv = Q / V_MODE / (2 * math.pi * f * math.pi * 0.5)               # 2Q / (p
 | A 3D 해상도 | 48 (이 글) vs 71 (노트) | $t=1,2$에서 CYL과 2.3% / 0.9% (t = 1.0 / 2.0) vs 노트 median 1.3% | 노트의 3D max 11.4%($t=1.45$)는 이 글에서 재지 않았다 |
 | B run 시간 | 2Q/f (w ≥ 0.3) vs cap 6000 (w = 0.2) | 비 0.81~0.89 vs 0.72 | 실행 시간이 부족한 값은 수렴한 값으로 보고할 수 없음 |
 
+### 독립 재현 검증 (2026-11-10 추가)
+
+이 글을 쓴 뒤 같은 두 예제를 공식 commit(f7811d4)의 스크립트 그대로, 기준을 실행 전에 적어 두고 다시 돌렸다(PROJ-013 재현 큐). 그 결과 중 이 글의 숫자를 바꾸거나 보태는 것만 적는다.
+
+<a href="{{ site.baseurl }}/assets/meep/11/08_repro_results.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/08_repro_results.png" alt="repro results" loading="lazy"></a>
+*왼쪽: 금속 상자 두 방법(채운 점, res 50)과 공식 문서 그림을 디지타이즈한 값(빈 마커). w = 0.3만 맞고 w = 0.2는 60% 낮다. 가운데: 평면 공진기 Purcell 인자 41점(cyl res 71)과 3D 9점, 해석식. 오른쪽: 이론 대비 오차. 빈 마커는 이론을 Meep이 반올림한 셀 두께에서 다시 잰 값이다.*
+
+<a href="{{ site.baseurl }}/assets/meep/11/09_repro_ladder.png" data-lightbox><img src="{{ site.baseurl }}/assets/meep/11/09_repro_ladder.png" alt="repro ladder" loading="lazy"></a>
+*왼쪽: 금속 상자 LDOS의 해상도 사다리(res 25/50/100/200). 점선이 문서 그림 값. 가운데: dft_ldos 누적 시간 ½·1·2 × 2Q/f. 오른쪽: 평면 공진기의 해상도 사다리 — 오차가 해상도에 단조가 아니다.*
+
+| 항목 | 이 글(위) | 재현(2026-11-10) | 뜻 |
+|---|---|---|---|
+| 금속 상자 w = 0.2, `dft_ldos` 전체 시간 | cap 6000, 비 0.72 | 2Q/f = 23965 전부(555 s), 비 0.907 | cap을 없애면 비가 0.81~0.89 띠로 들어온다. "미수렴은 다른 숫자"가 맞았다 |
+| 누적 시간 2Q/f | — | w = 0.4에서 T/2·T·2T = 95.4·98.5·98.6 | 2Q/f 하나면 2T와 0.14% 안. 반이면 3% 낮다 |
+| 금속 상자 해상도 | res 50 하나 | w = 0.4 LDOS 64.5/98.5/131.6/154.2 (res 25/50/100/200); w = 0.2 Q 8060 → 16109 (res 50 → 100) | 공식 res 50은 수렴 단이 아니다. 벽 5 px·틈 10 px이 부족하다. 문서 그림(역산 Q ≈ 1.9×10⁴)은 더 높은 해상도 값으로 보인다 |
+| 두 방법 차 (w 0.2/0.3/0.4) | 0.72·0.89·0.85 | 9.3·11.0·15.4% (res 50) → res 100에서 비 0.75로 천천히 줄어듦 | 해상도를 올려도 남는 차는 모드 부피 a²/4 근사. 이 글의 해석과 같다 |
+| 평면 공진기 오차의 원인 | 수렴성 표에 "계단" 언급 | 요청 두께 대비 cyl 38점 중앙 0.95% → 이론을 반올림 두께 t_r에서 재면 0.52%; res 35/71/142 사다리가 해상도에 단조가 아님 | 오차의 주범은 해상도가 아니라 셀 두께의 픽셀 반올림이다. 두께 sweep은 L·res가 정수가 되게 고른다(§6 "작은 계단"의 수치 근거) |
+| 3D | 두 점 | 9점(res 71, 벌크 셀 4³으로 축소 — 7³과 1.6×10⁻⁵ 차) 중앙 2.1%, t = 1.45에서 11.4% | 문서 그림의 3D 패임이 같은 자리에서 나온다. cyl도 그 점에서 3.3% 낮다. cutoff 1.5 근처의 느린 수렴 |
+| 에너지 수지 | — | 점원 방출 전력 −Re[F·J*]·ΔV vs 바깥 flux: 금속 0.998, cyl 0.998/0.991, 3D 0.991 | ΔV는 2D 1/res², cyl r₀ 점원 2πr₀/res², 3D 1/res³ |
+
 ### 주장할 수 있는 것 / 없는 것
 
 - 할 수 있는 것: n = 2.4, 완전도체 거울, res 71에서 cylindrical `dft_ldos`의 Purcell 인자는 cutoff 밖에서 Eq. 7 대비 상대오차 중앙값 0.94%, 최대 3.6%이며, 3D 두 점과 2.3% / 0.9% (t = 1.0 / 2.0) 안에서 같다. 금속 상자에서 Harminv의 Q로 정한 시간만큼 돌리면 직접 잰 LDOS가 $2Q/(\pi\omega V)$와 0.81~0.89 안에서 같다.
@@ -827,3 +847,5 @@ total 396 s
 - [`dft_ldos` 레퍼런스](https://meep.readthedocs.io/en/latest/Python_User_Interface/#ldos-spectra) · [`Harminv`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#harminv) · [cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/)
 - I. Abram et al., "Spontaneous emission control in semiconductor microcavities with metallic or Bragg mirrors," IEEE J. Quantum Electron. 34, 71 (1998)
 - 이전 글: [10 · 점광원의 3D 방사 패턴]({{ site.baseurl }}/dipole-pattern-3d/) · 다음 글: [12 · 빛을 가두는 고리]({{ site.baseurl }}/ring-resonator/)
+- 2026-11-10 재현으로 바뀐 것: 3D의 국소 11% 오차($t=1.45$)는 9점 재현에서 같은 자리에 있다. w = 0.2의 LDOS는 2Q/f 전부를 돌리면 Q/V의 0.907이다. 공식 문서 금속 상자 그림의 절대값은 해상도 미기재라 주장하지 않는다(res 50은 w = 0.2를 60% 낮게 준다).
+
