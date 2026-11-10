@@ -462,6 +462,26 @@ Eight of nine predictions were correct. The wrong prediction concerned the degre
 | A 3D resolution | 48 here vs 71 in the notes | CYL differences at $t=1,2$: 2.3% / 0.9% (t = 1.0 / 2.0), vs notes median 1.3% | The notes’ 3D maximum of 11.4% at $t=1.45$ was not measured here |
 | B runtime | 2Q/f (w ≥ 0.3) vs cap 6000 (w = 0.2) | Ratio 0.81~0.89 vs 0.72 | Underconvergence produces a different number, not merely a small error |
 
+### Independent reproduction check (added 2026-11-10)
+
+After this chapter was written, the same two examples were rerun from the scripts at the official commit (f7811d4) with the acceptance criteria written down before the runs (PROJ-013 reproduction queue). Only the results that change or add to the numbers in this chapter are listed here.
+
+<a href="{{ '/assets/meep/11/08_repro_results.png' | relative_url }}" data-lightbox><img src="{{ '/assets/meep/11/08_repro_results.png' | relative_url }}" alt="Reproduction results: metal box two methods versus the digitized documentation figure, planar cavity Purcell factor with 41 cylindrical and 9 3D points, and the error against theory" loading="lazy"></a>
+*Left: the two methods for the metal box (filled points, res 50) against values digitized from the official documentation figure (open markers). Only w = 0.3 agrees; w = 0.2 is 60 % low. Middle: planar-cavity Purcell factor at 41 points (cyl, res 71) and 9 3D points, with the analytic curve. Right: error against theory. Open markers re-evaluate the theory at the cell thickness Meep actually rounded to.*
+
+<a href="{{ '/assets/meep/11/09_repro_ladder.png' | relative_url }}" data-lightbox><img src="{{ '/assets/meep/11/09_repro_ladder.png' | relative_url }}" alt="Reproduction ladders: metal box LDOS versus resolution, dft_ldos accumulation time, and the planar-cavity resolution ladder" loading="lazy"></a>
+*Left: resolution ladder of the metal-box LDOS (res 25/50/100/200). Dotted lines are the documentation figure values. Middle: dft_ldos accumulation time ½·1·2 × 2Q/f. Right: resolution ladder of the planar cavity — the error is not monotonic in resolution.*
+
+| Item | This chapter (above) | Reproduction (2026-11-10) | Meaning |
+|---|---|---|---|
+| metal box w = 0.2, full `dft_ldos` time | cap 6000, ratio 0.72 | the full 2Q/f = 23965 (555 s), ratio 0.907 | removing the cap brings the ratio into the 0.81–0.89 band; "unconverged means a different number" was right |
+| accumulation time 2Q/f | — | at w = 0.4, T/2·T·2T give 95.4·98.5·98.6 | one 2Q/f is within 0.14 % of 2T; half of it is 3 % low |
+| metal box resolution | res 50 only | w = 0.4 LDOS 64.5/98.5/131.6/154.2 (res 25/50/100/200); w = 0.2 Q 8060 → 16109 (res 50 → 100) | the official res 50 is not converged: 5 px walls and a 10 px gap are not enough. The documentation figure (back-computed Q ≈ 1.9×10⁴) looks like a higher-resolution value |
+| gap between the two methods (w 0.2/0.3/0.4) | 0.72·0.89·0.85 | 9.3·11.0·15.4 % (res 50), shrinking slowly to a ratio of 0.75 at res 100 | what remains at higher resolution is the a²/4 mode-volume approximation, as interpreted in this chapter |
+| cause of the planar-cavity error | "staircase" mentioned in the convergence table | median 0.95 % over 38 cyl points against the requested thickness → 0.52 % when the theory is evaluated at the rounded thickness t_r; the res 35/71/142 ladder is not monotonic | the main error is the pixel rounding of the cell thickness, not resolution. Choose thickness sweeps so that L·res is an integer (the numerical basis of the "small staircase" in §6) |
+| 3D | two points | 9 points (res 71, bulk cell reduced to 4³ — 1.6×10⁻⁵ from 7³): median 2.1 %, 11.4 % at t = 1.45 | the 3D dip in the documentation figure appears at the same place; cyl is 3.3 % low there too — slow convergence near the cutoff at 1.5 |
+| energy balance | — | point-source emitted power −Re[F·J*]·ΔV vs outgoing flux: metal 0.998, cyl 0.998/0.991, 3D 0.991 | ΔV is 1/res² in 2D, 2πr₀/res² for a cyl source at r₀, 1/res³ in 3D |
+
 ### What the results do and do not establish
 
 - Established: with n = 2.4, PEC mirrors, and res 71, the cylindrical `dft_ldos` Purcell factor has median relative error 0.94% and maximum 3.6% against Eq. 7 away from cutoffs. It agrees with two 3D points within 2.3% / 0.9% (t = 1.0 / 2.0). In the metal box, runs lasting the time set by Harminv Q give direct LDOS of 0.81~0.89 times $2Q/(\pi\omega V)$.
@@ -828,3 +848,4 @@ total 396 s
 - [`dft_ldos` reference](https://meep.readthedocs.io/en/latest/Python_User_Interface/#ldos-spectra) · [`Harminv`](https://meep.readthedocs.io/en/latest/Python_User_Interface/#harminv) · [cylindrical coordinates](https://meep.readthedocs.io/en/latest/Python_Tutorials/Cylindrical_Coordinates/)
 - I. Abram et al., "Spontaneous emission control in semiconductor microcavities with metallic or Bragg mirrors," IEEE J. Quantum Electron. 34, 71 (1998)
 - Previous: [10 · 3D radiation patterns of a point source]({{ site.baseurl }}/en/dipole-pattern-3d/) · Next: [12 · A ring that confines light]({{ site.baseurl }}/en/ring-resonator/)
+- Changed by the 2026-11-10 reproduction: the local 11 % 3D error ($t=1.45$) sits at the same place in the 9-point rerun. The w = 0.2 LDOS is 0.907 of Q/V once the full 2Q/f is run. The absolute values of the official metal-box figure are not claimed, since its resolution is not stated (res 50 gives w = 0.2 60 % low).
