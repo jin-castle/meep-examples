@@ -1,0 +1,13 @@
+{% assign exercise_part = page.part | append: '' %}
+{% assign exercise = site.data.exercises[exercise_part][lang] %}
+{% if exercise %}
+<section class="lesson-note" aria-labelledby="exercise-title">
+  <h2 id="exercise-title">{{ exercise.title | escape }}</h2>
+  <p>{{ exercise.question | escape }}</p>
+  <p><a href="#interpret">{% if lang == 'en' %}Read the results{% else %}결과에서 근거 찾기{% endif %}</a> · <a href="#run">{% if lang == 'en' %}Check the setup{% else %}실행 조건 보기{% endif %}</a></p>
+  <details>
+    <summary>{% if lang == 'en' %}Check your answer{% else %}내 답과 비교하기{% endif %}</summary>
+    <p>{{ exercise.answer | escape }}</p>
+  </details>
+</section>
+{% endif %}

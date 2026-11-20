@@ -37,7 +37,10 @@
             <p class="lesson-prerequisites"><strong>{{ ui.prerequisites }}</strong> {{ page.lesson_prerequisites | escape }}</p>
             <p class="lesson-meta">Meep {{ page.meep_version }} <span aria-hidden="true">·</span> {{ ui.runtime }} {{ page.runtime }} <span class="lesson-meta-note">{{ ui.runtime_note }}</span></p>
           </header>
-          <div class="lesson-content">{{ content }}</div>
+          <div class="lesson-content">
+            {% include lesson-exercise.html %}
+            {{ content }}
+          </div>
         </article>
         {% include source-credit.html %}
         <nav class="lesson-pagination" aria-label="{{ ui.pagination }}">

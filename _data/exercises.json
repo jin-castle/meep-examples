@@ -1,0 +1,254 @@
+{
+  "4": {
+    "ko": {
+      "title": "직선 도파로에서 투과율 1 확인하기",
+      "question": "1.55 µm에서 기본 모드로 들어간 전력을 100으로 놓으세요. 해석 표에서 T와 R을 읽고 같은 모드로 출구에 도달한 전력을 적어 보세요. 도파로가 세 모드를 지원한다면 빛이 꼭 셋으로 나뉠까요?",
+      "answer": "출력 기본 모드 전력은 약 100입니다(T = 1.0000, R ≈ 0.000008). 광원이 기본 모드를 골라 넣었습니다. 05편에서는 이 측정 원리를 가져가되, 굽힘과 재료·폭이 같은 별도의 직선 기준으로 전체 투과율을 구합니다."
+    },
+    "en": {
+      "title": "Check the transmission of a straight guide",
+      "question": "Set the incident fundamental-mode power to 100 at 1.55 µm. Read T and R and estimate how much power reaches the output in the same mode. Must the power split among all three supported modes?",
+      "answer": "About 100 reaches the output fundamental mode (T = 1.0000, R ≈ 0.000008). The source selects this mode. In 05, total bend transmission uses a separate straight reference with the same material and width as the bend."
+    }
+  },
+  "5": {
+    "ko": {
+      "title": "전력을 90% 이상 보내는 가장 작은 굽힘 고르기",
+      "question": "중심 파장의 반지름 표에서 투과율 90%를 처음 넘는 반지름을 고르세요. 그보다 한 단계 작은 굽힘에서 잃는 전력은 주로 입구로 돌아갈까요, 도파로 밖으로 샐까요?",
+      "answer": "시험한 반지름 중 0.35 µm에서 처음 90%를 넘습니다(T ≈ 0.907). 0.23 µm에서는 투과 74.6%, 반사 약 0.1%, 방사 약 25.3%입니다. 이 구조에서는 굽힘 밖으로 새는 몫이 더 큽니다."
+    },
+    "en": {
+      "title": "Choose the smallest tested bend that transmits 90%",
+      "question": "Read the radius sweep at the center wavelength. Find the first radius above 90% transmission. For the next smaller radius, decide whether most of the missing power returns to the input or escapes the guide.",
+      "answer": "The first tested radius above the target is 0.35 µm (T ≈ 0.907). At 0.23 µm, about 74.6% is transmitted, 0.1% reflected and 25.3% radiated. Radiation accounts for most of the missing power."
+    }
+  },
+  "6": {
+    "ko": {
+      "title": "세 갈래로 나간 전력 더하기",
+      "question": "입사 전력을 100으로 놓고 −1차, 0차, +1차가 받는 전력을 적으세요. 표의 전체 투과 전력과 합이 맞는지 확인하세요.",
+      "answer": "각각 약 8.84, 75.91, 8.84입니다. 반올림한 합은 93.59이고 기록된 총 투과는 약 93.58입니다. 수직 입사와 좌우 대칭 때문에 양옆 차수의 전력이 같습니다."
+    },
+    "en": {
+      "title": "Account for three transmitted beams",
+      "question": "With incident power set to 100, read off the powers in orders −1, 0 and +1. Compare their sum with the total transmitted power.",
+      "answer": "The three orders carry about 8.84, 75.91 and 8.84. Their rounded sum is 93.59 versus about 93.58 total transmission. Normal incidence and mirror symmetry give equal powers in the two side orders."
+    }
+  },
+  "7": {
+    "ko": {
+      "title": "목표 방향으로 간 빛만 세기",
+      "question": "네 가지 폭을 고른 격자에서 입사 전력 100 중 얼마나 투과하고, 그중 얼마가 +1차로 가는지 같은 단위로 적으세요.",
+      "answer": "총 70.45가 투과하고 그중 51.44가 +1차로 갑니다. 나머지 약 19.01은 다른 투과 차수에 있습니다. 위상표가 한 바퀴를 모두 덮어도 각 차수의 효율은 따로 재야 합니다."
+    },
+    "en": {
+      "title": "Count power in the target direction",
+      "question": "For the grating with four selected widths, express total transmission and +1 order transmission on the same scale of 100 incident units.",
+      "answer": "About 70.45 units are transmitted, including 51.44 in the +1 order. About 19.01 units go into other transmitted orders. A full cycle of available phase still leaves the distribution of power to be measured."
+    }
+  },
+  "8": {
+    "ko": {
+      "title": "갱신한 격자의 성능을 독립 측정값으로 보고하기",
+      "question": "원래 설계와 갱신 설계의 +1차 효율을 찾아 몇 퍼센트포인트 개선됐는지 구하세요. 최적화 도중 기록한 점수와도 대조하세요.",
+      "answer": "독립 계산에서 49.59%에서 62.28%로 올라 12.69%p 개선됐습니다. 최적화 중 최고 점수 0.6241과 재측정한 효율 0.6228을 각각 기록하면 비교 조건이 분명해집니다."
+    },
+    "en": {
+      "title": "Report a grating improvement from fresh measurements",
+      "question": "Read the +1 order efficiencies for the initial and updated designs. Calculate the change in percentage points and compare the final efficiency with the optimizer score.",
+      "answer": "Fresh measurements give 49.59% and 62.28%, a gain of 12.69 percentage points. The best internal score was 0.6241 and the remeasured efficiency was 0.6228."
+    }
+  },
+  "9": {
+    "ko": {
+      "title": "같은 설계를 더 촘촘한 격자에서 평가하기",
+      "question": "해상도 10에서 고른 굽힘을 그대로 두고 해상도 20에서 잰 기본 모드 투과율을 찾으세요. 두 값을 함께 쓴다면 성능을 어떻게 보고하겠습니까?",
+      "answer": "기본 모드 투과율은 0.7801에서 0.6391로 달라졌습니다. 78.01%는 해상도 10에서의 측정값이며, 두 결과만으로 해상도에 무관한 성능을 확정하기 어렵습니다."
+    },
+    "en": {
+      "title": "Remeasure the same design on a finer grid",
+      "question": "Keep the bend selected at resolution 10. Find its fundamental-mode transmission at resolution 20. How would you report both measurements?",
+      "answer": "Transmission changes from 0.7801 to 0.6391. The 78.01% result belongs to resolution 10. The two measurements leave the grid-converged value open."
+    }
+  },
+  "10": {
+    "ko": {
+      "title": "거울이 만든 방사 봉우리 읽기",
+      "question": "거울 위 쌍극자의 방사 패턴에서 봉우리를 세고 가장 높은 봉우리의 각도를 표시하세요. 이 그림으로 광원의 총 방출 전력도 알 수 있을까요?",
+      "answer": "높이 1.25 µm인 예에서 봉우리는 다섯 개이고 가장 높은 곳은 12.9°입니다. 세기를 정규화했으므로 그림은 방향별 분포를 보여줍니다. 방출량이 어떻게 변하는지는 11편에서 따로 잽니다."
+    },
+    "en": {
+      "title": "Read the lobes above a mirror",
+      "question": "Count the lobes in the mirrored dipole pattern and mark the strongest direction. Can the plot also give the absolute emitted power?",
+      "answer": "At a height of 1.25 µm there are five lobes and the strongest is at 12.9°. Normalization preserves the directional pattern. Chapter 11 measures changes in emission separately."
+    }
+  },
+  "11": {
+    "ko": {
+      "title": "거울 사이에서 방출이 커졌는지 판정하기",
+      "question": "평면 공진기 표의 t = 1.0 행에서 3D 계산과 해석식의 Purcell 인자를 읽으세요. 기준 매질을 1로 두면 각각 방출 증가와 감소 중 무엇을 뜻합니까?",
+      "answer": "3D 값 0.933과 해석값 0.9375는 모두 1보다 작아 방출 억제를 뜻합니다. 이 값은 광원 위치의 방출 변화이며 밖으로 나온 빛의 비율은 14편에서 측정합니다."
+    },
+    "en": {
+      "title": "Does the cavity enhance emission?",
+      "question": "Read the 3D and analytic Purcell factors at t = 1.0 in the planar cavity table. With the reference medium set to one, decide whether emission increases or decreases.",
+      "answer": "Both 0.933 (3D) and 0.9375 (analytic) are below one, indicating suppression. This measures emission at the source. Chapter 14 measures the fraction that escapes."
+    }
+  },
+  "12": {
+    "ko": {
+      "title": "고리의 공진 위치와 수명을 따로 판정하기",
+      "question": "세 번째 공진에서 해상도 10, 20, 30의 주파수와 Q를 두 줄로 적으세요. 어느 줄이 먼저 안정돼 보이는지 고르세요.",
+      "answer": "주파수는 0.17525 → 0.17564 → 0.17572이고 Q는 1675 → 2132 → 1610입니다. 주파수는 0.3% 이내에서 움직이지만 Q는 오르내립니다."
+    },
+    "en": {
+      "title": "Separate resonance position from lifetime",
+      "question": "Write down the third resonance frequency and Q at resolutions 10, 20 and 30. Which sequence is more stable?",
+      "answer": "Frequency goes from 0.17525 to 0.17564 to 0.17572, within 0.3%. Q goes from 1675 to 2132 to 1610 and changes nonmonotonically."
+    }
+  },
+  "13": {
+    "ko": {
+      "title": "좌표계를 바꿔도 같은 고리 모드를 찾았는지 확인하기",
+      "question": "12편과 비교한 m = 5 모드에서 주파수 차이와 Q 값을 각각 읽으세요. 두 계산은 어느 측정량에서 더 가깝습니까?",
+      "answer": "주파수는 약 0.10% 차이입니다. Q는 원통 좌표에서 1627, 직교 좌표 해상도 20에서 2132입니다. 주파수의 일치 정도를 Q에 그대로 적용할 수 없습니다."
+    },
+    "en": {
+      "title": "Identify the same ring mode across coordinate systems",
+      "question": "For the m = 5 mode shared with 12, read the frequency difference and both Q values. Which quantity agrees more closely?",
+      "answer": "The frequencies differ by about 0.10%. Q is 1627 in cylindrical coordinates and 2132 in the Cartesian run at resolution 20. The frequency agreement does not establish convergence of Q."
+    }
+  },
+  "14": {
+    "ko": {
+      "title": "박막 광원의 위치 고르기",
+      "question": "원통 좌표 해상도 80의 열에서 높이 h = 0.1과 0.5를 비교하세요. 광원이 공급한 전력 100 중 공기로 나가는 몫이 큰 위치를 고르세요.",
+      "answer": "h = 0.1에서는 52.30, h = 0.5에서는 32.32가 나갑니다. 시험한 두 위치 중 전자가 더 많이 추출합니다. 분모는 각 위치에서 광원이 공급한 전력입니다."
+    },
+    "en": {
+      "title": "Choose an emitter position inside a film",
+      "question": "Compare h = 0.1 and 0.5 in the cylindrical resolution-80 column. Which releases a larger fraction into air per 100 units supplied by the source?",
+      "answer": "At h = 0.1, 52.30 units escape, versus 32.32 at h = 0.5. The denominator is the source power at each position."
+    }
+  },
+  "16": {
+    "ko": {
+      "title": "초점이 이동했는지 좁아졌는지 구분하기",
+      "question": "영역 수가 25개에서 100개가 될 때 초점의 축 방향 위치와 첫 영점 반경을 따로 읽으세요. 무엇이 크게 변합니까?",
+      "answer": "초점 위치는 약 200 µm 부근에 머무릅니다. 첫 영점 반경은 1.204 µm에서 0.701 µm로 줄어 빛이 더 좁게 모입니다."
+    },
+    "en": {
+      "title": "Distinguish moving the focus from narrowing it",
+      "question": "When the zone count increases from 25 to 100, compare the axial focus position and the radius of the first zero. Which changes more?",
+      "answer": "The focus stays near 200 µm. The first-zero radius decreases from 1.204 µm to 0.701 µm, indicating a narrower spot."
+    }
+  },
+  "17": {
+    "ko": {
+      "title": "파면에서 입사 방향 검산하기",
+      "question": "40°를 요청한 행에서 위상으로 잰 각도를 찾아 요청값과의 차이를 계산하세요. 같은 방향의 FFT 피크와 비교하세요.",
+      "answer": "위상 측정값 40.06136°의 오차는 약 0.06136°입니다. 유한 창에서 읽은 FFT 피크는 40.60°여서 이 경우에는 각도 차이가 더 큽니다."
+    },
+    "en": {
+      "title": "Verify a launch angle from phase",
+      "question": "For the requested 40° launch, subtract the requested angle from the phase measurement. Compare with the spatial FFT estimate.",
+      "answer": "The phase measurement is 40.06136°, an error of about 0.06136°. The finite-window FFT peak is at 40.60° and differs more in this case."
+    }
+  },
+  "18": {
+    "ko": {
+      "title": "반사율 오차와 전력 수지를 따로 읽기",
+      "question": "공통 세 입사각에서 해상도 50과 200의 Fresnel 반사율 오차를 비교하세요. 무손실 계면의 해상도 200에서 남은 전력 수지 오차는 흡수로 기록할까요?",
+      "answer": "최대 절대 반사율 오차는 0.06350에서 0.003398로 줄었습니다. 최대 수지 잔차 0.01454는 무손실 계산의 수치 불일치입니다."
+    },
+    "en": {
+      "title": "Separate reflectance error from power balance",
+      "question": "Compare the Fresnel errors at resolutions 50 and 200 for the three shared input angles. Should the remaining power imbalance at resolution 200 be recorded as absorption?",
+      "answer": "The maximum absolute reflectance error drops from 0.06350 to 0.003398. The maximum balance residual of 0.01454 is a numerical discrepancy in a lossless model."
+    }
+  },
+  "19": {
+    "ko": {
+      "title": "유한 폭 빔의 굴절 방향 재기",
+      "question": "30° 입사 결과에서 투과 영역의 위상으로 잰 각도와 스넬 법칙 예측의 차이를 적으세요. 이 자료로 빔 전력의 몇 %가 통과했는지도 구할 수 있을까요?",
+      "answer": "두 각도는 법선 기준 약 50.662°와 50.354°로 약 0.308° 차이입니다. 투과 전력 비율을 구하려면 별도로 정규화한 전력 측정이 필요합니다."
+    },
+    "en": {
+      "title": "Measure a finite beam’s refraction angle",
+      "question": "For 30° incidence, compare the transmitted phase angle with Snell’s prediction. Can those angles also tell you the fraction of power transmitted?",
+      "answer": "The angles from the normal are about 50.662° and 50.354°, a difference of about 0.308°. A power fraction needs a separately normalized power measurement."
+    }
+  },
+  "20": {
+    "ko": {
+      "title": "석영 반사율의 오차 기준 판정하기",
+      "question": "최대 절대 반사율 오차가 0.0005보다 작아야 한다고 두세요. 해상도 100과 200 중 어느 쪽이 이 기준을 만족합니까?",
+      "answer": "100에서는 약 0.0006594로 기준을 넘고, 200에서는 약 0.0001678로 기준 안에 듭니다. 이 판정은 석영의 반사율 검산에 해당합니다."
+    },
+    "en": {
+      "title": "Apply an error target to quartz reflectance",
+      "question": "Require a maximum absolute reflectance error below 0.0005. Which of the resolution-100 and resolution-200 runs meets it?",
+      "answer": "At 100 the error is about 0.0006594, above target. At 200 it is about 0.0001678, within target. This check applies to quartz reflectance."
+    }
+  },
+  "21": {
+    "ko": {
+      "title": "편광을 뒤집어 회절 방향 선택하기",
+      "question": "p = 0.5에서 두 원편광의 −1차와 +1차 전력을 비교하세요. 부호를 뒤집으면 무엇이 바뀌며, 입사 전력의 얼마가 선택된 차수로 갑니까?",
+      "answer": "Ez + iEy에서는 −1차, Ez − iEy에서는 +1차가 우세합니다. 각각 입사 전력의 약 94.29%가 선택된 차수로 가고 총 투과율은 약 94.36%입니다."
+    },
+    "en": {
+      "title": "Select a diffraction direction with polarization",
+      "question": "At p = 0.5 compare the −1 and +1 orders for the two circular inputs. What switches when the sign is reversed, and how much incident power reaches the selected order?",
+      "answer": "The dominant order switches from −1 for Ez + iEy to +1 for Ez − iEy. Each selected order carries about 94.29% of incident power, with about 94.36% total transmission."
+    }
+  },
+  "25": {
+    "ko": {
+      "title": "두 방법으로 잰 흡수 전력 비교하기",
+      "question": "작은 측정 상자를 사용했을 때 해상도 50, 100, 200의 체적 적분과 경계 전력 차이를 읽으세요. 상자를 키운 별도 검사도 2% 이내였습니까?",
+      "answer": "작은 상자의 차이는 약 3.66% → 0.97% → 0.25%로 줄었습니다. 해상도 100에서 큰 상자와 작은 상자의 차이는 약 3.38%여서 2% 기준을 넘습니다."
+    },
+    "en": {
+      "title": "Compare two measurements of absorbed power",
+      "question": "For the small monitor box, read the volume-versus-flux discrepancy at resolutions 50, 100 and 200. Did the separate box-size check stay within 2%?",
+      "answer": "The small-box discrepancies fall from about 3.66% to 0.97% to 0.25%. At resolution 100 the large and small boxes differ by about 3.38%, exceeding the 2% target."
+    }
+  },
+  "26": {
+    "ko": {
+      "title": "한 공진의 Q를 두 방식으로 재기",
+      "question": "N = 3에서 시간 신호를 분석한 Harminv의 Q와 좁은 투과 피크를 맞춘 Q를 읽으세요. 두 값이 1% 안에서 맞습니까?",
+      "answer": "372.408과 370.395로 약 0.54% 차이입니다. 이 일치는 N = 3의 결과입니다. 구멍 수가 다른 공진기의 Q는 해당 조건에서 다시 비교해야 합니다."
+    },
+    "en": {
+      "title": "Measure one resonance Q in two ways",
+      "question": "At N = 3, compare Q from Harminv’s time signal with Q from fitting the narrow transmission peak. Are they within 1%?",
+      "answer": "The two values are 372.408 and 370.395, about 0.54% apart. This agreement applies to N = 3. A different hole count needs its own comparison."
+    }
+  },
+  "27": {
+    "ko": {
+      "title": "음수로 나온 반사율 해석하기",
+      "question": "길이 1 µm, 해상도 50에서 기본 모드와 기준장 차감 후 flux로 구한 반사율의 부호를 각각 확인하세요. 음수를 보고할 때 어떤 설명을 붙이겠습니까?",
+      "answer": "모드 추정값은 +0.00043445, 부호 있는 flux 추정값은 −0.00477163입니다. 차감 후 전방 잔차가 남아 후방 성분보다 큽니다. 이 음수는 측정의 한계를 보여줍니다."
+    },
+    "en": {
+      "title": "Interpret a negative reflection estimate",
+      "question": "At length 1 µm and resolution 50, compare the signs of the modal and reference-subtracted flux estimates. How would you explain the negative reading?",
+      "answer": "The modal estimate is +0.00043445 and the signed flux estimate is −0.00477163. Forward residual power after subtraction exceeds the backward component, limiting the interpretation."
+    }
+  },
+  "28": {
+    "ko": {
+      "title": "모드에 따라 힘의 방향이 바뀌는지 보기",
+      "question": "고정 주파수 f = 0.2, 간격 s/a = 0.10의 행에서 대칭 모드와 반대칭 모드에 대한 Meep 힘의 부호를 읽으세요. 같은 간격에서 광학력이 어느 쪽으로 작용합니까?",
+      "answer": "대칭 모드는 −0.92로 인력, 반대칭 모드는 +0.500으로 척력입니다. 이 비교에서는 주파수와 간격을 함께 고정했습니다."
+    },
+    "en": {
+      "title": "Check whether changing the mode reverses the force",
+      "question": "At fixed frequency f = 0.2 and gap s/a = 0.10, read the signs of the Meep forces for the symmetric and antisymmetric modes. Which way does each force act?",
+      "answer": "The symmetric mode gives −0.92 (attraction) and the antisymmetric mode +0.500 (repulsion). Frequency and separation are fixed in this comparison."
+    }
+  }
+}
